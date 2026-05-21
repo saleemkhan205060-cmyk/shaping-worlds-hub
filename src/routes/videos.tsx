@@ -40,8 +40,19 @@ function Videos() {
   const [tab, setTab] = useState("For You");
   const [playing, setPlaying] = useState<string | null>(null);
   const [liked, setLiked] = useState<Record<string, boolean>>({});
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data }) => setPosts((data as Post[]) ?? []));
+  }, []);
 
   const filtered = tab === "For You" ? VIDEOS : VIDEOS.filter((v) => v.category === tab);
+  const filteredPosts = tab === "For You" ? posts : posts.filter((p) => p.category === tab);
 
   const toggleLike = (title: string) => setLiked((p) => ({ ...p, [title]: !p[title] }));
 
@@ -63,6 +74,12 @@ function Videos() {
           <h1 className="text-2xl font-extrabold">Video Feed</h1>
           <p className="text-sm text-slate-500">Trending content from creators around the world</p>
         </div>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 shrink-0"
+        >
+          <UploadCloud className="h-4 w-4" /> Upload
+        </Link>
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
