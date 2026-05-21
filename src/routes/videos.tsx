@@ -123,7 +123,7 @@ function Videos() {
         <p className="text-sm text-slate-500 py-12 text-center">No videos in this category yet.</p>
       )}
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
         {filtered.map((v) => {
           const isPlaying = playing === v.title;
           const isLiked = liked[v.title];
