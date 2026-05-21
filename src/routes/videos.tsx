@@ -99,7 +99,7 @@ function Videos() {
       {filteredPosts.length > 0 && (
         <>
           <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">From the community</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="flex flex-col gap-0">
             {filteredPosts.map((p) => (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                 <div className="relative h-screen w-full bg-black">
