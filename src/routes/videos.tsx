@@ -96,7 +96,30 @@ function Videos() {
         ))}
       </div>
 
-      {filtered.length === 0 && (
+      {filteredPosts.length > 0 && (
+        <>
+          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">From the community</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {filteredPosts.map((p) => (
+              <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <div className="relative aspect-video bg-slate-100">
+                  {p.media_type === "video" ? (
+                    <video src={p.media_url} controls className="w-full h-full object-cover bg-black" />
+                  ) : (
+                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
+                  )}
+                </div>
+                {p.caption && (
+                  <div className="p-3 text-sm text-slate-700 line-clamp-2">{p.caption}</div>
+                )}
+              </article>
+            ))}
+          </div>
+          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Featured</h2>
+        </>
+      )}
+
+      {filtered.length === 0 && filteredPosts.length === 0 && (
         <p className="text-sm text-slate-500 py-12 text-center">No videos in this category yet.</p>
       )}
 
