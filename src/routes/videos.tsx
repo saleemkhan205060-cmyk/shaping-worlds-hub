@@ -110,7 +110,7 @@ function Videos() {
                   )}
                 </div>
                 {p.caption && (
-                  <div className="p-3 text-sm text-slate-700 line-clamp-2">{p.caption}</div>
+                  <div className="p-3 text-sm text-white line-clamp-2">{p.caption}</div>
                 )}
               </article>
             ))}
