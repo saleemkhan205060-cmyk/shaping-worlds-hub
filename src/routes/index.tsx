@@ -196,7 +196,7 @@ function Index() {
         <div className="bg-white rounded-2xl border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold">Top Businesses</h3>
-            <a className="text-sm text-indigo-600 font-medium">View All</a>
+            <Link to="/videos" className="text-sm text-indigo-600 font-medium">View All</Link>
           </div>
           <ul className="space-y-3">
             {[
