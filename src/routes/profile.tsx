@@ -1,12 +1,20 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { MapPin, Link as LinkIcon, Calendar, Settings, CheckCircle2, Play, Heart, Users, LogOut, Loader2 } from "lucide-react";
+import { MapPin, Link as LinkIcon, Calendar, Settings, CheckCircle2, Play, Heart, Users, LogOut, Loader2, UploadCloud } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/profile")({ component: Profile });
+
+type Post = {
+  id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  caption: string | null;
+  created_at: string;
+};
 
 const TABS = ["Posts", "Videos", "Businesses", "About"] as const;
 type Tab = (typeof TABS)[number];
