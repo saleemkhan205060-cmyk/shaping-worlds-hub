@@ -1,7 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Play, Heart, MessageCircle, Share2, CheckCircle2 } from "lucide-react";
+import { Play, Heart, MessageCircle, Share2, CheckCircle2, UploadCloud } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+type Post = {
+  id: string;
+  user_id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  caption: string | null;
+  category: string | null;
+  created_at: string;
+};
 
 export const Route = createFileRoute("/videos")({ component: Videos });
 
@@ -29,8 +40,19 @@ function Videos() {
   const [tab, setTab] = useState("For You");
   const [playing, setPlaying] = useState<string | null>(null);
   const [liked, setLiked] = useState<Record<string, boolean>>({});
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data }) => setPosts((data as Post[]) ?? []));
+  }, []);
 
   const filtered = tab === "For You" ? VIDEOS : VIDEOS.filter((v) => v.category === tab);
+  const filteredPosts = tab === "For You" ? posts : posts.filter((p) => p.category === tab);
 
   const toggleLike = (title: string) => setLiked((p) => ({ ...p, [title]: !p[title] }));
 
@@ -52,6 +74,12 @@ function Videos() {
           <h1 className="text-2xl font-extrabold">Video Feed</h1>
           <p className="text-sm text-slate-500">Trending content from creators around the world</p>
         </div>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 shrink-0"
+        >
+          <UploadCloud className="h-4 w-4" /> Upload
+        </Link>
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
@@ -68,7 +96,30 @@ function Videos() {
         ))}
       </div>
 
-      {filtered.length === 0 && (
+      {filteredPosts.length > 0 && (
+        <>
+          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">From the community</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {filteredPosts.map((p) => (
+              <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <div className="relative aspect-video bg-slate-100">
+                  {p.media_type === "video" ? (
+                    <video src={p.media_url} controls className="w-full h-full object-cover bg-black" />
+                  ) : (
+                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
+                  )}
+                </div>
+                {p.caption && (
+                  <div className="p-3 text-sm text-slate-700 line-clamp-2">{p.caption}</div>
+                )}
+              </article>
+            ))}
+          </div>
+          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Featured</h2>
+        </>
+      )}
+
+      {filtered.length === 0 && filteredPosts.length === 0 && (
         <p className="text-sm text-slate-500 py-12 text-center">No videos in this category yet.</p>
       )}
 

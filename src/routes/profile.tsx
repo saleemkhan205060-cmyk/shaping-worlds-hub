@@ -1,12 +1,20 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { MapPin, Link as LinkIcon, Calendar, Settings, CheckCircle2, Play, Heart, Users, LogOut, Loader2 } from "lucide-react";
+import { MapPin, Link as LinkIcon, Calendar, Settings, CheckCircle2, Play, Heart, Users, LogOut, Loader2, UploadCloud } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/profile")({ component: Profile });
+
+type Post = {
+  id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  caption: string | null;
+  created_at: string;
+};
 
 const TABS = ["Posts", "Videos", "Businesses", "About"] as const;
 type Tab = (typeof TABS)[number];
@@ -24,6 +32,7 @@ function Profile() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -34,6 +43,12 @@ function Profile() {
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
       setProfile(data as ProfileRow | null);
     });
+    supabase
+      .from("posts")
+      .select("id, media_url, media_type, caption, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setPosts((data as Post[]) ?? []));
   }, [user]);
 
   const handleSignOut = async () => {
@@ -131,11 +146,37 @@ function Profile() {
       </div>
 
       <div className="mt-5">
-        {(tab === "Posts" || tab === "Videos") && (
-          <div className="text-center py-12 text-slate-500 text-sm">
-            No {tab.toLowerCase()} yet. Share something to get started!
-          </div>
-        )}
+        {(tab === "Posts" || tab === "Videos") && (() => {
+          const items = tab === "Videos" ? posts.filter((p) => p.media_type === "video") : posts;
+          if (items.length === 0) {
+            return (
+              <div className="text-center py-12 text-slate-500 text-sm">
+                No {tab.toLowerCase()} yet.{" "}
+                <Link to="/upload" className="text-indigo-600 font-semibold inline-flex items-center gap-1">
+                  <UploadCloud className="h-4 w-4" /> Upload one
+                </Link>
+              </div>
+            );
+          }
+          return (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {items.map((p) => (
+                <div key={p.id} className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                  {p.media_type === "video" ? (
+                    <>
+                      <video src={p.media_url} className="w-full h-full object-cover" muted playsInline />
+                      <div className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1">
+                        <Play className="h-3 w-3 fill-white" />
+                      </div>
+                    </>
+                  ) : (
+                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
+                  )}
+                </div>
+              ))}
+            </div>
+          );
+        })()}
         {tab === "Businesses" && (
           <div className="text-center py-12 text-slate-500 text-sm">No businesses listed yet.</div>
         )}

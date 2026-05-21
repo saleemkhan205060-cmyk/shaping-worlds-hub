@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Video, Bell, Search, X, LogOut, LogIn } from "lucide-react";
+import { Home, User, Video, Bell, Search, X, LogOut, LogIn, PlusSquare } from "lucide-react";
 import { useState } from "react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
@@ -7,6 +7,7 @@ import { toast } from "sonner";
 const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/videos", label: "Videos", icon: Video },
+  { to: "/upload", label: "Upload", icon: PlusSquare },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
@@ -141,7 +142,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
 
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200">
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-4">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = path === item.to;

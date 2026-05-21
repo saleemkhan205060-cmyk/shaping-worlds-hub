@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      posts: {
+        Row: {
+          caption: string | null
+          category: string | null
+          created_at: string
+          id: string
+          media_type: string
+          media_url: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          media_type: string
+          media_url: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          media_type?: string
+          media_url?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
