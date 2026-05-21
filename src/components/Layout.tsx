@@ -140,28 +140,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
-      {/*
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200">
-        <div className="grid grid-cols-4">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = path === item.to;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`flex flex-col items-center justify-center py-3 text-xs font-medium ${
-                  active ? "text-indigo-600" : "text-slate-500"
-                }`}
-              >
-                <Icon className="h-5 w-5 mb-1" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
-      */}
+     {/*
+<nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200">
+  <div className="grid grid-cols-4">
+    {navItems.map((item) => {
+      const Icon = item.icon;
+      const active = path === item.to;
+      return (
+        <Link
+          key={item.to}
+          to={item.to}
+          className={`flex flex-col items-center justify-center py-3 text-xs font-medium ${
+            active ? "text-indigo-600" : "text-slate-500"
+          }`}
+        >
+          <Icon className="h-5 w-5 mb-1" />
+          {item.label}
+        </Link>
+      );
+    })}
+  </div>
+</nav>
+*/}
     </div>
   );
 }
