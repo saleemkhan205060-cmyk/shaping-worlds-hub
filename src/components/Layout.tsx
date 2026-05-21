@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Video, Bell, Search, X, LogOut, LogIn } from "lucide-react";
+import { Home, User, Video, Bell, Search, X, LogOut, LogIn, PlusSquare } from "lucide-react";
 import { useState } from "react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
@@ -7,6 +7,7 @@ import { toast } from "sonner";
 const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/videos", label: "Videos", icon: Video },
+  { to: "/upload", label: "Upload", icon: PlusSquare },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
