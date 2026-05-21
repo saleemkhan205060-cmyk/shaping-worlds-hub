@@ -104,7 +104,7 @@ function Videos() {
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                 <div className="relative h-screen w-full bg-black">
                   {p.media_type === "video" ? (
-                    <video src={p.media_url} controls className="w-full h-full object-cover bg-black" />
+                    <video src={p.media_url} autoPlay loop playsInline className="w-full h-full object-cover bg-black" />
                   ) : (
                     <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
                   )}
