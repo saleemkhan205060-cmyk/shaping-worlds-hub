@@ -45,7 +45,7 @@ function Index() {
               One platform for Entertainment, Business and Relationships.
               Explore endless possibilities and connect with the world.
             </p>
-            <Link to="/profile" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition font-semibold shadow-lg shadow-indigo-500/30">
+            <Link to="/auth" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition font-semibold shadow-lg shadow-indigo-500/30">
               Join Now
               <span className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -241,7 +241,7 @@ function Index() {
             <div key={i} className={`h-9 w-9 rounded-full bg-gradient-to-br ${g} border-2 border-white`} />
           ))}
         </div>
-        <Link to="/profile" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
+        <Link to="/auth" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
           Get Started <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
