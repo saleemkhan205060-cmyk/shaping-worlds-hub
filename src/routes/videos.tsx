@@ -1,7 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Play, Heart, MessageCircle, Share2, CheckCircle2 } from "lucide-react";
+import { Play, Heart, MessageCircle, Share2, CheckCircle2, UploadCloud } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+type Post = {
+  id: string;
+  user_id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  caption: string | null;
+  category: string | null;
+  created_at: string;
+};
 
 export const Route = createFileRoute("/videos")({ component: Videos });
 
