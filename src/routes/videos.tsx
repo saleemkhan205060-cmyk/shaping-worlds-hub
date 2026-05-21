@@ -101,7 +101,7 @@ function Videos() {
           <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">From the community</h2>
           <div className="flex flex-col gap-0">
             {filteredPosts.map((p) => (
-              <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <article key={p.id} className="h-screen w-full snap-start bg-black">
                 <div className="relative h-screen w-full bg-black">
                   {p.media_type === "video" ? (
                     <video src={p.media_url} autoPlay loop playsInline className="w-full h-full object-cover bg-black" />
