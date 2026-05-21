@@ -146,11 +146,37 @@ function Profile() {
       </div>
 
       <div className="mt-5">
-        {(tab === "Posts" || tab === "Videos") && (
-          <div className="text-center py-12 text-slate-500 text-sm">
-            No {tab.toLowerCase()} yet. Share something to get started!
-          </div>
-        )}
+        {(tab === "Posts" || tab === "Videos") && (() => {
+          const items = tab === "Videos" ? posts.filter((p) => p.media_type === "video") : posts;
+          if (items.length === 0) {
+            return (
+              <div className="text-center py-12 text-slate-500 text-sm">
+                No {tab.toLowerCase()} yet.{" "}
+                <Link to="/upload" className="text-indigo-600 font-semibold inline-flex items-center gap-1">
+                  <UploadCloud className="h-4 w-4" /> Upload one
+                </Link>
+              </div>
+            );
+          }
+          return (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {items.map((p) => (
+                <div key={p.id} className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                  {p.media_type === "video" ? (
+                    <>
+                      <video src={p.media_url} className="w-full h-full object-cover" muted playsInline />
+                      <div className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1">
+                        <Play className="h-3 w-3 fill-white" />
+                      </div>
+                    </>
+                  ) : (
+                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
+                  )}
+                </div>
+              ))}
+            </div>
+          );
+        })()}
         {tab === "Businesses" && (
           <div className="text-center py-12 text-slate-500 text-sm">No businesses listed yet.</div>
         )}
