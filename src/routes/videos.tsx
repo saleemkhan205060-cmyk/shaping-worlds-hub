@@ -102,7 +102,7 @@ function Videos() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {filteredPosts.map((p) => (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <div className="relative aspect-video bg-slate-100">
+                <div className="relative h-screen w-full bg-black">
                   {p.media_type === "video" ? (
                     <video src={p.media_url} controls className="w-full h-full object-cover bg-black" />
                   ) : (
