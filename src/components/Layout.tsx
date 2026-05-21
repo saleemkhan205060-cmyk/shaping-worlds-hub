@@ -142,7 +142,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
 
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200">
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-4">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = path === item.to;
