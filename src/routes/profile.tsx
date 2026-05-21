@@ -32,6 +32,7 @@ function Profile() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -42,6 +43,12 @@ function Profile() {
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
       setProfile(data as ProfileRow | null);
     });
+    supabase
+      .from("posts")
+      .select("id, media_url, media_type, caption, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setPosts((data as Post[]) ?? []));
   }, [user]);
 
   const handleSignOut = async () => {
