@@ -45,12 +45,12 @@ function Index() {
               One platform for Entertainment, Business and Relationships.
               Explore endless possibilities and connect with the world.
             </p>
-            <button className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition font-semibold shadow-lg shadow-indigo-500/30">
+            <Link to="/profile" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition font-semibold shadow-lg shadow-indigo-500/30">
               Join Now
               <span className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
                 <ArrowRight className="h-3.5 w-3.5" />
               </span>
-            </button>
+            </Link>
           </div>
           <div className="relative flex justify-center">
             <div className="relative h-56 w-56 sm:h-72 sm:w-72">
@@ -196,7 +196,7 @@ function Index() {
         <div className="bg-white rounded-2xl border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold">Top Businesses</h3>
-            <a className="text-sm text-indigo-600 font-medium">View All</a>
+            <Link to="/videos" className="text-sm text-indigo-600 font-medium">View All</Link>
           </div>
           <ul className="space-y-3">
             {[
@@ -241,9 +241,9 @@ function Index() {
             <div key={i} className={`h-9 w-9 rounded-full bg-gradient-to-br ${g} border-2 border-white`} />
           ))}
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
+        <Link to="/profile" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
           Get Started <ArrowRight className="h-4 w-4" />
-        </button>
+        </Link>
       </section>
 
       {/* Footer */}
