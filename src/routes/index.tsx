@@ -241,9 +241,9 @@ function Index() {
             <div key={i} className={`h-9 w-9 rounded-full bg-gradient-to-br ${g} border-2 border-white`} />
           ))}
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
+        <Link to="/profile" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
           Get Started <ArrowRight className="h-4 w-4" />
-        </button>
+        </Link>
       </section>
 
       {/* Footer */}
