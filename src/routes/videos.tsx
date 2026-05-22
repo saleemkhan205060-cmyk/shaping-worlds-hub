@@ -183,7 +183,7 @@ const [activeIndex, setActiveIndex] = useState(0);
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((v) => {
             const isPlaying = playing === v.id;
-            const isLiked = liked[v.title];
+        const isPlaying = playing === v.id;
             return (
               <article key={v.title} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
                 <div className="relative aspect-video bg-black">
