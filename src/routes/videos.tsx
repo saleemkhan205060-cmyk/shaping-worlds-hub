@@ -103,7 +103,7 @@ const [activeIndex, setActiveIndex] = useState(0);
         ))}
       </div>
 
-      {filteredPosts.length > 0 && (
+      {filteredPosts.length > 0 &&
   <> 
       return (
         <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
