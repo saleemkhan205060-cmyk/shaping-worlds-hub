@@ -105,7 +105,7 @@ const [activeIndex, setActiveIndex] = useState(0);
       {filteredPosts.length > 0 && (
         <>
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">From the community</h2>
-          <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
+          <div> className="h-screen overflow-y-scroll snap-y snap-mandatory">
   {filtered.map((v, index) => {
     const isActive = index === activeIndex;
 
