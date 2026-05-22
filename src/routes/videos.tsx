@@ -151,6 +151,27 @@ const [activeIndex, setActiveIndex] = useState(0);
     })}
   </>
 )}
+      return (
+        <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div className="relative aspect-[4/5] bg-slate-900">
+            {p.media_type === "video" ? (
+              <video
+                src={p.media_url}
+                autoPlay
+                loop
+                muted={!isUnmuted}
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img src={p.media_url} className="w-full h-full object-cover" />
+            )}
+          </div>
+        </article>
+      );
+    })}
+  </>
+)}
          return (
            <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
                   <div className="relative aspect-[4/5] bg-slate-900">
