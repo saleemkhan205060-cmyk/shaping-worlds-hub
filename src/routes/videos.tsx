@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Play, Heart, MessageCircle, Share2, CheckCircle2, UploadCloud } from "lucide-react";
+import { Play, Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Post = {
@@ -41,6 +41,8 @@ function Videos() {
   const [playing, setPlaying] = useState<string | null>(null);
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [unmuted, setUnmuted] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     supabase
@@ -48,16 +50,19 @@ function Videos() {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(50)
-      .then(({ data }) => setPosts((data as Post[]) ?? []));
+      .then(({ data }) => {
+        setPosts((data as Post[]) ?? []);
+        setLoadingPosts(false);
+      });
   }, []);
 
   const filtered = tab === "For You" ? VIDEOS : VIDEOS.filter((v) => v.category === tab);
   const filteredPosts = tab === "For You" ? posts : posts.filter((p) => p.category === tab);
 
-  const toggleLike = (title: string) => setLiked((p) => ({ ...p, [title]: !p[title] }));
+  const toggleLike = (key: string) => setLiked((p) => ({ ...p, [key]: !p[key] }));
 
-  const share = async (v: Video) => {
-    const data = { title: v.title, text: `Watch ${v.title} by ${v.who}`, url: window.location.href };
+  const share = async (title: string, by: string) => {
+    const data = { title, text: `Check out ${title} by ${by}`, url: window.location.href };
     try {
       if (navigator.share) await navigator.share(data);
       else {
@@ -70,19 +75,19 @@ function Videos() {
   return (
     <Layout>
       <div className="flex items-center justify-between mb-5 gap-3">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold">Video Feed</h1>
-          <p className="text-sm text-slate-500">Trending content from creators around the world</p>
+          <p className="text-sm text-slate-500 truncate">Trending content from creators around the world</p>
         </div>
         <Link
           to="/upload"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 shrink-0"
         >
-          <UploadCloud className="h-4 w-4" /> Upload
+          <UploadCloud className="h-4 w-4" /> <span className="hidden xs:inline sm:inline">Upload</span>
         </Link>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-3 sm:-mx-4 px-3 sm:px-4 scrollbar-thin">
         {TABS.map((t) => (
           <button
             key={t}
@@ -98,84 +103,136 @@ function Videos() {
 
       {filteredPosts.length > 0 && (
         <>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">From the community</h2>
-          <div className="flex flex-col gap-0">
-            {filteredPosts.map((p) => (
-              <article key={p.id} className="h-screen w-full snap-start bg-black">
-                <div className="relative h-screen w-full bg-black">
-                  {p.media_type === "video" ? (
-                    <video src={p.media_url} autoPlay loop playsInline className="w-full h-full object-cover bg-black" />
-                  ) : (
-                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
-                  )}
-                </div>
-                {p.caption && (
-                  <div className="p-3 text-sm text-white line-clamp-2">{p.caption}</div>
-                )}
-              </article>
-            ))}
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">From the community</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {filteredPosts.map((p) => {
+              const key = `p-${p.id}`;
+              const isLiked = liked[key];
+              const isUnmuted = unmuted[p.id];
+              return (
+                <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
+                  <div className="relative aspect-[4/5] bg-slate-900">
+                    {p.media_type === "video" ? (
+                      <>
+                        <video
+                          src={p.media_url}
+                          autoPlay
+                          loop
+                          muted={!isUnmuted}
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          onClick={() => setUnmuted((u) => ({ ...u, [p.id]: !u[p.id] }))}
+                          className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center"
+                          aria-label={isUnmuted ? "Mute" : "Unmute"}
+                        >
+                          {isUnmuted ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                        </button>
+                      </>
+                    ) : (
+                      <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
+                    )}
+                  </div>
+                  <div className="p-3">
+                    {p.caption && <p className="text-sm line-clamp-2 mb-2">{p.caption}</p>}
+                    <div className="flex items-center gap-4 text-slate-500 text-sm">
+                      <button
+                        onClick={() => toggleLike(key)}
+                        className={`flex items-center gap-1 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
+                      >
+                        <Heart className={`h-4 w-4 ${isLiked ? "fill-rose-500" : ""}`} /> Like
+                      </button>
+                      <button
+                        onClick={() => share(p.caption ?? "Post", "a creator")}
+                        className="flex items-center gap-1 hover:text-indigo-600 ml-auto"
+                        aria-label="Share"
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Featured</h2>
         </>
       )}
 
-      {filtered.length === 0 && filteredPosts.length === 0 && (
-        <p className="text-sm text-slate-500 py-12 text-center">No videos in this category yet.</p>
+      {loadingPosts && filteredPosts.length === 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <div className="aspect-[4/5] bg-slate-100 animate-pulse" />
+              <div className="p-3 space-y-2">
+                <div className="h-3 bg-slate-100 rounded animate-pulse" />
+                <div className="h-3 bg-slate-100 rounded animate-pulse w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
-        {filtered.map((v) => {
-          const isPlaying = playing === v.title;
-          const isLiked = liked[v.title];
-          return (
-            <article key={v.title} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
-              <div className={`relative aspect-video bg-gradient-to-br ${v.hue}`}>
-                <button
-                  onClick={() => setPlaying(isPlaying ? null : v.title)}
-                  className="absolute inset-0 flex items-center justify-center group"
-                  aria-label={isPlaying ? "Pause" : "Play"}
-                >
-                  <span className="h-14 w-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition">
-                    {isPlaying ? (
-                      <span className="flex gap-1">
-                        <span className="h-5 w-1.5 bg-slate-900 rounded" />
-                        <span className="h-5 w-1.5 bg-slate-900 rounded" />
-                      </span>
-                    ) : (
-                      <Play className="h-6 w-6 fill-slate-900 text-slate-900 ml-0.5" />
-                    )}
-                  </span>
-                </button>
-                <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                  {v.views} views
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold line-clamp-2">{v.title}</h3>
-                <div className="mt-2 flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-indigo-400 to-pink-400" />
-                  <span className="text-sm text-slate-700">{v.who}</span>
-                  <CheckCircle2 className="h-3.5 w-3.5 text-sky-500 fill-sky-500" />
-                </div>
-                <div className="mt-3 flex items-center gap-4 text-slate-500 text-sm">
+      <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Featured</h2>
+
+      {filtered.length === 0 ? (
+        <p className="text-sm text-slate-500 py-12 text-center">No videos in this category yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((v) => {
+            const isPlaying = playing === v.title;
+            const isLiked = liked[v.title];
+            return (
+              <article key={v.title} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
+                <div className={`relative aspect-video bg-gradient-to-br ${v.hue}`}>
                   <button
-                    onClick={() => toggleLike(v.title)}
-                    className={`flex items-center gap-1 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
+                    onClick={() => setPlaying(isPlaying ? null : v.title)}
+                    className="absolute inset-0 flex items-center justify-center group"
+                    aria-label={isPlaying ? "Pause" : "Play"}
                   >
-                    <Heart className={`h-4 w-4 ${isLiked ? "fill-rose-500" : ""}`} /> {v.likes}
+                    <span className="h-14 w-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                      {isPlaying ? (
+                        <span className="flex gap-1">
+                          <span className="h-5 w-1.5 bg-slate-900 rounded" />
+                          <span className="h-5 w-1.5 bg-slate-900 rounded" />
+                        </span>
+                      ) : (
+                        <Play className="h-6 w-6 fill-slate-900 text-slate-900 ml-0.5" />
+                      )}
+                    </span>
                   </button>
-                  <button className="flex items-center gap-1 hover:text-indigo-600">
-                    <MessageCircle className="h-4 w-4" /> 124
-                  </button>
-                  <button onClick={() => share(v)} className="flex items-center gap-1 hover:text-indigo-600 ml-auto" aria-label="Share">
-                    <Share2 className="h-4 w-4" />
-                  </button>
+                  <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                    {v.views} views
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+                <div className="p-4">
+                  <h3 className="font-semibold line-clamp-2">{v.title}</h3>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-indigo-400 to-pink-400" />
+                    <span className="text-sm text-slate-700 truncate">{v.who}</span>
+                    <CheckCircle2 className="h-3.5 w-3.5 text-sky-500 fill-sky-500 shrink-0" />
+                  </div>
+                  <div className="mt-3 flex items-center gap-4 text-slate-500 text-sm">
+                    <button
+                      onClick={() => toggleLike(v.title)}
+                      className={`flex items-center gap-1 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
+                    >
+                      <Heart className={`h-4 w-4 ${isLiked ? "fill-rose-500" : ""}`} /> {v.likes}
+                    </button>
+                    <button className="flex items-center gap-1 hover:text-indigo-600">
+                      <MessageCircle className="h-4 w-4" /> 124
+                    </button>
+                    <button onClick={() => share(v.title, v.who)} className="flex items-center gap-1 hover:text-indigo-600 ml-auto" aria-label="Share">
+                      <Share2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </Layout>
   );
 }

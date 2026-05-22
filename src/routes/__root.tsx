@@ -72,19 +72,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Shaping World Hub is a mobile-friendly web application featuring a clean, modern UI for content discovery and user interaction." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Shaping World Hub is a mobile-friendly web application featuring a clean, modern UI for content discovery and user interaction." },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { title: "Shaping World Hub — Entertainment, Business & Relationships" },
+      { name: "description", content: "Shaping World Hub — one platform for entertainment, business, and meaningful relationships. Watch, share, connect, and grow." },
+      { name: "author", content: "Shaping World" },
+      { property: "og:title", content: "Shaping World Hub" },
+      { property: "og:description", content: "Entertainment, Business & Relationships — all in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "Shaping World Hub is a mobile-friendly web application featuring a clean, modern UI for content discovery and user interaction." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57075596-e35d-486a-b536-a695b3b3d304/id-preview-f5c312a7--59bc8103-e858-4465-a35a-6b5e9cae261e.lovable.app-1779391731040.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57075596-e35d-486a-b536-a695b3b3d304/id-preview-f5c312a7--59bc8103-e858-4465-a35a-6b5e9cae261e.lovable.app-1779391731040.png" },
+      { name: "twitter:title", content: "Shaping World Hub" },
+      { name: "twitter:description", content: "Entertainment, Business & Relationships — all in one place." },
     ],
     links: [
       {

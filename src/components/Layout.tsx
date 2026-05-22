@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { Home, User, Video, Bell, Search, X, LogOut, LogIn, PlusSquare } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
@@ -18,6 +18,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  // Close notifications on outside click or route change
+  useEffect(() => {
+    setNotifOpen(false);
+    setSearchOpen(false);
+  }, [path]);
+
+  useEffect(() => {
+    if (!notifOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [notifOpen]);
 
   const onSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +51,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20 md:pb-0">
+    <div className="min-h-screen bg-slate-50 text-slate-900 pb-24 md:pb-0">
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
               S
             </div>
-            <div className="leading-tight">
+            <div className="leading-tight hidden xs:block sm:block">
               <div className="font-extrabold text-sm tracking-tight">SHAPING</div>
               <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
                 WORLD
@@ -65,7 +83,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={() => { setSearchOpen((o) => !o); setNotifOpen(false); }}
               className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600"
@@ -74,7 +92,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Search className="h-4 w-4" />
             </button>
             {user && (
-              <div className="relative">
+              <div className="relative" ref={notifRef}>
                 <button
                   onClick={() => { setNotifOpen((o) => !o); setSearchOpen(false); }}
                   className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
@@ -86,7 +104,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </span>
                 </button>
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-40">
+                  <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1rem)] bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-40">
                     <div className="flex items-center justify-between mb-2">
                       <p className="font-semibold text-sm">Notifications</p>
                       <button onClick={() => setNotifOpen(false)} aria-label="Close"><X className="h-4 w-4 text-slate-400" /></button>
@@ -102,7 +120,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             )}
             {user ? (
               <>
-                <Link to="/profile" className="h-9 w-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" aria-label="Profile" />
+                <Link to="/profile" className="h-9 w-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 shrink-0" aria-label="Profile" />
                 <button
                   onClick={handleSignOut}
                   className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50"
@@ -115,7 +133,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 to="/auth"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
               >
-                <LogIn className="h-4 w-4" /> Sign in
+                <LogIn className="h-4 w-4" /> <span className="hidden xs:inline sm:inline">Sign in</span>
               </Link>
             )}
           </div>
@@ -139,29 +157,41 @@ export function Layout({ children }: { children: React.ReactNode }) {
         )}
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
-     {/*
-<nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200">
-  <div className="grid grid-cols-4">
-    {navItems.map((item) => {
-      const Icon = item.icon;
-      const active = path === item.to;
-      return (
-        <Link
-          key={item.to}
-          to={item.to}
-          className={`flex flex-col items-center justify-center py-3 text-xs font-medium ${
-            active ? "text-indigo-600" : "text-slate-500"
-          }`}
-        >
-          <Icon className="h-5 w-5 mb-1" />
-          {item.label}
-        </Link>
-      );
-    })}
-  </div>
-</nav>
-*/}
+      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
+
+      {/* Mobile bottom tab bar */}
+      <nav
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        <div className="grid grid-cols-4">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = path === item.to;
+            const isUpload = item.to === "/upload";
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`flex flex-col items-center justify-center py-2.5 text-[11px] font-medium transition ${
+                  active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                {isUpload ? (
+                  <span className={`h-9 w-9 rounded-full flex items-center justify-center mb-0.5 ${
+                    active ? "bg-indigo-600 text-white" : "bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
+                  }`}>
+                    <Icon className="h-5 w-5" />
+                  </span>
+                ) : (
+                  <Icon className="h-5 w-5 mb-1" />
+                )}
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
