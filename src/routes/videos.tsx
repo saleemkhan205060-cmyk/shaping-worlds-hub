@@ -104,9 +104,12 @@ const [activeIndex, setActiveIndex] = useState(0);
       </div>
 
       {filteredPosts.length > 0 && (
-        <>
-         
-            {filteredPosts.map((p) => {
+      <>
+       {filteredPosts.map((p) => {
+       ...
+    })}
+  </>
+)}
               const key = `p-${p.id}`;
               const isLiked = liked[key];
               const isUnmuted = unmuted[p.id];
