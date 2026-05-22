@@ -42,8 +42,7 @@ function Videos() {
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
-  const [unmuted, setUnmuted] = useState<Record<string, boolean>>({});
-  
+  const [unmuted, setUnmuted] = useState<Record<string, boolean>>({}); 
 const [activeIndex, setActiveIndex] = useState(0);
   
   useEffect(() => {
