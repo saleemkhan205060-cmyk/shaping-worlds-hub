@@ -131,9 +131,6 @@ const [activeIndex, setActiveIndex] = useState(0);
     })}
   </>
 )}
-const key = `p-${p.id}`;
- const isLiked = liked[key];
-  const isUnmuted = unmuted[p.id];
          return (
            <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
                   <div className="relative aspect-[4/5] bg-slate-900">
