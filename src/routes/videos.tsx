@@ -102,7 +102,6 @@ const [activeIndex, setActiveIndex] = useState(0);
           </button>
         ))}
       </div>
-
       {filteredPosts.length > 0 &&
       />
       return (
