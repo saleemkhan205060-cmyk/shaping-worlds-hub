@@ -106,7 +106,6 @@ const [activeIndex, setActiveIndex] = useState(0);
       {filteredPosts.length > 0 && (
       <>
        {filteredPosts.map((p) => {
-       ...
     })}
   </>
 )}
