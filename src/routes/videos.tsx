@@ -43,7 +43,9 @@ function Videos() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [unmuted, setUnmuted] = useState<Record<string, boolean>>({});
-
+  
+const [activeIndex, setActiveIndex] = useState(0);
+  
   useEffect(() => {
     supabase
       .from("posts")
