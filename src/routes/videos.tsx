@@ -123,7 +123,7 @@ const [activeIndex, setActiveIndex] = useState(0);
           loop
           playsInline
         >
-          <source src="" />
+        <source src={v.videoUrl} type="video/mp4" />
         </video>
 
         {/* Overlay text */}
