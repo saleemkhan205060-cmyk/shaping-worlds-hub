@@ -23,6 +23,7 @@ type Video = {
   likes: string;
   hue: string;
   category: string;
+  videoUrl: string;
 };
 
 const VIDEOS: Video[] = [
