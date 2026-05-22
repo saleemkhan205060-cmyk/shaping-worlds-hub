@@ -102,7 +102,7 @@ const [activeIndex, setActiveIndex] = useState(0);
           </button>
         ))}
       </div>
-    {filteredPosts.length > 0 && (
+    {filteredPosts.length > 0 ? (
   <>
     {filteredPosts.map((p) => {
       const key = `p-${p.id}`;
@@ -122,14 +122,23 @@ const [activeIndex, setActiveIndex] = useState(0);
                 className="w-full h-full object-cover"
               />
             ) : (
-              <img src={p.media_url} className="w-full h-full object-cover" />
+              <img
+                src={p.media_url}
+                className="w-full h-full object-cover"
+              />
+            )}
+          </div>
+
+          <div className="p-3">
+            {p.caption && (
+              <p className="text-sm line-clamp-2 mb-2">{p.caption}</p>
             )}
           </div>
         </article>
       );
     })}
   </>
-)}
+) : null}
       return (
         <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="relative aspect-[4/5] bg-slate-900">
