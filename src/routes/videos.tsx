@@ -106,7 +106,46 @@ const [activeIndex, setActiveIndex] = useState(0);
       {filteredPosts.length > 0 && (
         <>
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">From the community</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
+  {filtered.map((v, index) => {
+    const isActive = index === activeIndex;
+
+    return (
+      <div
+        key={v.title}
+        className="h-screen w-full snap-start relative bg-black"
+      >
+        {/* VIDEO */}
+        <video
+          className="h-full w-full object-cover"
+          autoPlay={isActive}
+          muted
+          loop
+          playsInline
+        >
+          <source src="" />
+        </video>
+
+        {/* Overlay text */}
+        <div className="absolute bottom-20 left-4 text-white">
+          <h3 className="text-lg font-bold">{v.title}</h3>
+          <p className="text-sm opacity-80">{v.who}</p>
+          <p className="text-xs opacity-60">{v.views} views</p>
+        </div>
+
+        {/* Tap to next video */}
+        <button
+          className="absolute inset-0"
+          onClick={() =>
+            setActiveIndex((prev) =>
+              prev < filtered.length - 1 ? prev + 1 : 0
+            )
+          }
+        />
+      </div>
+    );
+  })}
+</div>
             {filteredPosts.map((p) => {
               const key = `p-${p.id}`;
               const isLiked = liked[key];
