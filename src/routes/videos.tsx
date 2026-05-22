@@ -186,7 +186,7 @@ const [activeIndex, setActiveIndex] = useState(0);
             const isLiked = liked[v.title];
             return (
               <article key={v.title} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
-                <div className={`relative aspect-video bg-gradient-to-br ${v.hue}`}>
+                <div className="relative aspect-video bg-black">
                   <button
                     onClick={() => setPlaying(isPlaying ? null : v.title)}
                     className="absolute inset-0 flex items-center justify-center group"
