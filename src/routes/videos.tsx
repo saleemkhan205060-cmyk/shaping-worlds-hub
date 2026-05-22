@@ -106,10 +106,7 @@ const [activeIndex, setActiveIndex] = useState(0);
       {filteredPosts.length > 0 && (
   <>
     {filteredPosts.map((p) => {
-      const key = `p-${p.id}`;
-      const isLiked = liked[key];
-      const isUnmuted = unmuted[p.id];
-
+      
       return (
         <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="relative aspect-[4/5] bg-slate-900">
