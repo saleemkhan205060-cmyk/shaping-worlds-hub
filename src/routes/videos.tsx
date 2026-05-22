@@ -104,8 +104,7 @@ const [activeIndex, setActiveIndex] = useState(0);
       </div>
 
       {filteredPosts.length > 0 && (
-  <>
-    {filteredPosts.map((p) => { 
+  <> 
       return (
         <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="relative aspect-[4/5] bg-slate-900">
