@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { MapPin, Link as LinkIcon, Calendar, Settings, CheckCircle2, Play, Heart, Users, LogOut, Loader2, UploadCloud } from "lucide-react";
+import { MapPin, Link as LinkIcon, Calendar, CheckCircle2, Play, Heart, Users, LogOut, Loader2, UploadCloud } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -100,13 +100,6 @@ function Profile() {
               >
                 <LogOut className="h-4 w-4" /> Sign out
               </button>
-              <button
-                onClick={() => toast.info("Settings coming soon")}
-                className="h-9 w-9 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50"
-                aria-label="Settings"
-              >
-                <Settings className="h-4 w-4" />
-              </button>
             </div>
           </div>
 
@@ -117,16 +110,21 @@ function Profile() {
 
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
             <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> Global</span>
-            <Link to="/" className="flex items-center gap-1 hover:text-indigo-600">
+            <a
+              href="https://shapingworld.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 hover:text-indigo-600"
+            >
               <LinkIcon className="h-4 w-4" /> shapingworld.com
-            </Link>
+            </a>
             <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Joined {joined}</span>
           </div>
 
           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
             <Stat icon={Users} label="Followers" value="0" />
-            <Stat icon={Heart} label="Likes" value="0" />
-            <Stat icon={Play} label="Videos" value="0" />
+            <Stat icon={Heart} label="Posts" value={String(posts.length)} />
+            <Stat icon={Play} label="Videos" value={String(posts.filter((p) => p.media_type === "video").length)} />
           </div>
         </div>
       </div>
@@ -164,13 +162,13 @@ function Profile() {
                 <div key={p.id} className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
                   {p.media_type === "video" ? (
                     <>
-                      <video src={p.media_url} className="w-full h-full object-cover" muted playsInline />
+                      <video src={p.media_url} className="w-full h-full object-cover" muted playsInline preload="metadata" />
                       <div className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1">
                         <Play className="h-3 w-3 fill-white" />
                       </div>
                     </>
                   ) : (
-                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" />
+                    <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
                   )}
                 </div>
               ))}

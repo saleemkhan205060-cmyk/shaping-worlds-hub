@@ -63,10 +63,9 @@ function Index() {
         </div>
       </section>
 
-      <div className="relative -mt-5 flex justify-center">
-        <div className="rounded-full bg-white shadow-md border border-slate-200 px-5 py-2 text-sm font-bold">
-          ONE <span className="text-indigo-600">WORLD</span>,{" "}
-          MANY <span className="text-pink-600">POSSIBILITIES</span>
+      <div className="relative -mt-5 flex justify-center px-2">
+        <div className="rounded-full bg-white shadow-md border border-slate-200 px-4 py-2 text-[11px] sm:text-sm font-bold text-center max-w-full">
+          ONE <span className="text-indigo-600">WORLD</span>, MANY <span className="text-pink-600">POSSIBILITIES</span>
         </div>
       </div>
 
@@ -196,7 +195,6 @@ function Index() {
         <div className="bg-white rounded-2xl border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold">Top Businesses</h3>
-            <Link to="/videos" className="text-sm text-indigo-600 font-medium">View All</Link>
           </div>
           <ul className="space-y-3">
             {[
@@ -256,10 +254,10 @@ function Index() {
           </span>
         </p>
         <div className="flex gap-3 text-white/70">
-          <span className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">f</span>
-          <span className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">ig</span>
-          <span className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">x</span>
-          <span className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">yt</span>
+          <a href="#" aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">f</a>
+          <a href="#" aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">ig</a>
+          <a href="#" aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">x</a>
+          <a href="#" aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">yt</a>
         </div>
       </footer>
     </Layout>

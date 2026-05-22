@@ -161,7 +161,7 @@ function UploadPage() {
 
           <div className="flex gap-2 pt-2">
             <button
-              onClick={() => navigate({ to: "/" })}
+              onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
               disabled={uploading}
               className="flex-1 px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
             >
