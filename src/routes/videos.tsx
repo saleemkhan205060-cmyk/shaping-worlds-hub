@@ -187,22 +187,15 @@ const [activeIndex, setActiveIndex] = useState(0);
             return (
               <article key={v.title} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
                 <div className="relative aspect-video bg-black">
-                  <button
-                    onClick={() => setPlaying(isPlaying ? null : v.title)}
-                    className="absolute inset-0 flex items-center justify-center group"
-                    aria-label={isPlaying ? "Pause" : "Play"}
-                  >
-                    <span className="h-14 w-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition">
-                      {isPlaying ? (
-                        <span className="flex gap-1">
-                          <span className="h-5 w-1.5 bg-slate-900 rounded" />
-                          <span className="h-5 w-1.5 bg-slate-900 rounded" />
-                        </span>
-                      ) : (
-                        <Play className="h-6 w-6 fill-slate-900 text-slate-900 ml-0.5" />
-                      )}
-                    </span>
-                  </button>
+  <video
+    src={v.videoUrl}
+    className="w-full h-full object-cover"
+    autoPlay
+    muted
+    loop
+    playsInline
+  />
+
                   <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
                     {v.views} views
                   </div>
