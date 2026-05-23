@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Volume2, VolumeX } from "lucide-react";
+import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 
 type Post = {
   id: string;
@@ -23,7 +24,7 @@ function Videos() {
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
-  const [unmuted, setUnmuted] = useState<Record<string, boolean>>({});
+  const [fsIndex, setFsIndex] = useState<number | null>(null);
 
   useEffect(() => {
     supabase
@@ -37,7 +38,22 @@ function Videos() {
       });
   }, []);
 
-  const filteredPosts = tab === "For You" ? posts : posts.filter((p) => p.category === tab);
+  const filteredPosts = useMemo(
+    () => (tab === "For You" ? posts : posts.filter((p) => p.category === tab)),
+    [tab, posts]
+  );
+
+  const fsItems: FsItem[] = useMemo(
+    () =>
+      filteredPosts.map((p) => ({
+        id: p.id,
+        media_url: p.media_url,
+        media_type: p.media_type,
+        caption: p.caption,
+        created_at: p.created_at,
+      })),
+    [filteredPosts]
+  );
 
   const toggleLike = (key: string) => setLiked((p) => ({ ...p, [key]: !p[key] }));
 
@@ -102,37 +118,38 @@ function Videos() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {filteredPosts.map((p) => {
+          {filteredPosts.map((p, idx) => {
             const key = `p-${p.id}`;
             const isLiked = liked[key];
-            const isUnmuted = unmuted[p.id];
 
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition">
-                <div className="relative aspect-[4/5] bg-slate-900">
+                <button
+                  type="button"
+                  onClick={() => setFsIndex(idx)}
+                  className="relative aspect-[4/5] bg-slate-900 w-full block group"
+                  aria-label="Play video"
+                >
                   {p.media_type === "video" ? (
-                    <>
-                      <video
-                        src={p.media_url}
-                        autoPlay
-                        loop
-                        muted={!isUnmuted}
-                        playsInline
-                        preload="metadata"
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        onClick={() => setUnmuted((u) => ({ ...u, [p.id]: !u[p.id] }))}
-                        className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center"
-                        aria-label={isUnmuted ? "Mute" : "Unmute"}
-                      >
-                        {isUnmuted ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-                      </button>
-                    </>
+                    <video
+                      src={p.media_url}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-full object-cover pointer-events-none"
+                    />
                   ) : (
                     <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
                   )}
-                </div>
+                  {/* Always-visible Play button */}
+                  {p.media_type === "video" && (
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition">
+                      <span className="h-14 w-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-active:scale-95 transition">
+                        <Play className="h-6 w-6 text-slate-900 fill-slate-900 ml-0.5" />
+                      </span>
+                    </span>
+                  )}
+                </button>
                 <div className="p-3">
                   {p.caption && <p className="text-sm line-clamp-2 mb-2">{p.caption}</p>}
                   <div className="flex items-center gap-4 text-slate-500 text-sm">
@@ -162,6 +179,14 @@ function Videos() {
             );
           })}
         </div>
+      )}
+
+      {fsIndex !== null && fsItems.length > 0 && (
+        <FullscreenVideoPlayer
+          items={fsItems}
+          startIndex={fsIndex}
+          onClose={() => setFsIndex(null)}
+        />
       )}
     </Layout>
   );
