@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+
 import { Layout } from "../components/Layout";
 import {
   Play,
@@ -174,8 +176,13 @@ function Index() {
               { title: "Cover Song – Perfect", views: "32.1K", who: "Ali Music", hue: "from-amber-500 to-rose-500" },
               { title: "Delicious Food Recipe", views: "21.6K", who: "Foodie Love", hue: "from-orange-500 to-red-500" },
             ].map((v) => (
-              <div key={v.title} className="group">
-                <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${v.hue} relative overflow-hidden`}>
+              <Link key={v.title} to="/videos" className="group block text-left">
+                <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${v.hue} relative overflow-hidden group-hover:opacity-90 transition`}>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                    <span className="h-12 w-12 rounded-full bg-white/90 flex items-center justify-center shadow">
+                      <Play className="h-5 w-5 text-slate-900 fill-slate-900 ml-0.5" />
+                    </span>
+                  </div>
                   <div className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
                     <Play className="h-3 w-3 fill-white" />
                     {v.views}
@@ -187,8 +194,9 @@ function Index() {
                   <span className="text-xs text-slate-600">{v.who}</span>
                   <CheckCircle2 className="h-3 w-3 text-sky-500 fill-sky-500" />
                 </div>
-              </div>
+              </Link>
             ))}
+
           </div>
         </div>
 
@@ -214,9 +222,8 @@ function Index() {
                     {b.rating} ({b.n})
                   </p>
                 </div>
-                <button className="text-xs px-3 py-1.5 rounded-full border border-indigo-200 text-indigo-600 font-medium hover:bg-indigo-50">
-                  Follow
-                </button>
+                <FollowButton name={b.name} />
+
               </li>
             ))}
           </ul>
@@ -254,11 +261,12 @@ function Index() {
           </span>
         </p>
         <div className="flex gap-3 text-white/70">
-          <a href="#" aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">f</a>
-          <a href="#" aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">ig</a>
-          <a href="#" aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">x</a>
-          <a href="#" aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">yt</a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">f</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">ig</a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">x</a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">yt</a>
         </div>
+
       </footer>
     </Layout>
   );
@@ -311,3 +319,21 @@ function Pill({ icon: Icon, text }: any) {
     </li>
   );
 }
+
+function FollowButton({ name }: { name: string }) {
+  const [following, setFollowing] = useState(false);
+  return (
+    <button
+      onClick={() => setFollowing((f) => !f)}
+      aria-label={`${following ? "Unfollow" : "Follow"} ${name}`}
+      className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+        following
+          ? "bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700"
+          : "border border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+      }`}
+    >
+      {following ? "Following" : "Follow"}
+    </button>
+  );
+}
+
