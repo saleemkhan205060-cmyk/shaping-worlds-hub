@@ -119,13 +119,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
         style={{ scrollbarWidth: "none" }}
       >
-        {items.map((it) => {
+        {items.map((it, i) => {
           const isActive = it.id === activeId;
           return (
             <div
               key={it.id}
               data-id={it.id}
-              className="relative h-full w-full snap-start snap-always flex items-center justify-center"
+              className={`relative h-full w-full snap-start snap-always flex items-center justify-center bg-black ${i > 0 ? "border-t-[6px] border-white/10" : ""}`}
               style={{ height: "100dvh" }}
             >
               {it.media_type === "video" ? (
