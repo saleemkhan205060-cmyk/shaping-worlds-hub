@@ -261,11 +261,12 @@ function Index() {
           </span>
         </p>
         <div className="flex gap-3 text-white/70">
-          <a href="#" aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">f</a>
-          <a href="#" aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">ig</a>
-          <a href="#" aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">x</a>
-          <a href="#" aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">yt</a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">f</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">ig</a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">x</a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">yt</a>
         </div>
+
       </footer>
     </Layout>
   );
