@@ -319,3 +319,21 @@ function Pill({ icon: Icon, text }: any) {
     </li>
   );
 }
+
+function FollowButton({ name }: { name: string }) {
+  const [following, setFollowing] = useState(false);
+  return (
+    <button
+      onClick={() => setFollowing((f) => !f)}
+      aria-label={`${following ? "Unfollow" : "Follow"} ${name}`}
+      className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+        following
+          ? "bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700"
+          : "border border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+      }`}
+    >
+      {following ? "Following" : "Follow"}
+    </button>
+  );
+}
+
