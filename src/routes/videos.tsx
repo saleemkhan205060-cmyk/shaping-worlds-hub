@@ -117,7 +117,8 @@ function Videos() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-6 mb-8 [&>article]:mb-2 sm:[&>article]:mb-0 [&>article]:shadow-sm [&>article]:border-b-4 [&>article]:border-b-slate-100 sm:[&>article]:border-b">
+
           {filteredPosts.map((p, idx) => {
             const key = `p-${p.id}`;
             const isLiked = liked[key];
