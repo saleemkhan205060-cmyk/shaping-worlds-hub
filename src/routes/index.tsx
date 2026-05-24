@@ -220,9 +220,8 @@ function Index() {
                     {b.rating} ({b.n})
                   </p>
                 </div>
-                <button className="text-xs px-3 py-1.5 rounded-full border border-indigo-200 text-indigo-600 font-medium hover:bg-indigo-50">
-                  Follow
-                </button>
+                <FollowButton name={b.name} />
+
               </li>
             ))}
           </ul>
