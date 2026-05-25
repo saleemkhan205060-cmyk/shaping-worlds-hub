@@ -4,8 +4,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 const navItems = [
-  { to: "/", label: "Feed", icon: Home },
-  { to: "/profile", label: "Profile", icon: User },
+  import { Home, User } from "lucide-react";
 ] as const;
 
 export function Layout({ children }: { children: React.ReactNode }) {
