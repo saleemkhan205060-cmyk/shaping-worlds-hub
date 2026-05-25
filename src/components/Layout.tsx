@@ -5,8 +5,6 @@ import { toast } from "sonner";
 
 const navItems = [
   { to: "/", label: "Feed", icon: Home },
-  { to: "/market", label: "Market", icon: Store },
-  { to: "/marriage", label: "Marriage", icon: Heart },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
