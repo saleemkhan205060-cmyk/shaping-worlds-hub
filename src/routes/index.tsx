@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({ component: Index });
 
 const QUICK_NAV = [
   {
-    label: "Entertainment",
+    label: "Feed",
     icon: PlayIcon,
     to: "/videos" as const,
     tint: "from-fuchsia-500 via-pink-500 to-rose-500",
