@@ -18,70 +18,68 @@ import {
   ArrowRight,
   Star,
   CheckCircle2,
-  Home as HomeIcon,
-  Film,
-  ShoppingBag,
-  LineChart,
+  Play as PlayIcon,
+  Gem,
+  Store,
   Bell,
-  User as UserIcon,
-  Search,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
 
 const QUICK_NAV = [
-  { label: "Home", icon: HomeIcon, to: "/" as const, tint: "from-indigo-500 to-purple-600" },
-  { label: "Reels", icon: Film, to: "/videos" as const, tint: "from-pink-500 to-rose-500" },
-  { label: "Shop", icon: ShoppingBag, to: "/" as const, tint: "from-amber-500 to-orange-500" },
-  { label: "Stats", icon: LineChart, to: "/" as const, tint: "from-sky-500 to-cyan-500" },
-  { label: "Alerts", icon: Bell, to: "/" as const, tint: "from-emerald-500 to-teal-500" },
-  { label: "Profile", icon: UserIcon, to: "/profile" as const, tint: "from-fuchsia-500 to-purple-600" },
+  {
+    label: "Entertainment",
+    icon: PlayIcon,
+    to: "/videos" as const,
+    tint: "from-fuchsia-500 via-pink-500 to-rose-500",
+    iconFill: true,
+  },
+  {
+    label: "Marriage",
+    icon: Gem,
+    to: "/" as const,
+    tint: "from-pink-500 to-rose-600",
+  },
+  {
+    label: "Market",
+    icon: Store,
+    to: "/" as const,
+    tint: "from-amber-400 to-orange-500",
+  },
+  {
+    label: "Notification",
+    icon: Bell,
+    to: "/" as const,
+    tint: "from-emerald-400 to-green-500",
+  },
 ];
 
 function Index() {
   return (
     <Layout>
-      {/* VIP Style mobile header */}
-      <section className="mb-6 bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-5">
-        <div className="flex items-center justify-between">
-          <h1
-            className="text-2xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-indigo-700 to-pink-600 bg-clip-text text-transparent"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "0.02em" }}
-          >
-            VIP <span className="italic font-extrabold">Style</span>
-          </h1>
-          <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">
-            Premium
-          </span>
-        </div>
-
-        <div className="mt-4 flex items-stretch justify-between gap-2 overflow-x-auto no-scrollbar">
-          {QUICK_NAV.map(({ label, icon: Icon, to, tint }) => (
+      {/* Quick nav icons */}
+      <section className="mb-6 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div className="grid grid-cols-4 gap-3 sm:gap-4">
+          {QUICK_NAV.map(({ label, icon: Icon, to, tint, iconFill }) => (
             <Link
               key={label}
               to={to}
-              className="flex flex-col items-center gap-1.5 shrink-0 group"
+              className="flex flex-col items-center gap-2 group"
             >
               <span
-                className={`h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-gradient-to-br ${tint} text-white flex items-center justify-center shadow-md shadow-slate-200 group-active:scale-95 transition`}
+                className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br ${tint} text-white flex items-center justify-center shadow-lg group-active:scale-95 transition`}
               >
-                <Icon className="h-5 w-5" strokeWidth={2.2} />
+                <Icon
+                  className={`h-7 w-7 sm:h-9 sm:w-9 ${iconFill ? "fill-white" : ""}`}
+                  strokeWidth={2.2}
+                />
               </span>
-              <span className="text-[10px] sm:text-xs font-semibold text-slate-600">
+              <span className="text-[11px] sm:text-sm font-semibold text-slate-700 text-center">
                 {label}
               </span>
             </Link>
           ))}
         </div>
-
-        <label className="mt-4 flex items-center gap-2 px-4 h-11 rounded-full bg-slate-100 border border-slate-200 focus-within:border-indigo-400 focus-within:bg-white transition">
-          <Search className="h-4 w-4 text-slate-400" />
-          <input
-            type="search"
-            placeholder="Search…"
-            className="flex-1 bg-transparent text-sm placeholder:text-slate-400 focus:outline-none"
-          />
-        </label>
       </section>
 
       {/* Hero */}
