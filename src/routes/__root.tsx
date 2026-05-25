@@ -73,15 +73,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Shaping World Hub — Entertainment, Business & Relationships" },
-      { name: "description", content: "Shaping World Hub — one platform for entertainment, business, and meaningful relationships. Watch, share, connect, and grow." },
+      { title: "Shaping World Hub — Feed, Business & Relationships" },
+      { name: "description", content: "Shaping World Hub — one platform for feed, business, and meaningful relationships. Watch, share, connect, and grow." },
       { name: "author", content: "Shaping World" },
       { property: "og:title", content: "Shaping World Hub" },
-      { property: "og:description", content: "Entertainment, Business & Relationships — all in one place." },
+      { property: "og:description", content: "Feed, Business & Relationships — all in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Shaping World Hub" },
-      { name: "twitter:description", content: "Entertainment, Business & Relationships — all in one place." },
+      { name: "twitter:description", content: "Feed, Business & Relationships — all in one place." },
     ],
     links: [
       {
