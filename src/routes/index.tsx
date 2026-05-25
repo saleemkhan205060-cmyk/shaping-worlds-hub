@@ -22,6 +22,7 @@ import {
   Gem,
   Store,
   Bell,
+  Search,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -37,19 +38,19 @@ const QUICK_NAV = [
   {
     label: "Marriage",
     icon: Gem,
-    to: "/" as const,
+    to: "/marriage" as const,
     tint: "from-pink-500 to-rose-600",
   },
   {
     label: "Market",
     icon: Store,
-    to: "/" as const,
+    to: "/market" as const,
     tint: "from-amber-400 to-orange-500",
   },
   {
-    label: "Notification",
+    label: "Notification AK",
     icon: Bell,
-    to: "/" as const,
+    to: "/notifications" as const,
     tint: "from-emerald-400 to-green-500",
   },
 ];
@@ -79,6 +80,16 @@ function Index() {
               </span>
             </Link>
           ))}
+        </div>
+
+        {/* Search bar */}
+        <div className="relative mt-5">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="search"
+            placeholder="Search…"
+            className="w-full h-12 pl-11 pr-4 rounded-full bg-slate-100 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          />
         </div>
       </section>
 
