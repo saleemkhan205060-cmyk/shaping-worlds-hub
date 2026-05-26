@@ -148,7 +148,7 @@ function Index() {
           title="SHAPE"
           accent="VIDEOS"
           accentClass="text-pink-500"
-          tag="ENTERTAINMENT"
+          tag="FEED"
           tagClass="bg-gradient-to-r from-pink-500 to-purple-500"
           items={[
             { icon: Play, text: "Short Videos" },
