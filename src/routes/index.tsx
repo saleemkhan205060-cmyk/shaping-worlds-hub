@@ -323,7 +323,7 @@ function Index() {
       <footer className="mt-8 rounded-2xl bg-slate-950 text-white p-5 flex flex-col sm:flex-row gap-3 items-center justify-between">
         <p className="text-sm flex items-center gap-2">
           <Globe className="h-4 w-4 text-sky-400" />
-          Entertainment, Business & Relationships –{" "}
+          Feed, Business & Relationships –{" "}
           <span className="bg-gradient-to-r from-sky-400 to-pink-400 bg-clip-text text-transparent font-semibold">
             All in One Place.
           </span>
