@@ -48,7 +48,7 @@ const QUICK_NAV = [
     tint: "from-amber-400 to-orange-500",
   },
   {
-    label: "Notification AK",
+    label: "Notification",
     icon: Bell,
     to: "/notifications" as const,
     tint: "from-emerald-400 to-green-500",
