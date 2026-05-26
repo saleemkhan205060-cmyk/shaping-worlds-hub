@@ -169,7 +169,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = path === item.to;
-            const isUpload = item.to === "/upload";
+            const isUpload = false;
             return (
               <Link
                 key={item.to}
