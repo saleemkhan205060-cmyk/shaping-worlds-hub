@@ -1,10 +1,15 @@
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart } from "lucide-react";
+import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 const navItems = [
-  import { Home, User } from "lucide-react";
+  { to: "/", label: "Home", icon: Home },
+  { to: "/videos", label: "Feed", icon: PlayCircle },
+  { to: "/market", label: "Market", icon: Store },
+  { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -164,7 +169,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = path === item.to;
-            const isUpload = item.to === "/upload";
+            const isUpload = false;
             return (
               <Link
                 key={item.to}
