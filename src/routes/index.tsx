@@ -112,7 +112,7 @@ function Index() {
               Shape your life, shape the world
             </p>
             <p className="mt-3 text-sm sm:text-base text-white/70 max-w-md">
-              One platform for Entertainment, Business and Relationships.
+              One platform for feed, Business and Relationships.
               Explore endless possibilities and connect with the world.
             </p>
             <Link to="/auth" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition font-semibold shadow-lg shadow-indigo-500/30">
