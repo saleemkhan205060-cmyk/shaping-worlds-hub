@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Layout } from "../components/Layout";
+import { HomeFeed } from "../components/HomeFeed";
 import {
   Play,
   TrendingUp,
@@ -22,7 +23,6 @@ import {
   Gem,
   Store,
   Bell,
-  Search,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -81,17 +81,10 @@ function Index() {
             </Link>
           ))}
         </div>
-
-        {/* Search bar */}
-        <div className="relative mt-5">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="search"
-            placeholder="Search…"
-            className="w-full h-12 pl-11 pr-4 rounded-full bg-slate-100 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-          />
-        </div>
       </section>
+
+      {/* Live feed + search + composer */}
+      <HomeFeed />
 
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 md:p-14">
