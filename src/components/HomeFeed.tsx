@@ -10,10 +10,12 @@ import {
   MessageCircle,
   Loader2,
   Play,
+  Maximize2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 
 type Post = {
   id: string;
@@ -32,6 +34,14 @@ type Profile = {
   avatar_url: string | null;
 };
 
+type Comment = {
+  id: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+};
+
 const MAX_BYTES = 50 * 1024 * 1024;
 
 export function HomeFeed() {
@@ -44,8 +54,20 @@ export function HomeFeed() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [posting, setPosting] = useState(false);
-  const [liked, setLiked] = useState<Record<string, boolean>>({});
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Likes & comments aggregates
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
+
+  // Fullscreen player
+  const [fsOpen, setFsOpen] = useState(false);
+  const [fsIndex, setFsIndex] = useState(0);
+
+  // Inline video refs for autopause
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
   // Load posts
   useEffect(() => {
@@ -60,7 +82,7 @@ export function HomeFeed() {
       });
   }, []);
 
-  // Load profiles for visible posts
+  // Load profiles
   useEffect(() => {
     const ids = Array.from(new Set(posts.map((p) => p.user_id))).filter(
       (id) => !profiles[id]
@@ -80,7 +102,32 @@ export function HomeFeed() {
       });
   }, [posts, profiles]);
 
-  // Realtime
+  // Load like/comment counts whenever posts change
+  useEffect(() => {
+    const ids = posts.map((p) => p.id);
+    if (ids.length === 0) return;
+    (async () => {
+      const [{ data: likes }, { data: comments }] = await Promise.all([
+        supabase.from("post_likes").select("post_id,user_id").in("post_id", ids),
+        supabase.from("post_comments").select("post_id").in("post_id", ids),
+      ]);
+      const lc: Record<string, number> = {};
+      const me: Record<string, boolean> = {};
+      (likes ?? []).forEach((l: any) => {
+        lc[l.post_id] = (lc[l.post_id] ?? 0) + 1;
+        if (user && l.user_id === user.id) me[l.post_id] = true;
+      });
+      const cc: Record<string, number> = {};
+      (comments ?? []).forEach((c: any) => {
+        cc[c.post_id] = (cc[c.post_id] ?? 0) + 1;
+      });
+      setLikeCounts(lc);
+      setLikedByMe(me);
+      setCommentCounts(cc);
+    })();
+  }, [posts, user]);
+
+  // Realtime posts
   useEffect(() => {
     const ch = supabase
       .channel("posts-feed")
@@ -119,6 +166,28 @@ export function HomeFeed() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  // IntersectionObserver: auto play/pause inline videos
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting && e.intersectionRatio > 0.6) {
+            v.play().catch(() => {});
+          } else {
+            if (!v.paused) v.pause();
+          }
+        });
+      },
+      { threshold: [0, 0.6, 1] }
+    );
+    Object.values(videoRefs.current).forEach((v) => {
+      if (v) io.observe(v);
+    });
+    return () => io.disconnect();
+  }, [posts]);
+
   const pickFile = (f: File | null) => {
     if (!f) return;
     if (!f.type.startsWith("image/") && !f.type.startsWith("video/")) {
@@ -138,25 +207,21 @@ export function HomeFeed() {
       return;
     }
     const text = caption.trim();
-    if (!text && !file) {
-      toast.error("Write something or attach media");
+    if (!file) {
+      toast.error("Attach a photo or video");
       return;
     }
     setPosting(true);
     try {
-      let media_url: string | null = null;
-      let media_type: "image" | "video" | "text" = "text";
-      if (file) {
-        const ext = file.name.split(".").pop() || "bin";
-        const path = `${user.id}/${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("media")
-          .upload(path, file, { contentType: file.type, upsert: false });
-        if (upErr) throw upErr;
-        const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-        media_url = pub.publicUrl;
-        media_type = file.type.startsWith("video/") ? "video" : "image";
-      }
+      const ext = file.name.split(".").pop() || "bin";
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("media")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+      const media_url = pub.publicUrl;
+      const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
       const { error: insErr } = await supabase.from("posts").insert({
         user_id: user.id,
         media_url,
@@ -175,7 +240,6 @@ export function HomeFeed() {
     }
   };
 
-  // Search filter
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return posts;
@@ -200,8 +264,60 @@ export function HomeFeed() {
     );
   }, [query, profiles]);
 
-  const toggleLike = (id: string) =>
-    setLiked((p) => ({ ...p, [id]: !p[id] }));
+  // Media posts eligible for fullscreen
+  const mediaPosts = useMemo(
+    () => filtered.filter((p) => (p.media_type === "image" || p.media_type === "video") && p.media_url),
+    [filtered]
+  );
+
+  const openFullscreen = (postId: string) => {
+    const idx = mediaPosts.findIndex((p) => p.id === postId);
+    if (idx < 0) return;
+    // pause all inline videos
+    Object.values(videoRefs.current).forEach((v) => v?.pause());
+    setFsIndex(idx);
+    setFsOpen(true);
+  };
+
+  const fsItems: FsItem[] = mediaPosts.map((p) => ({
+    id: p.id,
+    media_url: p.media_url!,
+    media_type: p.media_type as "image" | "video",
+    caption: p.caption,
+    created_at: p.created_at,
+  }));
+
+  const toggleLike = async (postId: string) => {
+    if (!user) {
+      toast.error("Sign in to like");
+      return;
+    }
+    const isLiked = !!likedByMe[postId];
+    // optimistic
+    setLikedByMe((m) => ({ ...m, [postId]: !isLiked }));
+    setLikeCounts((c) => ({ ...c, [postId]: Math.max(0, (c[postId] ?? 0) + (isLiked ? -1 : 1)) }));
+    if (isLiked) {
+      const { error } = await supabase
+        .from("post_likes")
+        .delete()
+        .eq("post_id", postId)
+        .eq("user_id", user.id);
+      if (error) {
+        setLikedByMe((m) => ({ ...m, [postId]: true }));
+        setLikeCounts((c) => ({ ...c, [postId]: (c[postId] ?? 0) + 1 }));
+        toast.error("Couldn't unlike");
+      }
+    } else {
+      const { error } = await supabase
+        .from("post_likes")
+        .insert({ post_id: postId, user_id: user.id });
+      if (error) {
+        setLikedByMe((m) => ({ ...m, [postId]: false }));
+        setLikeCounts((c) => ({ ...c, [postId]: Math.max(0, (c[postId] ?? 1) - 1) }));
+        toast.error("Couldn't like");
+      }
+    }
+  };
 
   return (
     <section className="mt-6 space-y-4">
@@ -296,7 +412,7 @@ export function HomeFeed() {
             </div>
             <button
               onClick={submit}
-              disabled={posting || (!caption.trim() && !file)}
+              disabled={posting || !file}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
             >
               {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -326,6 +442,10 @@ export function HomeFeed() {
           filtered.map((p) => {
             const prof = profiles[p.user_id];
             const name = prof?.display_name ?? prof?.username ?? "User";
+            const isLiked = !!likedByMe[p.id];
+            const likes = likeCounts[p.id] ?? 0;
+            const comments = commentCounts[p.id] ?? 0;
+            const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                 <div className="flex items-center gap-3 px-4 py-3">
@@ -347,11 +467,45 @@ export function HomeFeed() {
                   <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
                 )}
                 {p.media_type === "image" && p.media_url && (
-                  <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full max-h-[520px] object-cover bg-slate-100" loading="lazy" />
+                  <button
+                    type="button"
+                    onClick={() => openFullscreen(p.id)}
+                    className="relative w-full block group"
+                    aria-label="Open image fullscreen"
+                  >
+                    <img
+                      src={p.media_url}
+                      alt={p.caption ?? "Post"}
+                      className="w-full max-h-[520px] object-cover bg-slate-100"
+                      loading="lazy"
+                    />
+                    <span className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <Maximize2 className="h-4 w-4" />
+                    </span>
+                  </button>
                 )}
                 {p.media_type === "video" && p.media_url && (
                   <div className="relative bg-black">
-                    <video src={p.media_url} controls playsInline preload="metadata" className="w-full max-h-[520px]" />
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[p.id] = el;
+                      }}
+                      src={p.media_url}
+                      playsInline
+                      muted
+                      loop
+                      preload="metadata"
+                      className="w-full max-h-[520px] cursor-pointer"
+                      onClick={() => openFullscreen(p.id)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => openFullscreen(p.id)}
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center"
+                      aria-label="Open fullscreen"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                    </button>
                     <span className="absolute top-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded">
                       <Play className="h-3 w-3 fill-white" /> Video
                     </span>
@@ -360,19 +514,188 @@ export function HomeFeed() {
                 <div className="flex items-center gap-5 px-4 py-3 text-sm text-slate-600">
                   <button
                     onClick={() => toggleLike(p.id)}
-                    className={`flex items-center gap-1 transition ${liked[p.id] ? "text-rose-500" : "hover:text-rose-500"}`}
+                    className={`flex items-center gap-1 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
+                    aria-label={isLiked ? "Unlike" : "Like"}
                   >
-                    <Heart className={`h-4 w-4 ${liked[p.id] ? "fill-rose-500" : ""}`} /> Like
+                    <Heart className={`h-4 w-4 ${isLiked ? "fill-rose-500" : ""}`} />
+                    <span>{likes > 0 ? likes : "Like"}</span>
                   </button>
-                  <button className="flex items-center gap-1 hover:text-indigo-600">
-                    <MessageCircle className="h-4 w-4" /> Comment
+                  <button
+                    onClick={() => setCommentsOpenFor(p.id)}
+                    className="flex items-center gap-1 hover:text-indigo-600"
+                    aria-label="Open comments"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    <span>{comments > 0 ? comments : "Comment"}</span>
                   </button>
+                  {hasMedia && (
+                    <button
+                      onClick={() => openFullscreen(p.id)}
+                      className="ml-auto flex items-center gap-1 hover:text-indigo-600"
+                      aria-label="Open fullscreen"
+                    >
+                      <Maximize2 className="h-4 w-4" /> Fullscreen
+                    </button>
+                  )}
                 </div>
               </article>
             );
           })
         )}
       </div>
+
+      {fsOpen && fsItems.length > 0 && (
+        <FullscreenVideoPlayer
+          items={fsItems}
+          startIndex={fsIndex}
+          onClose={() => setFsOpen(false)}
+        />
+      )}
+
+      {commentsOpenFor && (
+        <CommentsSheet
+          postId={commentsOpenFor}
+          onClose={() => setCommentsOpenFor(null)}
+          onCountChange={(n) =>
+            setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))
+          }
+        />
+      )}
     </section>
+  );
+}
+
+function CommentsSheet({
+  postId,
+  onClose,
+  onCountChange,
+}: {
+  postId: string;
+  onClose: () => void;
+  onCountChange: (n: number) => void;
+}) {
+  const { user } = useAuth();
+  const [items, setItems] = useState<Comment[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("post_comments")
+        .select("*")
+        .eq("post_id", postId)
+        .order("created_at", { ascending: true });
+      const list = (data ?? []) as Comment[];
+      setItems(list);
+      onCountChange(list.length);
+      const ids = Array.from(new Set(list.map((c) => c.user_id)));
+      if (ids.length) {
+        const { data: ps } = await supabase
+          .from("profiles")
+          .select("id, username, display_name, avatar_url")
+          .in("id", ids);
+        const map: Record<string, Profile> = {};
+        (ps ?? []).forEach((p: any) => (map[p.id] = p));
+        setProfiles(map);
+      }
+      setLoading(false);
+    })();
+  }, [postId, onCountChange]);
+
+  const submit = async () => {
+    if (!user) {
+      toast.error("Sign in to comment");
+      return;
+    }
+    const content = text.trim();
+    if (!content) return;
+    setBusy(true);
+    const { data, error } = await supabase
+      .from("post_comments")
+      .insert({ post_id: postId, user_id: user.id, content })
+      .select()
+      .single();
+    setBusy(false);
+    if (error || !data) {
+      toast.error("Couldn't send");
+      return;
+    }
+    const next = [...items, data as Comment];
+    setItems(next);
+    onCountChange(next.length);
+    setText("");
+  };
+
+  return (
+    <div className="fixed inset-0 z-[110] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={onClose}>
+      <div
+        className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <h3 className="font-bold">Comments</h3>
+          <button onClick={onClose} aria-label="Close" className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {loading ? (
+            <div className="flex justify-center py-6 text-slate-500">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          ) : items.length === 0 ? (
+            <p className="text-center text-sm text-slate-500 py-6">Be the first to comment.</p>
+          ) : (
+            items.map((c) => {
+              const prof = profiles[c.user_id];
+              const name = prof?.display_name ?? prof?.username ?? "User";
+              return (
+                <div key={c.id} className="flex gap-2">
+                  <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
+                    {prof?.avatar_url ? (
+                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
+                    ) : (
+                      name[0]?.toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold">{name}</p>
+                    <p className="text-sm whitespace-pre-wrap">{c.content}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">
+                      {new Date(c.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+        <div className="border-t p-3 flex gap-2">
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                submit();
+              }
+            }}
+            placeholder={user ? "Write a comment…" : "Sign in to comment"}
+            disabled={!user || busy}
+            className="flex-1 h-10 px-4 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-60"
+          />
+          <button
+            onClick={submit}
+            disabled={!user || busy || !text.trim()}
+            className="h-10 px-4 rounded-full bg-indigo-600 text-white text-sm font-semibold disabled:opacity-50 inline-flex items-center gap-1"
+          >
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
