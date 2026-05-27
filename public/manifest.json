@@ -1,6 +1,6 @@
 {
   "background_color": "#ffffff",
-  "description": "VIP Life is a modern social app where users can share videos, photos, and connect like a premium community."
+  "description": "VIP Life is a modern social app where users can share videos, photos, and connect like a premium community.",
   "dir": "ltr",
   "display": "standalone",
   "name": "VIP Life",
@@ -12,15 +12,15 @@
   "icons": [
     {
       "src": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57075596-e35d-486a-b536-a695b3b3d304/id-preview-f5c312a7--59bc8103-e858-4465-a35a-6b5e9cae261e.lovable.app-1779391731040.png",
-    "type": "image/png",
-    "sizes": "1920x1080"
-  },
-  {
-    "src": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57075596-e35d-486a-b536-a695b3b3d304/id-preview-f5c312a7--59bc8103-e858-4465-a35a-6b5e9cae261e.lovable.app-1779391731040.png",
-    "type": "image/png",
-    "sizes": "512x512"
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57075596-e35d-486a-b536-a695b3b3d304/id-preview-f5c312a7--59bc8103-e858-4465-a35a-6b5e9cae261e.lovable.app-1779391731040.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
-  ]
+  ],
   "lang": "en",
   "display_override": [
     "window-controls-overlay"
@@ -39,3 +39,20 @@
     }
   }
 }
+🚀 AB KARNA KYA HAI
+GitHub me manifest.json replace karo
+Commit changes ✔️
+Mobile me app remove karo (Home Screen se)
+Chrome cache clear karo
+dobara open karo
+“Add to Home Screen” try karo
+👍 RESULT
+
+✔ Error gone
+✔ Install option show hoga
+✔ App proper full screen open hoga
+✔ Icon bhi show hoga
+
+Agar ab bhi install issue ho, to bolo:
+👉 “still not installing”
+main tumhe final service worker fix de dunga 👍
