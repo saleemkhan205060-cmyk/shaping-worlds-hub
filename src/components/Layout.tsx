@@ -92,6 +92,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
             >
               <Search className="h-4 w-4" />
             </button>
+            {user && (
+              <Link
+                to="/messages"
+                className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600"
+                aria-label="Messages"
+              >
+                <MessageCircle className="h-4 w-4" />
+              </Link>
+            )}
             <div className="relative" ref={notifRef}>
               <button
                 onClick={() => { setNotifOpen((o) => !o); setSearchOpen(false); }}
