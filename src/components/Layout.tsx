@@ -4,6 +4,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart, PlayCircle, MessageCircle } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import logoUrl from "@/assets/logo.png";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
@@ -56,9 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
-              S
-            </div>
+            <img src={logoUrl} alt="VIP Life logo" className="h-9 w-9 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
               <div className="font-extrabold text-sm tracking-tight">SHAPING</div>
               <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
