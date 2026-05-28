@@ -121,6 +121,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <>
                 <Link
                   to="/messages"
+                  search={{ to: undefined }}
                   className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center"
                   aria-label="Messages"
                 >
