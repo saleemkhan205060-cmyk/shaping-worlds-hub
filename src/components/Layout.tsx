@@ -128,7 +128,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
             {user ? (
               <>
-                <Link to="/profile" className="h-9 w-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 shrink-0" aria-label="Profile" />
+                <Link
+                  to="/messages"
+                  className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600"
+                  aria-label="Messages"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </Link>
                 <button
                   onClick={handleSignOut}
                   className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50"
