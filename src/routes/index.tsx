@@ -53,7 +53,7 @@ function Index() {
     <Layout>
       {/* Quick nav icons */}
       <section className="mb-6 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
-        <div className="grid grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {QUICK_NAV.map(({ label, icon: Icon, to, tint, iconFill }) => (
             <Link
               key={label}
