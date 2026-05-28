@@ -1,5 +1,20 @@
 apply plugin: 'com.android.application'
 
+// Load signing credentials from keystore.properties (do not commit this file)
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore.properties')
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
+// Expose properties to project for signing config
+if (keystoreProps.containsKey('VIP_LIFE_STORE_FILE')) {
+    ext.VIP_LIFE_STORE_FILE = keystoreProps['VIP_LIFE_STORE_FILE']
+    ext.VIP_LIFE_STORE_PASSWORD = keystoreProps['VIP_LIFE_STORE_PASSWORD']
+    ext.VIP_LIFE_KEY_ALIAS = keystoreProps['VIP_LIFE_KEY_ALIAS']
+    ext.VIP_LIFE_KEY_PASSWORD = keystoreProps['VIP_LIFE_KEY_PASSWORD']
+}
+
 android {
     namespace = "com.viplife.app"
     compileSdk = rootProject.ext.compileSdkVersion
