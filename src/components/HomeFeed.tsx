@@ -237,6 +237,7 @@ export function HomeFeed() {
     } catch (e) {
       console.error(e);
       toast.error("Couldn't post. Please try again.");
+    } finally {
       setPosting(false);
     }
   };
