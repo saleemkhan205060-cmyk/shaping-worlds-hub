@@ -92,33 +92,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
             >
               <Search className="h-4 w-4" />
             </button>
-            {user && (
-              <div className="relative" ref={notifRef}>
-                <button
-                  onClick={() => { setNotifOpen((o) => !o); setSearchOpen(false); }}
-                  className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
-                  aria-label="Notifications"
-                >
-                  <Bell className="h-4 w-4" />
-                  <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center">
-                    3
-                  </span>
-                </button>
-                {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1rem)] bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-40">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="font-semibold text-sm">Notifications</p>
-                      <button onClick={() => setNotifOpen(false)} aria-label="Close"><X className="h-4 w-4 text-slate-400" /></button>
-                    </div>
-                    <ul className="space-y-2 text-sm">
-                      <li className="p-2 rounded hover:bg-slate-50">Sara liked your video</li>
-                      <li className="p-2 rounded hover:bg-slate-50">New follower: John Doe</li>
-                      <li className="p-2 rounded hover:bg-slate-50">Your post is trending</li>
-                    </ul>
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => { setNotifOpen((o) => !o); setSearchOpen(false); }}
+                className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
+                aria-label="Notifications"
+              >
+                <Bell className="h-4 w-4" />
+                <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center">
+                  3
+                </span>
+              </button>
+              {notifOpen && (
+                <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1rem)] bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-40">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="font-semibold text-sm">Notifications</p>
+                    <button onClick={() => setNotifOpen(false)} aria-label="Close"><X className="h-4 w-4 text-slate-400" /></button>
                   </div>
-                )}
-              </div>
-            )}
+                  <ul className="space-y-2 text-sm">
+                    <li className="p-2 rounded hover:bg-slate-50">Sara liked your video</li>
+                    <li className="p-2 rounded hover:bg-slate-50">New follower: John Doe</li>
+                    <li className="p-2 rounded hover:bg-slate-50">Your post is trending</li>
+                  </ul>
+                </div>
+              )}
+            </div>
             {user ? (
               <>
                 <Link to="/profile" className="h-9 w-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 shrink-0" aria-label="Profile" />
