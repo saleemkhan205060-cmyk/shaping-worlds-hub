@@ -1,0 +1,1 @@
+ALTER TABLE public.posts ADD CONSTRAINT caption_length_check CHECK (caption IS NULL OR char_length(caption) <= 500);
