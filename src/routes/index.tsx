@@ -22,7 +22,6 @@ import {
   Play as PlayIcon,
   Gem,
   Store,
-  Bell,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -46,12 +45,6 @@ const QUICK_NAV = [
     icon: Store,
     to: "/market" as const,
     tint: "from-amber-400 to-orange-500",
-  },
-  {
-    label: "Notification",
-    icon: Bell,
-    to: "/notifications" as const,
-    tint: "from-emerald-400 to-green-500",
   },
 ];
 
