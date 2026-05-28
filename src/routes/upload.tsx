@@ -68,8 +68,9 @@ function UploadPage() {
       if (insErr) throw insErr;
       toast.success("Uploaded!");
       navigate({ to: mediaType === "video" ? "/videos" : "/profile" });
-    } catch (e: any) {
-      toast.error(e.message ?? "Upload failed");
+    } catch (e) {
+      console.error(e);
+      toast.error("Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }

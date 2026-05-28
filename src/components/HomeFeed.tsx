@@ -234,8 +234,9 @@ export function HomeFeed() {
       setCaption("");
       setFile(null);
       toast.success("Posted!");
-    } catch (e: any) {
-      toast.error(e.message ?? "Failed to post");
+    } catch (e) {
+      console.error(e);
+      toast.error("Couldn't post. Please try again.");
     } finally {
       setPosting(false);
     }
