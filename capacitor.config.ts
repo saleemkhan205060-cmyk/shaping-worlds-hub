@@ -3,10 +3,11 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "com.viplife.app",
   appName: "VIP Life",
-  webDir: "dist",
+  webDir: "dist-capacitor",
   bundledWebRuntime: false,
   server: {
     androidScheme: "https",
+    cleartext: false,
   },
   android: {
     buildOptions: {
