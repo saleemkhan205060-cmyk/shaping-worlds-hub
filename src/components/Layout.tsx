@@ -1,10 +1,11 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart, PlayCircle, MessageCircle } from "lucide-react";
+import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import logoUrl from "@/assets/logo.png";
+import chatIconUrl from "@/assets/chat-icon.png";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
@@ -120,10 +121,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <>
                 <Link
                   to="/messages"
-                  className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600"
+                  className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center"
                   aria-label="Messages"
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <img src={chatIconUrl} alt="Chat" className="h-7 w-7 object-contain" />
                 </Link>
                 <button
                   onClick={handleSignOut}
