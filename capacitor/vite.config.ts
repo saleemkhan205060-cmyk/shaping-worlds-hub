@@ -12,6 +12,9 @@ export default defineConfig({
   build: {
     outDir: "../dist-capacitor",
     emptyOutDir: true,
+    rollupOptions: {
+      input: "index.html",
+    },
   },
   plugins: [tailwindcss(), tsconfigPaths({ projects: ["../tsconfig.json"], ignoreConfigErrors: true }), react()],
   resolve: {
