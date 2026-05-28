@@ -15,7 +15,7 @@ export default defineConfig({
       input: "capacitor/index.html",
     },
   },
-  plugins: [tailwindcss(), tsconfigPaths({ projects: ["./tsconfig.json"] }), react()],
+  plugins: [tailwindcss(), tsconfigPaths({ projects: ["../tsconfig.json"], ignoreConfigErrors: true }), react()],
   resolve: {
     alias: {
       "@": `${process.cwd()}/src`,
