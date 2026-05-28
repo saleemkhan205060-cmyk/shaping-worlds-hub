@@ -82,7 +82,7 @@ function AuthPage() {
           {mode === "signin" ? "Welcome back" : "Create your account"}
         </h1>
         <p className="text-sm text-slate-500 text-center mt-1">
-          {mode === "signin" ? "Sign in to continue shaping the world" : "Join the Shaping World community"}
+          {mode === "signin" ? "Sign in to VIP Life" : "Join the VIP Life community"}
         </p>
 
         <button

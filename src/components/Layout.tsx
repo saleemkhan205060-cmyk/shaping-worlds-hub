@@ -60,9 +60,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logoUrl} alt="VIP Life logo" className="h-9 w-9 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
-              <div className="font-extrabold text-sm tracking-tight">SHAPING</div>
+              <div className="font-extrabold text-sm tracking-tight">VIP</div>
               <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-                WORLD
+                LIFE
               </div>
             </div>
           </Link>
