@@ -1,0 +1,75 @@
+# Codemagic CI/CD configuration for VIP Life — Capacitor Android AAB release build
+# Docs: https://docs.codemagic.io/yaml-quick-start/building-with-yaml/
+
+workflows:
+  android-release:
+    name: VIP Life Android Release (AAB)
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    environment:
+      node: 20
+      android_signing:
+        - release-key.jks
+      groups:
+        # Create this group in Codemagic UI → Team or App settings → Environment variables
+        # Required variables:
+        #   CM_KEYSTORE          - base64-encoded release-key.jks
+        #   CM_KEYSTORE_PASSWORD - keystore password
+        #   CM_KEY_ALIAS         - key alias (e.g. vip-life)
+        #   CM_KEY_PASSWORD      - key password
+        - vip_life_signing
+    cache:
+      cache_paths:
+        - $CM_BUILD_DIR/node_modules
+        - $CM_BUILD_DIR/android/.gradle
+    scripts:
+      - name: Set up Bun
+        script: |
+          curl -fsSL https://bun.sh/install | bash
+          export PATH="$HOME/.bun/bin:$PATH"
+          echo "Bun version: $(bun --version)"
+
+      - name: Install Node dependencies
+        script: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun install
+
+      - name: Decode Android signing keystore
+        script: |
+          echo "$CM_KEYSTORE" | base64 -d > "$CM_BUILD_DIR/android/app/release-key.jks"
+          cat > "$CM_BUILD_DIR/android/keystore.properties" <<EOF
+          VIP_LIFE_STORE_FILE=release-key.jks
+          VIP_LIFE_STORE_PASSWORD=$CM_KEYSTORE_PASSWORD
+          VIP_LIFE_KEY_ALIAS=$CM_KEY_ALIAS
+          VIP_LIFE_KEY_PASSWORD=$CM_KEY_PASSWORD
+          EOF
+
+      - name: Build web assets
+        script: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun run build:capacitor
+
+      - name: Sync Capacitor Android platform
+        script: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          npx cap sync android
+
+      - name: Build Android App Bundle (AAB)
+        script: |
+          cd android
+          ./gradlew bundleRelease
+
+    artifacts:
+      - android/app/build/outputs/bundle/release/*.aab
+
+    publishing:
+      # Uncomment and configure to auto-upload to Google Play
+      # google_play:
+      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+      #   track: internal
+      email:
+        recipients:
+          - $CM_EMAIL_RECIPIENT
+        notify:
+          success: true
+          failure: true
