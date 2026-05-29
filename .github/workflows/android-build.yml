@@ -3,78 +3,51 @@ name: Android APK Build
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
 
 jobs:
-  android:
-    name: Build Android APK
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: package-lock.json
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
+    - name: Install dependencies
+      run: npm install
 
-      - name: Install Android SDK packages
-        run: |
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "platform-tools" \
-            "platforms;android-36" \
-            "build-tools;36.0.0"
+    - name: Build web app
+      run: npm run build
 
-      - name: Install Node dependencies
-        run: npm install
+    - name: Setup Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
 
-      - name: Build web app
-        run: npm run build
+    - name: Ensure Android platform exists
+      run: |
+        if [ ! -d android ]; then
+          npx cap add android
+        fi
 
-      - name: Build Capacitor web assets
-        run: |
-          if npm pkg get scripts.build:capacitor | grep -qv null; then
-            npm run build:capacitor
-          fi
+    - name: Sync Capacitor Android
+      run: npx cap sync android
 
-      - name: Ensure Android platform exists
-        run: |
-          if [ ! -d android ]; then
-            npx cap add android
-          fi
+    - name: Make Gradle executable
+      run: chmod +x android/gradlew
 
-      - name: Sync Capacitor Android platform
-        run: npx cap sync android
+    - name: Build APK
+      working-directory: android
+      run: ./gradlew assembleRelease --stacktrace
 
-      - name: Force Java 17 compatibility for Gradle
-        run: |
-          if [ -f android/app/capacitor.build.gradle ]; then
-            sed -i 's/JavaVersion.VERSION_21/JavaVersion.VERSION_17/g' android/app/capacitor.build.gradle
-          fi
-
-      - name: Make Gradle wrapper executable
-        run: chmod +x android/gradlew
-
-      - name: Build release APK
-        working-directory: android
-        run: ./gradlew assembleRelease --stacktrace --no-daemon
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: android-release-apk
-          path: android/app/build/outputs/apk/release/*.apk
-          if-no-files-found: error
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/*.apk
