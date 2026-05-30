@@ -33,6 +33,8 @@ function Profile() {
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -49,6 +51,10 @@ function Profile() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => setPosts((data as Post[]) ?? []));
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", user.id)
+      .then(({ count }) => setFollowersCount(count ?? 0));
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", user.id)
+      .then(({ count }) => setFollowingCount(count ?? 0));
   }, [user]);
 
   const handleSignOut = async () => {
