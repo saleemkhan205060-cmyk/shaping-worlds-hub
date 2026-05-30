@@ -129,6 +129,7 @@ export type Database = {
           category: string | null
           created_at: string
           id: string
+          is_private: boolean
           media_type: string
           media_url: string | null
           updated_at: string
@@ -139,6 +140,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           id?: string
+          is_private?: boolean
           media_type: string
           media_url?: string | null
           updated_at?: string
@@ -149,6 +151,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           id?: string
+          is_private?: boolean
           media_type?: string
           media_url?: string | null
           updated_at?: string
