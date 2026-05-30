@@ -64,6 +64,31 @@ function Profile() {
     navigate({ to: "/" });
   };
 
+  const handleDeletePost = async (id: string) => {
+    if (!confirm("Delete this post? This cannot be undone.")) return;
+    const prev = posts;
+    setPosts((p) => p.filter((x) => x.id !== id));
+    const { error } = await supabase.from("posts").delete().eq("id", id);
+    if (error) {
+      setPosts(prev);
+      toast.error("Failed to delete post");
+    } else {
+      toast.success("Post deleted");
+    }
+  };
+
+  const handleTogglePrivacy = async (id: string, makePrivate: boolean) => {
+    const prev = posts;
+    setPosts((p) => p.map((x) => (x.id === id ? { ...x, is_private: makePrivate } : x)));
+    const { error } = await supabase.from("posts").update({ is_private: makePrivate }).eq("id", id);
+    if (error) {
+      setPosts(prev);
+      toast.error("Failed to update post");
+    } else {
+      toast.success(makePrivate ? "Post set to private" : "Post set to public");
+    }
+  };
+
   if (loading || !user) {
     return (
       <Layout>
