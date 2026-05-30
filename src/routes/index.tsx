@@ -5,6 +5,7 @@ import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import marriageIconUrl from "@/assets/marriage-icon.jpg";
 import feedQuickNavUrl from "@/assets/feed-quicknav.jpeg";
+import marketIconUrl from "@/assets/market-icon.jpeg";
 import {
   Play,
   TrendingUp,
