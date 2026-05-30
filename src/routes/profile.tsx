@@ -126,7 +126,7 @@ function Profile() {
     if (dbErr) {
       toast.error("Failed to save profile");
     } else {
-      setProfile((p) => (p ? { ...p, [column]: url } as ProfileRow : p));
+      setProfile((p) => (p ? ({ ...p, [column]: url } as ProfileRow) : p));
       toast.success(kind === "avatar" ? "Profile picture updated" : "Cover photo updated");
     }
     setUploading(null);
