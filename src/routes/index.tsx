@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
+import marriageIconUrl from "@/assets/marriage-icon.jpg";
 import {
   Play,
   TrendingUp,
@@ -39,6 +40,7 @@ const QUICK_NAV = [
     icon: Gem,
     to: "/marriage" as const,
     tint: "from-pink-500 to-rose-600",
+    image: marriageIconUrl,
   },
   {
     label: "Market",
@@ -54,25 +56,33 @@ function Index() {
       {/* Quick nav icons */}
       <section className="mb-6 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          {QUICK_NAV.map(({ label, icon: Icon, to, tint, iconFill }) => (
+          {QUICK_NAV.map((item) => {
+            const { label, icon: Icon, to, tint, iconFill } = item;
+            const image = (item as { image?: string }).image;
+            return (
             <Link
               key={label}
               to={to}
               className="flex flex-col items-center gap-2 group"
             >
               <span
-                className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br ${tint} text-white flex items-center justify-center shadow-lg group-active:scale-95 transition`}
+                className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full overflow-hidden flex items-center justify-center shadow-lg group-active:scale-95 transition ${image ? "bg-white" : `bg-gradient-to-br ${tint} text-white`}`}
               >
-                <Icon
-                  className={`h-7 w-7 sm:h-9 sm:w-9 ${iconFill ? "fill-white" : ""}`}
-                  strokeWidth={2.2}
-                />
+                {image ? (
+                  <img src={image} alt={label} className="h-full w-full object-cover" />
+                ) : (
+                  <Icon
+                    className={`h-7 w-7 sm:h-9 sm:w-9 ${iconFill ? "fill-white" : ""}`}
+                    strokeWidth={2.2}
+                  />
+                )}
               </span>
               <span className="text-[11px] sm:text-sm font-semibold text-slate-700 text-center">
                 {label}
               </span>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </section>
 
