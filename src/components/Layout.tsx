@@ -6,10 +6,15 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
+import feedIconUrl from "@/assets/feed-icon.jpeg";
+
+const FeedIcon = ({ className }: { className?: string }) => (
+  <img src={feedIconUrl} alt="Feed" className={`${className ?? ""} object-contain`} />
+);
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
-  { to: "/videos", label: "Feed", icon: PlayCircle },
+  { to: "/videos", label: "Feed", icon: FeedIcon },
   { to: "/market", label: "Market", icon: Store },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
