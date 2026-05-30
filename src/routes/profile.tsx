@@ -95,6 +95,42 @@ function Profile() {
     }
   };
 
+  const handleImageUpload = async (file: File, kind: "avatar" | "cover") => {
+    if (!user) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error("Image must be under 8MB");
+      return;
+    }
+    setUploading(kind);
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${user.id}/${kind}-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
+      cacheControl: "3600",
+      upsert: true,
+      contentType: file.type,
+    });
+    if (upErr) {
+      toast.error("Upload failed");
+      setUploading(null);
+      return;
+    }
+    const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+    const url = pub.publicUrl;
+    const column = kind === "avatar" ? "avatar_url" : "cover_url";
+    const { error: dbErr } = await supabase.from("profiles").update({ [column]: url }).eq("id", user.id);
+    if (dbErr) {
+      toast.error("Failed to save profile");
+    } else {
+      setProfile((p) => (p ? { ...p, [column]: url } as ProfileRow : p));
+      toast.success(kind === "avatar" ? "Profile picture updated" : "Cover photo updated");
+    }
+    setUploading(null);
+  };
+
   if (loading || !user) {
     return (
       <Layout>
