@@ -455,7 +455,11 @@ export function HomeFeed() {
             const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <div className="flex items-center gap-3 px-4 py-3">
+                <Link
+                  to="/u/$id"
+                  params={{ id: p.user_id }}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition"
+                >
                   <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
                     {prof?.avatar_url ? (
                       <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
@@ -464,12 +468,12 @@ export function HomeFeed() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">{name}</p>
+                    <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
                     <p className="text-xs text-slate-500">
                       {new Date(p.created_at).toLocaleString()}
                     </p>
                   </div>
-                </div>
+                </Link>
                 {p.caption && (
                   <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
                 )}
