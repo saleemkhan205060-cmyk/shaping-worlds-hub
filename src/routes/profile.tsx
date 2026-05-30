@@ -192,17 +192,40 @@ function Profile() {
           return (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {items.map((p) => (
-                <div key={p.id} className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                <div key={p.id} className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 group">
                   {p.media_type === "video" ? (
                     <>
                       <video src={p.media_url} className="w-full h-full object-cover" muted playsInline preload="metadata" />
-                      <div className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1">
+                      <div className="absolute top-2 left-2 bg-black/60 text-white rounded-full p-1">
                         <Play className="h-3 w-3 fill-white" />
                       </div>
                     </>
                   ) : (
                     <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
                   )}
+                  {p.is_private && (
+                    <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/70 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                      <Lock className="h-3 w-3" /> Private
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition">
+                    <button
+                      onClick={() => handleTogglePrivacy(p.id, !p.is_private)}
+                      className="h-7 w-7 rounded-full bg-white/95 text-slate-800 hover:bg-white flex items-center justify-center shadow"
+                      title={p.is_private ? "Make public" : "Make private"}
+                      aria-label={p.is_private ? "Make public" : "Make private"}
+                    >
+                      {p.is_private ? <Globe className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
+                    </button>
+                    <button
+                      onClick={() => handleDeletePost(p.id)}
+                      className="h-7 w-7 rounded-full bg-rose-600 text-white hover:bg-rose-700 flex items-center justify-center shadow"
+                      title="Delete post"
+                      aria-label="Delete post"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
