@@ -127,8 +127,9 @@ function Profile() {
             <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Joined {joined}</span>
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
-            <Stat icon={Users} label="Followers" value="0" />
+          <div className="mt-5 grid grid-cols-4 gap-3 max-w-xl">
+            <Stat icon={Users} label="Followers" value={String(followersCount)} />
+            <Stat icon={Users} label="Following" value={String(followingCount)} />
             <Stat icon={Heart} label="Posts" value={String(posts.length)} />
             <Stat icon={Play} label="Videos" value={String(posts.filter((p) => p.media_type === "video").length)} />
           </div>
