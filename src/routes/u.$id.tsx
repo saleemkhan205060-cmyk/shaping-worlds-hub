@@ -31,12 +31,33 @@ type Tab = (typeof TABS)[number];
 
 function UserProfile() {
   const { id } = Route.useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [fsOpen, setFsOpen] = useState(false);
   const [fsIndex, setFsIndex] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followBusy, setFollowBusy] = useState(false);
+
+  const isSelf = !!user && user.id === id;
+
+  const refreshFollows = () => {
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", id)
+      .then(({ count }) => setFollowersCount(count ?? 0));
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", id)
+      .then(({ count }) => setFollowingCount(count ?? 0));
+    if (user && !isSelf) {
+      supabase.from("follows").select("id").eq("follower_id", user.id).eq("following_id", id).maybeSingle()
+        .then(({ data }) => setIsFollowing(!!data));
+    } else {
+      setIsFollowing(false);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -52,7 +73,34 @@ function UserProfile() {
       setPosts(((pp ?? []) as Post[]).filter((p) => !!p.media_url));
       setLoading(false);
     });
-  }, [id]);
+    refreshFollows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, user?.id]);
+
+  const toggleFollow = async () => {
+    if (!user) {
+      navigate({ to: "/auth" });
+      return;
+    }
+    if (isSelf || followBusy) return;
+    setFollowBusy(true);
+    if (isFollowing) {
+      const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id);
+      if (error) toast.error(error.message);
+      else {
+        setIsFollowing(false);
+        setFollowersCount((c) => Math.max(0, c - 1));
+      }
+    } else {
+      const { error } = await supabase.from("follows").insert({ follower_id: user.id, following_id: id });
+      if (error) toast.error(error.message);
+      else {
+        setIsFollowing(true);
+        setFollowersCount((c) => c + 1);
+      }
+    }
+    setFollowBusy(false);
+  };
 
   if (loading) {
     return (
