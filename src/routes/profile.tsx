@@ -39,6 +39,9 @@ function Profile() {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [fs, setFs] = useState<{ items: FsItem[]; index: number } | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState<"avatar" | "cover" | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
