@@ -43,7 +43,8 @@ function AuthPage() {
         navigate({ to: "/" });
       }
     } catch (err: any) {
-      toast.error(err.message ?? "Authentication failed");
+      console.error("Auth error:", err);
+      toast.error(mode === "signin" ? "Invalid email or password" : "Couldn't create your account. Please try again.");
     } finally {
       setBusy(false);
     }
