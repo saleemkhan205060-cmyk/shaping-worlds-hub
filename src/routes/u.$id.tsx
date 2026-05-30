@@ -86,14 +86,19 @@ function UserProfile() {
     setFollowBusy(true);
     if (isFollowing) {
       const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id);
-      if (error) toast.error(error.message);
-      else {
+      if (error) {
+        console.error("Unfollow error:", error);
+        toast.error("Couldn't unfollow. Please try again.");
+      } else {
         setIsFollowing(false);
         setFollowersCount((c) => Math.max(0, c - 1));
       }
     } else {
       const { error } = await supabase.from("follows").insert({ follower_id: user.id, following_id: id });
-      if (error) toast.error(error.message);
+      if (error) {
+        console.error("Follow error:", error);
+        toast.error("Couldn't follow. Please try again.");
+      }
       else {
         setIsFollowing(true);
         setFollowersCount((c) => c + 1);
