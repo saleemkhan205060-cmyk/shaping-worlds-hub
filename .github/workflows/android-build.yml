@@ -2,7 +2,7 @@ name: Android Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -17,10 +17,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build web
+      - name: Build Capacitor web
         run: npm run build:capacitor
 
       - name: Setup Java
@@ -32,12 +32,15 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
+
       - name: Build APK
         working-directory: android
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: app-release
           path: android/app/build/outputs/apk/release/*.apk
