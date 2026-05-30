@@ -56,7 +56,8 @@ function AuthPage() {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      toast.error(result.error.message ?? "Google sign-in failed");
+      console.error("Google sign-in error:", result.error);
+      toast.error("Google sign-in failed. Please try again.");
       setBusy(false);
       return;
     }
