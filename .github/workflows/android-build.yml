@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build project
+      - name: Fix Vite build
         run: npx vite build
 
       - name: Setup Java 17
