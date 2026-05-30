@@ -341,7 +341,12 @@ export function HomeFeed() {
           <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
           <div className="flex gap-3 overflow-x-auto">
             {matchedProfiles.slice(0, 10).map((p) => (
-              <div key={p.id} className="shrink-0 flex flex-col items-center w-16">
+              <Link
+                key={p.id}
+                to="/u/$id"
+                params={{ id: p.id }}
+                className="shrink-0 flex flex-col items-center w-16"
+              >
                 <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden">
                   {p.avatar_url ? (
                     <img src={p.avatar_url} alt={p.display_name ?? ""} className="h-full w-full object-cover" />
@@ -352,7 +357,7 @@ export function HomeFeed() {
                 <span className="text-[11px] mt-1 truncate w-full text-center">
                   {p.display_name ?? p.username}
                 </span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -450,7 +455,11 @@ export function HomeFeed() {
             const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <div className="flex items-center gap-3 px-4 py-3">
+                <Link
+                  to="/u/$id"
+                  params={{ id: p.user_id }}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition"
+                >
                   <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
                     {prof?.avatar_url ? (
                       <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
@@ -459,12 +468,12 @@ export function HomeFeed() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">{name}</p>
+                    <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
                     <p className="text-xs text-slate-500">
                       {new Date(p.created_at).toLocaleString()}
                     </p>
                   </div>
-                </div>
+                </Link>
                 {p.caption && (
                   <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
                 )}
