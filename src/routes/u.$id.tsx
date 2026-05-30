@@ -1,9 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft } from "lucide-react";
+import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/u/$id")({ component: UserProfile });
 
