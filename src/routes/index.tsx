@@ -4,6 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import marriageIconUrl from "@/assets/marriage-icon.jpg";
+import feedQuickNavUrl from "@/assets/feed-quicknav.jpeg";
 import {
   Play,
   TrendingUp,
@@ -34,6 +35,7 @@ const QUICK_NAV = [
     to: "/videos" as const,
     tint: "from-fuchsia-500 via-pink-500 to-rose-500",
     iconFill: true,
+    image: feedQuickNavUrl,
   },
   {
     label: "Marriage",
