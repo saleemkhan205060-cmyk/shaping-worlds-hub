@@ -262,7 +262,6 @@ function Profile() {
           </div>
         )}
       </div>
-      </div>
       {fs && (
         <FullscreenVideoPlayer
           items={fs.items}
