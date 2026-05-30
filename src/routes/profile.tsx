@@ -121,9 +121,14 @@ function Profile() {
     const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
     const url = pub.publicUrl;
     const column = kind === "avatar" ? "avatar_url" : "cover_url";
-    const { error: dbErr } = await supabase.from("profiles").update({ [column]: url }).eq("id", user.id);
+    const update = kind === "avatar" ? { avatar_url: url } : { cover_url: url };
+    const { error: dbErr } = await supabase.from("profiles").update(update).eq("id", user.id);
     if (dbErr) {
       toast.error("Failed to save profile");
+    } else {
+      setProfile((p) => (p ? { ...p, [column]: url } as ProfileRow : p));
+      toast.success(kind === "avatar" ? "Profile picture updated" : "Cover photo updated");
+    }
     } else {
       setProfile((p) => (p ? { ...p, [column]: url } as ProfileRow : p));
       toast.success(kind === "avatar" ? "Profile picture updated" : "Cover photo updated");
