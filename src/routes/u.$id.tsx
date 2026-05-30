@@ -182,6 +182,26 @@ function UserProfile() {
               </div>
               <p className="text-sm text-slate-500">@{handle}</p>
             </div>
+            {!isSelf && (
+              <button
+                onClick={toggleFollow}
+                disabled={followBusy}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition disabled:opacity-60 ${
+                  isFollowing
+                    ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    : "bg-indigo-600 text-white hover:bg-indigo-700"
+                }`}
+              >
+                {followBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isFollowing ? (
+                  <UserCheck className="h-4 w-4" />
+                ) : (
+                  <UserPlus className="h-4 w-4" />
+                )}
+                {isFollowing ? "Following" : "Follow"}
+              </button>
+            )}
           </div>
 
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
@@ -191,9 +211,9 @@ function UserProfile() {
           </div>
 
           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
+            <Stat label="Followers" value={String(followersCount)} />
+            <Stat label="Following" value={String(followingCount)} />
             <Stat label="Posts" value={String(posts.length)} />
-            <Stat label="Videos" value={String(videos.length)} />
-            <Stat label="Photos" value={String(photos.length)} />
           </div>
         </div>
       </div>
