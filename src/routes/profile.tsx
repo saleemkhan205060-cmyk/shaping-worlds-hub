@@ -129,10 +129,6 @@ function Profile() {
       setProfile((p) => (p ? { ...p, [column]: url } as ProfileRow : p));
       toast.success(kind === "avatar" ? "Profile picture updated" : "Cover photo updated");
     }
-    } else {
-      setProfile((p) => (p ? { ...p, [column]: url } as ProfileRow : p));
-      toast.success(kind === "avatar" ? "Profile picture updated" : "Cover photo updated");
-    }
     setUploading(null);
   };
 
