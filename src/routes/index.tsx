@@ -50,6 +50,7 @@ const QUICK_NAV = [
     icon: Store,
     to: "/market" as const,
     tint: "from-amber-400 to-orange-500",
+    image: marketIconUrl,
   },
 ];
 
