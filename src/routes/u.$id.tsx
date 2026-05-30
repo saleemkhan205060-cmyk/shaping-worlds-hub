@@ -1,9 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft } from "lucide-react";
+import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/u/$id")({ component: UserProfile });
 
@@ -29,12 +31,33 @@ type Tab = (typeof TABS)[number];
 
 function UserProfile() {
   const { id } = Route.useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [fsOpen, setFsOpen] = useState(false);
   const [fsIndex, setFsIndex] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followBusy, setFollowBusy] = useState(false);
+
+  const isSelf = !!user && user.id === id;
+
+  const refreshFollows = () => {
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", id)
+      .then(({ count }) => setFollowersCount(count ?? 0));
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", id)
+      .then(({ count }) => setFollowingCount(count ?? 0));
+    if (user && !isSelf) {
+      supabase.from("follows").select("id").eq("follower_id", user.id).eq("following_id", id).maybeSingle()
+        .then(({ data }) => setIsFollowing(!!data));
+    } else {
+      setIsFollowing(false);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -50,7 +73,34 @@ function UserProfile() {
       setPosts(((pp ?? []) as Post[]).filter((p) => !!p.media_url));
       setLoading(false);
     });
-  }, [id]);
+    refreshFollows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, user?.id]);
+
+  const toggleFollow = async () => {
+    if (!user) {
+      navigate({ to: "/auth" });
+      return;
+    }
+    if (isSelf || followBusy) return;
+    setFollowBusy(true);
+    if (isFollowing) {
+      const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id);
+      if (error) toast.error(error.message);
+      else {
+        setIsFollowing(false);
+        setFollowersCount((c) => Math.max(0, c - 1));
+      }
+    } else {
+      const { error } = await supabase.from("follows").insert({ follower_id: user.id, following_id: id });
+      if (error) toast.error(error.message);
+      else {
+        setIsFollowing(true);
+        setFollowersCount((c) => c + 1);
+      }
+    }
+    setFollowBusy(false);
+  };
 
   if (loading) {
     return (
@@ -132,6 +182,26 @@ function UserProfile() {
               </div>
               <p className="text-sm text-slate-500">@{handle}</p>
             </div>
+            {!isSelf && (
+              <button
+                onClick={toggleFollow}
+                disabled={followBusy}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition disabled:opacity-60 ${
+                  isFollowing
+                    ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    : "bg-indigo-600 text-white hover:bg-indigo-700"
+                }`}
+              >
+                {followBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isFollowing ? (
+                  <UserCheck className="h-4 w-4" />
+                ) : (
+                  <UserPlus className="h-4 w-4" />
+                )}
+                {isFollowing ? "Following" : "Follow"}
+              </button>
+            )}
           </div>
 
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
@@ -141,9 +211,9 @@ function UserProfile() {
           </div>
 
           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
+            <Stat label="Followers" value={String(followersCount)} />
+            <Stat label="Following" value={String(followingCount)} />
             <Stat label="Posts" value={String(posts.length)} />
-            <Stat label="Videos" value={String(videos.length)} />
-            <Stat label="Photos" value={String(photos.length)} />
           </div>
         </div>
       </div>

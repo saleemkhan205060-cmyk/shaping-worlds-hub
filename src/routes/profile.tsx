@@ -33,6 +33,8 @@ function Profile() {
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -49,6 +51,10 @@ function Profile() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => setPosts((data as Post[]) ?? []));
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", user.id)
+      .then(({ count }) => setFollowersCount(count ?? 0));
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", user.id)
+      .then(({ count }) => setFollowingCount(count ?? 0));
   }, [user]);
 
   const handleSignOut = async () => {
@@ -121,8 +127,9 @@ function Profile() {
             <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Joined {joined}</span>
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
-            <Stat icon={Users} label="Followers" value="0" />
+          <div className="mt-5 grid grid-cols-4 gap-3 max-w-xl">
+            <Stat icon={Users} label="Followers" value={String(followersCount)} />
+            <Stat icon={Users} label="Following" value={String(followingCount)} />
             <Stat icon={Heart} label="Posts" value={String(posts.length)} />
             <Stat icon={Play} label="Videos" value={String(posts.filter((p) => p.media_type === "video").length)} />
           </div>
