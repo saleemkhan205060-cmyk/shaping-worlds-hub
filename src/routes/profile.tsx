@@ -262,6 +262,14 @@ function Profile() {
           </div>
         )}
       </div>
+      </div>
+      {fs && (
+        <FullscreenVideoPlayer
+          items={fs.items}
+          startIndex={fs.index}
+          onClose={() => setFs(null)}
+        />
+      )}
     </Layout>
   );
 }
