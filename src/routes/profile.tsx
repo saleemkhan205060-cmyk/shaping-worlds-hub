@@ -37,7 +37,7 @@ function Profile() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
-  const [fsIndex, setFsIndex] = useState<number | null>(null);
+  const [fs, setFs] = useState<{ items: FsItem[]; index: number } | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
