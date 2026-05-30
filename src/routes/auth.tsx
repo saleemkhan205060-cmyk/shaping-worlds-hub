@@ -43,7 +43,8 @@ function AuthPage() {
         navigate({ to: "/" });
       }
     } catch (err: any) {
-      toast.error(err.message ?? "Authentication failed");
+      console.error("Auth error:", err);
+      toast.error(mode === "signin" ? "Invalid email or password" : "Couldn't create your account. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -55,7 +56,8 @@ function AuthPage() {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      toast.error(result.error.message ?? "Google sign-in failed");
+      console.error("Google sign-in error:", result.error);
+      toast.error("Google sign-in failed. Please try again.");
       setBusy(false);
       return;
     }
