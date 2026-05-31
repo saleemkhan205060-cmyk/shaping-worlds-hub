@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
+import { MediaActions } from "@/components/MediaActions";
 
 type Post = {
   id: string;
