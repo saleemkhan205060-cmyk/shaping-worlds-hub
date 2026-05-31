@@ -19,6 +19,7 @@ import { Route as MarketRouteImport } from './routes/market'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UIdRouteImport } from './routes/u.$id'
+import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -70,29 +71,36 @@ const UIdRoute = UIdRouteImport.update({
   path: '/u/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarriageEditRoute = MarriageEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => MarriageRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/market': typeof MarketRoute
-  '/marriage': typeof MarriageRoute
+  '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/market': typeof MarketRoute
-  '/marriage': typeof MarriageRoute
+  '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
 }
 export interface FileRoutesById {
@@ -100,12 +108,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/market': typeof MarketRoute
-  '/marriage': typeof MarriageRoute
+  '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/upload'
     | '/videos'
+    | '/marriage/edit'
     | '/u/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/upload'
     | '/videos'
+    | '/marriage/edit'
     | '/u/$id'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/upload'
     | '/videos'
+    | '/marriage/edit'
     | '/u/$id'
   fileRoutesById: FileRoutesById
 }
@@ -151,7 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   MarketRoute: typeof MarketRoute
-  MarriageRoute: typeof MarriageRoute
+  MarriageRoute: typeof MarriageRouteWithChildren
   MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
@@ -232,14 +244,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marriage/edit': {
+      id: '/marriage/edit'
+      path: '/edit'
+      fullPath: '/marriage/edit'
+      preLoaderRoute: typeof MarriageEditRouteImport
+      parentRoute: typeof MarriageRoute
+    }
   }
 }
+
+interface MarriageRouteChildren {
+  MarriageEditRoute: typeof MarriageEditRoute
+}
+
+const MarriageRouteChildren: MarriageRouteChildren = {
+  MarriageEditRoute: MarriageEditRoute,
+}
+
+const MarriageRouteWithChildren = MarriageRoute._addFileChildren(
+  MarriageRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   MarketRoute: MarketRoute,
-  MarriageRoute: MarriageRoute,
+  MarriageRoute: MarriageRouteWithChildren,
   MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,

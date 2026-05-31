@@ -35,6 +35,48 @@ export type Database = {
         }
         Relationships: []
       }
+      marriage_profiles: {
+        Row: {
+          about: string | null
+          age: number | null
+          country: string | null
+          created_at: string
+          id: string
+          looking_for: string | null
+          marital_status: string | null
+          profession: string | null
+          religion: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          about?: string | null
+          age?: number | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          looking_for?: string | null
+          marital_status?: string | null
+          profession?: string | null
+          religion?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          about?: string | null
+          age?: number | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          looking_for?: string | null
+          marital_status?: string | null
+          profession?: string | null
+          religion?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
