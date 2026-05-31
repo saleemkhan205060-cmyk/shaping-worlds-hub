@@ -6,6 +6,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
+import { MediaActions } from "@/components/MediaActions";
 
 export const Route = createFileRoute("/profile")({ component: Profile });
 
@@ -283,34 +284,43 @@ function Profile() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {items.map((p, idx) => (
                 <div key={p.id} className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 group">
-                  <button
-                    type="button"
-                    onClick={() => setFs({
-                      items: items.map((x) => ({
-                        id: x.id,
-                        media_url: x.media_url,
-                        media_type: x.media_type,
-                        caption: x.caption,
-                        created_at: x.created_at,
-                      })),
-                      index: idx,
-                    })}
-                    className="absolute inset-0 w-full h-full block"
-                    aria-label={p.media_type === "video" ? "Play video" : "Open photo"}
+                  <MediaActions
+                    postId={p.id}
+                    ownerId={user.id}
+                    mediaUrl={p.media_url}
+                    caption={p.caption}
+                    onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
                   >
-                    {p.media_type === "video" ? (
-                      <video src={p.media_url} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
-                    ) : (
-                      <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
-                    )}
-                    {p.media_type === "video" && (
-                      <span className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition">
-                        <span className="h-10 w-10 rounded-full bg-white/90 flex items-center justify-center shadow">
-                          <Play className="h-4 w-4 text-slate-900 fill-slate-900 ml-0.5" />
+                    <button
+                      type="button"
+                      onClick={() => setFs({
+                        items: items.map((x) => ({
+                          id: x.id,
+                          user_id: user.id,
+                          media_url: x.media_url,
+                          media_type: x.media_type,
+                          caption: x.caption,
+                          created_at: x.created_at,
+                        })),
+                        index: idx,
+                      })}
+                      className="absolute inset-0 w-full h-full block"
+                      aria-label={p.media_type === "video" ? "Play video" : "Open photo"}
+                    >
+                      {p.media_type === "video" ? (
+                        <video src={p.media_url} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
+                      ) : (
+                        <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                      {p.media_type === "video" && (
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition">
+                          <span className="h-10 w-10 rounded-full bg-white/90 flex items-center justify-center shadow">
+                            <Play className="h-4 w-4 text-slate-900 fill-slate-900 ml-0.5" />
+                          </span>
                         </span>
-                      </span>
-                    )}
-                  </button>
+                      )}
+                    </button>
+                  </MediaActions>
                   {p.is_private && (
                     <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/70 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded pointer-events-none">
                       <Lock className="h-3 w-3" /> Private

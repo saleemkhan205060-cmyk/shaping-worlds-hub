@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
+import { MediaActions } from "@/components/MediaActions";
 
 type Post = {
   id: string;
@@ -283,6 +284,7 @@ export function HomeFeed() {
 
   const fsItems: FsItem[] = mediaPosts.map((p) => ({
     id: p.id,
+    user_id: p.user_id,
     media_url: p.media_url!,
     media_type: p.media_type as "image" | "video",
     caption: p.caption,
@@ -478,49 +480,65 @@ export function HomeFeed() {
                   <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
                 )}
                 {p.media_type === "image" && p.media_url && (
-                  <button
-                    type="button"
-                    onClick={() => openFullscreen(p.id)}
-                    className="relative w-full block group"
-                    aria-label="Open image fullscreen"
+                  <MediaActions
+                    postId={p.id}
+                    ownerId={p.user_id}
+                    mediaUrl={p.media_url}
+                    caption={p.caption}
+                    onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
                   >
-                    <img
-                      src={p.media_url}
-                      alt={p.caption ?? "Post"}
-                      className="w-full max-h-[520px] object-cover bg-slate-100"
-                      loading="lazy"
-                    />
-                    <span className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                      <Maximize2 className="h-4 w-4" />
-                    </span>
-                  </button>
-                )}
-                {p.media_type === "video" && p.media_url && (
-                  <div className="relative bg-black">
-                    <video
-                      ref={(el) => {
-                        videoRefs.current[p.id] = el;
-                      }}
-                      src={p.media_url}
-                      playsInline
-                      muted
-                      loop
-                      preload="metadata"
-                      className="w-full max-h-[520px] cursor-pointer"
-                      onClick={() => openFullscreen(p.id)}
-                    />
                     <button
                       type="button"
                       onClick={() => openFullscreen(p.id)}
-                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center"
-                      aria-label="Open fullscreen"
+                      className="relative w-full block group"
+                      aria-label="Open image fullscreen"
                     >
-                      <Maximize2 className="h-4 w-4" />
+                      <img
+                        src={p.media_url}
+                        alt={p.caption ?? "Post"}
+                        className="w-full max-h-[520px] object-cover bg-slate-100"
+                        loading="lazy"
+                      />
+                      <span className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <Maximize2 className="h-4 w-4" />
+                      </span>
                     </button>
-                    <span className="absolute top-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded">
-                      <Play className="h-3 w-3 fill-white" /> Video
-                    </span>
-                  </div>
+                  </MediaActions>
+                )}
+                {p.media_type === "video" && p.media_url && (
+                  <MediaActions
+                    postId={p.id}
+                    ownerId={p.user_id}
+                    mediaUrl={p.media_url}
+                    caption={p.caption}
+                    onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
+                  >
+                    <div className="relative bg-black">
+                      <video
+                        ref={(el) => {
+                          videoRefs.current[p.id] = el;
+                        }}
+                        src={p.media_url}
+                        playsInline
+                        muted
+                        loop
+                        preload="metadata"
+                        className="w-full max-h-[520px] cursor-pointer"
+                        onClick={() => openFullscreen(p.id)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openFullscreen(p.id)}
+                        className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center"
+                        aria-label="Open fullscreen"
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </button>
+                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded">
+                        <Play className="h-3 w-3 fill-white" /> Video
+                      </span>
+                    </div>
+                  </MediaActions>
                 )}
                 <div className="flex items-center gap-5 px-4 py-3 text-sm text-slate-600">
                   <button

@@ -147,3 +147,13 @@
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* Suppress the native long-press / context menu (Copy image, Download image,
+ * Open in Chrome…) on post media so our custom MediaActions sheet can take
+ * over. Wrap a media element's parent with the .media-actions class. */
+.media-actions img,
+.media-actions video {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

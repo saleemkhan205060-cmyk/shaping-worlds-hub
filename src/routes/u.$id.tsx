@@ -4,6 +4,7 @@ import { Layout } from "../components/Layout";
 import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
+import { MediaActions } from "@/components/MediaActions";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
@@ -144,6 +145,7 @@ function UserProfile() {
     .filter((p) => p.media_type === "image" || p.media_type === "video")
     .map((p) => ({
       id: p.id,
+      user_id: p.user_id,
       media_url: p.media_url,
       media_type: p.media_type as "image" | "video",
       caption: p.caption,
@@ -259,35 +261,43 @@ function UserProfile() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {items.map((p) => (
-              <button
+              <MediaActions
                 key={p.id}
-                onClick={() => openAt(p.id)}
-                className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 group"
+                postId={p.id}
+                ownerId={p.user_id}
+                mediaUrl={p.media_url}
+                caption={p.caption}
+                onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
               >
-                {p.media_type === "video" ? (
-                  <>
-                    <video
+                <button
+                  onClick={() => openAt(p.id)}
+                  className="relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 group"
+                >
+                  {p.media_type === "video" ? (
+                    <>
+                      <video
+                        src={p.media_url}
+                        className="w-full h-full object-cover"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition">
+                        <span className="h-12 w-12 rounded-full bg-black/60 flex items-center justify-center">
+                          <Play className="h-6 w-6 text-white fill-white" />
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <img
                       src={p.media_url}
+                      alt={p.caption ?? "Post"}
                       className="w-full h-full object-cover"
-                      muted
-                      playsInline
-                      preload="metadata"
+                      loading="lazy"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition">
-                      <span className="h-12 w-12 rounded-full bg-black/60 flex items-center justify-center">
-                        <Play className="h-6 w-6 text-white fill-white" />
-                      </span>
-                    </div>
-                  </>
-                ) : (
-                  <img
-                    src={p.media_url}
-                    alt={p.caption ?? "Post"}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                )}
-              </button>
+                  )}
+                </button>
+              </MediaActions>
             ))}
           </div>
         )}
