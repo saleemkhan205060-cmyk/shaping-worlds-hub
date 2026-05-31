@@ -284,6 +284,7 @@ export function HomeFeed() {
 
   const fsItems: FsItem[] = mediaPosts.map((p) => ({
     id: p.id,
+    user_id: p.user_id,
     media_url: p.media_url!,
     media_type: p.media_type as "image" | "video",
     caption: p.caption,
