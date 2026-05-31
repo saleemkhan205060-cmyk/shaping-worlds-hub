@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { CommentsSheet } from "@/components/CommentsSheet";
+import { MediaActions } from "@/components/MediaActions";
 
 export type FsItem = {
   id: string;
+  user_id?: string | null;
   media_url: string;
   media_type: "image" | "video";
   caption: string | null;
