@@ -5,7 +5,7 @@ import { ArrowLeft, Gem, MapPin, Briefcase, Heart, MessageCircle, Loader2, Penci
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
-export const Route = createFileRoute("/marriage")({
+export const Route = createFileRoute("/marriage/")({
   component: MarriagePage,
   head: () => ({
     meta: [
