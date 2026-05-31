@@ -145,6 +145,7 @@ function UserProfile() {
     .filter((p) => p.media_type === "image" || p.media_type === "video")
     .map((p) => ({
       id: p.id,
+      user_id: p.user_id,
       media_url: p.media_url,
       media_type: p.media_type as "image" | "video",
       caption: p.caption,
