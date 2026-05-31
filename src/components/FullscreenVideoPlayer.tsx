@@ -200,22 +200,30 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
               className={`relative h-full w-full snap-start snap-always flex items-center justify-center bg-black ${i > 0 ? "border-t-[6px] border-white/10" : ""}`}
               style={{ height: "100dvh" }}
             >
-              {it.media_type === "video" ? (
-                <video
-                  ref={(el) => {
-                    videoRefs.current[it.id] = el;
-                  }}
-                  src={it.media_url}
-                  className="h-full w-full object-cover"
-                  loop
-                  playsInline
-                  muted={muted}
-                  preload="metadata"
-                  onClick={() => togglePlay(it.id)}
-                />
-              ) : (
-                <img src={it.media_url} alt={it.caption ?? ""} className="h-full w-full object-cover" />
-              )}
+              <MediaActions
+                postId={it.id}
+                ownerId={it.user_id ?? null}
+                mediaUrl={it.media_url}
+                caption={it.caption}
+                onDeleted={() => onClose()}
+              >
+                {it.media_type === "video" ? (
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[it.id] = el;
+                    }}
+                    src={it.media_url}
+                    className="h-full w-full object-cover"
+                    loop
+                    playsInline
+                    muted={muted}
+                    preload="metadata"
+                    onClick={() => togglePlay(it.id)}
+                  />
+                ) : (
+                  <img src={it.media_url} alt={it.caption ?? ""} className="h-full w-full object-cover" />
+                )}
+              </MediaActions>
 
               {isActive && paused && it.media_type === "video" && (
                 <button
