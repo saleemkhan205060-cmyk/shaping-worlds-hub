@@ -6,6 +6,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
+import { MediaActions } from "@/components/MediaActions";
 
 export const Route = createFileRoute("/profile")({ component: Profile });
 
