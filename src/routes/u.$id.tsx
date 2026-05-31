@@ -4,6 +4,7 @@ import { Layout } from "../components/Layout";
 import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
+import { MediaActions } from "@/components/MediaActions";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
