@@ -283,29 +283,27 @@ function MarketPage() {
 }
 
 function ProductCard({
-  product, liked, onToggleWish, onOpen,
+  product, liked, onToggleWish, onOpen, onBlockUser,
 }: {
   product: Product;
   liked: boolean;
   onToggleWish: () => void;
   onOpen: () => void;
+  onBlockUser: (blockedId: string) => void;
 }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
       <div className="relative">
-        <button
-          type="button"
-          onClick={onOpen}
-          className="block w-full"
-          aria-label={`Open ${product.title}`}
-        >
+        <MarketMediaMenu product={product} onOpen={onOpen} onBlockUser={onBlockUser}>
           <img
             src={product.image}
             alt={product.title}
             loading="lazy"
+            draggable={false}
             className="w-full h-auto object-contain bg-slate-50"
+            style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
           />
-        </button>
+        </MarketMediaMenu>
         {product.discount ? (
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[11px] font-bold text-white bg-emerald-500">
             -{product.discount}%
