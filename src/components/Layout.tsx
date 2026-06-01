@@ -54,10 +54,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoUrl} alt="VIP Life logo" className="h-9 w-9 rounded-xl object-contain" />
+            <img src={logoUrl} alt="VIP Life logo" className="h-11 w-11 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
-              <div className="font-extrabold text-sm tracking-tight">VIP</div>
-              <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
+              <div className="font-extrabold text-[15px] tracking-tight">VIP</div>
+              <div className="font-extrabold text-[15px] -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
                 LIFE
               </div>
             </div>
