@@ -65,6 +65,7 @@ function UploadPage() {
         media_type: mediaType,
         caption: caption.trim() || null,
         category,
+        is_private: isPrivate,
       });
       if (insErr) throw insErr;
       toast.success("Uploaded!");
