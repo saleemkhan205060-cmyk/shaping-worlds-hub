@@ -44,6 +44,7 @@ export type Database = {
           hashtags: string[] | null
           id: string
           image_url: string
+          is_private: boolean
           old_price: number | null
           price: number | null
           title: string
@@ -58,6 +59,7 @@ export type Database = {
           hashtags?: string[] | null
           id?: string
           image_url: string
+          is_private?: boolean
           old_price?: number | null
           price?: number | null
           title: string
@@ -72,6 +74,7 @@ export type Database = {
           hashtags?: string[] | null
           id?: string
           image_url?: string
+          is_private?: boolean
           old_price?: number | null
           price?: number | null
           title?: string
