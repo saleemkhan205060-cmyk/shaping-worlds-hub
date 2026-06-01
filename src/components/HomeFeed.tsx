@@ -525,32 +525,14 @@ export function HomeFeed() {
               </button>
             </div>
           )}
-          <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
-            {[
-              { v: false, label: "Public" },
-              { v: true, label: "Private" },
-            ].map((opt) => (
-              <button
-                key={opt.label}
-                onClick={() => setIsPrivate(opt.v)}
-                className={`flex-1 px-3 py-1.5 rounded-full text-xs font-semibold transition border ${
-                  isPrivate === opt.v
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-            <div className="flex gap-1">
+          <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-slate-100">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => {
                   if (fileRef.current) fileRef.current.accept = "image/*";
                   fileRef.current?.click();
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-emerald-700 hover:bg-emerald-50 transition"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-emerald-700 hover:bg-emerald-50 transition"
               >
                 <ImageIcon className="h-4 w-4" /> Photo
               </button>
@@ -559,7 +541,7 @@ export function HomeFeed() {
                   if (fileRef.current) fileRef.current.accept = "video/*";
                   fileRef.current?.click();
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-rose-700 hover:bg-rose-50 transition"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-rose-700 hover:bg-rose-50 transition"
               >
                 <VideoIcon className="h-4 w-4" /> Video
               </button>
@@ -570,14 +552,25 @@ export function HomeFeed() {
                 onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
               />
             </div>
-            <button
-              onClick={submit}
-              disabled={posting || !file}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
-            >
-              {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              Post
-            </button>
+            <div className="flex items-center gap-2">
+              <select
+                value={isPrivate ? "private" : "public"}
+                onChange={(e) => setIsPrivate(e.target.value === "private")}
+                className="px-2 py-1.5 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-400"
+                aria-label="Post privacy"
+              >
+                <option value="public">🌐 Public</option>
+                <option value="private">🔒 Private</option>
+              </select>
+              <button
+                onClick={submit}
+                disabled={posting || !file}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                Post
+              </button>
+            </div>
           </div>
         </div>
       )}
