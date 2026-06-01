@@ -553,8 +553,41 @@ export function HomeFeed() {
                 onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
               />
             </div>
-            <div className="flex items-center gap-2">
-              <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} align="right" />
+            <div className="flex items-center gap-2 relative">
+              <button
+                type="button"
+                onClick={() => setPrivacyOpen((v) => !v)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                aria-haspopup="menu"
+                aria-expanded={privacyOpen}
+              >
+                {isPrivate ? <Lock className="h-3.5 w-3.5" /> : <Globe2 className="h-3.5 w-3.5" />}
+                {isPrivate ? "Private" : "Public"}
+              </button>
+              {privacyOpen && (
+                <div
+                  role="menu"
+                  className="absolute bottom-full right-0 mb-2 w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-lg z-40"
+                >
+                  <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                    Post
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setIsPrivate(false); setPrivacyOpen(false); }}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${!isPrivate ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"}`}
+                  >
+                    <Globe2 className="h-4 w-4" /> Public
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setIsPrivate(true); setPrivacyOpen(false); }}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${isPrivate ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"}`}
+                  >
+                    <Lock className="h-4 w-4" /> Private
+                  </button>
+                </div>
+              )}
               <button
                 onClick={submit}
                 disabled={posting || !file}
