@@ -133,23 +133,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
         </div>
-
-        {searchOpen && (
-          <div className="border-t border-slate-200 bg-white">
-            <form onSubmit={onSearchSubmit} className="max-w-6xl mx-auto px-4 py-3 flex gap-2">
-              <input
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search videos, creators, businesses..."
-                className="flex-1 px-4 py-2 rounded-full border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
-              />
-              <button type="submit" className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold">
-                Search
-              </button>
-            </form>
-          </div>
-        )}
       </header>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
