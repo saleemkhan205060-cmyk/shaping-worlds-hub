@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
-import { PostPrivacySettings } from "@/components/PostPrivacySettings";
+import { Globe2, Lock } from "lucide-react";
 
 type Post = {
   id: string;
