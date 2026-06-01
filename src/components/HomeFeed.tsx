@@ -525,6 +525,24 @@ export function HomeFeed() {
               </button>
             </div>
           )}
+          <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
+            {[
+              { v: false, label: "Public" },
+              { v: true, label: "Private" },
+            ].map((opt) => (
+              <button
+                key={opt.label}
+                onClick={() => setIsPrivate(opt.v)}
+                className={`flex-1 px-3 py-1.5 rounded-full text-xs font-semibold transition border ${
+                  isPrivate === opt.v
+                    ? "bg-indigo-600 text-white border-indigo-600"
+                    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
             <div className="flex gap-1">
               <button
