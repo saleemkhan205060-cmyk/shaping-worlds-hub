@@ -111,10 +111,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <Link
                   to="/messages"
                   search={{ to: undefined }}
-                  className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center"
                   aria-label="Messages"
                 >
-                  <img src={chatIconUrl} alt="Chat" className="h-7 w-7 object-contain" />
+                  <img src={chatIconUrl} alt="Chat" className="h-8 w-8 object-contain" />
                 </Link>
                 <button
                   onClick={handleSignOut}
