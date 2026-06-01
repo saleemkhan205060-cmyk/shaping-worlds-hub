@@ -1,8 +1,9 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Store } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
@@ -19,29 +20,73 @@ const navItems = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
+const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [notifOpen, setNotifOpen] = useState(false);
-  const notifRef = useRef<HTMLDivElement>(null);
+  const [unreadMsgs, setUnreadMsgs] = useState(0);
+  const [unreadNotifs, setUnreadNotifs] = useState(0);
 
-  // Close notifications on outside click or route change
+  const refreshUnreadMsgs = useCallback(async () => {
+    if (!user) return setUnreadMsgs(0);
+    const { count } = await supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("recipient_id", user.id)
+      .is("read_at", null);
+    setUnreadMsgs(count ?? 0);
+  }, [user]);
+
+  const refreshUnreadNotifs = useCallback(async () => {
+    if (!user) return setUnreadNotifs(0);
+    const seen = localStorage.getItem(NOTIF_SEEN_KEY) ?? new Date(0).toISOString();
+    // followers (new)
+    const followsP = supabase
+      .from("follows")
+      .select("id", { count: "exact", head: true })
+      .eq("following_id", user.id)
+      .gt("created_at", seen);
+    // likes & comments on my posts
+    const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", user.id);
+    const ids = (myPosts ?? []).map((p) => p.id);
+    let likes = 0, comments = 0;
+    if (ids.length) {
+      const [lk, cm] = await Promise.all([
+        supabase.from("post_likes").select("id", { count: "exact", head: true })
+          .in("post_id", ids).neq("user_id", user.id).gt("created_at", seen),
+        supabase.from("post_comments").select("id", { count: "exact", head: true })
+          .in("post_id", ids).neq("user_id", user.id).gt("created_at", seen),
+      ]);
+      likes = lk.count ?? 0;
+      comments = cm.count ?? 0;
+    }
+    const { count: foll } = await followsP;
+    setUnreadNotifs((foll ?? 0) + likes + comments);
+  }, [user]);
+
   useEffect(() => {
-    setNotifOpen(false);
+    refreshUnreadMsgs();
+    refreshUnreadNotifs();
+    if (!user) return;
+    const ch = supabase
+      .channel("layout-unread")
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, refreshUnreadMsgs)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` }, refreshUnreadNotifs)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_likes" }, refreshUnreadNotifs)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_comments" }, refreshUnreadNotifs)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [user, refreshUnreadMsgs, refreshUnreadNotifs]);
+
+  // Reset notif badge when visiting the notifications page
+  useEffect(() => {
+    if (path === "/notifications") {
+      localStorage.setItem(NOTIF_SEEN_KEY, new Date().toISOString());
+      setUnreadNotifs(0);
+    }
   }, [path]);
-
-  useEffect(() => {
-    if (!notifOpen) return;
-    const onDoc = (e: MouseEvent) => {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setNotifOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, [notifOpen]);
-
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,15 +94,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
     navigate({ to: "/" });
   };
 
+  const Badge = ({ n }: { n: number }) =>
+    n > 0 ? (
+      <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white">
+        {n > 99 ? "99+" : n}
+      </span>
+    ) : null;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-24 md:pb-0">
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2 sm:gap-3">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoUrl} alt="VIP Life logo" className="h-11 w-11 rounded-xl object-contain" />
+            <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
-              <div className="font-extrabold text-[15px] tracking-tight">VIP</div>
-              <div className="font-extrabold text-[15px] -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
+              <div className="font-extrabold text-base tracking-tight">VIP</div>
+              <div className="font-extrabold text-base -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
                 LIFE
               </div>
             </div>
@@ -81,40 +133,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2">
-            <div className="relative" ref={notifRef}>
-              <button
-                onClick={() => setNotifOpen((o) => !o)}
-                className="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
-                aria-label="Notifications"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center">
-                  3
-                </span>
-              </button>
-              {notifOpen && (
-                <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1rem)] bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-40">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-semibold text-sm">Notifications</p>
-                    <button onClick={() => setNotifOpen(false)} aria-label="Close"><X className="h-4 w-4 text-slate-400" /></button>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="p-2 rounded hover:bg-slate-50">Sara liked your video</li>
-                    <li className="p-2 rounded hover:bg-slate-50">New follower: John Doe</li>
-                    <li className="p-2 rounded hover:bg-slate-50">Your post is trending</li>
-                  </ul>
-                </div>
-              )}
-            </div>
+            <Link
+              to="/notifications"
+              className="relative h-11 w-11 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
+              aria-label="Notifications"
+            >
+              <Bell className="h-6 w-6" />
+              <Badge n={unreadNotifs} />
+            </Link>
             {user ? (
               <>
                 <Link
                   to="/messages"
                   search={{ to: undefined }}
-                  className="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="relative h-11 w-11 rounded-full hover:bg-slate-100 flex items-center justify-center"
                   aria-label="Messages"
                 >
-                  <img src={chatIconUrl} alt="Chat" className="h-8 w-8 object-contain" />
+                  <img src={chatIconUrl} alt="Chat" className="h-9 w-9 object-contain" />
+                  <Badge n={unreadMsgs} />
                 </Link>
                 <button
                   onClick={handleSignOut}
@@ -137,7 +173,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
 
-      {/* Mobile bottom tab bar */}
       <nav
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
@@ -146,7 +181,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = path === item.to;
-            const isUpload = false;
             return (
               <Link
                 key={item.to}
@@ -155,15 +189,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
                 }`}
               >
-                {isUpload ? (
-                  <span className={`h-9 w-9 rounded-full flex items-center justify-center mb-0.5 ${
-                    active ? "bg-indigo-600 text-white" : "bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
-                  }`}>
-                    <Icon className="h-5 w-5" />
-                  </span>
-                ) : (
-                  <Icon className="h-5 w-5 mb-1" />
-                )}
+                <Icon className="h-5 w-5 mb-1" />
                 {item.label}
               </Link>
             );
