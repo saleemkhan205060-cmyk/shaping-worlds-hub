@@ -190,24 +190,6 @@ function UploadPage() {
             </div>
           </div>
 
-
-
-          <div className="flex gap-2 pt-2">
-            <button
-              onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
-              disabled={uploading}
-              className="flex-1 px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpload}
-              disabled={!file || uploading}
-              className="flex-1 px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
-            >
-              {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</> : "Share"}
-            </button>
-          </div>
         </div>
       </div>
     </Layout>
