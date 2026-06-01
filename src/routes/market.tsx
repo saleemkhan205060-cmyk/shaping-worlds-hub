@@ -308,6 +308,7 @@ function ProductCard({
             alt={product.title}
             loading="lazy"
             draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
             className="w-full h-auto object-contain bg-slate-50"
             style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
           />
@@ -494,6 +495,7 @@ function MarketMediaMenu({
         onPointerCancel={clearLongPress}
         onPointerLeave={clearLongPress}
         onContextMenu={(e) => { e.preventDefault(); setMenuOpen(true); }}
+        style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
         className="block w-full"
         aria-label={`Open ${product.title}`}
       >
