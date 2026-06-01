@@ -66,6 +66,16 @@ function MarketPage() {
   const [activeCat, setActiveCat] = useState<string>("all");
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [userProducts, setUserProducts] = useState<Product[]>([]);
+  const [lightbox, setLightbox] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [lightbox]);
 
   useEffect(() => {
     try {
@@ -206,39 +216,77 @@ function MarketPage() {
                 product={p}
                 liked={wishlist.has(p.id)}
                 onToggleWish={() => toggleWish(p.id)}
+                onOpen={() => setLightbox(p)}
               />
             </div>
           ))}
         </div>
       )}
+
+      {lightbox ? (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); setLightbox(null); }}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white text-2xl leading-none flex items-center justify-center"
+            aria-label="Close"
+          >
+            ×
+          </button>
+          {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lightbox.image) ? (
+            <video
+              src={lightbox.image}
+              controls
+              autoPlay
+              playsInline
+              className="max-h-full max-w-full"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={lightbox.image}
+              alt={lightbox.title}
+              className="max-h-full max-w-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </div>
+      ) : null}
     </Layout>
   );
 }
 
 function ProductCard({
-  product, liked, onToggleWish,
+  product, liked, onToggleWish, onOpen,
 }: {
   product: Product;
   liked: boolean;
   onToggleWish: () => void;
+  onOpen: () => void;
 }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
       <div className="relative">
-        <img
-          src={product.image}
-          alt={product.title}
-          loading="lazy"
-          className="w-full h-auto object-contain bg-slate-50"
-        />
+        <button
+          type="button"
+          onClick={onOpen}
+          className="block w-full"
+          aria-label={`Open ${product.title}`}
+        >
+          <img
+            src={product.image}
+            alt={product.title}
+            loading="lazy"
+            className="w-full h-auto object-contain bg-slate-50"
+          />
+        </button>
         {product.discount ? (
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[11px] font-bold text-white bg-emerald-500">
             -{product.discount}%
-          </span>
-        ) : null}
-        {product.userPost ? (
-          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-violet-600">
-            Community
           </span>
         ) : null}
         <button
