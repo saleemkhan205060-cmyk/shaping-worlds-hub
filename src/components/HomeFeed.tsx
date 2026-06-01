@@ -567,8 +567,10 @@ export function HomeFeed() {
       )}
 
       {/* Feed */}
+      {tab !== "users" && tab !== "marriage" && tab !== "market" && (
       <div className="space-y-4">
         <h2 className="text-lg font-extrabold px-1">Latest Feed</h2>
+
         {loading ? (
           <div className="flex items-center justify-center py-10 text-slate-500">
             <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading…
