@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import {
   Search, SlidersHorizontal, Heart, Star, ExternalLink, Plus,
   ShoppingBag, Shirt, Smartphone, Home as HomeIcon, Sparkles, Tag, Flame,
+  Download, Flag, Ban, X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/market")({
   component: MarketPage,
@@ -31,6 +33,7 @@ const CATEGORIES: Category[] = [
 
 type Product = {
   id: string;
+  user_id?: string;
   title: string;
   description: string;
   price?: number;
@@ -66,6 +69,7 @@ function MarketPage() {
   const [activeCat, setActiveCat] = useState<string>("all");
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [userProducts, setUserProducts] = useState<Product[]>([]);
+  const [blockedUserIds, setBlockedUserIds] = useState<Set<string>>(new Set());
   const [lightbox, setLightbox] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -87,6 +91,18 @@ function MarketPage() {
   useEffect(() => {
     let active = true;
     const load = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id;
+      let blocked = new Set<string>();
+
+      if (userId) {
+        const { data: blockRows } = await (supabase as any)
+          .from("user_blocks")
+          .select("blocked_id")
+          .eq("blocker_id", userId);
+        blocked = new Set((blockRows || []).map((row: { blocked_id: string }) => row.blocked_id));
+      }
+
       const { data } = await supabase
         .from("market_products")
         .select("*")
@@ -100,13 +116,15 @@ function MarketPage() {
           ? Math.round(((oldPrice - price) / oldPrice) * 100) : undefined;
         return {
           id: r.id, title: r.title, description: r.description || "",
+          user_id: r.user_id,
           price, oldPrice, discount,
           store: "Community", url: r.affiliate_url, image: r.image_url,
           category: r.category || "all",
           hashtags: r.hashtags || [],
           trending: true, userPost: true,
         };
-      });
+      }).filter((product) => !product.user_id || !blocked.has(product.user_id));
+      setBlockedUserIds(blocked);
       setUserProducts(mapped);
     };
     load();
@@ -217,6 +235,10 @@ function MarketPage() {
                 liked={wishlist.has(p.id)}
                 onToggleWish={() => toggleWish(p.id)}
                 onOpen={() => setLightbox(p)}
+                onBlockUser={(blockedId) => {
+                  setBlockedUserIds((prev) => new Set(prev).add(blockedId));
+                  setUserProducts((prev) => prev.filter((item) => item.user_id !== blockedId));
+                }}
               />
             </div>
           ))}
