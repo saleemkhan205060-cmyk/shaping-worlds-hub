@@ -258,10 +258,12 @@ export function HomeFeed() {
         media_type,
         caption: text || null,
         category: "For You",
+        is_private: isPrivate,
       });
       if (insErr) throw insErr;
       setCaption("");
       setFile(null);
+      setIsPrivate(false);
       toast.success("Posted!");
     } catch (e) {
       console.error(e);
