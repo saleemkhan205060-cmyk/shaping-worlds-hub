@@ -156,21 +156,10 @@ function CreateMarketProductPage() {
               placeholder="#sneakers #fashion #deal" className={inputCls} />
           </Field>
 
-          <Field label="Affiliate link">
+          <Field label="Affiliate link (optional)">
             <input value={affiliateUrl} onChange={(e) => setAffiliateUrl(e.target.value)}
-              type="url" placeholder="https://amazon.com/..." className={inputCls} />
+              type="url" placeholder="https://amazon.com/... (optional)" className={inputCls} />
           </Field>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Price ($)">
-              <input value={price} onChange={(e) => setPrice(e.target.value)} type="number" min="0" step="0.01"
-                placeholder="120" className={inputCls} />
-            </Field>
-            <Field label="Old price ($)">
-              <input value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" min="0" step="0.01"
-                placeholder="150" className={inputCls} />
-            </Field>
-          </div>
 
           <Field label="Category">
             <div className="flex flex-wrap gap-2">
