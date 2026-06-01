@@ -92,7 +92,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-1 sm:gap-2">
             <div className="relative" ref={notifRef}>
               <button
-                onClick={() => { setNotifOpen((o) => !o); setSearchOpen(false); }}
+                onClick={() => setNotifOpen((o) => !o)}
                 className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
                 aria-label="Notifications"
               >
