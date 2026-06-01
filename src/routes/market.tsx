@@ -66,6 +66,16 @@ function MarketPage() {
   const [activeCat, setActiveCat] = useState<string>("all");
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [userProducts, setUserProducts] = useState<Product[]>([]);
+  const [lightbox, setLightbox] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [lightbox]);
 
   useEffect(() => {
     try {
