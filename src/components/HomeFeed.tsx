@@ -704,6 +704,8 @@ export function HomeFeed() {
           })
         )}
       </div>
+      )}
+
 
       {fsOpen && fsItems.length > 0 && (
         <FullscreenVideoPlayer
