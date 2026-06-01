@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import {
   Search, SlidersHorizontal, Heart, Star, ExternalLink, Plus,
   ShoppingBag, Shirt, Smartphone, Home as HomeIcon, Sparkles, Tag, Flame,
+  Download, Flag, Ban, X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/market")({
   component: MarketPage,
@@ -31,6 +33,7 @@ const CATEGORIES: Category[] = [
 
 type Product = {
   id: string;
+  user_id?: string;
   title: string;
   description: string;
   price?: number;
@@ -61,6 +64,17 @@ const SEED_PRODUCTS: Product[] = [
 
 const WISHLIST_KEY = "viplife.market.wishlist";
 
+const REPORT_REASONS = [
+  { value: "spam", label: "Spam" },
+  { value: "fake_product", label: "Fake Product" },
+  { value: "adult_content", label: "Adult Content" },
+  { value: "copyright", label: "Copyright Issue" },
+  { value: "scam_fraud", label: "Scam/Fraud" },
+  { value: "other", label: "Other" },
+] as const;
+
+type ReportReason = (typeof REPORT_REASONS)[number]["value"];
+
 function MarketPage() {
   const [query, setQuery] = useState("");
   const [activeCat, setActiveCat] = useState<string>("all");
@@ -87,6 +101,18 @@ function MarketPage() {
   useEffect(() => {
     let active = true;
     const load = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id;
+      let blocked = new Set<string>();
+
+      if (userId) {
+        const { data: blockRows } = await (supabase as any)
+          .from("user_blocks")
+          .select("blocked_id")
+          .eq("blocker_id", userId);
+        blocked = new Set((blockRows || []).map((row: { blocked_id: string }) => row.blocked_id));
+      }
+
       const { data } = await supabase
         .from("market_products")
         .select("*")
@@ -100,13 +126,14 @@ function MarketPage() {
           ? Math.round(((oldPrice - price) / oldPrice) * 100) : undefined;
         return {
           id: r.id, title: r.title, description: r.description || "",
+          user_id: r.user_id,
           price, oldPrice, discount,
           store: "Community", url: r.affiliate_url, image: r.image_url,
           category: r.category || "all",
           hashtags: r.hashtags || [],
           trending: true, userPost: true,
         };
-      });
+      }).filter((product) => !product.user_id || !blocked.has(product.user_id));
       setUserProducts(mapped);
     };
     load();
@@ -217,6 +244,9 @@ function MarketPage() {
                 liked={wishlist.has(p.id)}
                 onToggleWish={() => toggleWish(p.id)}
                 onOpen={() => setLightbox(p)}
+                onBlockUser={(blockedId) => {
+                  setUserProducts((prev) => prev.filter((item) => item.user_id !== blockedId));
+                }}
               />
             </div>
           ))}
@@ -261,29 +291,28 @@ function MarketPage() {
 }
 
 function ProductCard({
-  product, liked, onToggleWish, onOpen,
+  product, liked, onToggleWish, onOpen, onBlockUser,
 }: {
   product: Product;
   liked: boolean;
   onToggleWish: () => void;
   onOpen: () => void;
+  onBlockUser: (blockedId: string) => void;
 }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
       <div className="relative">
-        <button
-          type="button"
-          onClick={onOpen}
-          className="block w-full"
-          aria-label={`Open ${product.title}`}
-        >
+        <MarketMediaMenu product={product} onOpen={onOpen} onBlockUser={onBlockUser}>
           <img
             src={product.image}
             alt={product.title}
             loading="lazy"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
             className="w-full h-auto object-contain bg-slate-50"
+            style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
           />
-        </button>
+        </MarketMediaMenu>
         {product.discount ? (
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[11px] font-bold text-white bg-emerald-500">
             -{product.discount}%
@@ -344,5 +373,209 @@ function ProductCard({
         </div>
       </div>
     </div>
+  );
+}
+
+function MarketMediaMenu({
+  product, children, onOpen, onBlockUser,
+}: {
+  product: Product;
+  children: React.ReactNode;
+  onOpen: () => void;
+  onBlockUser: (blockedId: string) => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reason, setReason] = useState<ReportReason>("spam");
+  const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const longPressTimer = useRef<number | null>(null);
+  const longPressTriggered = useRef(false);
+  const touchMoved = useRef(false);
+  const touchHandled = useRef(false);
+
+  const clearLongPress = () => {
+    if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  };
+
+  const startLongPress = () => {
+    longPressTriggered.current = false;
+    clearLongPress();
+    longPressTimer.current = window.setTimeout(() => {
+      longPressTriggered.current = true;
+      setMenuOpen(true);
+    }, 450);
+  };
+
+  const handleClick = () => {
+    if (touchHandled.current) {
+      touchHandled.current = false;
+      return;
+    }
+    if (longPressTriggered.current) {
+      longPressTriggered.current = false;
+      return;
+    }
+    onOpen();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    touchMoved.current = false;
+    startLongPress();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    touchHandled.current = true;
+    clearLongPress();
+    if (!longPressTriggered.current && !touchMoved.current) onOpen();
+    longPressTriggered.current = false;
+  };
+
+  const downloadImage = async () => {
+    setMenuOpen(false);
+    try {
+      const response = await fetch(product.image);
+      if (!response.ok) throw new Error("download failed");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const extension = blob.type.split("/")[1] || "jpg";
+      link.href = url;
+      link.download = `${product.title.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "product"}.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Could not download image");
+    }
+  };
+
+  const submitReport = async () => {
+    setSubmitting(true);
+    const { data: authData } = await supabase.auth.getUser();
+    const userId = authData.user?.id;
+    if (!userId) {
+      toast.error("Please sign in to report products");
+      setSubmitting(false);
+      return;
+    }
+    const { error } = await (supabase as any).from("product_reports").insert({
+      product_id: product.id,
+      reporter_id: userId,
+      reason,
+      details: details.trim() || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      if (error.code === "23505") toast.info("You already reported this product");
+      else toast.error("Could not submit report");
+      return;
+    }
+    setReportOpen(false);
+    setDetails("");
+    setReason("spam");
+    toast.success("Product reported");
+  };
+
+  const blockUser = async () => {
+    setMenuOpen(false);
+    if (!product.user_id) {
+      toast.error("This product cannot be blocked");
+      return;
+    }
+    const { data: authData } = await supabase.auth.getUser();
+    const userId = authData.user?.id;
+    if (!userId) {
+      toast.error("Please sign in to block users");
+      return;
+    }
+    const { error } = await (supabase as any).from("user_blocks").insert({
+      blocker_id: userId,
+      blocked_id: product.user_id,
+    });
+    if (error && error.code !== "23505") {
+      toast.error("Could not block user");
+      return;
+    }
+    onBlockUser(product.user_id);
+    toast.success("User blocked");
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={handleClick}
+        onPointerDown={(e) => { if (e.pointerType !== "touch") startLongPress(); }}
+        onPointerUp={(e) => { if (e.pointerType !== "touch") clearLongPress(); }}
+        onPointerCancel={clearLongPress}
+        onPointerLeave={clearLongPress}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={(e) => { e.preventDefault(); touchMoved.current = true; clearLongPress(); }}
+        onTouchCancel={clearLongPress}
+        onContextMenu={(e) => { e.preventDefault(); setMenuOpen(true); }}
+        style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
+        className="block w-full"
+        aria-label={`Open ${product.title}`}
+      >
+        {children}
+      </button>
+
+      {menuOpen ? (
+        <div className="fixed inset-0 z-[120] bg-black/40 flex items-end" onClick={() => setMenuOpen(false)}>
+          <div className="w-full rounded-t-3xl bg-white p-3 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button className="w-full h-12 flex items-center gap-3 px-4 text-sm font-semibold text-slate-800" onClick={downloadImage}>
+              <Download className="h-5 w-5" /> Download Image
+            </button>
+            <button className="w-full h-12 flex items-center gap-3 px-4 text-sm font-semibold text-slate-800" onClick={() => { setMenuOpen(false); setReportOpen(true); }}>
+              <Flag className="h-5 w-5" /> Report Product
+            </button>
+            <button className="w-full h-12 flex items-center gap-3 px-4 text-sm font-semibold text-red-600" onClick={blockUser}>
+              <Ban className="h-5 w-5" /> Block User
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {reportOpen ? (
+        <div className="fixed inset-0 z-[130] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-extrabold text-slate-900">Report Product</h3>
+              <button className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center" onClick={() => setReportOpen(false)} aria-label="Close report form">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-2">
+              {REPORT_REASONS.map((item) => (
+                <label key={item.value} className="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">
+                  <input type="radio" name={`report-${product.id}`} value={item.value} checked={reason === item.value} onChange={() => setReason(item.value)} />
+                  {item.label}
+                </label>
+              ))}
+            </div>
+            <textarea
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              placeholder="Optional details"
+              className="mt-4 w-full min-h-24 rounded-2xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300"
+              maxLength={500}
+            />
+            <button
+              disabled={submitting}
+              onClick={submitReport}
+              className="mt-4 w-full h-11 rounded-2xl bg-violet-600 text-white text-sm font-bold disabled:opacity-60"
+            >
+              {submitting ? "Submitting…" : "Submit Report"}
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
