@@ -46,17 +46,44 @@ type Comment = {
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
+type SearchTab = "all" | "users" | "posts" | "photos" | "videos" | "hashtags" | "marriage" | "market";
+const TABS: { id: SearchTab; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "users", label: "Users" },
+  { id: "posts", label: "Posts" },
+  { id: "photos", label: "Photos" },
+  { id: "videos", label: "Videos" },
+  { id: "hashtags", label: "Hashtags" },
+  { id: "marriage", label: "Marriage" },
+  { id: "market", label: "Market" },
+];
+
+type MarriageProfile = {
+  id: string;
+  user_id: string;
+  age: number | null;
+  looking_for: string | null;
+  country: string | null;
+  profession: string | null;
+  marital_status: string | null;
+  religion: string | null;
+  about: string | null;
+};
+
 export function HomeFeed() {
   const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<SearchTab>("all");
+  const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [posting, setPosting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   // Likes & comments aggregates
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
@@ -243,29 +270,62 @@ export function HomeFeed() {
     }
   };
 
+  // Load marriage profiles when the Marriage tab is selected
+  useEffect(() => {
+    if (tab !== "marriage" || marriage.length > 0) return;
+    supabase
+      .from("marriage_profiles")
+      .select("*")
+      .limit(100)
+      .then(({ data }) => setMarriage(((data ?? []) as MarriageProfile[])));
+  }, [tab, marriage.length]);
+
+  const q = query.trim().toLowerCase();
+  const qBare = q.replace(/^#/, "");
+
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return posts;
-    return posts.filter((p) => {
+    let base = posts;
+    if (tab === "photos") base = base.filter((p) => p.media_type === "image");
+    else if (tab === "videos") base = base.filter((p) => p.media_type === "video");
+    else if (tab === "hashtags") base = base.filter((p) => /#\w+/.test(p.caption ?? ""));
+    if (!q) return base;
+    return base.filter((p) => {
       const prof = profiles[p.user_id];
+      const caption = (p.caption ?? "").toLowerCase();
+      if (tab === "hashtags") return caption.includes(`#${qBare}`);
       return (
-        (p.caption ?? "").toLowerCase().includes(q) ||
+        caption.includes(q) ||
         (p.category ?? "").toLowerCase().includes(q) ||
         (prof?.username ?? "").toLowerCase().includes(q) ||
         (prof?.display_name ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, posts, profiles]);
+  }, [query, posts, profiles, tab, q, qBare]);
 
   const matchedProfiles = useMemo(() => {
-    const q = query.trim().toLowerCase();
     if (!q) return [];
     return Object.values(profiles).filter(
       (p) =>
         (p.username ?? "").toLowerCase().includes(q) ||
         (p.display_name ?? "").toLowerCase().includes(q)
     );
-  }, [query, profiles]);
+  }, [q, profiles]);
+
+  const matchedMarriage = useMemo(() => {
+    if (!q) return marriage;
+    return marriage.filter((m) => {
+      const prof = profiles[m.user_id];
+      return (
+        (prof?.display_name ?? "").toLowerCase().includes(q) ||
+        (prof?.username ?? "").toLowerCase().includes(q) ||
+        (m.country ?? "").toLowerCase().includes(q) ||
+        (m.profession ?? "").toLowerCase().includes(q) ||
+        (m.religion ?? "").toLowerCase().includes(q) ||
+        (m.about ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [q, marriage, profiles]);
+
 
   // Media posts eligible for fullscreen
   const mediaPosts = useMemo(
@@ -332,17 +392,37 @@ export function HomeFeed() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           type="search"
-          placeholder="Search posts, users, hashtags…"
+          placeholder="Search users, posts, photos, videos, hashtags, marriage, market…"
           className="w-full h-12 pl-11 pr-4 rounded-full bg-white border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
         />
       </div>
 
-      {/* Search profile matches */}
-      {query.trim() && matchedProfiles.length > 0 && (
+      {/* Category tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+        {TABS.map((t) => {
+          const active = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
+                active
+                  ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Users tab / People matches */}
+      {(tab === "users" || (tab === "all" && q)) && matchedProfiles.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 p-3">
           <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
           <div className="flex gap-3 overflow-x-auto">
-            {matchedProfiles.slice(0, 10).map((p) => (
+            {matchedProfiles.slice(0, 20).map((p) => (
               <Link
                 key={p.id}
                 to="/u/$id"
@@ -364,6 +444,56 @@ export function HomeFeed() {
           </div>
         </div>
       )}
+
+      {/* Marriage tab */}
+      {tab === "marriage" && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-3 space-y-2">
+          <p className="text-xs font-semibold text-slate-500 px-2">Marriage Profiles</p>
+          {matchedMarriage.length === 0 ? (
+            <p className="text-sm text-slate-500 px-2 py-4 text-center">No marriage profiles found.</p>
+          ) : (
+            matchedMarriage.slice(0, 30).map((m) => {
+              const prof = profiles[m.user_id];
+              const name = prof?.display_name ?? prof?.username ?? "Member";
+              return (
+                <Link
+                  key={m.id}
+                  to="/marriage"
+                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition"
+                >
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold overflow-hidden">
+                    {prof?.avatar_url ? (
+                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
+                    ) : (
+                      name[0]?.toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{name}</p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* Market tab */}
+      {tab === "market" && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
+          <p className="text-sm text-slate-600 mb-3">Browse market items by category.</p>
+          <Link
+            to="/market"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600"
+          >
+            Open Market
+          </Link>
+        </div>
+      )}
+
 
       {/* Composer */}
       {user && (
@@ -437,8 +567,10 @@ export function HomeFeed() {
       )}
 
       {/* Feed */}
+      {tab !== "users" && tab !== "marriage" && tab !== "market" && (
       <div className="space-y-4">
         <h2 className="text-lg font-extrabold px-1">Latest Feed</h2>
+
         {loading ? (
           <div className="flex items-center justify-center py-10 text-slate-500">
             <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading…
@@ -572,6 +704,8 @@ export function HomeFeed() {
           })
         )}
       </div>
+      )}
+
 
       {fsOpen && fsItems.length > 0 && (
         <FullscreenVideoPlayer

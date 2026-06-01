@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
+import { Home, User, Bell, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import logoUrl from "@/assets/logo.png";
@@ -23,15 +23,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const [notifOpen, setNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
   // Close notifications on outside click or route change
   useEffect(() => {
     setNotifOpen(false);
-    setSearchOpen(false);
   }, [path]);
 
   useEffect(() => {
@@ -45,12 +42,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("mousedown", onDoc);
   }, [notifOpen]);
 
-  const onSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    setSearchOpen(false);
-    navigate({ to: "/videos" });
-  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -90,16 +81,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2">
-            <button
-              onClick={() => { setSearchOpen((o) => !o); setNotifOpen(false); }}
-              className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
             <div className="relative" ref={notifRef}>
               <button
-                onClick={() => { setNotifOpen((o) => !o); setSearchOpen(false); }}
+                onClick={() => setNotifOpen((o) => !o)}
                 className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
                 aria-label="Notifications"
               >
@@ -149,23 +133,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
         </div>
-
-        {searchOpen && (
-          <div className="border-t border-slate-200 bg-white">
-            <form onSubmit={onSearchSubmit} className="max-w-6xl mx-auto px-4 py-3 flex gap-2">
-              <input
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search videos, creators, businesses..."
-                className="flex-1 px-4 py-2 rounded-full border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
-              />
-              <button type="submit" className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold">
-                Search
-              </button>
-            </form>
-          </div>
-        )}
       </header>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
