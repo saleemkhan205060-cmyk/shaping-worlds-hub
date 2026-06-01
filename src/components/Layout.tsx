@@ -54,10 +54,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoUrl} alt="VIP Life logo" className="h-9 w-9 rounded-xl object-contain" />
+            <img src={logoUrl} alt="VIP Life logo" className="h-11 w-11 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
-              <div className="font-extrabold text-sm tracking-tight">VIP</div>
-              <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
+              <div className="font-extrabold text-[15px] tracking-tight">VIP</div>
+              <div className="font-extrabold text-[15px] -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
                 LIFE
               </div>
             </div>
@@ -84,10 +84,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="relative" ref={notifRef}>
               <button
                 onClick={() => setNotifOpen((o) => !o)}
-                className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
+                className="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
                 aria-label="Notifications"
               >
-                <Bell className="h-4 w-4" />
+                <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center">
                   3
                 </span>
@@ -111,10 +111,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <Link
                   to="/messages"
                   search={{ to: undefined }}
-                  className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center"
                   aria-label="Messages"
                 >
-                  <img src={chatIconUrl} alt="Chat" className="h-7 w-7 object-contain" />
+                  <img src={chatIconUrl} alt="Chat" className="h-8 w-8 object-contain" />
                 </Link>
                 <button
                   onClick={handleSignOut}
