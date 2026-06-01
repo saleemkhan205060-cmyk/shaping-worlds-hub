@@ -162,26 +162,31 @@ function UploadPage() {
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-700">Privacy</label>
-            <div className="mt-1 flex gap-2">
-              {[
-                { v: false, label: "Public", hint: "Anyone can see" },
-                { v: true, label: "Private", hint: "Only you" },
-              ].map((opt) => (
-                <button
-                  key={opt.label}
-                  onClick={() => setIsPrivate(opt.v)}
-                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition border ${
-                    isPrivate === opt.v
-                      ? "bg-indigo-600 text-white border-indigo-600"
-                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  <div>{opt.label}</div>
-                  <div className={`text-[11px] ${isPrivate === opt.v ? "text-indigo-100" : "text-slate-400"}`}>{opt.hint}</div>
-                </button>
-              ))}
+          <div className="flex items-center justify-between gap-2 pt-2">
+            <select
+              value={isPrivate ? "private" : "public"}
+              onChange={(e) => setIsPrivate(e.target.value === "private")}
+              className="px-3 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-400"
+              aria-label="Post privacy"
+            >
+              <option value="public">🌐 Public</option>
+              <option value="private">🔒 Private — only you</option>
+            </select>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
+                disabled={uploading}
+                className="px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpload}
+                disabled={!file || uploading}
+                className="px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
+              >
+                {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</> : "Share"}
+              </button>
             </div>
           </div>
 
