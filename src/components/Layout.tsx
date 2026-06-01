@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, Search, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
+import { Home, User, Bell, X, LogOut, LogIn, Store, Heart, PlayCircle } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import logoUrl from "@/assets/logo.png";
