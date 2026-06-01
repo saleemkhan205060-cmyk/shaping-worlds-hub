@@ -229,7 +229,7 @@ function ProductCard({
           src={product.image}
           alt={product.title}
           loading="lazy"
-          className="w-full aspect-square object-cover"
+          className="w-full h-auto object-contain bg-slate-50"
         />
         {product.discount ? (
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[11px] font-bold text-white bg-emerald-500">
