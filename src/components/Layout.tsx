@@ -84,10 +84,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="relative" ref={notifRef}>
               <button
                 onClick={() => setNotifOpen((o) => !o)}
-                className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
+                className="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 relative"
                 aria-label="Notifications"
               >
-                <Bell className="h-4 w-4" />
+                <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center">
                   3
                 </span>
