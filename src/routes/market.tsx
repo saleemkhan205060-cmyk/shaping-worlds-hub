@@ -261,29 +261,32 @@ function MarketPage() {
 }
 
 function ProductCard({
-  product, liked, onToggleWish,
+  product, liked, onToggleWish, onOpen,
 }: {
   product: Product;
   liked: boolean;
   onToggleWish: () => void;
+  onOpen: () => void;
 }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
       <div className="relative">
-        <img
-          src={product.image}
-          alt={product.title}
-          loading="lazy"
-          className="w-full h-auto object-contain bg-slate-50"
-        />
+        <button
+          type="button"
+          onClick={onOpen}
+          className="block w-full"
+          aria-label={`Open ${product.title}`}
+        >
+          <img
+            src={product.image}
+            alt={product.title}
+            loading="lazy"
+            className="w-full h-auto object-contain bg-slate-50"
+          />
+        </button>
         {product.discount ? (
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[11px] font-bold text-white bg-emerald-500">
             -{product.discount}%
-          </span>
-        ) : null}
-        {product.userPost ? (
-          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-violet-600">
-            Community
           </span>
         ) : null}
         <button
