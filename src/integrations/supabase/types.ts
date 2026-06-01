@@ -35,6 +35,51 @@ export type Database = {
         }
         Relationships: []
       }
+      market_products: {
+        Row: {
+          affiliate_url: string
+          category: string | null
+          created_at: string
+          description: string | null
+          hashtags: string[] | null
+          id: string
+          image_url: string
+          old_price: number | null
+          price: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          affiliate_url: string
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          hashtags?: string[] | null
+          id?: string
+          image_url: string
+          old_price?: number | null
+          price?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          affiliate_url?: string
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          hashtags?: string[] | null
+          id?: string
+          image_url?: string
+          old_price?: number | null
+          price?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       marriage_profiles: {
         Row: {
           about: string | null
