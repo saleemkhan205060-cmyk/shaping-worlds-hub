@@ -269,13 +269,8 @@ function MarketPage() {
           </button>
           <LightboxMediaMenu
             product={lightbox}
-            onBlockUser={(blockedId) => {
-              setBlockedUserIds((prev) => {
-                const next = new Set(prev);
-                next.add(blockedId);
-                return next;
-              });
-              setUserProducts((prev) => prev.filter((p) => p.user_id !== blockedId));
+            onBlockUser={(blockedId: string) => {
+              setUserProducts((prev) => prev.filter((item) => item.user_id !== blockedId));
               setLightbox(null);
             }}
           >
