@@ -270,29 +270,62 @@ export function HomeFeed() {
     }
   };
 
+  // Load marriage profiles when the Marriage tab is selected
+  useEffect(() => {
+    if (tab !== "marriage" || marriage.length > 0) return;
+    supabase
+      .from("marriage_profiles")
+      .select("*")
+      .limit(100)
+      .then(({ data }) => setMarriage(((data ?? []) as MarriageProfile[])));
+  }, [tab, marriage.length]);
+
+  const q = query.trim().toLowerCase();
+  const qBare = q.replace(/^#/, "");
+
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return posts;
-    return posts.filter((p) => {
+    let base = posts;
+    if (tab === "photos") base = base.filter((p) => p.media_type === "image");
+    else if (tab === "videos") base = base.filter((p) => p.media_type === "video");
+    else if (tab === "hashtags") base = base.filter((p) => /#\w+/.test(p.caption ?? ""));
+    if (!q) return base;
+    return base.filter((p) => {
       const prof = profiles[p.user_id];
+      const caption = (p.caption ?? "").toLowerCase();
+      if (tab === "hashtags") return caption.includes(`#${qBare}`);
       return (
-        (p.caption ?? "").toLowerCase().includes(q) ||
+        caption.includes(q) ||
         (p.category ?? "").toLowerCase().includes(q) ||
         (prof?.username ?? "").toLowerCase().includes(q) ||
         (prof?.display_name ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, posts, profiles]);
+  }, [query, posts, profiles, tab, q, qBare]);
 
   const matchedProfiles = useMemo(() => {
-    const q = query.trim().toLowerCase();
     if (!q) return [];
     return Object.values(profiles).filter(
       (p) =>
         (p.username ?? "").toLowerCase().includes(q) ||
         (p.display_name ?? "").toLowerCase().includes(q)
     );
-  }, [query, profiles]);
+  }, [q, profiles]);
+
+  const matchedMarriage = useMemo(() => {
+    if (!q) return marriage;
+    return marriage.filter((m) => {
+      const prof = profiles[m.user_id];
+      return (
+        (prof?.display_name ?? "").toLowerCase().includes(q) ||
+        (prof?.username ?? "").toLowerCase().includes(q) ||
+        (m.country ?? "").toLowerCase().includes(q) ||
+        (m.profession ?? "").toLowerCase().includes(q) ||
+        (m.religion ?? "").toLowerCase().includes(q) ||
+        (m.about ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [q, marriage, profiles]);
+
 
   // Media posts eligible for fullscreen
   const mediaPosts = useMemo(
