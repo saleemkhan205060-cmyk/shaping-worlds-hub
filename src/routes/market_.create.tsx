@@ -84,6 +84,7 @@ function CreateMarketProductPage() {
         old_price: null,
         hashtags: parseTags(hashtags),
         category,
+        is_private: isPrivate,
       } as any);
       if (insErr) throw insErr;
 
