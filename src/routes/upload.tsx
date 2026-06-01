@@ -18,6 +18,7 @@ function UploadPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
+  const [isPrivate, setIsPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
