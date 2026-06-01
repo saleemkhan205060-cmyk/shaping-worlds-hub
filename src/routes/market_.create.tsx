@@ -174,39 +174,26 @@ function CreateMarketProductPage() {
             </div>
           </Field>
 
-          <Field label="Privacy">
+          <div className="flex items-center justify-between gap-2 pt-2">
+            <select
+              value={isPrivate ? "private" : "public"}
+              onChange={(e) => setIsPrivate(e.target.value === "private")}
+              className="px-3 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-violet-400"
+              aria-label="Product privacy"
+            >
+              <option value="public">🌐 Public</option>
+              <option value="private">🔒 Private — only you</option>
+            </select>
             <div className="flex gap-2">
-              {[
-                { v: false, label: "Public", hint: "Visible to everyone" },
-                { v: true, label: "Private", hint: "Only you can see it" },
-              ].map((opt) => (
-                <button
-                  key={opt.label}
-                  onClick={() => setIsPrivate(opt.v)}
-                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition border ${
-                    isPrivate === opt.v
-                      ? "bg-violet-600 text-white border-violet-600"
-                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  <div>{opt.label}</div>
-                  <div className={`text-[11px] ${isPrivate === opt.v ? "text-violet-100" : "text-slate-400"}`}>{opt.hint}</div>
-                </button>
-              ))}
+              <button onClick={() => navigate({ to: "/market" })} disabled={submitting}
+                className="px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">
+                Cancel
+              </button>
+              <button onClick={handleSubmit} disabled={submitting}
+                className="px-4 py-2.5 rounded-full bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 disabled:opacity-50 inline-flex items-center justify-center gap-2">
+                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing…</> : "Publish"}
+              </button>
             </div>
-          </Field>
-
-
-
-          <div className="flex gap-2 pt-2">
-            <button onClick={() => navigate({ to: "/market" })} disabled={submitting}
-              className="flex-1 px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">
-              Cancel
-            </button>
-            <button onClick={handleSubmit} disabled={submitting}
-              className="flex-1 px-4 py-2.5 rounded-full bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 disabled:opacity-50 inline-flex items-center justify-center gap-2">
-              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing…</> : "Publish"}
-            </button>
           </div>
         </div>
       </div>
