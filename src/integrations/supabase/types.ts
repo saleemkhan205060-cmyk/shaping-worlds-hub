@@ -303,15 +303,7 @@ export type Database = {
           reason?: string
           reporter_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "product_reports_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "market_products"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
