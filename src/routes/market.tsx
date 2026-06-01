@@ -80,7 +80,6 @@ function MarketPage() {
   const [activeCat, setActiveCat] = useState<string>("all");
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [userProducts, setUserProducts] = useState<Product[]>([]);
-  const [blockedUserIds, setBlockedUserIds] = useState<Set<string>>(new Set());
   const [lightbox, setLightbox] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -135,7 +134,6 @@ function MarketPage() {
           trending: true, userPost: true,
         };
       }).filter((product) => !product.user_id || !blocked.has(product.user_id));
-      setBlockedUserIds(blocked);
       setUserProducts(mapped);
     };
     load();
@@ -247,7 +245,6 @@ function MarketPage() {
                 onToggleWish={() => toggleWish(p.id)}
                 onOpen={() => setLightbox(p)}
                 onBlockUser={(blockedId) => {
-                  setBlockedUserIds((prev) => new Set(prev).add(blockedId));
                   setUserProducts((prev) => prev.filter((item) => item.user_id !== blockedId));
                 }}
               />
