@@ -391,6 +391,8 @@ function MarketMediaMenu({
   const [submitting, setSubmitting] = useState(false);
   const longPressTimer = useRef<number | null>(null);
   const longPressTriggered = useRef(false);
+  const touchMoved = useRef(false);
+  const touchHandled = useRef(false);
 
   const clearLongPress = () => {
     if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
@@ -407,11 +409,29 @@ function MarketMediaMenu({
   };
 
   const handleClick = () => {
+    if (touchHandled.current) {
+      touchHandled.current = false;
+      return;
+    }
     if (longPressTriggered.current) {
       longPressTriggered.current = false;
       return;
     }
     onOpen();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    touchMoved.current = false;
+    startLongPress();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    touchHandled.current = true;
+    clearLongPress();
+    if (!longPressTriggered.current && !touchMoved.current) onOpen();
+    longPressTriggered.current = false;
   };
 
   const downloadImage = async () => {
