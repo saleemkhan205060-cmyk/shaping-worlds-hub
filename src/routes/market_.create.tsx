@@ -25,6 +25,7 @@ function CreateMarketProductPage() {
   const [hashtags, setHashtags] = useState("");
   const [affiliateUrl, setAffiliateUrl] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("fashion");
+  const [isPrivate, setIsPrivate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
