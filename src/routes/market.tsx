@@ -272,14 +272,16 @@ function ProductCard({
           </div>
         ) : null}
 
-        <a
-          href={product.url}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="mt-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold transition"
-        >
-          View Deal <ExternalLink className="h-4 w-4" />
-        </a>
+        {product.url ? (
+          <a
+            href={product.url}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="mt-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold transition"
+          >
+            View Deal <ExternalLink className="h-4 w-4" />
+          </a>
+        ) : null}
 
         <div className="flex items-center justify-between pt-2 mt-auto border-t border-slate-100 text-xs text-slate-500">
           <span className="font-medium text-slate-600">{product.store}</span>
