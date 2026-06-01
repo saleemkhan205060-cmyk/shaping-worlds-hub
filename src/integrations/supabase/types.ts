@@ -37,7 +37,7 @@ export type Database = {
       }
       market_products: {
         Row: {
-          affiliate_url: string
+          affiliate_url: string | null
           category: string | null
           created_at: string
           description: string | null
@@ -51,7 +51,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          affiliate_url: string
+          affiliate_url?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
@@ -65,7 +65,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          affiliate_url?: string
+          affiliate_url?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
