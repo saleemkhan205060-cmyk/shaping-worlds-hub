@@ -78,12 +78,12 @@ function CreateMarketProductPage() {
         title: title.trim(),
         description: description.trim() || null,
         image_url: pub.publicUrl,
-        affiliate_url: affiliateUrl.trim() || null,
+        affiliate_url: affiliateUrl.trim() || "",
         price: null,
         old_price: null,
         hashtags: parseTags(hashtags),
         category,
-      });
+      } as any);
       if (insErr) throw insErr;
 
       toast.success("Product published!");
