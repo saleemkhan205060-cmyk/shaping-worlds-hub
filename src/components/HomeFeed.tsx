@@ -46,17 +46,44 @@ type Comment = {
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
+type SearchTab = "all" | "users" | "posts" | "photos" | "videos" | "hashtags" | "marriage" | "market";
+const TABS: { id: SearchTab; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "users", label: "Users" },
+  { id: "posts", label: "Posts" },
+  { id: "photos", label: "Photos" },
+  { id: "videos", label: "Videos" },
+  { id: "hashtags", label: "Hashtags" },
+  { id: "marriage", label: "Marriage" },
+  { id: "market", label: "Market" },
+];
+
+type MarriageProfile = {
+  id: string;
+  user_id: string;
+  age: number | null;
+  looking_for: string | null;
+  country: string | null;
+  profession: string | null;
+  marital_status: string | null;
+  religion: string | null;
+  about: string | null;
+};
+
 export function HomeFeed() {
   const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<SearchTab>("all");
+  const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [posting, setPosting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   // Likes & comments aggregates
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
