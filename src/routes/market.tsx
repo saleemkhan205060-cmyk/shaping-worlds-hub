@@ -267,23 +267,36 @@ function MarketPage() {
           >
             ×
           </button>
-          {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lightbox.image) ? (
-            <video
-              src={lightbox.image}
-              controls
-              autoPlay
-              playsInline
-              className="max-h-full max-w-full"
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <img
-              src={lightbox.image}
-              alt={lightbox.title}
-              className="max-h-full max-w-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
+          <LightboxMediaMenu
+            product={lightbox}
+            onBlockUser={(blockedId: string) => {
+              setUserProducts((prev) => prev.filter((item) => item.user_id !== blockedId));
+              setLightbox(null);
+            }}
+          >
+            {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lightbox.image) ? (
+              <video
+                src={lightbox.image}
+                controls
+                autoPlay
+                playsInline
+                className="max-h-full max-w-full"
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => e.preventDefault()}
+                style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
+              />
+            ) : (
+              <img
+                src={lightbox.image}
+                alt={lightbox.title}
+                className="max-h-full max-w-full object-contain"
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => e.preventDefault()}
+                draggable={false}
+                style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
+              />
+            )}
+          </LightboxMediaMenu>
         </div>
       ) : null}
     </Layout>
@@ -555,6 +568,179 @@ function MarketMediaMenu({
               {REPORT_REASONS.map((item) => (
                 <label key={item.value} className="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">
                   <input type="radio" name={`report-${product.id}`} value={item.value} checked={reason === item.value} onChange={() => setReason(item.value)} />
+                  {item.label}
+                </label>
+              ))}
+            </div>
+            <textarea
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              placeholder="Optional details"
+              className="mt-4 w-full min-h-24 rounded-2xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300"
+              maxLength={500}
+            />
+            <button
+              disabled={submitting}
+              onClick={submitReport}
+              className="mt-4 w-full h-11 rounded-2xl bg-violet-600 text-white text-sm font-bold disabled:opacity-60"
+            >
+              {submitting ? "Submitting…" : "Submit Report"}
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+function LightboxMediaMenu({
+  product, children, onBlockUser,
+}: {
+  product: Product;
+  children: React.ReactNode;
+  onBlockUser: (blockedId: string) => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reason, setReason] = useState<ReportReason>("spam");
+  const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const longPressTimer = useRef<number | null>(null);
+  const longPressTriggered = useRef(false);
+
+  const clearLongPress = () => {
+    if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  };
+  const startLongPress = () => {
+    longPressTriggered.current = false;
+    clearLongPress();
+    longPressTimer.current = window.setTimeout(() => {
+      longPressTriggered.current = true;
+      try { if ("vibrate" in navigator) navigator.vibrate(15); } catch {}
+      setMenuOpen(true);
+    }, 450);
+  };
+
+  const downloadImage = async () => {
+    setMenuOpen(false);
+    try {
+      const response = await fetch(product.image);
+      if (!response.ok) throw new Error("download failed");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const extension = blob.type.split("/")[1] || "jpg";
+      link.href = url;
+      link.download = `${product.title.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "product"}.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Could not download image");
+    }
+  };
+
+  const submitReport = async () => {
+    setSubmitting(true);
+    const { data: authData } = await supabase.auth.getUser();
+    const userId = authData.user?.id;
+    if (!userId) {
+      toast.error("Please sign in to report products");
+      setSubmitting(false);
+      return;
+    }
+    const { error } = await (supabase as any).from("product_reports").insert({
+      product_id: product.id,
+      reporter_id: userId,
+      reason,
+      details: details.trim() || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      if (error.code === "23505") toast.info("You already reported this product");
+      else toast.error("Could not submit report");
+      return;
+    }
+    setReportOpen(false);
+    setDetails("");
+    setReason("spam");
+    toast.success("Product reported");
+  };
+
+  const blockUser = async () => {
+    setMenuOpen(false);
+    if (!product.user_id) {
+      toast.error("This product cannot be blocked");
+      return;
+    }
+    const { data: authData } = await supabase.auth.getUser();
+    const userId = authData.user?.id;
+    if (!userId) {
+      toast.error("Please sign in to block users");
+      return;
+    }
+    const { error } = await (supabase as any).from("user_blocks").insert({
+      blocker_id: userId,
+      blocked_id: product.user_id,
+    });
+    if (error && error.code !== "23505") {
+      toast.error("Could not block user");
+      return;
+    }
+    onBlockUser(product.user_id);
+    toast.success("User blocked");
+  };
+
+  return (
+    <>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        onContextMenu={(e) => { e.preventDefault(); setMenuOpen(true); }}
+        onTouchStart={startLongPress}
+        onTouchEnd={clearLongPress}
+        onTouchMove={clearLongPress}
+        onTouchCancel={clearLongPress}
+        onPointerDown={(e) => { if (e.pointerType !== "touch") startLongPress(); }}
+        onPointerUp={(e) => { if (e.pointerType !== "touch") clearLongPress(); }}
+        onPointerCancel={clearLongPress}
+        onPointerLeave={clearLongPress}
+        style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
+        className="max-h-full max-w-full flex items-center justify-center"
+      >
+        {children}
+      </div>
+
+      {menuOpen ? (
+        <div className="fixed inset-0 z-[140] bg-black/40 flex items-end" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}>
+          <div className="w-full rounded-t-3xl bg-white p-3 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button className="w-full h-12 flex items-center gap-3 px-4 text-sm font-semibold text-slate-800" onClick={downloadImage}>
+              <Download className="h-5 w-5" /> Download Image
+            </button>
+            <button className="w-full h-12 flex items-center gap-3 px-4 text-sm font-semibold text-slate-800" onClick={() => { setMenuOpen(false); setReportOpen(true); }}>
+              <Flag className="h-5 w-5" /> Report Product
+            </button>
+            <button className="w-full h-12 flex items-center gap-3 px-4 text-sm font-semibold text-red-600" onClick={blockUser}>
+              <Ban className="h-5 w-5" /> Block User
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {reportOpen ? (
+        <div className="fixed inset-0 z-[150] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-extrabold text-slate-900">Report Product</h3>
+              <button className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center" onClick={() => setReportOpen(false)} aria-label="Close report form">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-2">
+              {REPORT_REASONS.map((item) => (
+                <label key={item.value} className="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">
+                  <input type="radio" name={`lightbox-report-${product.id}`} value={item.value} checked={reason === item.value} onChange={() => setReason(item.value)} />
                   {item.label}
                 </label>
               ))}
