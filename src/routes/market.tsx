@@ -199,14 +199,15 @@ function MarketPage() {
       {filtered.length === 0 ? (
         <div className="text-center py-16 text-slate-500">No products match your search.</div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 sm:gap-4">
           {filtered.map((p) => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              liked={wishlist.has(p.id)}
-              onToggleWish={() => toggleWish(p.id)}
-            />
+            <div key={p.id} className="mb-3 sm:mb-4 break-inside-avoid">
+              <ProductCard
+                product={p}
+                liked={wishlist.has(p.id)}
+                onToggleWish={() => toggleWish(p.id)}
+              />
+            </div>
           ))}
         </div>
       )}
