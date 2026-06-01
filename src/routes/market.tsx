@@ -216,11 +216,46 @@ function MarketPage() {
                 product={p}
                 liked={wishlist.has(p.id)}
                 onToggleWish={() => toggleWish(p.id)}
+                onOpen={() => setLightbox(p)}
               />
             </div>
           ))}
         </div>
       )}
+
+      {lightbox ? (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); setLightbox(null); }}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white text-2xl leading-none flex items-center justify-center"
+            aria-label="Close"
+          >
+            ×
+          </button>
+          {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lightbox.image) ? (
+            <video
+              src={lightbox.image}
+              controls
+              autoPlay
+              playsInline
+              className="max-h-full max-w-full"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={lightbox.image}
+              alt={lightbox.title}
+              className="max-h-full max-w-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </div>
+      ) : null}
     </Layout>
   );
 }
