@@ -392,17 +392,37 @@ export function HomeFeed() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           type="search"
-          placeholder="Search posts, users, hashtags…"
+          placeholder="Search users, posts, photos, videos, hashtags, marriage, market…"
           className="w-full h-12 pl-11 pr-4 rounded-full bg-white border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
         />
       </div>
 
-      {/* Search profile matches */}
-      {query.trim() && matchedProfiles.length > 0 && (
+      {/* Category tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+        {TABS.map((t) => {
+          const active = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
+                active
+                  ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Users tab / People matches */}
+      {(tab === "users" || (tab === "all" && q)) && matchedProfiles.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 p-3">
           <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
           <div className="flex gap-3 overflow-x-auto">
-            {matchedProfiles.slice(0, 10).map((p) => (
+            {matchedProfiles.slice(0, 20).map((p) => (
               <Link
                 key={p.id}
                 to="/u/$id"
@@ -424,6 +444,56 @@ export function HomeFeed() {
           </div>
         </div>
       )}
+
+      {/* Marriage tab */}
+      {tab === "marriage" && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-3 space-y-2">
+          <p className="text-xs font-semibold text-slate-500 px-2">Marriage Profiles</p>
+          {matchedMarriage.length === 0 ? (
+            <p className="text-sm text-slate-500 px-2 py-4 text-center">No marriage profiles found.</p>
+          ) : (
+            matchedMarriage.slice(0, 30).map((m) => {
+              const prof = profiles[m.user_id];
+              const name = prof?.display_name ?? prof?.username ?? "Member";
+              return (
+                <Link
+                  key={m.id}
+                  to="/marriage"
+                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition"
+                >
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold overflow-hidden">
+                    {prof?.avatar_url ? (
+                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
+                    ) : (
+                      name[0]?.toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{name}</p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* Market tab */}
+      {tab === "market" && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
+          <p className="text-sm text-slate-600 mb-3">Browse market items by category.</p>
+          <Link
+            to="/market"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600"
+          >
+            Open Market
+          </Link>
+        </div>
+      )}
+
 
       {/* Composer */}
       {user && (
