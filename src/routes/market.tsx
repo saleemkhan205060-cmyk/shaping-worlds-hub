@@ -510,10 +510,14 @@ function MarketMediaMenu({
       <button
         type="button"
         onClick={handleClick}
-        onPointerDown={startLongPress}
-        onPointerUp={clearLongPress}
+        onPointerDown={(e) => { if (e.pointerType !== "touch") startLongPress(); }}
+        onPointerUp={(e) => { if (e.pointerType !== "touch") clearLongPress(); }}
         onPointerCancel={clearLongPress}
         onPointerLeave={clearLongPress}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={(e) => { e.preventDefault(); touchMoved.current = true; clearLongPress(); }}
+        onTouchCancel={clearLongPress}
         onContextMenu={(e) => { e.preventDefault(); setMenuOpen(true); }}
         style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
         className="block w-full"
