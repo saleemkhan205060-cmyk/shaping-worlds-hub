@@ -23,15 +23,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const [notifOpen, setNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
   // Close notifications on outside click or route change
   useEffect(() => {
     setNotifOpen(false);
-    setSearchOpen(false);
   }, [path]);
 
   useEffect(() => {
@@ -45,12 +42,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("mousedown", onDoc);
   }, [notifOpen]);
 
-  const onSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    setSearchOpen(false);
-    navigate({ to: "/videos" });
-  };
 
   const handleSignOut = async () => {
     await signOut();
