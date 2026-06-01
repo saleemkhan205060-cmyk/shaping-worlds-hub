@@ -5,6 +5,7 @@ import { UploadCloud, Loader2, X, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 
 export const Route = createFileRoute("/market_/create")({
   component: CreateMarketProductPage,
@@ -175,15 +176,7 @@ function CreateMarketProductPage() {
           </Field>
 
           <div className="flex items-center justify-between gap-2 pt-2">
-            <select
-              value={isPrivate ? "private" : "public"}
-              onChange={(e) => setIsPrivate(e.target.value === "private")}
-              className="px-3 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-violet-400"
-              aria-label="Product privacy"
-            >
-              <option value="public">🌐 Public</option>
-              <option value="private">🔒 Private — only you</option>
-            </select>
+            <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} accent="violet" />
             <div className="flex gap-2">
               <button onClick={() => navigate({ to: "/market" })} disabled={submitting}
                 className="px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">

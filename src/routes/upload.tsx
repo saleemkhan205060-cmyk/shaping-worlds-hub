@@ -5,6 +5,7 @@ import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X } from 
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
@@ -163,15 +164,7 @@ function UploadPage() {
           </div>
 
           <div className="flex items-center justify-between gap-2 pt-2">
-            <select
-              value={isPrivate ? "private" : "public"}
-              onChange={(e) => setIsPrivate(e.target.value === "private")}
-              className="px-3 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-400"
-              aria-label="Post privacy"
-            >
-              <option value="public">🌐 Public</option>
-              <option value="private">🔒 Private — only you</option>
-            </select>
+            <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} />
             <div className="flex gap-2">
               <button
                 onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}

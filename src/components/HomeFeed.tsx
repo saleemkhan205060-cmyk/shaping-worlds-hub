@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
+import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 
 type Post = {
   id: string;
@@ -553,15 +554,7 @@ export function HomeFeed() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <select
-                value={isPrivate ? "private" : "public"}
-                onChange={(e) => setIsPrivate(e.target.value === "private")}
-                className="px-2 py-1.5 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-400"
-                aria-label="Post privacy"
-              >
-                <option value="public">🌐 Public</option>
-                <option value="private">🔒 Private</option>
-              </select>
+              <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} align="right" />
               <button
                 onClick={submit}
                 disabled={posting || !file}
