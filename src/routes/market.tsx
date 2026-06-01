@@ -267,23 +267,41 @@ function MarketPage() {
           >
             ×
           </button>
-          {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lightbox.image) ? (
-            <video
-              src={lightbox.image}
-              controls
-              autoPlay
-              playsInline
-              className="max-h-full max-w-full"
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <img
-              src={lightbox.image}
-              alt={lightbox.title}
-              className="max-h-full max-w-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
+          <LightboxMediaMenu
+            product={lightbox}
+            onBlockUser={(blockedId) => {
+              setBlockedUserIds((prev) => {
+                const next = new Set(prev);
+                next.add(blockedId);
+                return next;
+              });
+              setUserProducts((prev) => prev.filter((p) => p.user_id !== blockedId));
+              setLightbox(null);
+            }}
+          >
+            {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lightbox.image) ? (
+              <video
+                src={lightbox.image}
+                controls
+                autoPlay
+                playsInline
+                className="max-h-full max-w-full"
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => e.preventDefault()}
+                style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
+              />
+            ) : (
+              <img
+                src={lightbox.image}
+                alt={lightbox.title}
+                className="max-h-full max-w-full object-contain"
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => e.preventDefault()}
+                draggable={false}
+                style={{ WebkitTouchCallout: "none", userSelect: "none" } as any}
+              />
+            )}
+          </LightboxMediaMenu>
         </div>
       ) : null}
     </Layout>
