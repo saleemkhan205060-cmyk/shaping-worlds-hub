@@ -162,6 +162,28 @@ function UploadPage() {
             </div>
           </div>
 
+          <div>
+            <label className="text-sm font-medium text-slate-700">Privacy</label>
+            <div className="mt-1 flex gap-2">
+              {[
+                { v: false, label: "Public", hint: "Anyone can see" },
+                { v: true, label: "Private", hint: "Only you" },
+              ].map((opt) => (
+                <button
+                  key={opt.label}
+                  onClick={() => setIsPrivate(opt.v)}
+                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition border ${
+                    isPrivate === opt.v
+                      ? "bg-indigo-600 text-white border-indigo-600"
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                  }`}
+                >
+                  <div>{opt.label}</div>
+                  <div className={`text-[11px] ${isPrivate === opt.v ? "text-indigo-100" : "text-slate-400"}`}>{opt.hint}</div>
+                </button>
+              ))}
+            </div>
+
           <div className="flex gap-2 pt-2">
             <button
               onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
