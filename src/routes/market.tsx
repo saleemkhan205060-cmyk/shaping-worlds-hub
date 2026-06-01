@@ -64,6 +64,17 @@ const SEED_PRODUCTS: Product[] = [
 
 const WISHLIST_KEY = "viplife.market.wishlist";
 
+const REPORT_REASONS = [
+  { value: "spam", label: "Spam" },
+  { value: "fake_product", label: "Fake Product" },
+  { value: "adult_content", label: "Adult Content" },
+  { value: "copyright", label: "Copyright Issue" },
+  { value: "scam_fraud", label: "Scam/Fraud" },
+  { value: "other", label: "Other" },
+] as const;
+
+type ReportReason = (typeof REPORT_REASONS)[number]["value"];
+
 function MarketPage() {
   const [query, setQuery] = useState("");
   const [activeCat, setActiveCat] = useState<string>("all");
