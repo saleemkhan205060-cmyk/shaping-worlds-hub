@@ -24,8 +24,6 @@ function CreateMarketProductPage() {
   const [description, setDescription] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [affiliateUrl, setAffiliateUrl] = useState("");
-  const [price, setPrice] = useState("");
-  const [oldPrice, setOldPrice] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("fashion");
   const [submitting, setSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,11 +53,14 @@ function CreateMarketProductPage() {
     if (!user) return;
     if (!file) return toast.error("Add a product image");
     if (!title.trim()) return toast.error("Add a product title");
-    if (!affiliateUrl.trim()) return toast.error("Add your affiliate link");
-    try {
-      new URL(affiliateUrl);
-    } catch {
-      return toast.error("Affiliate link must be a valid URL");
+
+    // Validate affiliate URL only if provided
+    if (affiliateUrl.trim()) {
+      try {
+        new URL(affiliateUrl);
+      } catch {
+        return toast.error("Affiliate link must be a valid URL");
+      }
     }
 
     setSubmitting(true);
@@ -77,12 +78,12 @@ function CreateMarketProductPage() {
         title: title.trim(),
         description: description.trim() || null,
         image_url: pub.publicUrl,
-        affiliate_url: affiliateUrl.trim(),
-        price: price ? Number(price) : null,
-        old_price: oldPrice ? Number(oldPrice) : null,
+        affiliate_url: affiliateUrl.trim() || "",
+        price: null,
+        old_price: null,
         hashtags: parseTags(hashtags),
         category,
-      });
+      } as any);
       if (insErr) throw insErr;
 
       toast.success("Product published!");
@@ -155,21 +156,10 @@ function CreateMarketProductPage() {
               placeholder="#sneakers #fashion #deal" className={inputCls} />
           </Field>
 
-          <Field label="Affiliate link">
+          <Field label="Affiliate link (optional)">
             <input value={affiliateUrl} onChange={(e) => setAffiliateUrl(e.target.value)}
-              type="url" placeholder="https://amazon.com/..." className={inputCls} />
+              type="url" placeholder="https://amazon.com/... (optional)" className={inputCls} />
           </Field>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Price ($)">
-              <input value={price} onChange={(e) => setPrice(e.target.value)} type="number" min="0" step="0.01"
-                placeholder="120" className={inputCls} />
-            </Field>
-            <Field label="Old price ($)">
-              <input value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" min="0" step="0.01"
-                placeholder="150" className={inputCls} />
-            </Field>
-          </div>
 
           <Field label="Category">
             <div className="flex flex-wrap gap-2">
