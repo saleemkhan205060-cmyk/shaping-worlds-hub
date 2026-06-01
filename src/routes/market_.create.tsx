@@ -25,6 +25,7 @@ function CreateMarketProductPage() {
   const [hashtags, setHashtags] = useState("");
   const [affiliateUrl, setAffiliateUrl] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("fashion");
+  const [isPrivate, setIsPrivate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -83,6 +84,7 @@ function CreateMarketProductPage() {
         old_price: null,
         hashtags: parseTags(hashtags),
         category,
+        is_private: isPrivate,
       } as any);
       if (insErr) throw insErr;
 
@@ -171,6 +173,30 @@ function CreateMarketProductPage() {
               ))}
             </div>
           </Field>
+
+          <Field label="Privacy">
+            <div className="flex gap-2">
+              {[
+                { v: false, label: "Public", hint: "Visible to everyone" },
+                { v: true, label: "Private", hint: "Only you can see it" },
+              ].map((opt) => (
+                <button
+                  key={opt.label}
+                  onClick={() => setIsPrivate(opt.v)}
+                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition border ${
+                    isPrivate === opt.v
+                      ? "bg-violet-600 text-white border-violet-600"
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                  }`}
+                >
+                  <div>{opt.label}</div>
+                  <div className={`text-[11px] ${isPrivate === opt.v ? "text-violet-100" : "text-slate-400"}`}>{opt.hint}</div>
+                </button>
+              ))}
+            </div>
+          </Field>
+
+
 
           <div className="flex gap-2 pt-2">
             <button onClick={() => navigate({ to: "/market" })} disabled={submitting}
