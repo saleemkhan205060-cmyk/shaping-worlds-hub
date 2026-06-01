@@ -84,6 +84,7 @@ export function HomeFeed() {
   const [preview, setPreview] = useState<string | null>(null);
   const [posting, setPosting] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
 
