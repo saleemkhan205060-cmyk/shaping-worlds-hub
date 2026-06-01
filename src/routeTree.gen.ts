@@ -21,7 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MarriageIndexRouteImport } from './routes/marriage.index'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
-import { Route as MarketCreateRouteImport } from './routes/market.create'
+import { Route as MarketCreateRouteImport } from './routes/market_.create'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -84,15 +84,15 @@ const MarriageEditRoute = MarriageEditRouteImport.update({
   getParentRoute: () => MarriageRoute,
 } as any)
 const MarketCreateRoute = MarketCreateRouteImport.update({
-  id: '/create',
-  path: '/create',
-  getParentRoute: () => MarketRoute,
+  id: '/market_/create',
+  path: '/market/create',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/market': typeof MarketRouteWithChildren
+  '/market': typeof MarketRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
@@ -107,7 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/market': typeof MarketRouteWithChildren
+  '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -122,14 +122,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/market': typeof MarketRouteWithChildren
+  '/market': typeof MarketRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
-  '/market/create': typeof MarketCreateRoute
+  '/market_/create': typeof MarketCreateRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
   '/marriage/': typeof MarriageIndexRoute
@@ -175,7 +175,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/upload'
     | '/videos'
-    | '/market/create'
+    | '/market_/create'
     | '/marriage/edit'
     | '/u/$id'
     | '/marriage/'
@@ -184,13 +184,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
-  MarketRoute: typeof MarketRouteWithChildren
+  MarketRoute: typeof MarketRoute
   MarriageRoute: typeof MarriageRouteWithChildren
   MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
+  MarketCreateRoute: typeof MarketCreateRoute
   UIdRoute: typeof UIdRoute
 }
 
@@ -280,26 +281,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarriageEditRouteImport
       parentRoute: typeof MarriageRoute
     }
-    '/market/create': {
-      id: '/market/create'
-      path: '/create'
+    '/market_/create': {
+      id: '/market_/create'
+      path: '/market/create'
       fullPath: '/market/create'
       preLoaderRoute: typeof MarketCreateRouteImport
-      parentRoute: typeof MarketRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface MarketRouteChildren {
-  MarketCreateRoute: typeof MarketCreateRoute
-}
-
-const MarketRouteChildren: MarketRouteChildren = {
-  MarketCreateRoute: MarketCreateRoute,
-}
-
-const MarketRouteWithChildren =
-  MarketRoute._addFileChildren(MarketRouteChildren)
 
 interface MarriageRouteChildren {
   MarriageEditRoute: typeof MarriageEditRoute
@@ -318,13 +308,14 @@ const MarriageRouteWithChildren = MarriageRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
-  MarketRoute: MarketRouteWithChildren,
+  MarketRoute: MarketRoute,
   MarriageRoute: MarriageRouteWithChildren,
   MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
+  MarketCreateRoute: MarketCreateRoute,
   UIdRoute: UIdRoute,
 }
 export const routeTree = rootRouteImport

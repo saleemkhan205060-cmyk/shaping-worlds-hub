@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/market/create")({
+export const Route = createFileRoute("/market_/create")({
   component: CreateMarketProductPage,
   head: () => ({ meta: [{ title: "Post a Product — VIP Life Market" }] }),
 });
