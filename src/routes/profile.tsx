@@ -51,6 +51,41 @@ function Profile() {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [savingAbout, setSavingAbout] = useState(false);
+  const [editingBio, setEditingBio] = useState(false);
+  const [bioText, setBioText] = useState("");
+  const [bioLocation, setBioLocation] = useState("");
+  const [bioWebsite, setBioWebsite] = useState("");
+  const [savingBio, setSavingBio] = useState(false);
+
+  const DEFAULT_BIO =
+    "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
+
+  const startEditBio = () => {
+    setBioText(profile?.bio ?? DEFAULT_BIO);
+    setBioLocation(profile?.location ?? "Global");
+    setBioWebsite(profile?.website ?? "shapingworld.com");
+    setEditingBio(true);
+  };
+
+  const saveBio = async () => {
+    if (!user) return;
+    setSavingBio(true);
+    const updates = {
+      bio: bioText.trim() || null,
+      location: bioLocation.trim() || null,
+      website: bioWebsite.trim() || null,
+    };
+    const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
+    if (error) {
+      toast.error("Failed to update bio");
+      setSavingBio(false);
+      return;
+    }
+    setProfile((p) => (p ? { ...p, ...updates } : p));
+    toast.success("Bio updated");
+    setSavingBio(false);
+    setEditingBio(false);
+  };
 
   const startEditAbout = () => {
     setEditName(profile?.display_name ?? user?.email?.split("@")[0] ?? "");
