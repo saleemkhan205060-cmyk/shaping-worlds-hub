@@ -401,10 +401,67 @@ function Profile() {
           <div className="text-center py-12 text-slate-500 text-sm">No businesses listed yet.</div>
         )}
         {tab === "About" && (
-          <div className="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-2">
-            <p><strong>Name:</strong> {displayName}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Joined:</strong> {joined}</p>
+          <div className="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-3">
+            {!editingAbout ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-slate-900">Account info</h3>
+                  <button
+                    onClick={startEditAbout}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700"
+                  >
+                    <Pencil className="h-3.5 w-3.5" /> Edit
+                  </button>
+                </div>
+                <p><strong>Name:</strong> {displayName}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Joined:</strong> {joined}</p>
+              </>
+            ) : (
+              <>
+                <h3 className="font-semibold text-slate-900">Edit account info</h3>
+                <label className="block">
+                  <span className="text-xs font-medium text-slate-600">Profile name</span>
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    maxLength={100}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs font-medium text-slate-600">Email address</span>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    maxLength={255}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <span className="text-[11px] text-slate-500 mt-1 block">
+                    Changing your email requires confirmation via a link sent to the new address.
+                  </span>
+                </label>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    onClick={saveAbout}
+                    disabled={savingAbout}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 disabled:opacity-60"
+                  >
+                    {savingAbout ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingAbout(false)}
+                    disabled={savingAbout}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200"
+                  >
+                    <X className="h-3.5 w-3.5" /> Cancel
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
