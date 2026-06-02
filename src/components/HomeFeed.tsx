@@ -47,14 +47,11 @@ type Comment = {
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
-type SearchTab = "all" | "users" | "posts" | "photos" | "videos" | "hashtags" | "marriage" | "market";
+type SearchTab = "videos" | "photos" | "users" | "marriage" | "market";
 const TABS: { id: SearchTab; label: string }[] = [
-  { id: "all", label: "All" },
+  { id: "videos", label: "Video" },
+  { id: "photos", label: "Photo" },
   { id: "users", label: "Users" },
-  { id: "posts", label: "Posts" },
-  { id: "photos", label: "Photos" },
-  { id: "videos", label: "Videos" },
-  { id: "hashtags", label: "Hashtags" },
   { id: "marriage", label: "Marriage" },
   { id: "market", label: "Market" },
 ];
