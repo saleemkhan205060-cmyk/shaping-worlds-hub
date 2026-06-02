@@ -20,7 +20,7 @@ type Post = {
   is_private: boolean;
 };
 
-const TABS = ["Posts", "Videos", "Businesses", "About"] as const;
+const TABS = ["Posts", "Videos", "About"] as const;
 type Tab = (typeof TABS)[number];
 
 type ProfileRow = {
