@@ -29,6 +29,9 @@ type ProfileRow = {
   username: string | null;
   avatar_url: string | null;
   cover_url: string | null;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
   created_at: string;
 };
 
