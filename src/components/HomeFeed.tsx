@@ -283,7 +283,6 @@ export function HomeFeed() {
   }, [tab, marriage.length]);
 
   const q = query.trim().toLowerCase();
-  const qBare = q.replace(/^#/, "");
 
   const filtered = useMemo(() => {
     let base = posts;
