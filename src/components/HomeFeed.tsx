@@ -47,10 +47,11 @@ type Comment = {
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
-type SearchTab = "videos" | "photos" | "users" | "marriage" | "market";
+type SearchTab = "all" | "videos" | "photos" | "users" | "marriage" | "market";
 const TABS: { id: SearchTab; label: string }[] = [
-  { id: "videos", label: "Video" },
-  { id: "photos", label: "Photo" },
+  { id: "all", label: "All" },
+  { id: "videos", label: "Videos" },
+  { id: "photos", label: "Photos" },
   { id: "users", label: "Users" },
   { id: "marriage", label: "Marriage" },
   { id: "market", label: "Market" },
@@ -74,7 +75,7 @@ export function HomeFeed() {
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<SearchTab>("videos");
+  const [tab, setTab] = useState<SearchTab>("all");
   const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -288,6 +289,7 @@ export function HomeFeed() {
     let base = posts;
     if (tab === "photos") base = base.filter((p) => p.media_type === "image");
     else if (tab === "videos") base = base.filter((p) => p.media_type === "video");
+    else if (tab === "all") base = base;
     if (!q) return base;
     return base.filter((p) => {
       const prof = profiles[p.user_id];
