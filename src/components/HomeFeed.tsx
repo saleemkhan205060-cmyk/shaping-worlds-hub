@@ -289,6 +289,7 @@ export function HomeFeed() {
     let base = posts;
     if (tab === "photos") base = base.filter((p) => p.media_type === "image");
     else if (tab === "videos") base = base.filter((p) => p.media_type === "video");
+    else if (tab === "all") base = base;
     if (!q) return base;
     return base.filter((p) => {
       const prof = profiles[p.user_id];
