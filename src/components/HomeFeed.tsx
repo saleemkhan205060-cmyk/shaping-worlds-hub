@@ -575,28 +575,31 @@ export function HomeFeed() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => { setIsPrivate(false); setPrivacyOpen(false); }}
+                    onClick={() => { setIsPrivate(false); }}
                     className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${!isPrivate ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     <Globe2 className="h-4 w-4" /> Public
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setIsPrivate(true); setPrivacyOpen(false); }}
+                    onClick={() => { setIsPrivate(true); }}
                     className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${isPrivate ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     <Lock className="h-4 w-4" /> Private
                   </button>
+                  <div className="my-1 h-px bg-slate-100" />
+                  <button
+                    type="button"
+                    onClick={() => { submit(); setPrivacyOpen(false); }}
+                    disabled={posting || !file}
+                    className="flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
+                  >
+                    {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    Post
+                  </button>
                 </div>
               )}
-              <button
-                onClick={submit}
-                disabled={posting || !file}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
-              >
-                {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                Post
-              </button>
+
             </div>
           </div>
         </div>
