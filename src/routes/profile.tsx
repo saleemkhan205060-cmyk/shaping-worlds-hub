@@ -20,7 +20,7 @@ type Post = {
   is_private: boolean;
 };
 
-const TABS = ["Posts", "Videos", "Businesses", "About"] as const;
+const TABS = ["Posts", "Videos", "About"] as const;
 type Tab = (typeof TABS)[number];
 
 type ProfileRow = {
@@ -397,9 +397,6 @@ function Profile() {
             </div>
           );
         })()}
-        {tab === "Businesses" && (
-          <div className="text-center py-12 text-slate-500 text-sm">No businesses listed yet.</div>
-        )}
         {tab === "About" && (
           <div className="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-3">
             {!editingAbout ? (
