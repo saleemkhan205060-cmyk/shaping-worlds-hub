@@ -289,12 +289,10 @@ export function HomeFeed() {
     let base = posts;
     if (tab === "photos") base = base.filter((p) => p.media_type === "image");
     else if (tab === "videos") base = base.filter((p) => p.media_type === "video");
-    else if (tab === "hashtags") base = base.filter((p) => /#\w+/.test(p.caption ?? ""));
     if (!q) return base;
     return base.filter((p) => {
       const prof = profiles[p.user_id];
       const caption = (p.caption ?? "").toLowerCase();
-      if (tab === "hashtags") return caption.includes(`#${qBare}`);
       return (
         caption.includes(q) ||
         (p.category ?? "").toLowerCase().includes(q) ||
@@ -302,7 +300,7 @@ export function HomeFeed() {
         (prof?.display_name ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, posts, profiles, tab, q, qBare]);
+  }, [query, posts, profiles, tab, q]);
 
   const matchedProfiles = useMemo(() => {
     if (!q) return [];
