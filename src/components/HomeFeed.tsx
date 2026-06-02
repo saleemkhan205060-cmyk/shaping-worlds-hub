@@ -47,14 +47,11 @@ type Comment = {
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
-type SearchTab = "all" | "users" | "posts" | "photos" | "videos" | "hashtags" | "marriage" | "market";
+type SearchTab = "videos" | "photos" | "users" | "marriage" | "market";
 const TABS: { id: SearchTab; label: string }[] = [
-  { id: "all", label: "All" },
+  { id: "videos", label: "Video" },
+  { id: "photos", label: "Photo" },
   { id: "users", label: "Users" },
-  { id: "posts", label: "Posts" },
-  { id: "photos", label: "Photos" },
-  { id: "videos", label: "Videos" },
-  { id: "hashtags", label: "Hashtags" },
   { id: "marriage", label: "Marriage" },
   { id: "market", label: "Market" },
 ];
@@ -77,7 +74,7 @@ export function HomeFeed() {
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<SearchTab>("all");
+  const [tab, setTab] = useState<SearchTab>("videos");
   const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -286,18 +283,15 @@ export function HomeFeed() {
   }, [tab, marriage.length]);
 
   const q = query.trim().toLowerCase();
-  const qBare = q.replace(/^#/, "");
 
   const filtered = useMemo(() => {
     let base = posts;
     if (tab === "photos") base = base.filter((p) => p.media_type === "image");
     else if (tab === "videos") base = base.filter((p) => p.media_type === "video");
-    else if (tab === "hashtags") base = base.filter((p) => /#\w+/.test(p.caption ?? ""));
     if (!q) return base;
     return base.filter((p) => {
       const prof = profiles[p.user_id];
       const caption = (p.caption ?? "").toLowerCase();
-      if (tab === "hashtags") return caption.includes(`#${qBare}`);
       return (
         caption.includes(q) ||
         (p.category ?? "").toLowerCase().includes(q) ||
@@ -305,7 +299,7 @@ export function HomeFeed() {
         (prof?.display_name ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, posts, profiles, tab, q, qBare]);
+  }, [query, posts, profiles, tab, q]);
 
   const matchedProfiles = useMemo(() => {
     if (!q) return [];
@@ -423,7 +417,7 @@ export function HomeFeed() {
       </div>
 
       {/* Users tab / People matches */}
-      {(tab === "users" || (tab === "all" && q)) && matchedProfiles.length > 0 && (
+      {tab === "users" && matchedProfiles.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 p-3">
           <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
           <div className="flex gap-3 overflow-x-auto">
