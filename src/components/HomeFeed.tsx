@@ -418,7 +418,7 @@ export function HomeFeed() {
       </div>
 
       {/* Users tab / People matches */}
-      {(tab === "users" || (tab === "all" && q)) && matchedProfiles.length > 0 && (
+      {tab === "users" && matchedProfiles.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 p-3">
           <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
           <div className="flex gap-3 overflow-x-auto">
