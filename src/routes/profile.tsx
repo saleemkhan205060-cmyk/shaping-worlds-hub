@@ -152,12 +152,6 @@ function Profile() {
       .then(({ count }) => setFollowingCount(count ?? 0));
   }, [user]);
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success("Signed out");
-    navigate({ to: "/" });
-  };
-
   const handleDeletePost = async (id: string) => {
     if (!confirm("Delete this post? This cannot be undone.")) return;
     const prev = posts;
