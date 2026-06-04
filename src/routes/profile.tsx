@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Save, X, UserPlus, Share2, ChevronDown, Star, User } from "lucide-react";
+import { Pencil, Save, X, UserPlus, Share2, ChevronDown, Star, User, Menu } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 
 export const Route = createFileRoute("/profile")({ component: Profile });
@@ -21,7 +22,7 @@ type Post = {
   is_private: boolean;
 };
 
-const TABS = ["Posts", "Videos", "About"] as const;
+const TABS = ["Posts", "Videos"] as const;
 type Tab = (typeof TABS)[number];
 
 type ProfileRow = {
@@ -50,6 +51,7 @@ function Profile() {
   const [uploading, setUploading] = useState<"avatar" | "cover" | null>(null);
   const [editingAbout, setEditingAbout] = useState(false);
   const [savingAbout, setSavingAbout] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
   const [bioText, setBioText] = useState("");
   const [bioLocation, setBioLocation] = useState("");
@@ -270,6 +272,9 @@ function Profile() {
           <div className="flex items-center gap-4">
             <button type="button" aria-label="Share" className="p-1">
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
+            </button>
+            <button type="button" aria-label="About" className="p-1" onClick={() => setAboutOpen(true)}>
+              <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
           </div>
 
@@ -529,8 +534,13 @@ function Profile() {
             </div>
           );
         })()}
-        {tab === "About" && (
-          <div className="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-3">
+      </div>
+      <Drawer open={aboutOpen} onOpenChange={(o) => { setAboutOpen(o); if (!o) setEditingAbout(false); }}>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader>
+            <DrawerTitle>About</DrawerTitle>
+          </DrawerHeader>
+          <div className="px-4 pb-6 overflow-y-auto text-sm text-slate-700 space-y-3">
             {!editingAbout ? (
               <>
                 <div className="flex items-center justify-between">
@@ -547,7 +557,7 @@ function Profile() {
                 <p><strong>Date of Birth / Age:</strong> {about.dob || "—"}</p>
                 <p><strong>Profession / Job:</strong> {about.profession || "—"}</p>
                 <p><strong>Education:</strong> {about.education || "—"}</p>
-                <p><strong>Location (Country):</strong> {about.country || "—"}</p>
+                <p><strong>Country:</strong> {about.country || "—"}</p>
                 <p><strong>Marital Status:</strong> {about.maritalStatus || "—"}</p>
                 <p><strong>Languages:</strong> {about.languages || "—"}</p>
                 <p className="flex flex-wrap items-center gap-2">
@@ -567,7 +577,6 @@ function Profile() {
                   </span>
                 </p>
                 <p className="break-all"><strong>Website / Social Links:</strong> {about.website || "—"}</p>
-                <p><strong>Joined:</strong> May 2026</p>
               </>
             ) : (
               <>
@@ -578,7 +587,7 @@ function Profile() {
                   { key: "dob", label: "Date of Birth / Age", type: "text", placeholder: "e.g. 1995-04-12 or 29" },
                   { key: "profession", label: "Profession / Job", type: "text" },
                   { key: "education", label: "Education", type: "text" },
-                  { key: "country", label: "Location (Country)", type: "text" },
+                  { key: "country", label: "Country", type: "text" },
                   { key: "maritalStatus", label: "Marital Status", type: "select", options: ["", "Single", "Married", "Divorced", "Widowed"] },
                   { key: "languages", label: "Languages", type: "text", placeholder: "e.g. English, Urdu" },
                 ].map((f) => (
@@ -693,9 +702,9 @@ function Profile() {
               </>
             )}
           </div>
-        )}
+        </DrawerContent>
+      </Drawer>
 
-      </div>
       {fs && (
         <FullscreenVideoPlayer
           items={fs.items}
