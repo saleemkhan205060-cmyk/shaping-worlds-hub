@@ -242,19 +242,7 @@ function UserProfile() {
       </div>
 
       <div className="mt-5">
-        {tab === "About" ? (
-          <div className="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-2">
-            <p>
-              <strong>Name:</strong> {displayName}
-            </p>
-            <p>
-              <strong>Username:</strong> @{handle}
-            </p>
-            <p>
-              <strong>Joined:</strong> {joined}
-            </p>
-          </div>
-        ) : items.length === 0 ? (
+        {items.length === 0 ? (
           <div className="text-center py-12 text-slate-500 text-sm">
             No {tab.toLowerCase()} yet.
           </div>
