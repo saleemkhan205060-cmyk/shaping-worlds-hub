@@ -415,8 +415,23 @@ function Profile() {
             <Stat icon={Heart} label="Posts" value={String(posts.length)} />
             <Stat icon={Play} label="Videos" value={String(posts.filter((p) => p.media_type === "video").length)} />
           </div>
+
+          {/* VIP Life row */}
+          <button
+            type="button"
+            className="mt-5 w-full flex items-center justify-between gap-3 px-2 py-3 border-t border-slate-200 text-left hover:bg-slate-50 transition"
+          >
+            <span className="flex items-center gap-3">
+              <span className="h-7 w-7 rounded-full flex items-center justify-center">
+                <Users className="h-5 w-5 text-rose-500" />
+              </span>
+              <span className="font-semibold text-slate-900">VIP Life</span>
+            </span>
+            <span className="text-slate-400 text-xl leading-none">›</span>
+          </button>
         </div>
       </div>
+
 
       <div className="mt-6 flex gap-2 border-b border-slate-200 overflow-x-auto">
         {TABS.map((t) => (
