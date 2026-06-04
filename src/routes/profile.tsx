@@ -109,7 +109,7 @@ function Profile() {
     }
   }, [search.about, navigate]);
 
-    "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
+    const DEFAULT_BIO =
 
   const startEditBio = () => {
     setBioText(profile?.bio ?? DEFAULT_BIO);
