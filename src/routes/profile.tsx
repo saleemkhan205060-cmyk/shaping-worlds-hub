@@ -76,7 +76,7 @@ function Profile() {
   };
 
   const defaultAbout = (): AboutInfo => ({
-    userName: "Saleem Khan",
+    userName: "",
     gender: "",
     dob: "",
     profession: "",
@@ -84,8 +84,8 @@ function Profile() {
     country: "",
     maritalStatus: "",
     languages: "",
-    email: "saleemkhan205060@gmail.com",
-    emailPrivate: false,
+    email: "",
+    emailPrivate: true,
     mobile: "",
     mobilePrivate: true,
     website: "",
@@ -96,10 +96,13 @@ function Profile() {
 
   useEffect(() => {
     if (!user) return;
+    const base = { ...defaultAbout(), email: user.email ?? "" };
     try {
       const raw = localStorage.getItem(`about:${user.id}`);
-      if (raw) setAbout({ ...defaultAbout(), ...JSON.parse(raw) });
-    } catch {}
+      setAbout(raw ? { ...base, ...JSON.parse(raw) } : base);
+    } catch {
+      setAbout(base);
+    }
   }, [user?.id]);
 
   useEffect(() => {
