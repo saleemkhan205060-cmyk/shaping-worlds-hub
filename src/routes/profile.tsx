@@ -1,13 +1,20 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Save, X, UserPlus, Share2, Menu, ChevronDown, Star } from "lucide-react";
+import { Pencil, Save, X, UserPlus, Share2, Menu, ChevronDown, Star, LogOut, User } from "lucide-react";
 import { Layout } from "../components/Layout";
-import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, User, LogOut, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
+import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 
 export const Route = createFileRoute("/profile")({ component: Profile });
 
