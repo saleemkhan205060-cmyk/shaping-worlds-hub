@@ -532,7 +532,7 @@ function Profile() {
             {!editingAbout ? (
               <>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-slate-900">Account info</h3>
+                  <h3 className="font-semibold text-slate-900">Account Information</h3>
                   <button
                     onClick={startEditAbout}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700"
@@ -540,9 +540,9 @@ function Profile() {
                     <Pencil className="h-3.5 w-3.5" /> Edit
                   </button>
                 </div>
-                <p><strong>Name:</strong> {displayName}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Joined:</strong> {joined}</p>
+                <p><strong>Name:</strong> Saleem Khan</p>
+                <p><strong>Email:</strong> saleemkhan205060@gmail.com</p>
+                <p><strong>Joined:</strong> May 2026</p>
               </>
             ) : (
               <>
