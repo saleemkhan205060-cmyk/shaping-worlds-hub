@@ -96,10 +96,13 @@ function Profile() {
 
   useEffect(() => {
     if (!user) return;
+    const base = { ...defaultAbout(), email: user.email ?? "" };
     try {
       const raw = localStorage.getItem(`about:${user.id}`);
-      if (raw) setAbout({ ...defaultAbout(), ...JSON.parse(raw) });
-    } catch {}
+      setAbout(raw ? { ...base, ...JSON.parse(raw) } : base);
+    } catch {
+      setAbout(base);
+    }
   }, [user?.id]);
 
   useEffect(() => {
