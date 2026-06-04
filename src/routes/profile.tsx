@@ -21,8 +21,8 @@ type Post = {
   is_private: boolean;
 };
 
-const TABS = ["Posts", "Videos"] as const;
-type Tab = (typeof TABS)[number] | "About";
+const TABS = ["Posts", "Videos", "About"] as const;
+type Tab = (typeof TABS)[number];
 
 type ProfileRow = {
   id: string;
