@@ -27,7 +27,7 @@ type ProfileRow = {
   created_at: string;
 };
 
-const TABS = ["Posts", "Videos", "Photos", "About"] as const;
+const TABS = ["Posts", "Videos", "Photos"] as const;
 type Tab = (typeof TABS)[number];
 
 function UserProfile() {
