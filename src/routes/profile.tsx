@@ -542,36 +542,137 @@ function Profile() {
                     <Pencil className="h-3.5 w-3.5" /> Edit
                   </button>
                 </div>
-                <p><strong>Name:</strong> Saleem Khan</p>
-                <p><strong>Email:</strong> saleemkhan205060@gmail.com</p>
+                <p><strong>User Name:</strong> {about.userName || "—"}</p>
+                <p><strong>Gender:</strong> {about.gender || "—"}</p>
+                <p><strong>Date of Birth / Age:</strong> {about.dob || "—"}</p>
+                <p><strong>Profession / Job:</strong> {about.profession || "—"}</p>
+                <p><strong>Education:</strong> {about.education || "—"}</p>
+                <p><strong>Location (Country):</strong> {about.country || "—"}</p>
+                <p><strong>Marital Status:</strong> {about.maritalStatus || "—"}</p>
+                <p><strong>Languages:</strong> {about.languages || "—"}</p>
+                <p className="flex flex-wrap items-center gap-2">
+                  <strong>Email:</strong>
+                  <span>{about.emailPrivate ? "Private" : (about.email || "—")}</span>
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded ${about.emailPrivate ? "bg-slate-200 text-slate-700" : "bg-emerald-100 text-emerald-700"}`}>
+                    {about.emailPrivate ? <Lock className="h-3 w-3" /> : <Globe className="h-3 w-3" />}
+                    {about.emailPrivate ? "Private" : "Public"}
+                  </span>
+                </p>
+                <p className="flex flex-wrap items-center gap-2">
+                  <strong>Mobile Number:</strong>
+                  <span>{about.mobilePrivate ? "Private" : (about.mobile || "—")}</span>
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded ${about.mobilePrivate ? "bg-slate-200 text-slate-700" : "bg-emerald-100 text-emerald-700"}`}>
+                    {about.mobilePrivate ? <Lock className="h-3 w-3" /> : <Globe className="h-3 w-3" />}
+                    {about.mobilePrivate ? "Private" : "Public"}
+                  </span>
+                </p>
+                <p className="break-all"><strong>Website / Social Links:</strong> {about.website || "—"}</p>
                 <p><strong>Joined:</strong> May 2026</p>
               </>
             ) : (
               <>
-                <h3 className="font-semibold text-slate-900">Edit account info</h3>
+                <h3 className="font-semibold text-slate-900">Edit About</h3>
+                {[
+                  { key: "userName", label: "User Name", type: "text" },
+                  { key: "gender", label: "Gender", type: "select", options: ["", "Male", "Female", "Other", "Prefer not to say"] },
+                  { key: "dob", label: "Date of Birth / Age", type: "text", placeholder: "e.g. 1995-04-12 or 29" },
+                  { key: "profession", label: "Profession / Job", type: "text" },
+                  { key: "education", label: "Education", type: "text" },
+                  { key: "country", label: "Location (Country)", type: "text" },
+                  { key: "maritalStatus", label: "Marital Status", type: "select", options: ["", "Single", "Married", "Divorced", "Widowed"] },
+                  { key: "languages", label: "Languages", type: "text", placeholder: "e.g. English, Urdu" },
+                ].map((f) => (
+                  <label key={f.key} className="block">
+                    <span className="text-xs font-medium text-slate-600">{f.label}</span>
+                    {f.type === "select" ? (
+                      <select
+                        value={(editAbout as any)[f.key]}
+                        onChange={(e) => setEditAbout({ ...editAbout, [f.key]: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                        {(f.options as string[]).map((o) => (
+                          <option key={o} value={o}>{o || "Select..."}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={(f as any).placeholder}
+                        value={(editAbout as any)[f.key]}
+                        onChange={(e) => setEditAbout({ ...editAbout, [f.key]: e.target.value })}
+                        maxLength={200}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    )}
+                  </label>
+                ))}
+
                 <label className="block">
-                  <span className="text-xs font-medium text-slate-600">Profile name</span>
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    maxLength={100}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </label>
-                <label className="block">
-                  <span className="text-xs font-medium text-slate-600">Email address</span>
+                  <span className="text-xs font-medium text-slate-600">Email (Optional)</span>
                   <input
                     type="email"
-                    value={editEmail}
-                    onChange={(e) => setEditEmail(e.target.value)}
+                    value={editAbout.email}
+                    onChange={(e) => setEditAbout({ ...editAbout, email: e.target.value })}
                     maxLength={255}
                     className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  <span className="text-[11px] text-slate-500 mt-1 block">
-                    Changing your email requires confirmation via a link sent to the new address.
-                  </span>
+                  <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-slate-100 p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setEditAbout({ ...editAbout, emailPrivate: false })}
+                      className={`px-3 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1 ${!editAbout.emailPrivate ? "bg-emerald-600 text-white" : "text-slate-600"}`}
+                    >
+                      <Globe className="h-3 w-3" /> Public
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditAbout({ ...editAbout, emailPrivate: true })}
+                      className={`px-3 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1 ${editAbout.emailPrivate ? "bg-slate-700 text-white" : "text-slate-600"}`}
+                    >
+                      <Lock className="h-3 w-3" /> Private
+                    </button>
+                  </div>
                 </label>
+
+                <label className="block">
+                  <span className="text-xs font-medium text-slate-600">Mobile Number (Optional)</span>
+                  <input
+                    type="tel"
+                    value={editAbout.mobile}
+                    onChange={(e) => setEditAbout({ ...editAbout, mobile: e.target.value })}
+                    maxLength={32}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-slate-100 p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setEditAbout({ ...editAbout, mobilePrivate: false })}
+                      className={`px-3 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1 ${!editAbout.mobilePrivate ? "bg-emerald-600 text-white" : "text-slate-600"}`}
+                    >
+                      <Globe className="h-3 w-3" /> Public
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditAbout({ ...editAbout, mobilePrivate: true })}
+                      className={`px-3 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1 ${editAbout.mobilePrivate ? "bg-slate-700 text-white" : "text-slate-600"}`}
+                    >
+                      <Lock className="h-3 w-3" /> Private
+                    </button>
+                  </div>
+                </label>
+
+                <label className="block">
+                  <span className="text-xs font-medium text-slate-600">Website / Social Links</span>
+                  <input
+                    type="text"
+                    value={editAbout.website}
+                    onChange={(e) => setEditAbout({ ...editAbout, website: e.target.value })}
+                    maxLength={500}
+                    placeholder="https://..."
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </label>
+
                 <div className="flex gap-2 pt-1">
                   <button
                     onClick={saveAbout}
@@ -593,6 +694,7 @@ function Profile() {
             )}
           </div>
         )}
+
       </div>
       {fs && (
         <FullscreenVideoPlayer
