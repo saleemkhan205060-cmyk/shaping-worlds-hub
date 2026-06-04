@@ -244,16 +244,6 @@ function Profile() {
             <UserPlus className="h-7 w-7 text-slate-900" strokeWidth={2} />
           </button>
           <div className="flex items-center gap-4">
-            <button type="button" aria-label="Notifications" className="relative">
-              <span className="block h-8 w-8 rounded-full overflow-hidden ring-1 ring-slate-200 bg-slate-100">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-                ) : null}
-              </span>
-              <span className="absolute -bottom-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-white text-[10px] font-bold text-slate-900 flex items-center justify-center ring-1 ring-slate-200">
-                2
-              </span>
-            </button>
             <button type="button" aria-label="Share" className="p-1">
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
@@ -261,6 +251,7 @@ function Profile() {
               <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.5} />
             </button>
           </div>
+
         </div>
 
         {/* Centered avatar with + badge */}
