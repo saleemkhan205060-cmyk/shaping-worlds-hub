@@ -1,19 +1,13 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Save, X, UserPlus, Share2, Menu, ChevronDown, Star, LogOut, User } from "lucide-react";
+import { Pencil, Save, X, UserPlus, Share2, ChevronDown, Star, User } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
-import { useAuth, signOut } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 
 export const Route = createFileRoute("/profile")({ component: Profile });
@@ -158,12 +152,6 @@ function Profile() {
       .then(({ count }) => setFollowingCount(count ?? 0));
   }, [user]);
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success("Signed out");
-    navigate({ to: "/" });
-  };
-
   const handleDeletePost = async (id: string) => {
     if (!confirm("Delete this post? This cannot be undone.")) return;
     const prev = posts;
@@ -254,21 +242,6 @@ function Profile() {
             <button type="button" aria-label="Share" className="p-1">
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button type="button" aria-label="Menu" className="p-1">
-                  <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.5} />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onClick={() => setTab("About")}>
-                  <User className="h-4 w-4 mr-2" /> About
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" /> Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
 
         </div>

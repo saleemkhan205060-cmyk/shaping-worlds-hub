@@ -1,7 +1,12 @@
-import * as React from "react";
-import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, LogOut, LogIn, Store } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -135,10 +140,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-1 sm:gap-2">
             <Link
               to="/notifications"
-              className="relative h-11 w-11 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
+              className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
               aria-label="Notifications"
             >
-              <Bell className="h-6 w-6" />
+              <Bell className="h-7 w-7" />
               <Badge n={unreadNotifs} />
             </Link>
             {user ? (
@@ -146,18 +151,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <Link
                   to="/messages"
                   search={{ to: undefined }}
-                  className="relative h-11 w-11 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
                   aria-label="Messages"
                 >
-                  <img src={chatIconUrl} alt="Chat" className="h-9 w-9 object-contain" />
+                  <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
                   <Badge n={unreadMsgs} />
                 </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50"
-                >
-                  <LogOut className="h-4 w-4" /> Sign out
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Menu"
+                      className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
+                    >
+                      <Menu className="h-7 w-7" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
+                      <User className="h-4 w-4 mr-2" /> About
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             ) : (
               <Link
