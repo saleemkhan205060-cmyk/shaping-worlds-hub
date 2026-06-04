@@ -49,14 +49,56 @@ function Profile() {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<"avatar" | "cover" | null>(null);
   const [editingAbout, setEditingAbout] = useState(false);
-  const [editName, setEditName] = useState("");
-  const [editEmail, setEditEmail] = useState("");
   const [savingAbout, setSavingAbout] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
   const [bioText, setBioText] = useState("");
   const [bioLocation, setBioLocation] = useState("");
   const [bioWebsite, setBioWebsite] = useState("");
   const [savingBio, setSavingBio] = useState(false);
+
+  type AboutInfo = {
+    userName: string;
+    gender: string;
+    dob: string;
+    profession: string;
+    education: string;
+    country: string;
+    maritalStatus: string;
+    languages: string;
+    email: string;
+    emailPrivate: boolean;
+    mobile: string;
+    mobilePrivate: boolean;
+    website: string;
+  };
+
+  const defaultAbout = (): AboutInfo => ({
+    userName: "Saleem Khan",
+    gender: "",
+    dob: "",
+    profession: "",
+    education: "",
+    country: "",
+    maritalStatus: "",
+    languages: "",
+    email: "saleemkhan205060@gmail.com",
+    emailPrivate: false,
+    mobile: "",
+    mobilePrivate: true,
+    website: "",
+  });
+
+  const [about, setAbout] = useState<AboutInfo>(defaultAbout);
+  const [editAbout, setEditAbout] = useState<AboutInfo>(defaultAbout);
+
+  useEffect(() => {
+    if (!user) return;
+    try {
+      const raw = localStorage.getItem(`about:${user.id}`);
+      if (raw) setAbout({ ...defaultAbout(), ...JSON.parse(raw) });
+    } catch {}
+  }, [user?.id]);
+
 
   const DEFAULT_BIO =
     "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
