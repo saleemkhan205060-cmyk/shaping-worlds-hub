@@ -147,10 +147,6 @@ function Profile() {
   const saveAbout = async () => {
     if (!user) return;
     const next = { ...editAbout };
-    if (!next.userName.trim()) {
-      toast.error("User Name cannot be empty");
-      return;
-    }
     if (next.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next.email.trim())) {
       toast.error("Invalid email address");
       return;
@@ -556,7 +552,6 @@ function Profile() {
                     <Pencil className="h-3.5 w-3.5" /> Edit
                   </button>
                 </div>
-                <p><strong>User Name:</strong> {about.userName || "—"}</p>
                 <p><strong>Gender:</strong> {about.gender || "—"}</p>
                 <p><strong>Date of Birth / Age:</strong> {about.dob || "—"}</p>
                 <p><strong>Profession / Job:</strong> {about.profession || "—"}</p>
@@ -586,7 +581,6 @@ function Profile() {
               <>
                 <h3 className="font-semibold text-slate-900">Edit About</h3>
                 {[
-                  { key: "userName", label: "User Name", type: "text" },
                   { key: "gender", label: "Gender", type: "select", options: ["", "Male", "Female", "Other", "Prefer not to say"] },
                   { key: "dob", label: "Date of Birth / Age", type: "text", placeholder: "e.g. 1995-04-12 or 29" },
                   { key: "profession", label: "Profession / Job", type: "text" },
