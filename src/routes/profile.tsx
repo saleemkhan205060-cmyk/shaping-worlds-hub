@@ -238,38 +238,14 @@ function Profile() {
   return (
     <Layout>
       <div className="rounded-2xl overflow-hidden bg-white border border-slate-200">
-        <div
-          className="relative h-40 sm:h-56 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-cover bg-center"
-          style={profile?.cover_url ? { backgroundImage: `url(${profile.cover_url})` } : undefined}
-        >
-          <button
-            type="button"
-            onClick={() => coverInputRef.current?.click()}
-            disabled={uploading === "cover"}
-            className="absolute top-3 right-3 inline-flex items-center gap-1.5 bg-black/50 hover:bg-black/70 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur disabled:opacity-60"
-          >
-            {uploading === "cover" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ImagePlus className="h-3.5 w-3.5" />}
-            {uploading === "cover" ? "Uploading..." : "Change cover"}
-          </button>
-          <input
-            ref={coverInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleImageUpload(f, "cover");
-              e.target.value = "";
-            }}
-          />
-        </div>
-        <div className="px-5 sm:px-8 pb-6 -mt-12">
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-            <div className="relative h-24 w-24 sm:h-28 sm:w-28 shrink-0">
+        <div className="px-5 sm:px-8 pt-6 pb-6">
+          {/* Centered avatar with + badge */}
+          <div className="flex justify-center">
+            <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0">
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt={displayName} className="h-full w-full rounded-full ring-4 ring-white object-cover" />
+                <img src={profile.avatar_url} alt={displayName} className="h-full w-full rounded-full object-cover" />
               ) : (
-                <div className="h-full w-full rounded-full bg-gradient-to-br from-amber-300 to-pink-500 ring-4 ring-white flex items-center justify-center text-white text-3xl font-bold">
+                <div className="h-full w-full rounded-full bg-gradient-to-br from-amber-300 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
                   {displayName[0]?.toUpperCase()}
                 </div>
               )}
@@ -277,11 +253,11 @@ function Profile() {
                 type="button"
                 onClick={() => avatarInputRef.current?.click()}
                 disabled={uploading === "avatar"}
-                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shadow ring-2 ring-white disabled:opacity-60"
+                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-sky-400 hover:bg-sky-500 text-white flex items-center justify-center shadow ring-2 ring-white disabled:opacity-60 text-xl leading-none font-light"
                 aria-label="Change profile picture"
                 title="Change profile picture"
               >
-                {uploading === "avatar" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                {uploading === "avatar" ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="-mt-0.5">+</span>}
               </button>
               <input
                 ref={avatarInputRef}
@@ -295,22 +271,51 @@ function Profile() {
                 }}
               />
             </div>
-            <div className="flex-1">
+          </div>
+
+          {/* Name row with Edit button */}
+          <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+            <div />
+            <div className="flex flex-col items-center">
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
                 <CheckCircle2 className="h-5 w-5 text-sky-500 fill-sky-500" />
               </div>
-              <p className="text-sm text-slate-500">@{handle} · {user.email}</p>
+              <p className="text-sm text-slate-500 mt-1">@{handle}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="justify-self-end">
               <button
-                onClick={handleSignOut}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-semibold"
+                onClick={startEditBio}
+                className="px-4 py-1.5 rounded-full bg-slate-100 text-slate-800 hover:bg-slate-200 text-sm font-semibold"
               >
-                <LogOut className="h-4 w-4" /> Sign out
+                Edit
               </button>
             </div>
           </div>
+
+          {/* Sign out (kept, small) */}
+          <div className="mt-2 flex justify-center">
+            <button
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800"
+            >
+              <LogOut className="h-3.5 w-3.5" /> Sign out
+            </button>
+          </div>
+
+          {/* Hidden cover input retained for compatibility */}
+          <input
+            ref={coverInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleImageUpload(f, "cover");
+              e.target.value = "";
+            }}
+          />
+
 
           {!editingBio ? (
             <>
