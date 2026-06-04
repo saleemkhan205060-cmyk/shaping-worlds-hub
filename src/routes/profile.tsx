@@ -51,6 +51,7 @@ function Profile() {
   const [uploading, setUploading] = useState<"avatar" | "cover" | null>(null);
   const [editingAbout, setEditingAbout] = useState(false);
   const [savingAbout, setSavingAbout] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
   const [bioText, setBioText] = useState("");
   const [bioLocation, setBioLocation] = useState("");
