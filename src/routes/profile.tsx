@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Save, X, UserPlus, Share2, ChevronDown, Star, User, Menu } from "lucide-react";
+import { Pencil, Save, X, UserPlus, Share2, ChevronDown, Star, User } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -270,11 +270,8 @@ function Profile() {
             <UserPlus className="h-7 w-7 text-slate-900" strokeWidth={2} />
           </button>
           <div className="flex items-center gap-4">
-            <button type="button" aria-label="Share" className="p-1">
+          <button type="button" aria-label="Share" className="p-1">
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
-            </button>
-            <button type="button" aria-label="About" className="p-1" onClick={() => setAboutOpen(true)}>
-              <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
           </div>
 

@@ -168,7 +168,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
+                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
                       <User className="h-4 w-4 mr-2" /> About
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
