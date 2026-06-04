@@ -273,6 +273,9 @@ function Profile() {
             <button type="button" aria-label="Share" className="p-1">
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
+            <button type="button" aria-label="About" className="p-1" onClick={() => setAboutOpen(true)}>
+              <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
+            </button>
           </div>
 
         </div>
