@@ -76,7 +76,7 @@ function Profile() {
   };
 
   const defaultAbout = (): AboutInfo => ({
-    userName: "Saleem Khan",
+    userName: "",
     gender: "",
     dob: "",
     profession: "",
@@ -84,8 +84,8 @@ function Profile() {
     country: "",
     maritalStatus: "",
     languages: "",
-    email: "saleemkhan205060@gmail.com",
-    emailPrivate: false,
+    email: "",
+    emailPrivate: true,
     mobile: "",
     mobilePrivate: true,
     website: "",
