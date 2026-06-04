@@ -424,12 +424,6 @@ function Profile() {
               >
                 <X className="h-3.5 w-3.5" /> Cancel
               </button>
-              <button
-                onClick={handleSignOut}
-                className="ml-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs text-slate-500 hover:text-slate-800"
-              >
-                <LogOut className="h-3.5 w-3.5" /> Sign out
-              </button>
             </div>
           </div>
         )}
