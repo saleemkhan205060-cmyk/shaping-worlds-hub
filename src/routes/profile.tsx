@@ -330,8 +330,6 @@ function Profile() {
           </div>
         </div>
 
-        {/* Handle */}
-        <p className="mt-1 text-center text-slate-400 text-sm">@{handle}</p>
 
         {/* Stats: Following | Followers | Likes */}
         <div className="mt-6 px-4 grid grid-cols-3 items-center">
@@ -349,8 +347,6 @@ function Profile() {
           </div>
         </div>
 
-        {/* Username line */}
-        <p className="mt-5 text-center text-slate-900 text-base">{handle}</p>
 
         {/* VIP Life row */}
         <button
