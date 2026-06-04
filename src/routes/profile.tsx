@@ -254,9 +254,21 @@ function Profile() {
             <button type="button" aria-label="Share" className="p-1">
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
-            <button type="button" aria-label="Menu" className="p-1">
-              <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.5} />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button type="button" aria-label="Menu" className="p-1">
+                  <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.5} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onClick={() => setTab("About")}>
+                  <User className="h-4 w-4 mr-2" /> About
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
         </div>
