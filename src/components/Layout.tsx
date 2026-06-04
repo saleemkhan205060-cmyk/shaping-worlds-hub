@@ -1,7 +1,12 @@
-import * as React from "react";
-import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, User, Bell, LogOut, LogIn, Store } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
