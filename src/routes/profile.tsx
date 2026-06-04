@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Save, X } from "lucide-react";
+import { Pencil, Save, X, UserPlus, Share2, Menu, ChevronDown, Star } from "lucide-react";
 import { Layout } from "../components/Layout";
-import { MapPin, Link as LinkIcon, Calendar, CheckCircle2, Play, Heart, Users, LogOut, Loader2, UploadCloud, Trash2, Lock, Globe, Camera, ImagePlus } from "lucide-react";
+import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, User, LogOut, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -237,200 +237,194 @@ function Profile() {
 
   return (
     <Layout>
-      <div className="rounded-2xl overflow-hidden bg-white border border-slate-200">
-        <div className="px-5 sm:px-8 pt-6 pb-6">
-          {/* Centered avatar with + badge */}
-          <div className="flex justify-center">
-            <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0">
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt={displayName} className="h-full w-full rounded-full object-cover" />
-              ) : (
-                <div className="h-full w-full rounded-full bg-gradient-to-br from-amber-300 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
-                  {displayName[0]?.toUpperCase()}
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => avatarInputRef.current?.click()}
-                disabled={uploading === "avatar"}
-                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-sky-400 hover:bg-sky-500 text-white flex items-center justify-center shadow ring-2 ring-white disabled:opacity-60 text-xl leading-none font-light"
-                aria-label="Change profile picture"
-                title="Change profile picture"
-              >
-                {uploading === "avatar" ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="-mt-0.5">+</span>}
-              </button>
-              <input
-                ref={avatarInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleImageUpload(f, "avatar");
-                  e.target.value = "";
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Name row with Edit button */}
-          <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <div />
-            <div className="flex flex-col items-center">
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
-                <CheckCircle2 className="h-5 w-5 text-sky-500 fill-sky-500" />
-              </div>
-              <p className="text-sm text-slate-500 mt-1">@{handle}</p>
-            </div>
-            <div className="justify-self-end">
-              <button
-                onClick={startEditBio}
-                className="px-4 py-1.5 rounded-full bg-slate-100 text-slate-800 hover:bg-slate-200 text-sm font-semibold"
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-
-          {/* Sign out (kept, small) */}
-          <div className="mt-2 flex justify-center">
-            <button
-              onClick={handleSignOut}
-              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800"
-            >
-              <LogOut className="h-3.5 w-3.5" /> Sign out
+      <div className="bg-white">
+        {/* Top icon bar */}
+        <div className="flex items-center justify-between px-4 pt-3">
+          <button type="button" aria-label="Add friends" className="p-1">
+            <UserPlus className="h-7 w-7 text-slate-900" strokeWidth={2} />
+          </button>
+          <div className="flex items-center gap-4">
+            <button type="button" aria-label="Notifications" className="relative">
+              <span className="block h-8 w-8 rounded-full overflow-hidden ring-1 ring-slate-200 bg-slate-100">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                ) : null}
+              </span>
+              <span className="absolute -bottom-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-white text-[10px] font-bold text-slate-900 flex items-center justify-center ring-1 ring-slate-200">
+                2
+              </span>
+            </button>
+            <button type="button" aria-label="Share" className="p-1">
+              <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
+            </button>
+            <button type="button" aria-label="Menu" className="p-1">
+              <Menu className="h-7 w-7 text-slate-900" strokeWidth={2.5} />
             </button>
           </div>
+        </div>
 
-          {/* Hidden cover input retained for compatibility */}
-          <input
-            ref={coverInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleImageUpload(f, "cover");
-              e.target.value = "";
-            }}
-          />
-
-
-          {!editingBio ? (
-            <>
-              <div className="mt-4 flex items-start gap-2 max-w-2xl">
-                <p className="text-sm text-slate-700 flex-1 whitespace-pre-wrap">
-                  {profile?.bio ?? DEFAULT_BIO}
-                </p>
-                <button
-                  onClick={startEditBio}
-                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700"
-                >
-                  <Pencil className="h-3.5 w-3.5" /> Edit
-                </button>
+        {/* Centered avatar with + badge */}
+        <div className="flex justify-center mt-6">
+          <div className="relative h-28 w-28">
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt={displayName} className="h-full w-full rounded-full object-cover" />
+            ) : (
+              <div className="h-full w-full rounded-full bg-gradient-to-br from-amber-300 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
+                {displayName[0]?.toUpperCase()}
               </div>
+            )}
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={uploading === "avatar"}
+              className="absolute -bottom-1 right-1 h-7 w-7 rounded-full bg-sky-400 hover:bg-sky-500 text-white flex items-center justify-center shadow ring-2 ring-white disabled:opacity-60"
+              aria-label="Change profile picture"
+            >
+              {uploading === "avatar" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <span className="text-lg leading-none -mt-0.5">+</span>}
+            </button>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleImageUpload(f, "avatar");
+                e.target.value = "";
+              }}
+            />
+          </div>
+        </div>
 
-              <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
-                <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {profile?.location ?? "Global"}</span>
-                {(profile?.website ?? "shapingworld.com") && (
-                  <a
-                    href={(() => {
-                      const w = profile?.website ?? "shapingworld.com";
-                      return w.startsWith("http") ? w : `https://${w}`;
-                    })()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 hover:text-indigo-600"
-                  >
-                    <LinkIcon className="h-4 w-4" /> {profile?.website ?? "shapingworld.com"}
-                  </a>
-                )}
-                <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Joined {joined}</span>
-              </div>
-            </>
-          ) : (
-            <div className="mt-4 max-w-2xl space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+        {/* Name row: name + flag + chevron centered, Edit button on right */}
+        <div className="mt-5 px-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <div />
+          <div className="flex items-center gap-1.5 justify-self-center">
+            <h1 className="text-2xl font-extrabold text-slate-900">{displayName}</h1>
+            <ChevronDown className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
+          </div>
+          <div className="justify-self-end">
+            <button
+              onClick={startEditBio}
+              className="px-5 py-2 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-200 text-sm font-semibold"
+            >
+              Edit
+            </button>
+          </div>
+        </div>
+
+        {/* Handle */}
+        <p className="mt-1 text-center text-slate-400 text-sm">@{handle}</p>
+
+        {/* Stats: Following | Followers | Likes */}
+        <div className="mt-6 px-4 grid grid-cols-3 items-center">
+          <div className="text-center">
+            <div className="text-2xl font-extrabold text-slate-900">{followingCount}</div>
+            <div className="text-sm text-slate-400 mt-0.5">Following</div>
+          </div>
+          <div className="text-center border-x border-slate-200">
+            <div className="text-2xl font-extrabold text-slate-900">{followersCount}</div>
+            <div className="text-sm text-slate-400 mt-0.5">Followers</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-extrabold text-slate-900">{posts.length}</div>
+            <div className="text-sm text-slate-400 mt-0.5">Likes</div>
+          </div>
+        </div>
+
+        {/* Username line */}
+        <p className="mt-5 text-center text-slate-900 text-base">{handle}</p>
+
+        {/* VIP Life row */}
+        <button
+          type="button"
+          className="mt-5 w-full flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-200 text-left"
+        >
+          <span className="flex items-center gap-3">
+            <span className="relative inline-flex h-7 w-7 items-center justify-center">
+              <User className="h-6 w-6 text-rose-500" strokeWidth={2} />
+              <Star className="absolute -bottom-0.5 -right-0.5 h-3 w-3 text-rose-500 fill-rose-500" />
+            </span>
+            <span className="font-semibold text-slate-900 text-base">VIP Life</span>
+          </span>
+          <span className="text-slate-400 text-xl leading-none">›</span>
+        </button>
+
+        {/* Hidden cover input retained for compatibility */}
+        <input
+          ref={coverInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleImageUpload(f, "cover");
+            e.target.value = "";
+          }}
+        />
+
+        {/* Bio editor (shown when editing) */}
+        {editingBio && (
+          <div className="mt-4 mx-4 space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+            <label className="block">
+              <span className="text-xs font-medium text-slate-600">Bio</span>
+              <textarea
+                value={bioText}
+                onChange={(e) => setBioText(e.target.value)}
+                rows={4}
+                maxLength={500}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label className="block">
-                <span className="text-xs font-medium text-slate-600">Bio</span>
-                <textarea
-                  value={bioText}
-                  onChange={(e) => setBioText(e.target.value)}
-                  rows={4}
-                  maxLength={500}
-                  placeholder="Tell people about yourself"
+                <span className="text-xs font-medium text-slate-600">Location</span>
+                <input
+                  type="text"
+                  value={bioLocation}
+                  onChange={(e) => setBioLocation(e.target.value)}
+                  maxLength={100}
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label className="block">
-                  <span className="text-xs font-medium text-slate-600">Location</span>
-                  <input
-                    type="text"
-                    value={bioLocation}
-                    onChange={(e) => setBioLocation(e.target.value)}
-                    maxLength={100}
-                    placeholder="e.g. Global, London, NYC"
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </label>
-                <label className="block">
-                  <span className="text-xs font-medium text-slate-600">Website</span>
-                  <input
-                    type="text"
-                    value={bioWebsite}
-                    onChange={(e) => setBioWebsite(e.target.value)}
-                    maxLength={200}
-                    placeholder="example.com"
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </label>
-              </div>
-              <div className="flex gap-2 pt-1">
-                <button
-                  onClick={saveBio}
-                  disabled={savingBio}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 disabled:opacity-60"
-                >
-                  {savingBio ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-                  Save
-                </button>
-                <button
-                  onClick={() => setEditingBio(false)}
-                  disabled={savingBio}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200"
-                >
-                  <X className="h-3.5 w-3.5" /> Cancel
-                </button>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-slate-500">
-                <Calendar className="h-3.5 w-3.5" /> Joined {joined}
-              </div>
+              <label className="block">
+                <span className="text-xs font-medium text-slate-600">Website</span>
+                <input
+                  type="text"
+                  value={bioWebsite}
+                  onChange={(e) => setBioWebsite(e.target.value)}
+                  maxLength={200}
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </label>
             </div>
-          )}
-
-          <div className="mt-5 grid grid-cols-4 gap-3 max-w-xl">
-            <Stat icon={Users} label="Followers" value={String(followersCount)} />
-            <Stat icon={Users} label="Following" value={String(followingCount)} />
-            <Stat icon={Heart} label="Posts" value={String(posts.length)} />
-            <Stat icon={Play} label="Videos" value={String(posts.filter((p) => p.media_type === "video").length)} />
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={saveBio}
+                disabled={savingBio}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 disabled:opacity-60"
+              >
+                {savingBio ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+                Save
+              </button>
+              <button
+                onClick={() => setEditingBio(false)}
+                disabled={savingBio}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200"
+              >
+                <X className="h-3.5 w-3.5" /> Cancel
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="ml-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs text-slate-500 hover:text-slate-800"
+              >
+                <LogOut className="h-3.5 w-3.5" /> Sign out
+              </button>
+            </div>
           </div>
-
-          {/* VIP Life row */}
-          <button
-            type="button"
-            className="mt-5 w-full flex items-center justify-between gap-3 px-2 py-3 border-t border-slate-200 text-left hover:bg-slate-50 transition"
-          >
-            <span className="flex items-center gap-3">
-              <span className="h-7 w-7 rounded-full flex items-center justify-center">
-                <Users className="h-5 w-5 text-rose-500" />
-              </span>
-              <span className="font-semibold text-slate-900">VIP Life</span>
-            </span>
-            <span className="text-slate-400 text-xl leading-none">›</span>
-          </button>
-        </div>
+        )}
       </div>
+
 
 
       <div className="mt-6 flex gap-2 border-b border-slate-200 overflow-x-auto">
