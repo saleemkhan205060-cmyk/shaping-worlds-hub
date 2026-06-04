@@ -534,8 +534,13 @@ function Profile() {
             </div>
           );
         })()}
-        {tab === "About" && (
-          <div className="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-3">
+      </div>
+      <Drawer open={aboutOpen} onOpenChange={(o) => { setAboutOpen(o); if (!o) setEditingAbout(false); }}>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader>
+            <DrawerTitle>About</DrawerTitle>
+          </DrawerHeader>
+          <div className="px-4 pb-6 overflow-y-auto text-sm text-slate-700 space-y-3">
             {!editingAbout ? (
               <>
                 <div className="flex items-center justify-between">
@@ -552,7 +557,7 @@ function Profile() {
                 <p><strong>Date of Birth / Age:</strong> {about.dob || "—"}</p>
                 <p><strong>Profession / Job:</strong> {about.profession || "—"}</p>
                 <p><strong>Education:</strong> {about.education || "—"}</p>
-                <p><strong>Location (Country):</strong> {about.country || "—"}</p>
+                <p><strong>Country:</strong> {about.country || "—"}</p>
                 <p><strong>Marital Status:</strong> {about.maritalStatus || "—"}</p>
                 <p><strong>Languages:</strong> {about.languages || "—"}</p>
                 <p className="flex flex-wrap items-center gap-2">
@@ -572,7 +577,6 @@ function Profile() {
                   </span>
                 </p>
                 <p className="break-all"><strong>Website / Social Links:</strong> {about.website || "—"}</p>
-                <p><strong>Joined:</strong> May 2026</p>
               </>
             ) : (
               <>
@@ -583,7 +587,7 @@ function Profile() {
                   { key: "dob", label: "Date of Birth / Age", type: "text", placeholder: "e.g. 1995-04-12 or 29" },
                   { key: "profession", label: "Profession / Job", type: "text" },
                   { key: "education", label: "Education", type: "text" },
-                  { key: "country", label: "Location (Country)", type: "text" },
+                  { key: "country", label: "Country", type: "text" },
                   { key: "maritalStatus", label: "Marital Status", type: "select", options: ["", "Single", "Married", "Divorced", "Widowed"] },
                   { key: "languages", label: "Languages", type: "text", placeholder: "e.g. English, Urdu" },
                 ].map((f) => (
@@ -698,7 +702,8 @@ function Profile() {
               </>
             )}
           </div>
-        )}
+        </DrawerContent>
+      </Drawer>
 
       </div>
       {fs && (
