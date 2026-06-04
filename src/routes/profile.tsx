@@ -131,47 +131,34 @@ function Profile() {
   };
 
   const startEditAbout = () => {
-    setEditName(profile?.display_name ?? user?.email?.split("@")[0] ?? "");
-    setEditEmail(user?.email ?? "");
+    setEditAbout({ ...about });
     setEditingAbout(true);
   };
 
   const saveAbout = async () => {
     if (!user) return;
-    const name = editName.trim();
-    const email = editEmail.trim();
-    if (!name) {
-      toast.error("Name cannot be empty");
+    const next = { ...editAbout };
+    if (!next.userName.trim()) {
+      toast.error("User Name cannot be empty");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (next.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next.email.trim())) {
       toast.error("Invalid email address");
       return;
     }
     setSavingAbout(true);
-    if (name !== (profile?.display_name ?? "")) {
-      const { error } = await supabase.from("profiles").update({ display_name: name }).eq("id", user.id);
-      if (error) {
-        toast.error("Failed to update name");
-        setSavingAbout(false);
-        return;
-      }
-      setProfile((p) => (p ? { ...p, display_name: name } : p));
+    try {
+      localStorage.setItem(`about:${user.id}`, JSON.stringify(next));
+      setAbout(next);
+      toast.success("About updated");
+      setEditingAbout(false);
+    } catch {
+      toast.error("Failed to save");
+    } finally {
+      setSavingAbout(false);
     }
-    if (email !== user.email) {
-      const { error } = await supabase.auth.updateUser({ email });
-      if (error) {
-        toast.error(error.message || "Failed to update email");
-        setSavingAbout(false);
-        return;
-      }
-      toast.success("Confirmation email sent to verify the new address");
-    } else {
-      toast.success("Profile updated");
-    }
-    setSavingAbout(false);
-    setEditingAbout(false);
   };
+
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
