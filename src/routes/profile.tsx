@@ -705,7 +705,6 @@ function Profile() {
         </DrawerContent>
       </Drawer>
 
-      </div>
       {fs && (
         <FullscreenVideoPlayer
           items={fs.items}
