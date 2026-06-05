@@ -108,6 +108,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
     navigate({ to: "/" });
   };
 
+  const { t, lang, setLang } = useI18n();
+  const [langOpen, setLangOpen] = useState(false);
+  const sortedLangs = useMemo(
+    () => [...LANGUAGES].sort((a, b) => a.name.localeCompare(b.name)),
+    [],
+  );
+
   const Badge = ({ n }: { n: number }) =>
     n > 0 ? (
       <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white">
