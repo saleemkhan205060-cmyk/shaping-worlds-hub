@@ -173,7 +173,42 @@ function MarriageEditPage() {
             ))}
           </FieldSelect>
 
-          <FieldInput icon={MapPin} label="Country" value={country} onChange={setCountry} placeholder="e.g. Saudi Arabia" />
+          <div onClick={() => setCountryOpen(true)}>
+            <FieldRow icon={MapPin} label="Country">
+              <button
+                type="button"
+                onClick={() => setCountryOpen(true)}
+                className="text-sm text-right bg-transparent focus:outline-none flex items-center gap-1 text-slate-900"
+              >
+                {country || <span className="text-slate-400">Select country</span>}
+                <ChevronDown className="h-4 w-4 text-slate-400" />
+              </button>
+            </FieldRow>
+          </div>
+
+          <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
+            <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
+              <DialogTitle className="sr-only">Select Country</DialogTitle>
+              <Command>
+                <CommandInput placeholder="Search country…" />
+                <CommandList className="max-h-[60vh]">
+                  <CommandEmpty>No country found.</CommandEmpty>
+                  {COUNTRIES.map((c) => (
+                    <CommandItem
+                      key={c}
+                      value={c}
+                      onSelect={() => {
+                        setCountry(c);
+                        setCountryOpen(false);
+                      }}
+                    >
+                      {c}
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              </Command>
+            </DialogContent>
+          </Dialog>
 
           <FieldInput
             icon={Briefcase}
