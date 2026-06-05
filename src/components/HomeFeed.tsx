@@ -573,6 +573,12 @@ export function HomeFeed() {
               >
                 <VideoIcon className="h-4 w-4" /> Video
               </button>
+              <button
+                onClick={() => setTextComposerOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-indigo-700 hover:bg-indigo-50 transition"
+              >
+                <Type className="h-4 w-4" /> Text
+              </button>
               <input
                 ref={fileRef}
                 type="file"
