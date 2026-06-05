@@ -5,7 +5,9 @@ export type TextStyle = {
   fontId: string;
   colorId: string;
   align?: "left" | "center" | "right";
+  sizeId?: string;
 };
+
 
 export type BgPreset = {
   id: string;
