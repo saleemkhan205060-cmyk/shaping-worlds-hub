@@ -19,6 +19,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
+import { playSoftChime } from "@/lib/notification-sound";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
@@ -87,6 +88,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     const ch = supabase
       .channel("layout-unread")
       .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, refreshUnreadMsgs)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, () => playSoftChime())
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` }, refreshUnreadNotifs)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_likes" }, refreshUnreadNotifs)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_comments" }, refreshUnreadNotifs)
