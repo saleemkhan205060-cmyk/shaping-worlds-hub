@@ -10,7 +10,6 @@ import {
   MessageCircle,
   Loader2,
   Play,
-  Type,
   Maximize2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +19,6 @@ import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideo
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { Globe2, Lock } from "lucide-react";
-import { TextPostComposer } from "@/components/TextPostComposer";
 import { TextPostCard } from "@/components/TextPostCard";
 import type { TextStyle } from "@/components/TextPostStyles";
 
@@ -89,7 +87,7 @@ export function HomeFeed() {
   const [posting, setPosting] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
-  const [textComposerOpen, setTextComposerOpen] = useState(false);
+  
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -245,30 +243,49 @@ export function HomeFeed() {
       return;
     }
     const text = caption.trim();
-    if (!file) {
-      toast.error("Attach a photo or video");
+    if (!file && !text) {
+      toast.error("Write something or attach media");
       return;
     }
     setPosting(true);
     try {
-      const ext = file.name.split(".").pop() || "bin";
-      const path = `${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("media")
-        .upload(path, file, { contentType: file.type, upsert: false });
-      if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      const media_url = pub.publicUrl;
-      const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
-      const { error: insErr } = await supabase.from("posts").insert({
-        user_id: user.id,
-        media_url,
-        media_type,
-        caption: text || null,
-        category: "For You",
-        is_private: isPrivate,
-      });
-      if (insErr) throw insErr;
+      if (!file) {
+        const defaultStyle: TextStyle = {
+          bgId: "indigo",
+          fontId: "sans",
+          colorId: "white",
+          align: "center",
+        };
+        const { error: insErr } = await supabase.from("posts").insert({
+          user_id: user.id,
+          media_url: null,
+          media_type: "text",
+          caption: text,
+          category: "For You",
+          is_private: isPrivate,
+          text_style: defaultStyle as unknown as Record<string, unknown>,
+        } as never);
+        if (insErr) throw insErr;
+      } else {
+        const ext = file.name.split(".").pop() || "bin";
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("media")
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+        const media_url = pub.publicUrl;
+        const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+        const { error: insErr } = await supabase.from("posts").insert({
+          user_id: user.id,
+          media_url,
+          media_type,
+          caption: text || null,
+          category: "For You",
+          is_private: isPrivate,
+        });
+        if (insErr) throw insErr;
+      }
       setCaption("");
       setFile(null);
       setIsPrivate(false);
@@ -279,28 +296,6 @@ export function HomeFeed() {
     } finally {
       setPosting(false);
     }
-  };
-
-  const submitText = async (text: string, style: TextStyle, priv: boolean) => {
-    if (!user) {
-      toast.error("Please sign in to post");
-      return;
-    }
-    const { error } = await supabase.from("posts").insert({
-      user_id: user.id,
-      media_url: null,
-      media_type: "text",
-      caption: text,
-      category: "For You",
-      is_private: priv,
-      text_style: style as unknown as Record<string, unknown>,
-    } as never);
-    if (error) {
-      console.error(error);
-      toast.error("Couldn't post. Please try again.");
-      return;
-    }
-    toast.success("Posted!");
   };
 
   // Load marriage profiles when the Marriage tab is selected
@@ -573,12 +568,6 @@ export function HomeFeed() {
               >
                 <VideoIcon className="h-4 w-4" /> Video
               </button>
-              <button
-                onClick={() => setTextComposerOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-indigo-700 hover:bg-indigo-50 transition"
-              >
-                <Type className="h-4 w-4" /> Text
-              </button>
               <input
                 ref={fileRef}
                 type="file"
@@ -623,7 +612,7 @@ export function HomeFeed() {
                   <button
                     type="button"
                     onClick={() => { submit(); setPrivacyOpen(false); }}
-                    disabled={posting || !file}
+                    disabled={posting || (!file && !caption.trim())}
                     className="flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
                   >
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -804,11 +793,6 @@ export function HomeFeed() {
         />
       )}
 
-      <TextPostComposer
-        open={textComposerOpen}
-        onClose={() => setTextComposerOpen(false)}
-        onSubmit={submitText}
-      />
     </section>
   );
 }
