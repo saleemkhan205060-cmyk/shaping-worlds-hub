@@ -684,8 +684,11 @@ export function HomeFeed() {
                     </p>
                   </div>
                 </Link>
-                {p.caption && (
+                {p.caption && p.media_type !== "text" && (
                   <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
+                )}
+                {p.media_type === "text" && p.caption && (
+                  <TextPostCard text={p.caption} style={p.text_style} />
                 )}
                 {p.media_type === "image" && p.media_url && (
                   <MediaActions
