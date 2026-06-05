@@ -28,10 +28,10 @@ const FeedIcon = ({ className }: { className?: string }) => (
 );
 
 const navItems = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/videos", label: "Feed", icon: FeedIcon },
-  { to: "/market", label: "Market", icon: Store },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/", labelKey: "nav.home", icon: Home },
+  { to: "/videos", labelKey: "nav.feed", icon: FeedIcon },
+  { to: "/market", labelKey: "nav.market", icon: Store },
+  { to: "/profile", labelKey: "nav.profile", icon: User },
 ] as const;
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
