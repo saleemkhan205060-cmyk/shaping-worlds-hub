@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowLeft, Calendar, Users, MapPin, Briefcase, Heart, Moon, FileText, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, Users, MapPin, Briefcase, Heart, Moon, FileText, Save, Loader2, Search, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/marriage/edit")({
   component: MarriageEditPage,
