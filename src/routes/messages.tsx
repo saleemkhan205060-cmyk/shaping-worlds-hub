@@ -108,7 +108,7 @@ function Messages() {
               .maybeSingle();
             if (data) setProfiles((p) => ({ ...p, [otherId]: data as Profile }));
           }
-        }
+        },
       )
       .subscribe();
     return () => {
