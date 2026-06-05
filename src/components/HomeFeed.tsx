@@ -10,7 +10,7 @@ import {
   MessageCircle,
   Loader2,
   Play,
-  Maximize2,
+  Type,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -19,6 +19,21 @@ import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideo
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { Globe2, Lock } from "lucide-react";
+import { TextPostComposer } from "@/components/TextPostComposer";
+import { TextPostCard } from "@/components/TextPostCard";
+import type { TextStyle } from "@/components/TextPostStyles";
+
+type Post = {
+  id: string;
+  user_id: string;
+  media_url: string | null;
+  media_type: "image" | "video" | "text";
+  caption: string | null;
+  category: string | null;
+  created_at: string;
+  text_style?: unknown;
+};
+
 
 type Post = {
   id: string;
