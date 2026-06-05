@@ -4,6 +4,8 @@ let unlockBound = false;
 let unlocked = false;
 let pendingChime = false;
 
+type AudioWindow = Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext };
+
 const unlockEvents: (keyof WindowEventMap)[] = [
   "pointerdown",
   "pointerup",
@@ -17,7 +19,8 @@ const unlockEvents: (keyof WindowEventMap)[] = [
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
-  const Ctor = window.AudioContext || (window as any).webkitAudioContext;
+  const audioWindow = window as AudioWindow;
+  const Ctor = audioWindow.AudioContext || audioWindow.webkitAudioContext;
   if (!Ctor) return null;
   if (!audioCtx) {
     try {
