@@ -54,10 +54,13 @@ function Profile() {
   const [savingAbout, setSavingAbout] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
+  const [nameText, setNameText] = useState("");
   const [bioText, setBioText] = useState("");
-  const [bioLocation, setBioLocation] = useState("");
-  const [bioWebsite, setBioWebsite] = useState("");
   const [savingBio, setSavingBio] = useState(false);
+
+  const BIO_WORD_LIMIT = 100;
+  const countWords = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+  const bioWordCount = countWords(bioText);
 
   type AboutInfo = {
     userName: string;
@@ -116,31 +119,39 @@ function Profile() {
     "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
 
   const startEditBio = () => {
-    setBioText(profile?.bio ?? DEFAULT_BIO);
-    setBioLocation(profile?.location ?? "Global");
-    setBioWebsite(profile?.website ?? "shapingworld.com");
+    setNameText(profile?.display_name ?? user?.email?.split("@")[0] ?? "");
+    setBioText(profile?.bio ?? "");
     setEditingBio(true);
   };
 
   const saveBio = async () => {
     if (!user) return;
+    const trimmedName = nameText.trim();
+    if (!trimmedName) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+    if (countWords(bioText) > BIO_WORD_LIMIT) {
+      toast.error(`Bio must be ${BIO_WORD_LIMIT} words or less`);
+      return;
+    }
     setSavingBio(true);
     const updates = {
+      display_name: trimmedName,
       bio: bioText.trim() || null,
-      location: bioLocation.trim() || null,
-      website: bioWebsite.trim() || null,
     };
     const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
     if (error) {
-      toast.error("Failed to update bio");
+      toast.error("Failed to update profile");
       setSavingBio(false);
       return;
     }
     setProfile((p) => (p ? { ...p, ...updates } : p));
-    toast.success("Bio updated");
+    toast.success("Profile updated");
     setSavingBio(false);
     setEditingBio(false);
   };
+
 
   const startEditAbout = () => {
     setEditAbout({ ...about });
@@ -333,6 +344,13 @@ function Profile() {
           </div>
         </div>
 
+        {/* Bio under name */}
+        {profile?.bio && (
+          <p className="mt-2 px-6 text-center text-sm text-slate-600 whitespace-pre-wrap">
+            {profile.bio}
+          </p>
+        )}
+
 
         {/* Stats: Following | Followers | Likes */}
         <div className="mt-6 px-4 grid grid-cols-3 items-center">
@@ -379,60 +397,64 @@ function Profile() {
           }}
         />
 
-        {/* Bio editor (shown when editing) */}
-        {editingBio && (
-          <div className="mt-4 mx-4 space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <label className="block">
-              <span className="text-xs font-medium text-slate-600">Bio</span>
-              <textarea
-                value={bioText}
-                onChange={(e) => setBioText(e.target.value)}
-                rows={4}
-                maxLength={500}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Edit profile bottom sheet */}
+        <Drawer open={editingBio} onOpenChange={(o) => !savingBio && setEditingBio(o)}>
+          <DrawerContent className="max-h-[90vh]">
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Edit profile</DrawerTitle>
+            </DrawerHeader>
+            <div className="px-4 pb-6 space-y-4 overflow-y-auto">
               <label className="block">
-                <span className="text-xs font-medium text-slate-600">Location</span>
+                <span className="text-xs font-medium text-slate-600">Name</span>
                 <input
                   type="text"
-                  value={bioLocation}
-                  onChange={(e) => setBioLocation(e.target.value)}
-                  maxLength={100}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  value={nameText}
+                  onChange={(e) => setNameText(e.target.value)}
+                  maxLength={50}
+                  placeholder="Your name"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </label>
               <label className="block">
-                <span className="text-xs font-medium text-slate-600">Website</span>
-                <input
-                  type="text"
-                  value={bioWebsite}
-                  onChange={(e) => setBioWebsite(e.target.value)}
-                  maxLength={200}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-600">Bio</span>
+                  <span
+                    className={`text-xs font-medium ${
+                      bioWordCount > BIO_WORD_LIMIT ? "text-rose-600" : "text-slate-500"
+                    }`}
+                  >
+                    {bioWordCount}/{BIO_WORD_LIMIT} words
+                  </span>
+                </div>
+                <textarea
+                  value={bioText}
+                  onChange={(e) => setBioText(e.target.value)}
+                  rows={5}
+                  placeholder="Tell people about yourself"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                 />
               </label>
+              <div className="flex gap-2 pt-1">
+                <button
+                  onClick={saveBio}
+                  disabled={savingBio || bioWordCount > BIO_WORD_LIMIT || !nameText.trim()}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60"
+                >
+                  {savingBio ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                  Save
+                </button>
+                <button
+                  onClick={() => setEditingBio(false)}
+                  disabled={savingBio}
+                  className="px-5 py-2.5 rounded-full bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2 pt-1">
-              <button
-                onClick={saveBio}
-                disabled={savingBio}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 disabled:opacity-60"
-              >
-                {savingBio ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-                Save
-              </button>
-              <button
-                onClick={() => setEditingBio(false)}
-                disabled={savingBio}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200"
-              >
-                <X className="h-3.5 w-3.5" /> Cancel
-              </button>
-            </div>
-          </div>
-        )}
+          </DrawerContent>
+        </Drawer>
+
       </div>
 
 
