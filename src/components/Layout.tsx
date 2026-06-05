@@ -1,15 +1,24 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu } from "lucide-react";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandItem,
+} from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
@@ -19,10 +28,10 @@ const FeedIcon = ({ className }: { className?: string }) => (
 );
 
 const navItems = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/videos", label: "Feed", icon: FeedIcon },
-  { to: "/market", label: "Market", icon: Store },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/", labelKey: "nav.home", icon: Home },
+  { to: "/videos", labelKey: "nav.feed", icon: FeedIcon },
+  { to: "/market", labelKey: "nav.market", icon: Store },
+  { to: "/profile", labelKey: "nav.profile", icon: User },
 ] as const;
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
@@ -99,6 +108,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
     navigate({ to: "/" });
   };
 
+  const { t, lang, setLang } = useI18n();
+  const [langOpen, setLangOpen] = useState(false);
+  const sortedLangs = useMemo(
+    () => [...LANGUAGES].sort((a, b) => a.name.localeCompare(b.name)),
+    [],
+  );
+
   const Badge = ({ n }: { n: number }) =>
     n > 0 ? (
       <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white">
@@ -131,7 +147,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     active ? "text-indigo-600 bg-indigo-50" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -146,48 +162,83 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Bell className="h-7 w-7" />
               <Badge n={unreadNotifs} />
             </Link>
-            {user ? (
-              <>
-                <Link
-                  to="/messages"
-                  search={{ to: undefined }}
-                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
-                  aria-label="Messages"
+            {user && (
+              <Link
+                to="/messages"
+                search={{ to: undefined }}
+                className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                aria-label="Messages"
+              >
+                <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
+                <Badge n={unreadMsgs} />
+              </Link>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Menu"
+                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
                 >
-                  <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
-                  <Badge n={unreadMsgs} />
-                </Link>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="Menu"
-                      className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
-                    >
-                      <Menu className="h-7 w-7" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40">
+                  <Menu className="h-7 w-7" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => setLangOpen(true)}>
+                  <Languages className="h-4 w-4 mr-2" /> {t("menu.language")}
+                </DropdownMenuItem>
+                {user && (
+                  <>
                     <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
-                      <User className="h-4 w-4 mr-2" /> About
+                      <User className="h-4 w-4 mr-2" /> {t("menu.about")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
-                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                      <LogOut className="h-4 w-4 mr-2" /> {t("menu.signOut")}
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {!user && (
               <Link
                 to="/auth"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
               >
-                <LogIn className="h-4 w-4" /> <span className="hidden xs:inline sm:inline">Sign in</span>
+                <LogIn className="h-4 w-4" /> <span className="hidden xs:inline sm:inline">{t("common.signIn")}</span>
               </Link>
             )}
           </div>
         </div>
       </header>
+
+      <Dialog open={langOpen} onOpenChange={setLangOpen}>
+        <DialogContent className="p-0 overflow-hidden max-w-md">
+          <DialogTitle className="sr-only">{t("language.title")}</DialogTitle>
+          <Command>
+            <CommandInput placeholder={t("language.searchPlaceholder")} />
+            <CommandList className="max-h-[60vh]">
+              <CommandEmpty>—</CommandEmpty>
+              {sortedLangs.map((l) => (
+                <CommandItem
+                  key={l.code}
+                  value={`${l.name} ${l.native}`}
+                  onSelect={() => {
+                    setLang(l.code as LangCode);
+                    setLangOpen(false);
+                  }}
+                  className="flex items-center justify-between gap-3 py-3"
+                >
+                  <span className="flex flex-col">
+                    <span className="font-medium">{l.native}</span>
+                    <span className="text-xs text-slate-500">{l.name}</span>
+                  </span>
+                  {lang === l.code && <Check className="h-4 w-4 text-indigo-600" />}
+                </CommandItem>
+              ))}
+            </CommandList>
+          </Command>
+        </DialogContent>
+      </Dialog>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
 
@@ -208,7 +259,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 }`}
               >
                 <Icon className="h-5 w-5 mb-1" />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             );
           })}
