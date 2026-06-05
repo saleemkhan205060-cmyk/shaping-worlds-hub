@@ -646,7 +646,7 @@ function Profile() {
           <DrawerHeader>
             <DrawerTitle>About</DrawerTitle>
           </DrawerHeader>
-          <div className="px-4 pb-6 overflow-y-auto text-sm text-slate-700 space-y-3">
+          <div data-no-translate className="px-4 pb-6 overflow-y-auto text-sm text-slate-700 space-y-3">
             {!editingAbout ? (
               <>
                 <div className="flex items-center justify-between">
