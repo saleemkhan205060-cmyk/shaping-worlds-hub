@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowLeft, Calendar, Users, MapPin, Briefcase, Heart, Moon, FileText, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, Users, MapPin, Briefcase, Heart, Moon, FileText, Save, Loader2, Search, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/marriage/edit")({
   component: MarriageEditPage,
@@ -13,6 +15,29 @@ export const Route = createFileRoute("/marriage/edit")({
 const LOOKING_FOR = ["Male", "Female"];
 const MARITAL = ["Single", "Divorced", "Widowed"];
 const RELIGIONS = ["Islam", "Christianity", "Hinduism", "Sikhism", "Buddhism", "Judaism", "Other", "Prefer not to say"];
+
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria",
+  "Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan",
+  "Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia",
+  "Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Congo (Democratic Republic)",
+  "Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador",
+  "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France",
+  "Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau",
+  "Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland",
+  "Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea (North)","Korea (South)",
+  "Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein",
+  "Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania",
+  "Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar",
+  "Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway",
+  "Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland",
+  "Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino",
+  "Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands",
+  "Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+  "Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan",
+  "Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City",
+  "Venezuela","Vietnam","Yemen","Zambia","Zimbabwe",
+];
 
 function MarriageEditPage() {
   const { user, loading: authLoading } = useAuth();
@@ -25,6 +50,7 @@ function MarriageEditPage() {
   const [age, setAge] = useState<string>("");
   const [lookingFor, setLookingFor] = useState<string>("");
   const [country, setCountry] = useState<string>("");
+  const [countryOpen, setCountryOpen] = useState(false);
   const [profession, setProfession] = useState<string>("");
   const [maritalStatus, setMaritalStatus] = useState<string>("");
   const [religion, setReligion] = useState<string>("");
@@ -147,7 +173,42 @@ function MarriageEditPage() {
             ))}
           </FieldSelect>
 
-          <FieldInput icon={MapPin} label="Country" value={country} onChange={setCountry} placeholder="e.g. Saudi Arabia" />
+          <div onClick={() => setCountryOpen(true)}>
+            <FieldRow icon={MapPin} label="Country">
+              <button
+                type="button"
+                onClick={() => setCountryOpen(true)}
+                className="text-sm text-right bg-transparent focus:outline-none flex items-center gap-1 text-slate-900"
+              >
+                {country || <span className="text-slate-400">Select country</span>}
+                <ChevronDown className="h-4 w-4 text-slate-400" />
+              </button>
+            </FieldRow>
+          </div>
+
+          <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
+            <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
+              <DialogTitle className="sr-only">Select Country</DialogTitle>
+              <Command>
+                <CommandInput placeholder="Search country…" />
+                <CommandList className="max-h-[60vh]">
+                  <CommandEmpty>No country found.</CommandEmpty>
+                  {COUNTRIES.map((c) => (
+                    <CommandItem
+                      key={c}
+                      value={c}
+                      onSelect={() => {
+                        setCountry(c);
+                        setCountryOpen(false);
+                      }}
+                    >
+                      {c}
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              </Command>
+            </DialogContent>
+          </Dialog>
 
           <FieldInput
             icon={Briefcase}
