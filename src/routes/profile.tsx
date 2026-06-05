@@ -61,6 +61,32 @@ function Profile() {
   const BIO_CHAR_LIMIT = 80;
   const bioCharCount = bioText.length;
 
+  type ListUser = { id: string; display_name: string | null; username: string | null; avatar_url: string | null };
+  const [listKind, setListKind] = useState<null | "followers" | "following">(null);
+  const [listUsers, setListUsers] = useState<ListUser[]>([]);
+  const [listLoading, setListLoading] = useState(false);
+
+  const openList = async (kind: "followers" | "following") => {
+    if (!user) return;
+    setListKind(kind);
+    setListUsers([]);
+    setListLoading(true);
+    const col = kind === "followers" ? "following_id" : "follower_id";
+    const otherCol = kind === "followers" ? "follower_id" : "following_id";
+    const { data: rows } = await supabase.from("follows").select(otherCol).eq(col, user.id);
+    const ids = ((rows ?? []) as Array<Record<string, string>>).map((r) => r[otherCol]).filter(Boolean);
+    if (ids.length === 0) {
+      setListLoading(false);
+      return;
+    }
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("id, display_name, username, avatar_url")
+      .in("id", ids);
+    setListUsers((profs as ListUser[]) ?? []);
+    setListLoading(false);
+  };
+
   type AboutInfo = {
     userName: string;
     gender: string;
