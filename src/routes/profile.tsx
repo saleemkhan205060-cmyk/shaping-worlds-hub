@@ -58,9 +58,8 @@ function Profile() {
   const [bioText, setBioText] = useState("");
   const [savingBio, setSavingBio] = useState(false);
 
-  const BIO_WORD_LIMIT = 100;
-  const countWords = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
-  const bioWordCount = countWords(bioText);
+  const BIO_CHAR_LIMIT = 80;
+  const bioCharCount = bioText.length;
 
   type AboutInfo = {
     userName: string;
@@ -131,8 +130,8 @@ function Profile() {
       toast.error("Name cannot be empty");
       return;
     }
-    if (countWords(bioText) > BIO_WORD_LIMIT) {
-      toast.error(`Bio must be ${BIO_WORD_LIMIT} words or less`);
+    if (bioText.length > BIO_CHAR_LIMIT) {
+      toast.error(`Bio must be ${BIO_CHAR_LIMIT} characters or less`);
       return;
     }
     setSavingBio(true);
@@ -420,10 +419,10 @@ function Profile() {
                   <span className="text-xs font-medium text-slate-600">Bio</span>
                   <span
                     className={`text-xs font-medium ${
-                      bioWordCount > BIO_WORD_LIMIT ? "text-rose-600" : "text-slate-500"
+                      bioCharCount > BIO_CHAR_LIMIT ? "text-rose-600" : "text-slate-500"
                     }`}
                   >
-                    {bioWordCount}/{BIO_WORD_LIMIT} words
+                    {bioCharCount}/{BIO_CHAR_LIMIT} characters
                   </span>
                 </div>
                 <textarea
@@ -437,7 +436,7 @@ function Profile() {
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={saveBio}
-                  disabled={savingBio || bioWordCount > BIO_WORD_LIMIT || !nameText.trim()}
+                  disabled={savingBio || bioCharCount > BIO_CHAR_LIMIT || !nameText.trim()}
                   className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60"
                 >
                   {savingBio ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
