@@ -246,9 +246,10 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (typeof document === "undefined") return;
-    const meta = LANGUAGES.find((l) => l.code === lang);
+    // Only update the lang attribute. Keep document direction LTR so the
+    // app layout, icons, and navigation never flip when switching languages.
     document.documentElement.lang = lang;
-    document.documentElement.dir = meta?.rtl ? "rtl" : "ltr";
+    document.documentElement.dir = "ltr";
   }, [lang]);
 
   const setLang = React.useCallback((l: LangCode) => {
