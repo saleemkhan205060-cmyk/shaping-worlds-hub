@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { SearchablePicker } from "@/components/SearchablePicker";
+import { COUNTRIES, LANGUAGES, PROFESSIONS, EDUCATION } from "@/lib/picker-options";
 
 
 export const Route = createFileRoute("/profile")({ component: Profile });
