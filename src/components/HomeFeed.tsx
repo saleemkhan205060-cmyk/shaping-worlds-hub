@@ -10,7 +10,6 @@ import {
   MessageCircle,
   Loader2,
   Play,
-  Type,
   Maximize2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +19,6 @@ import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideo
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { Globe2, Lock } from "lucide-react";
-import { TextPostComposer } from "@/components/TextPostComposer";
 import { TextPostCard } from "@/components/TextPostCard";
 import type { TextStyle } from "@/components/TextPostStyles";
 
