@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
+import { AutoTranslate } from "@/lib/auto-translate";
 
 import appCss from "../styles.css?url";
 
