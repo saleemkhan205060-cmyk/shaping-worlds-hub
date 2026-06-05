@@ -20,7 +20,15 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { Globe2, Lock } from "lucide-react";
 import { TextPostCard } from "@/components/TextPostCard";
-import type { TextStyle } from "@/components/TextPostStyles";
+import {
+  BG_PRESETS,
+  FONT_PRESETS,
+  COLOR_PRESETS,
+  SIZE_PRESETS,
+  DEFAULT_TEXT_STYLE,
+  type TextStyle,
+} from "@/components/TextPostStyles";
+
 
 type Post = {
   id: string;
