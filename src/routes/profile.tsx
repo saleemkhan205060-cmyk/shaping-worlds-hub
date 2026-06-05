@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { SearchablePicker } from "@/components/SearchablePicker";
+import { COUNTRIES, LANGUAGES, PROFESSIONS, EDUCATION } from "@/lib/picker-options";
 
 
 export const Route = createFileRoute("/profile")({ component: Profile });
@@ -687,11 +689,11 @@ function Profile() {
                 {[
                   { key: "gender", label: "Gender", type: "select", options: ["", "Male", "Female", "Other", "Prefer not to say"] },
                   { key: "dob", label: "Date of Birth / Age", type: "text", placeholder: "e.g. 1995-04-12 or 29" },
-                  { key: "profession", label: "Profession / Job", type: "text" },
-                  { key: "education", label: "Education", type: "text" },
-                  { key: "country", label: "Country", type: "text" },
+                  { key: "profession", label: "Profession / Job", type: "picker", options: PROFESSIONS, placeholder: "Select profession" },
+                  { key: "education", label: "Education", type: "picker", options: EDUCATION, placeholder: "Select education" },
+                  { key: "country", label: "Country", type: "picker", options: COUNTRIES, placeholder: "Select country" },
                   { key: "maritalStatus", label: "Marital Status", type: "select", options: ["", "Single", "Married", "Divorced", "Widowed"] },
-                  { key: "languages", label: "Languages", type: "text", placeholder: "e.g. English, Urdu" },
+                  { key: "languages", label: "Languages", type: "picker", options: LANGUAGES, placeholder: "Select language" },
                 ].map((f) => (
                   <label key={f.key} className="block">
                     <span className="text-xs font-medium text-slate-600">{f.label}</span>
@@ -705,6 +707,14 @@ function Profile() {
                           <option key={o} value={o}>{o || "Select..."}</option>
                         ))}
                       </select>
+                    ) : f.type === "picker" ? (
+                      <SearchablePicker
+                        value={(editAbout as any)[f.key] || ""}
+                        onChange={(v) => setEditAbout({ ...editAbout, [f.key]: v })}
+                        options={f.options as string[]}
+                        placeholder={(f as any).placeholder}
+                        title={f.label}
+                      />
                     ) : (
                       <input
                         type="text"
