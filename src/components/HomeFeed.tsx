@@ -11,6 +11,7 @@ import {
   Loader2,
   Play,
   Type,
+  Maximize2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -34,16 +35,6 @@ type Post = {
   text_style?: unknown;
 };
 
-
-type Post = {
-  id: string;
-  user_id: string;
-  media_url: string | null;
-  media_type: "image" | "video" | "text";
-  caption: string | null;
-  category: string | null;
-  created_at: string;
-};
 
 type Profile = {
   id: string;
