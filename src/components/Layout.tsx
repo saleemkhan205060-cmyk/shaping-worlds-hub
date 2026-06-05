@@ -19,7 +19,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
-import { playSoftChime } from "@/lib/notification-sound";
+import { initNotificationSoundUnlock, playSoftChime } from "@/lib/notification-sound";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
@@ -82,18 +82,49 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   useEffect(() => {
+    initNotificationSoundUnlock();
+  }, []);
+
+  useEffect(() => {
     refreshUnreadMsgs();
     refreshUnreadNotifs();
     if (!user) return;
     const ch = supabase
       .channel("layout-unread")
-      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, refreshUnreadMsgs)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, () => playSoftChime())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` }, refreshUnreadNotifs)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_likes" }, refreshUnreadNotifs)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_comments" }, refreshUnreadNotifs)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        refreshUnreadMsgs,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        (payload) => {
+          const message = payload.new as { sender_id?: string; recipient_id?: string };
+          if (message.recipient_id === user.id && message.sender_id !== user.id) {
+            playSoftChime();
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` },
+        refreshUnreadNotifs,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "post_likes" },
+        refreshUnreadNotifs,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "post_comments" },
+        refreshUnreadNotifs,
+      )
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, [user, refreshUnreadMsgs, refreshUnreadNotifs]);
 
   // Reset notif badge when visiting the notifications page
