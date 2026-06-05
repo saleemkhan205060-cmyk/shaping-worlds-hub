@@ -260,12 +260,6 @@ export function HomeFeed() {
     setPosting(true);
     try {
       if (!file) {
-        const defaultStyle: TextStyle = {
-          bgId: "indigo",
-          fontId: "sans",
-          colorId: "white",
-          align: "center",
-        };
         const { error: insErr } = await supabase.from("posts").insert({
           user_id: user.id,
           media_url: null,
@@ -273,10 +267,11 @@ export function HomeFeed() {
           caption: text,
           category: "For You",
           is_private: isPrivate,
-          text_style: defaultStyle as unknown as Record<string, unknown>,
+          text_style: textStyle as unknown as Record<string, unknown>,
         } as never);
         if (insErr) throw insErr;
       } else {
+
         const ext = file.name.split(".").pop() || "bin";
         const path = `${user.id}/${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage
