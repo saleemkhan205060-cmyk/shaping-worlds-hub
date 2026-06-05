@@ -281,6 +281,28 @@ export function HomeFeed() {
     }
   };
 
+  const submitText = async (text: string, style: TextStyle, priv: boolean) => {
+    if (!user) {
+      toast.error("Please sign in to post");
+      return;
+    }
+    const { error } = await supabase.from("posts").insert({
+      user_id: user.id,
+      media_url: null,
+      media_type: "text",
+      caption: text,
+      category: "For You",
+      is_private: priv,
+      text_style: style as unknown as Record<string, unknown>,
+    } as never);
+    if (error) {
+      console.error(error);
+      toast.error("Couldn't post. Please try again.");
+      return;
+    }
+    toast.success("Posted!");
+  };
+
   // Load marriage profiles when the Marriage tab is selected
   useEffect(() => {
     if (tab !== "marriage" || marriage.length > 0) return;
