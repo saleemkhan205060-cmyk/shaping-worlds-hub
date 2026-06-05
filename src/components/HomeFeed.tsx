@@ -614,7 +614,7 @@ export function HomeFeed() {
                   <button
                     type="button"
                     onClick={() => { submit(); setPrivacyOpen(false); }}
-                    disabled={posting || !file}
+                    disabled={posting || (!file && !caption.trim())}
                     className="flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50"
                   >
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
