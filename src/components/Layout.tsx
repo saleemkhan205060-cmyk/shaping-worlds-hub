@@ -162,48 +162,83 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Bell className="h-7 w-7" />
               <Badge n={unreadNotifs} />
             </Link>
-            {user ? (
-              <>
-                <Link
-                  to="/messages"
-                  search={{ to: undefined }}
-                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
-                  aria-label="Messages"
+            {user && (
+              <Link
+                to="/messages"
+                search={{ to: undefined }}
+                className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                aria-label="Messages"
+              >
+                <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
+                <Badge n={unreadMsgs} />
+              </Link>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Menu"
+                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
                 >
-                  <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
-                  <Badge n={unreadMsgs} />
-                </Link>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="Menu"
-                      className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
-                    >
-                      <Menu className="h-7 w-7" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40">
+                  <Menu className="h-7 w-7" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => setLangOpen(true)}>
+                  <Languages className="h-4 w-4 mr-2" /> {t("menu.language")}
+                </DropdownMenuItem>
+                {user && (
+                  <>
                     <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
-                      <User className="h-4 w-4 mr-2" /> About
+                      <User className="h-4 w-4 mr-2" /> {t("menu.about")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
-                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                      <LogOut className="h-4 w-4 mr-2" /> {t("menu.signOut")}
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {!user && (
               <Link
                 to="/auth"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
               >
-                <LogIn className="h-4 w-4" /> <span className="hidden xs:inline sm:inline">Sign in</span>
+                <LogIn className="h-4 w-4" /> <span className="hidden xs:inline sm:inline">{t("common.signIn")}</span>
               </Link>
             )}
           </div>
         </div>
       </header>
+
+      <Dialog open={langOpen} onOpenChange={setLangOpen}>
+        <DialogContent className="p-0 overflow-hidden max-w-md">
+          <DialogTitle className="sr-only">{t("language.title")}</DialogTitle>
+          <Command>
+            <CommandInput placeholder={t("language.searchPlaceholder")} />
+            <CommandList className="max-h-[60vh]">
+              <CommandEmpty>—</CommandEmpty>
+              {sortedLangs.map((l) => (
+                <CommandItem
+                  key={l.code}
+                  value={`${l.name} ${l.native}`}
+                  onSelect={() => {
+                    setLang(l.code as LangCode);
+                    setLangOpen(false);
+                  }}
+                  className="flex items-center justify-between gap-3 py-3"
+                >
+                  <span className="flex flex-col">
+                    <span className="font-medium">{l.native}</span>
+                    <span className="text-xs text-slate-500">{l.name}</span>
+                  </span>
+                  {lang === l.code && <Check className="h-4 w-4 text-indigo-600" />}
+                </CommandItem>
+              ))}
+            </CommandList>
+          </Command>
+        </DialogContent>
+      </Dialog>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
 
