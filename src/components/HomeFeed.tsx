@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Loader2,
   Play,
+  Type,
   Maximize2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,9 @@ import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideo
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { Globe2, Lock } from "lucide-react";
+import { TextPostComposer } from "@/components/TextPostComposer";
+import { TextPostCard } from "@/components/TextPostCard";
+import type { TextStyle } from "@/components/TextPostStyles";
 
 type Post = {
   id: string;
@@ -28,7 +32,9 @@ type Post = {
   caption: string | null;
   category: string | null;
   created_at: string;
+  text_style?: unknown;
 };
+
 
 type Profile = {
   id: string;
@@ -83,6 +89,8 @@ export function HomeFeed() {
   const [posting, setPosting] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [textComposerOpen, setTextComposerOpen] = useState(false);
+
   const fileRef = useRef<HTMLInputElement>(null);
 
 
@@ -271,6 +279,28 @@ export function HomeFeed() {
     } finally {
       setPosting(false);
     }
+  };
+
+  const submitText = async (text: string, style: TextStyle, priv: boolean) => {
+    if (!user) {
+      toast.error("Please sign in to post");
+      return;
+    }
+    const { error } = await supabase.from("posts").insert({
+      user_id: user.id,
+      media_url: null,
+      media_type: "text",
+      caption: text,
+      category: "For You",
+      is_private: priv,
+      text_style: style as unknown as Record<string, unknown>,
+    } as never);
+    if (error) {
+      console.error(error);
+      toast.error("Couldn't post. Please try again.");
+      return;
+    }
+    toast.success("Posted!");
   };
 
   // Load marriage profiles when the Marriage tab is selected
@@ -543,6 +573,12 @@ export function HomeFeed() {
               >
                 <VideoIcon className="h-4 w-4" /> Video
               </button>
+              <button
+                onClick={() => setTextComposerOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-indigo-700 hover:bg-indigo-50 transition"
+              >
+                <Type className="h-4 w-4" /> Text
+              </button>
               <input
                 ref={fileRef}
                 type="file"
@@ -648,8 +684,11 @@ export function HomeFeed() {
                     </p>
                   </div>
                 </Link>
-                {p.caption && (
+                {p.caption && p.media_type !== "text" && (
                   <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
+                )}
+                {p.media_type === "text" && p.caption && (
+                  <TextPostCard text={p.caption} style={p.text_style} />
                 )}
                 {p.media_type === "image" && p.media_url && (
                   <MediaActions
@@ -764,6 +803,12 @@ export function HomeFeed() {
           }
         />
       )}
+
+      <TextPostComposer
+        open={textComposerOpen}
+        onClose={() => setTextComposerOpen(false)}
+        onSubmit={submitText}
+      />
     </section>
   );
 }

@@ -254,6 +254,7 @@ export type Database = {
           is_private: boolean
           media_type: string
           media_url: string | null
+          text_style: Json | null
           updated_at: string
           user_id: string
         }
@@ -265,6 +266,7 @@ export type Database = {
           is_private?: boolean
           media_type: string
           media_url?: string | null
+          text_style?: Json | null
           updated_at?: string
           user_id: string
         }
@@ -276,6 +278,7 @@ export type Database = {
           is_private?: boolean
           media_type?: string
           media_url?: string | null
+          text_style?: Json | null
           updated_at?: string
           user_id?: string
         }
