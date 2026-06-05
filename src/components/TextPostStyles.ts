@@ -5,7 +5,9 @@ export type TextStyle = {
   fontId: string;
   colorId: string;
   align?: "left" | "center" | "right";
+  sizeId?: string;
 };
+
 
 export type BgPreset = {
   id: string;
@@ -60,11 +62,21 @@ export const COLOR_PRESETS: ColorPreset[] = [
   { id: "sky", label: "Sky", className: "text-sky-300", swatch: "bg-sky-300" },
 ];
 
+export type SizePreset = { id: string; label: string; className: string };
+
+export const SIZE_PRESETS: SizePreset[] = [
+  { id: "sm", label: "S", className: "text-lg sm:text-xl" },
+  { id: "md", label: "M", className: "text-2xl sm:text-3xl" },
+  { id: "lg", label: "L", className: "text-3xl sm:text-4xl" },
+  { id: "xl", label: "XL", className: "text-4xl sm:text-5xl" },
+];
+
 export const DEFAULT_TEXT_STYLE: TextStyle = {
   bgId: "indigo",
   fontId: "sans",
   colorId: "white",
   align: "center",
+  sizeId: "md",
 };
 
 export function resolveStyle(raw: unknown): TextStyle {
@@ -74,6 +86,7 @@ export function resolveStyle(raw: unknown): TextStyle {
     fontId: FONT_PRESETS.some((f) => f.id === s.fontId) ? s.fontId! : DEFAULT_TEXT_STYLE.fontId,
     colorId: COLOR_PRESETS.some((c) => c.id === s.colorId) ? s.colorId! : DEFAULT_TEXT_STYLE.colorId,
     align: s.align === "left" || s.align === "right" ? s.align : "center",
+    sizeId: SIZE_PRESETS.some((z) => z.id === s.sizeId) ? s.sizeId! : DEFAULT_TEXT_STYLE.sizeId,
   };
 }
 
@@ -86,3 +99,7 @@ export function getFontClass(id: string) {
 export function getColorClass(id: string) {
   return COLOR_PRESETS.find((c) => c.id === id)?.className ?? COLOR_PRESETS[0].className;
 }
+export function getSizeClass(id?: string) {
+  return SIZE_PRESETS.find((z) => z.id === id)?.className ?? SIZE_PRESETS[1].className;
+}
+

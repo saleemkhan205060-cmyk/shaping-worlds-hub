@@ -1,4 +1,4 @@
-import { resolveStyle, getBgClass, getFontClass, getColorClass } from "./TextPostStyles";
+import { resolveStyle, getBgClass, getFontClass, getColorClass, getSizeClass } from "./TextPostStyles";
 
 type Props = {
   text: string;
@@ -13,13 +13,15 @@ export function TextPostCard({ text, style, className = "", size = "md" }: Props
   const font = getFontClass(s.fontId);
   const color = getColorClass(s.colorId);
 
+  // Prefer explicit user-chosen size; fall back to length-based heuristic.
   const len = text.length;
-  const textSize =
+  const fallbackSize =
     size === "lg"
       ? len > 140 ? "text-xl" : len > 80 ? "text-2xl" : len > 40 ? "text-3xl" : "text-4xl"
       : size === "sm"
         ? "text-sm"
         : len > 140 ? "text-base" : len > 80 ? "text-lg" : len > 40 ? "text-2xl" : "text-3xl";
+  const textSize = s.sizeId ? getSizeClass(s.sizeId) : fallbackSize;
 
   const align =
     s.align === "left" ? "text-left" : s.align === "right" ? "text-right" : "text-center";

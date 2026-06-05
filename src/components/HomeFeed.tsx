@@ -20,7 +20,15 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { Globe2, Lock } from "lucide-react";
 import { TextPostCard } from "@/components/TextPostCard";
-import type { TextStyle } from "@/components/TextPostStyles";
+import {
+  BG_PRESETS,
+  FONT_PRESETS,
+  COLOR_PRESETS,
+  SIZE_PRESETS,
+  DEFAULT_TEXT_STYLE,
+  type TextStyle,
+} from "@/components/TextPostStyles";
+
 
 type Post = {
   id: string;
@@ -87,6 +95,8 @@ export function HomeFeed() {
   const [posting, setPosting] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
+
   
 
   const fileRef = useRef<HTMLInputElement>(null);
@@ -250,12 +260,6 @@ export function HomeFeed() {
     setPosting(true);
     try {
       if (!file) {
-        const defaultStyle: TextStyle = {
-          bgId: "indigo",
-          fontId: "sans",
-          colorId: "white",
-          align: "center",
-        };
         const { error: insErr } = await supabase.from("posts").insert({
           user_id: user.id,
           media_url: null,
@@ -263,10 +267,11 @@ export function HomeFeed() {
           caption: text,
           category: "For You",
           is_private: isPrivate,
-          text_style: defaultStyle as unknown as Record<string, unknown>,
+          text_style: textStyle as unknown as Record<string, unknown>,
         } as never);
         if (insErr) throw insErr;
       } else {
+
         const ext = file.name.split(".").pop() || "bin";
         const path = `${user.id}/${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage
@@ -289,6 +294,8 @@ export function HomeFeed() {
       setCaption("");
       setFile(null);
       setIsPrivate(false);
+      setTextStyle(DEFAULT_TEXT_STYLE);
+
       toast.success("Posted!");
     } catch (e) {
       console.error(e);
@@ -548,6 +555,107 @@ export function HomeFeed() {
               </button>
             </div>
           )}
+          {!file && caption.trim().length > 0 && (
+            <div className="mt-3 space-y-3">
+              <div className="rounded-2xl overflow-hidden border border-slate-200">
+                <TextPostCard text={caption} style={textStyle} />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Background</p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {BG_PRESETS.map((b) => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => setTextStyle((s) => ({ ...s, bgId: b.id }))}
+                      className={`shrink-0 h-8 w-8 rounded-full border-2 ${b.className} ${
+                        textStyle.bgId === b.id ? "border-indigo-600 ring-2 ring-indigo-200" : "border-white"
+                      }`}
+                      aria-label={b.label}
+                      title={b.label}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Text color</p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {COLOR_PRESETS.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setTextStyle((s) => ({ ...s, colorId: c.id }))}
+                      className={`shrink-0 h-7 w-7 rounded-full border-2 ${c.swatch} ${
+                        textStyle.colorId === c.id ? "border-indigo-600 ring-2 ring-indigo-200" : "border-slate-200"
+                      }`}
+                      aria-label={c.label}
+                      title={c.label}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Font</p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {FONT_PRESETS.map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setTextStyle((s) => ({ ...s, fontId: f.id }))}
+                      className={`shrink-0 px-3 py-1 rounded-full text-xs border ${f.className} ${
+                        textStyle.fontId === f.id
+                          ? "bg-indigo-600 text-white border-indigo-600"
+                          : "bg-white text-slate-700 border-slate-200"
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Size</p>
+                  <div className="flex gap-1.5">
+                    {SIZE_PRESETS.map((z) => (
+                      <button
+                        key={z.id}
+                        type="button"
+                        onClick={() => setTextStyle((s) => ({ ...s, sizeId: z.id }))}
+                        className={`h-7 min-w-7 px-2 rounded-full text-[11px] font-bold border ${
+                          textStyle.sizeId === z.id
+                            ? "bg-indigo-600 text-white border-indigo-600"
+                            : "bg-white text-slate-700 border-slate-200"
+                        }`}
+                      >
+                        {z.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Align</p>
+                  <div className="flex gap-1.5">
+                    {(["left", "center", "right"] as const).map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => setTextStyle((s) => ({ ...s, align: a }))}
+                        className={`px-2.5 h-7 rounded-full text-[11px] font-medium border capitalize ${
+                          textStyle.align === a
+                            ? "bg-indigo-600 text-white border-indigo-600"
+                            : "bg-white text-slate-700 border-slate-200"
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-slate-100">
             <div className="flex items-center gap-1">
               <button
