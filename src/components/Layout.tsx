@@ -91,18 +91,40 @@ export function Layout({ children }: { children: React.ReactNode }) {
     if (!user) return;
     const ch = supabase
       .channel("layout-unread")
-      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, refreshUnreadMsgs)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, (payload) => {
-        const message = payload.new as { sender_id?: string; recipient_id?: string };
-        if (message.recipient_id === user.id && message.sender_id !== user.id) {
-          playSoftChime();
-        }
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` }, refreshUnreadNotifs)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_likes" }, refreshUnreadNotifs)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_comments" }, refreshUnreadNotifs)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        refreshUnreadMsgs,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        (payload) => {
+          const message = payload.new as { sender_id?: string; recipient_id?: string };
+          if (message.recipient_id === user.id && message.sender_id !== user.id) {
+            playSoftChime();
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` },
+        refreshUnreadNotifs,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "post_likes" },
+        refreshUnreadNotifs,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "post_comments" },
+        refreshUnreadNotifs,
+      )
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, [user, refreshUnreadMsgs, refreshUnreadNotifs]);
 
   // Reset notif badge when visiting the notifications page
