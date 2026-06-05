@@ -803,6 +803,12 @@ export function HomeFeed() {
           }
         />
       )}
+
+      <TextPostComposer
+        open={textComposerOpen}
+        onClose={() => setTextComposerOpen(false)}
+        onSubmit={submitText}
+      />
     </section>
   );
 }
