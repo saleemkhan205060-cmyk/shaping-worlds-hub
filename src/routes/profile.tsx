@@ -489,6 +489,55 @@ function Profile() {
           </DrawerContent>
         </Drawer>
 
+        {/* Followers / Following list */}
+        <Drawer open={listKind !== null} onOpenChange={(o) => !o && setListKind(null)}>
+          <DrawerContent className="max-h-[85vh]">
+            <DrawerHeader className="text-left">
+              <DrawerTitle className="capitalize">{listKind ?? ""}</DrawerTitle>
+            </DrawerHeader>
+            <div className="px-2 pb-6 overflow-y-auto">
+              {listLoading ? (
+                <div className="flex items-center justify-center py-10 text-slate-500">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading...
+                </div>
+              ) : listUsers.length === 0 ? (
+                <div className="text-center py-10 text-sm text-slate-500">
+                  No {listKind} yet.
+                </div>
+              ) : (
+                <ul className="divide-y divide-slate-100">
+                  {listUsers.map((u) => {
+                    const name = u.display_name ?? u.username ?? "User";
+                    const handle = u.username ?? name;
+                    return (
+                      <li key={u.id}>
+                        <Link
+                          to="/u/$id"
+                          params={{ id: u.id }}
+                          onClick={() => setListKind(null)}
+                          className="flex items-center gap-3 px-3 py-3 hover:bg-slate-50 rounded-lg"
+                        >
+                          {u.avatar_url ? (
+                            <img src={u.avatar_url} alt={name} className="h-11 w-11 rounded-full object-cover" />
+                          ) : (
+                            <div className="h-11 w-11 rounded-full bg-gradient-to-br from-amber-300 to-pink-500 flex items-center justify-center text-white font-bold">
+                              {name[0]?.toUpperCase()}
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-slate-900 truncate">{name}</div>
+                            <div className="text-xs text-slate-500 truncate">@{handle}</div>
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </DrawerContent>
+        </Drawer>
+
       </div>
 
 
