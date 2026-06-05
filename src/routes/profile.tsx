@@ -119,31 +119,39 @@ function Profile() {
     "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
 
   const startEditBio = () => {
-    setBioText(profile?.bio ?? DEFAULT_BIO);
-    setBioLocation(profile?.location ?? "Global");
-    setBioWebsite(profile?.website ?? "shapingworld.com");
+    setNameText(profile?.display_name ?? user?.email?.split("@")[0] ?? "");
+    setBioText(profile?.bio ?? "");
     setEditingBio(true);
   };
 
   const saveBio = async () => {
     if (!user) return;
+    const trimmedName = nameText.trim();
+    if (!trimmedName) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+    if (countWords(bioText) > BIO_WORD_LIMIT) {
+      toast.error(`Bio must be ${BIO_WORD_LIMIT} words or less`);
+      return;
+    }
     setSavingBio(true);
     const updates = {
+      display_name: trimmedName,
       bio: bioText.trim() || null,
-      location: bioLocation.trim() || null,
-      website: bioWebsite.trim() || null,
     };
     const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
     if (error) {
-      toast.error("Failed to update bio");
+      toast.error("Failed to update profile");
       setSavingBio(false);
       return;
     }
     setProfile((p) => (p ? { ...p, ...updates } : p));
-    toast.success("Bio updated");
+    toast.success("Profile updated");
     setSavingBio(false);
     setEditingBio(false);
   };
+
 
   const startEditAbout = () => {
     setEditAbout({ ...about });
