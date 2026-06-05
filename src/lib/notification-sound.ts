@@ -1,15 +1,23 @@
-// Global, shared AudioContext for all notification sounds.
-// Created lazily and unlocked on the first user interaction to comply
-// with browser autoplay policies.
-
+// One shared AudioContext powers every notification chime app-wide.
 let audioCtx: AudioContext | null = null;
 let unlockBound = false;
 let unlocked = false;
+let pendingChime = false;
 
-function ensureCtx(): AudioContext | null {
+const unlockEvents: (keyof WindowEventMap)[] = [
+  "pointerdown",
+  "pointerup",
+  "touchstart",
+  "touchend",
+  "mousedown",
+  "mouseup",
+  "keydown",
+  "click",
+];
+
+function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
-  const Ctor: typeof AudioContext | undefined =
-    (window as any).AudioContext || (window as any).webkitAudioContext;
+  const Ctor = window.AudioContext || (window as any).webkitAudioContext;
   if (!Ctor) return null;
   if (!audioCtx) {
     try {
@@ -21,99 +29,114 @@ function ensureCtx(): AudioContext | null {
   return audioCtx;
 }
 
-function unlock() {
-  const ctx = ensureCtx();
-  if (!ctx) return;
-  const finish = () => {
-    unlocked = true;
-    // Play a 1-sample silent buffer to fully unlock on iOS/Safari.
-    try {
-      const buffer = ctx.createBuffer(1, 1, 22050);
-      const src = ctx.createBufferSource();
-      src.buffer = buffer;
-      src.connect(ctx.destination);
-      src.start(0);
-    } catch {
-      /* ignore */
-    }
-  };
-  if (ctx.state === "suspended") {
-    ctx.resume().then(finish).catch(() => {
-      /* will retry on next interaction */
-    });
-  } else {
-    finish();
+function removeUnlockListeners() {
+  if (!unlockBound || typeof window === "undefined") return;
+  unlockEvents.forEach((eventName) =>
+    window.removeEventListener(eventName, unlockFromGesture, true),
+  );
+  unlockBound = false;
+}
+
+function playSilentUnlockBuffer(ctx: AudioContext) {
+  try {
+    const buffer = ctx.createBuffer(1, 1, ctx.sampleRate || 22050);
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+    source.buffer = buffer;
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(0);
+    source.stop(ctx.currentTime + 0.01);
+  } catch {
+    /* ignore unlock buffer failures */
   }
 }
 
-function bindUnlockListeners() {
-  if (unlockBound || typeof window === "undefined") return;
-  unlockBound = true;
-  const events: (keyof WindowEventMap)[] = [
-    "pointerdown",
-    "touchstart",
-    "mousedown",
-    "keydown",
-    "click",
-  ];
-  const handler = () => {
-    unlock();
-    if (unlocked) {
-      events.forEach((e) =>
-        window.removeEventListener(e, handler, { capture: true } as any),
-      );
+async function unlockAudioContext() {
+  const ctx = getAudioContext();
+  if (!ctx) return false;
+
+  try {
+    if (ctx.state === "suspended") {
+      await ctx.resume();
     }
-  };
-  events.forEach((e) =>
-    window.addEventListener(e, handler, { capture: true, passive: true } as any),
+    playSilentUnlockBuffer(ctx);
+    unlocked = ctx.state === "running";
+    if (unlocked) {
+      removeUnlockListeners();
+      if (pendingChime) {
+        pendingChime = false;
+        playChime(ctx);
+      }
+    }
+    return unlocked;
+  } catch {
+    return false;
+  }
+}
+
+function unlockFromGesture() {
+  void unlockAudioContext();
+}
+
+export function initNotificationSoundUnlock() {
+  if (unlockBound || unlocked || typeof window === "undefined") return;
+  unlockBound = true;
+  unlockEvents.forEach((eventName) =>
+    window.addEventListener(eventName, unlockFromGesture, {
+      capture: true,
+      passive: true,
+    }),
   );
 }
 
-// Bind listeners immediately at module load (client only).
-if (typeof window !== "undefined") {
-  bindUnlockListeners();
+function playChime(ctx: AudioContext) {
+  const now = ctx.currentTime;
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.18, now + 0.025);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+  master.connect(ctx.destination);
+
+  [659.25, 830.61].forEach((freq, index) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const start = now + index * 0.045;
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.75, start + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.75);
+
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(start);
+    osc.stop(start + 0.85);
+  });
 }
 
-/**
- * Play a soft notification chime using the Web Audio API.
- * Uses a shared global AudioContext. If the context is still suspended
- * (no user interaction yet), the sound is silently skipped — it will
- * work for all subsequent notifications.
- */
 export function playSoftChime() {
   try {
-    const ctx = ensureCtx();
+    initNotificationSoundUnlock();
+    const ctx = getAudioContext();
     if (!ctx) return;
 
-    // Try to resume if suspended (works after first interaction).
-    if (ctx.state === "suspended") {
-      ctx.resume().catch(() => {});
+    if (ctx.state !== "running") {
+      pendingChime = true;
+      void unlockAudioContext();
+      return;
     }
-    if (ctx.state !== "running") return;
 
-    const now = ctx.currentTime;
-
-    // Gentle bell-like tone (E5 + G#5)
-    const frequencies = [659.25, 830.61];
-
-    frequencies.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = "sine";
-      osc.frequency.value = freq;
-
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.12, now + 0.02 + i * 0.03);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8 + i * 0.1);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(now + i * 0.03);
-      osc.stop(now + 1.0 + i * 0.1);
-    });
+    unlocked = true;
+    removeUnlockListeners();
+    playChime(ctx);
   } catch {
-    // Ignore audio errors
+    /* ignore audio errors */
   }
+}
+
+if (typeof window !== "undefined") {
+  initNotificationSoundUnlock();
 }
