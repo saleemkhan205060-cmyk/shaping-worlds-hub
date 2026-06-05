@@ -344,6 +344,13 @@ function Profile() {
           </div>
         </div>
 
+        {/* Bio under name */}
+        {profile?.bio && (
+          <p className="mt-2 px-6 text-center text-sm text-slate-600 whitespace-pre-wrap">
+            {profile.bio}
+          </p>
+        )}
+
 
         {/* Stats: Following | Followers | Likes */}
         <div className="mt-6 px-4 grid grid-cols-3 items-center">
