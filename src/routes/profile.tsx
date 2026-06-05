@@ -429,6 +429,7 @@ function Profile() {
                   value={bioText}
                   onChange={(e) => setBioText(e.target.value)}
                   rows={5}
+                  maxLength={BIO_CHAR_LIMIT}
                   placeholder="Tell people about yourself"
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                 />
