@@ -109,6 +109,10 @@ function Messages() {
               .maybeSingle();
             if (data) setProfiles((p) => ({ ...p, [otherId]: data as Profile }));
           }
+          // Play soft chime for incoming messages (not my own)
+          if (m.recipient_id === user.id && m.sender_id !== user.id) {
+            playSoftChime();
+          }
         }
       )
       .subscribe();
