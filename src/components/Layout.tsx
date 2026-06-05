@@ -224,7 +224,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 }`}
               >
                 <Icon className="h-5 w-5 mb-1" />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             );
           })}
