@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check } from "lucide-react";
 import {
   DropdownMenu,
