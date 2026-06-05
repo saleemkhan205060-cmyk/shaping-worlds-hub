@@ -88,6 +88,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     const ch = supabase
       .channel("layout-unread")
       .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, refreshUnreadMsgs)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` }, () => playSoftChime())
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` }, refreshUnreadNotifs)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_likes" }, refreshUnreadNotifs)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "post_comments" }, refreshUnreadNotifs)
