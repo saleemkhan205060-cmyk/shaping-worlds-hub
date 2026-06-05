@@ -50,6 +50,7 @@ function MarriageEditPage() {
   const [age, setAge] = useState<string>("");
   const [lookingFor, setLookingFor] = useState<string>("");
   const [country, setCountry] = useState<string>("");
+  const [countryOpen, setCountryOpen] = useState(false);
   const [profession, setProfession] = useState<string>("");
   const [maritalStatus, setMaritalStatus] = useState<string>("");
   const [religion, setReligion] = useState<string>("");
