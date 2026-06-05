@@ -147,7 +147,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     active ? "text-indigo-600 bg-indigo-50" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
