@@ -379,14 +379,22 @@ function Profile() {
 
         {/* Stats: Following | Followers | Likes */}
         <div className="mt-6 px-4 grid grid-cols-3 items-center">
-          <div className="text-center">
+          <button
+            type="button"
+            onClick={() => openList("following")}
+            className="text-center py-1 hover:bg-slate-50 rounded-lg transition"
+          >
             <div className="text-2xl font-extrabold text-slate-900">{followingCount}</div>
             <div className="text-sm text-slate-400 mt-0.5">Following</div>
-          </div>
-          <div className="text-center border-x border-slate-200">
+          </button>
+          <button
+            type="button"
+            onClick={() => openList("followers")}
+            className="text-center py-1 border-x border-slate-200 hover:bg-slate-50 transition"
+          >
             <div className="text-2xl font-extrabold text-slate-900">{followersCount}</div>
             <div className="text-sm text-slate-400 mt-0.5">Followers</div>
-          </div>
+          </button>
           <div className="text-center">
             <div className="text-2xl font-extrabold text-slate-900">{posts.length}</div>
             <div className="text-sm text-slate-400 mt-0.5">Likes</div>
