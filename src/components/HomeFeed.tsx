@@ -294,6 +294,8 @@ export function HomeFeed() {
       setCaption("");
       setFile(null);
       setIsPrivate(false);
+      setTextStyle(DEFAULT_TEXT_STYLE);
+
       toast.success("Posted!");
     } catch (e) {
       console.error(e);
