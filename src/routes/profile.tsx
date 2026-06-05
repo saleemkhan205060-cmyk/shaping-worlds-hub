@@ -422,7 +422,7 @@ function Profile() {
                       bioCharCount > BIO_CHAR_LIMIT ? "text-rose-600" : "text-slate-500"
                     }`}
                   >
-                    {bioCharCount}/{BIO_CHAR_LIMIT} characters
+                    {bioCharCount}/{BIO_CHAR_LIMIT}
                   </span>
                 </div>
                 <textarea
