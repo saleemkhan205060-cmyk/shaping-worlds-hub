@@ -1,15 +1,24 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu } from "lucide-react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandItem,
+} from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
