@@ -54,10 +54,13 @@ function Profile() {
   const [savingAbout, setSavingAbout] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
+  const [nameText, setNameText] = useState("");
   const [bioText, setBioText] = useState("");
-  const [bioLocation, setBioLocation] = useState("");
-  const [bioWebsite, setBioWebsite] = useState("");
   const [savingBio, setSavingBio] = useState(false);
+
+  const BIO_WORD_LIMIT = 100;
+  const countWords = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+  const bioWordCount = countWords(bioText);
 
   type AboutInfo = {
     userName: string;
