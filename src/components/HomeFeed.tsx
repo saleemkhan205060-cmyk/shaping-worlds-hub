@@ -245,30 +245,49 @@ export function HomeFeed() {
       return;
     }
     const text = caption.trim();
-    if (!file) {
-      toast.error("Attach a photo or video");
+    if (!file && !text) {
+      toast.error("Write something or attach media");
       return;
     }
     setPosting(true);
     try {
-      const ext = file.name.split(".").pop() || "bin";
-      const path = `${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("media")
-        .upload(path, file, { contentType: file.type, upsert: false });
-      if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      const media_url = pub.publicUrl;
-      const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
-      const { error: insErr } = await supabase.from("posts").insert({
-        user_id: user.id,
-        media_url,
-        media_type,
-        caption: text || null,
-        category: "For You",
-        is_private: isPrivate,
-      });
-      if (insErr) throw insErr;
+      if (!file) {
+        const defaultStyle: TextStyle = {
+          bgId: "indigo",
+          fontId: "sans",
+          colorId: "white",
+          align: "center",
+        };
+        const { error: insErr } = await supabase.from("posts").insert({
+          user_id: user.id,
+          media_url: null,
+          media_type: "text",
+          caption: text,
+          category: "For You",
+          is_private: isPrivate,
+          text_style: defaultStyle as unknown as Record<string, unknown>,
+        } as never);
+        if (insErr) throw insErr;
+      } else {
+        const ext = file.name.split(".").pop() || "bin";
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("media")
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+        const media_url = pub.publicUrl;
+        const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+        const { error: insErr } = await supabase.from("posts").insert({
+          user_id: user.id,
+          media_url,
+          media_type,
+          caption: text || null,
+          category: "For You",
+          is_private: isPrivate,
+        });
+        if (insErr) throw insErr;
+      }
       setCaption("");
       setFile(null);
       setIsPrivate(false);
@@ -279,28 +298,6 @@ export function HomeFeed() {
     } finally {
       setPosting(false);
     }
-  };
-
-  const submitText = async (text: string, style: TextStyle, priv: boolean) => {
-    if (!user) {
-      toast.error("Please sign in to post");
-      return;
-    }
-    const { error } = await supabase.from("posts").insert({
-      user_id: user.id,
-      media_url: null,
-      media_type: "text",
-      caption: text,
-      category: "For You",
-      is_private: priv,
-      text_style: style as unknown as Record<string, unknown>,
-    } as never);
-    if (error) {
-      console.error(error);
-      toast.error("Couldn't post. Please try again.");
-      return;
-    }
-    toast.success("Posted!");
   };
 
   // Load marriage profiles when the Marriage tab is selected
