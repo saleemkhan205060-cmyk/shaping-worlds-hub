@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Send, Search, ArrowLeft, Loader2, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
-import { playSoftChime } from "@/lib/notification-sound";
 
 export const Route = createFileRoute("/messages")({
   component: Messages,
@@ -108,10 +107,6 @@ function Messages() {
               .eq("id", otherId)
               .maybeSingle();
             if (data) setProfiles((p) => ({ ...p, [otherId]: data as Profile }));
-          }
-          // Play soft chime for incoming messages (not my own)
-          if (m.recipient_id === user.id && m.sender_id !== user.id) {
-            playSoftChime();
           }
         }
       )
