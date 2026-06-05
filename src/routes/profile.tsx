@@ -58,9 +58,8 @@ function Profile() {
   const [bioText, setBioText] = useState("");
   const [savingBio, setSavingBio] = useState(false);
 
-  const BIO_WORD_LIMIT = 100;
-  const countWords = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
-  const bioWordCount = countWords(bioText);
+  const BIO_CHAR_LIMIT = 80;
+  const bioCharCount = bioText.length;
 
   type AboutInfo = {
     userName: string;
