@@ -598,74 +598,90 @@ function Messages() {
                 />
 
 
-                <div className="flex-1 min-w-0 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
-                  <button
-                    type="button"
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
-                    aria-label="Emoji"
-                  >
-                    <Smile className="h-6 w-6" />
-                  </button>
-                  <textarea
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        send();
-                      }
-                    }}
-                    placeholder="Message"
-                    disabled={busy}
-                    maxLength={2000}
-                    rows={1}
-                    className="flex-1 resize-none bg-transparent text-[16px] leading-6 py-1.5 px-1 max-h-32 focus:outline-none placeholder:text-slate-500 text-slate-800"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => attachInputRef.current?.click()}
-                    disabled={busy}
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
-                    aria-label="Attach file"
-                  >
-                    <Paperclip className="h-5 w-5" />
-                  </button>
-                  {!text.trim() && (
+                {recording ? (
+                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1 shadow-sm min-h-12">
                     <button
                       type="button"
-                      onClick={() => cameraInputRef.current?.click()}
+                      onClick={cancelRecording}
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
+                      aria-label="Cancel recording"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-sm font-medium text-slate-700 tabular-nums">{fmtSecs(recordSecs)}</span>
+                    <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
+                  </div>
+                ) : (
+                  <div className="flex-1 min-w-0 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
+                    <button
+                      type="button"
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
+                      aria-label="Emoji"
+                    >
+                      <Smile className="h-6 w-6" />
+                    </button>
+                    <textarea
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          send();
+                        }
+                      }}
+                      placeholder="Message"
+                      disabled={busy}
+                      maxLength={2000}
+                      rows={1}
+                      className="flex-1 resize-none bg-transparent text-[16px] leading-6 py-1.5 px-1 max-h-32 focus:outline-none placeholder:text-slate-500 text-slate-800"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => attachInputRef.current?.click()}
                       disabled={busy}
                       className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
-                      aria-label="Camera"
+                      aria-label="Attach file"
                     >
-                      <Camera className="h-5 w-5" />
+                      <Paperclip className="h-5 w-5" />
                     </button>
-                  )}
-                </div>
+                    {!text.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => cameraInputRef.current?.click()}
+                        disabled={busy}
+                        className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                        aria-label="Camera"
+                      >
+                        <Camera className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
+                )}
 
                 <button
                   type="button"
                   onClick={() => {
+                    if (recording) return stopAndSendRecording();
                     if (text.trim()) return send();
-                    if (recording) return stopRecording();
                     return startRecording();
                   }}
-                  disabled={busy && !recording}
+                  disabled={busy}
                   className={`h-12 w-12 shrink-0 rounded-full text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors ${
-                    recording ? "bg-red-500 hover:bg-red-600 animate-pulse" : "bg-[#00a884] hover:bg-[#019574]"
+                    recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574]"
                   }`}
-                  aria-label={text.trim() ? "Send" : recording ? "Stop recording" : "Record voice"}
+                  aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
                 >
-                  {busy && !recording ? (
+                  {busy ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : text.trim() ? (
+                  ) : recording || text.trim() ? (
                     <Send className="h-5 w-5" />
-
                   ) : (
                     <Mic className="h-6 w-6" />
                   )}
                 </button>
               </div>
+
             </>
           ) : (
             <div className="hidden md:flex flex-1 items-center justify-center text-slate-400 flex-col gap-2">
