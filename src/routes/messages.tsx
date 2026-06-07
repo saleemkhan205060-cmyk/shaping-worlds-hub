@@ -217,8 +217,29 @@ function Messages() {
     await sendContent(content);
   };
 
-  const uploadAndSend = async (file: File) => {
-    if (!user || !activePeer || !file) return;
+  // pending file preview before send
+  const [pending, setPending] = useState<{ file: File; url: string; kind: "image" | "video" | "audio" | "file" } | null>(null);
+
+  const kindOf = (file: File): "image" | "video" | "audio" | "file" => {
+    if (file.type.startsWith("image/")) return "image";
+    if (file.type.startsWith("video/")) return "video";
+    if (file.type.startsWith("audio/")) return "audio";
+    return "file";
+  };
+
+  const queueFile = (file: File) => {
+    if (pending) URL.revokeObjectURL(pending.url);
+    setPending({ file, url: URL.createObjectURL(file), kind: kindOf(file) });
+  };
+
+  const cancelPending = () => {
+    if (pending) URL.revokeObjectURL(pending.url);
+    setPending(null);
+  };
+
+  const confirmSendPending = async () => {
+    if (!pending || !user || !activePeer) return;
+    const { file } = pending;
     setBusy(true);
     try {
       const ext = file.name.split(".").pop() || "bin";
@@ -229,11 +250,12 @@ function Messages() {
       });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      setBusy(false);
       await sendContent(pub.publicUrl);
-    } catch (e) {
-      setBusy(false);
+      cancelPending();
+    } catch {
       toast.error("Upload failed");
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -251,11 +273,11 @@ function Messages() {
       mr.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
-      mr.onstop = async () => {
+      mr.onstop = () => {
         stream.getTracks().forEach((t) => t.stop());
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         const file = new File([blob], `voice-${Date.now()}.webm`, { type: "audio/webm" });
-        await uploadAndSend(file);
+        queueFile(file);
       };
       recorderRef.current = mr;
       mr.start();
@@ -270,6 +292,7 @@ function Messages() {
     recorderRef.current = null;
     setRecording(false);
   };
+
 
 
 
@@ -443,6 +466,45 @@ function Messages() {
                 )}
                 <div ref={endRef} />
               </div>
+              {pending && (
+                <div className="border-t border-slate-200 bg-white p-3 flex items-center gap-3">
+                  <div className="shrink-0">
+                    {pending.kind === "image" ? (
+                      <img src={pending.url} alt="preview" className="h-20 w-20 object-cover rounded-lg border border-slate-200" />
+                    ) : pending.kind === "video" ? (
+                      <video src={pending.url} className="h-20 w-20 object-cover rounded-lg border border-slate-200" />
+                    ) : pending.kind === "audio" ? (
+                      <audio src={pending.url} controls className="h-10" />
+                    ) : (
+                      <div className="h-20 w-20 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 text-xs px-2 text-center break-all">
+                        {pending.file.name}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-800 truncate">{pending.file.name}</p>
+                    <p className="text-xs text-slate-500">{(pending.file.size / 1024).toFixed(1)} KB · Preview before sending</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={cancelPending}
+                    disabled={busy}
+                    className="h-10 px-3 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={confirmSendPending}
+                    disabled={busy}
+                    className="h-10 px-4 rounded-full text-sm font-semibold bg-[#00a884] hover:bg-[#019574] text-white flex items-center gap-1.5 disabled:opacity-60"
+                  >
+                    {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    Send
+                  </button>
+                </div>
+              )}
+
               <div className="border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5">
                 <input
                   ref={attachInputRef}
@@ -450,7 +512,7 @@ function Messages() {
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
-                    if (f) uploadAndSend(f);
+                    if (f) queueFile(f);
                     e.target.value = "";
                   }}
                 />
@@ -462,10 +524,11 @@ function Messages() {
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
-                    if (f) uploadAndSend(f);
+                    if (f) queueFile(f);
                     e.target.value = "";
                   }}
                 />
+
 
                 <div className="flex-1 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
                   <button
