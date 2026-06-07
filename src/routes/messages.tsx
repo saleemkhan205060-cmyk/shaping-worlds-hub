@@ -777,6 +777,9 @@ function MessageAttachment({
       const res = await fetch(downloadUrl, { cache: "no-store" });
       if (!res.ok) throw new Error("fetch failed");
       const blob = await res.blob();
+      const file = new File([blob], filename, {
+        type: blob.type || `image/${ext === "jpg" ? "jpeg" : ext || "jpeg"}`,
+      });
 
       if (Capacitor.isNativePlatform()) {
         const [{ Filesystem, Directory }, { Share }] = await Promise.all([
@@ -799,6 +802,17 @@ function MessageAttachment({
           url: uri,
           dialogTitle: "Save image",
         });
+        return;
+      }
+
+      const mobileWeb = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const webShare = navigator as Navigator & {
+        canShare?: (data: ShareData) => boolean;
+        share?: (data: ShareData) => Promise<void>;
+      };
+      const sharePayload = { files: [file], title: filename, text: "Save image" } as ShareData;
+      if (mobileWeb && webShare.share && webShare.canShare?.(sharePayload)) {
+        await webShare.share(sharePayload);
         return;
       }
 
