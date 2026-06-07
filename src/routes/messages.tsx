@@ -313,7 +313,7 @@ function Messages() {
 
   return (
     <Layout>
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100vh-12rem)] min-h-[480px]">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100dvh-15rem)] md:h-[calc(100vh-12rem)] md:min-h-[480px]">
         {/* Sidebar */}
         <aside
           className={`md:w-80 md:border-r border-slate-200 flex-col ${
