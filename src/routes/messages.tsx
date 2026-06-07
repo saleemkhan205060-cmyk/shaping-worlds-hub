@@ -316,7 +316,7 @@ function Messages() {
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100dvh-8rem)] md:h-[calc(100vh-6rem)] md:min-h-[600px]">
         {/* Sidebar */}
         <aside
-          className={`md:w-80 md:border-r border-slate-200 flex-col ${
+          className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
@@ -363,7 +363,7 @@ function Messages() {
               )}
             </div>
           )}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
             {loadingMsgs ? (
               <div className="flex justify-center py-8 text-slate-400">
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -414,7 +414,7 @@ function Messages() {
         </aside>
 
         {/* Thread */}
-        <section className={`flex-1 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
+        <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
               <header className="p-3 border-b border-slate-200 flex items-center gap-2">
@@ -428,7 +428,7 @@ function Messages() {
                 <Avatar p={profiles[activePeer]} />
                 <p className="font-semibold text-sm">{peerName(activePeer)}</p>
               </header>
-              <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-slate-50">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-2 bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
                 {thread.length === 0 ? (
                   <p className="text-center text-sm text-slate-400 py-8">
                     Say hi 👋
