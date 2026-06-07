@@ -494,7 +494,7 @@ function Messages() {
                     type="button"
                     onClick={() => attachInputRef.current?.click()}
                     disabled={busy}
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
                     aria-label="Attach file"
                   >
                     <Paperclip className="h-5 w-5" />
@@ -504,7 +504,7 @@ function Messages() {
                       type="button"
                       onClick={() => cameraInputRef.current?.click()}
                       disabled={busy}
-                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
                       aria-label="Camera"
                     >
                       <Camera className="h-5 w-5" />
@@ -514,15 +514,22 @@ function Messages() {
 
                 <button
                   type="button"
-                  onClick={text.trim() ? send : undefined}
-                  disabled={busy}
-                  className="h-12 w-12 shrink-0 rounded-full bg-[#00a884] hover:bg-[#019574] text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors"
-                  aria-label={text.trim() ? "Send" : "Record voice"}
+                  onClick={() => {
+                    if (text.trim()) return send();
+                    if (recording) return stopRecording();
+                    return startRecording();
+                  }}
+                  disabled={busy && !recording}
+                  className={`h-12 w-12 shrink-0 rounded-full text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors ${
+                    recording ? "bg-red-500 hover:bg-red-600 animate-pulse" : "bg-[#00a884] hover:bg-[#019574]"
+                  }`}
+                  aria-label={text.trim() ? "Send" : recording ? "Stop recording" : "Record voice"}
                 >
-                  {busy ? (
+                  {busy && !recording ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : text.trim() ? (
                     <Send className="h-5 w-5" />
+
                   ) : (
                     <Mic className="h-6 w-6" />
                   )}
