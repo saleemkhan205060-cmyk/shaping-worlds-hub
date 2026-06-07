@@ -316,7 +316,7 @@ function Messages() {
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100dvh-8rem)] md:h-[calc(100vh-6rem)] md:min-h-[600px]">
         {/* Sidebar */}
         <aside
-          className={`md:w-80 md:border-r border-slate-200 flex-col ${
+          className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
