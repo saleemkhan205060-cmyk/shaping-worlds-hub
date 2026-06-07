@@ -533,7 +533,7 @@ function Messages() {
                 <div className="flex-1 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
                   <button
                     type="button"
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
                     aria-label="Emoji"
                   >
                     <Smile className="h-6 w-6" />
