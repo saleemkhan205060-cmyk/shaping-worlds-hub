@@ -217,8 +217,29 @@ function Messages() {
     await sendContent(content);
   };
 
-  const uploadAndSend = async (file: File) => {
-    if (!user || !activePeer || !file) return;
+  // pending file preview before send
+  const [pending, setPending] = useState<{ file: File; url: string; kind: "image" | "video" | "audio" | "file" } | null>(null);
+
+  const kindOf = (file: File): "image" | "video" | "audio" | "file" => {
+    if (file.type.startsWith("image/")) return "image";
+    if (file.type.startsWith("video/")) return "video";
+    if (file.type.startsWith("audio/")) return "audio";
+    return "file";
+  };
+
+  const queueFile = (file: File) => {
+    if (pending) URL.revokeObjectURL(pending.url);
+    setPending({ file, url: URL.createObjectURL(file), kind: kindOf(file) });
+  };
+
+  const cancelPending = () => {
+    if (pending) URL.revokeObjectURL(pending.url);
+    setPending(null);
+  };
+
+  const confirmSendPending = async () => {
+    if (!pending || !user || !activePeer) return;
+    const { file } = pending;
     setBusy(true);
     try {
       const ext = file.name.split(".").pop() || "bin";
@@ -229,11 +250,12 @@ function Messages() {
       });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      setBusy(false);
       await sendContent(pub.publicUrl);
-    } catch (e) {
-      setBusy(false);
+      cancelPending();
+    } catch {
       toast.error("Upload failed");
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -251,11 +273,11 @@ function Messages() {
       mr.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
-      mr.onstop = async () => {
+      mr.onstop = () => {
         stream.getTracks().forEach((t) => t.stop());
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         const file = new File([blob], `voice-${Date.now()}.webm`, { type: "audio/webm" });
-        await uploadAndSend(file);
+        queueFile(file);
       };
       recorderRef.current = mr;
       mr.start();
@@ -270,6 +292,7 @@ function Messages() {
     recorderRef.current = null;
     setRecording(false);
   };
+
 
 
 
