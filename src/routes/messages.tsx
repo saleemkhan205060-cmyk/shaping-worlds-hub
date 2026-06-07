@@ -428,7 +428,7 @@ function Messages() {
                 <Avatar p={profiles[activePeer]} />
                 <p className="font-semibold text-sm">{peerName(activePeer)}</p>
               </header>
-              <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-slate-50">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-2 bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
                 {thread.length === 0 ? (
                   <p className="text-center text-sm text-slate-400 py-8">
                     Say hi 👋
