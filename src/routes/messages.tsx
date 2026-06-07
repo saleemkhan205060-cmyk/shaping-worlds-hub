@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -750,44 +751,54 @@ function MessageAttachment({
   const isAudio = isVoice || ["mp3", "wav", "m4a", "ogg", "oga", "weba"].includes(ext);
   const isVideo = !isAudio && ["mp4", "webm", "mov", "m4v"].includes(ext);
 
+  const blobToBase64 = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        const comma = result.indexOf(",");
+        resolve(comma >= 0 ? result.slice(comma + 1) : result);
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+
   const downloadFile = async () => {
     if (!url) {
       toast.error("Image not ready yet");
       return;
     }
-    const filename = fname || `image-${Date.now()}.${ext || "jpg"}`;
+    const filename = (fname || `image-${Date.now()}.${ext || "jpg"}`).replace(/[^a-z0-9._-]/gi, "-");
     try {
-      const res = await fetch(url);
+      const { data: signedDownload } = await supabase.storage
+        .from("message-media")
+        .createSignedUrl(path, 120, { download: filename });
+      const downloadUrl = signedDownload?.signedUrl || url;
+      const res = await fetch(downloadUrl, { cache: "no-store" });
       if (!res.ok) throw new Error("fetch failed");
       const blob = await res.blob();
 
-      // Capacitor (Android/iOS) — write to device Documents folder
-      const isNative =
-        typeof (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } })
-          .Capacitor?.isNativePlatform === "function" &&
-        (window as unknown as { Capacitor: { isNativePlatform: () => boolean } })
-          .Capacitor.isNativePlatform();
-      if (isNative) {
-        const [{ Filesystem, Directory }] = await Promise.all([
+      if (Capacitor.isNativePlatform()) {
+        const [{ Filesystem, Directory }, { Share }] = await Promise.all([
           import("@capacitor/filesystem"),
+          import("@capacitor/share"),
         ]);
-        const base64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const result = reader.result as string;
-            const comma = result.indexOf(",");
-            resolve(comma >= 0 ? result.slice(comma + 1) : result);
-          };
-          reader.onerror = () => reject(reader.error);
-          reader.readAsDataURL(blob);
-        });
+        const base64 = await blobToBase64(blob);
+        const cachePath = `downloads/${Date.now()}-${filename}`;
         await Filesystem.writeFile({
-          path: filename,
+          path: cachePath,
           data: base64,
-          directory: Directory.Documents,
+          directory: Directory.Cache,
           recursive: true,
         });
-        toast.success("Saved to Documents");
+        const { uri } = await Filesystem.getUri({ path: cachePath, directory: Directory.Cache });
+        await Share.share({
+          title: filename,
+          text: "Save image",
+          files: [uri],
+          url: uri,
+          dialogTitle: "Save image",
+        });
         return;
       }
 
@@ -804,9 +815,12 @@ function MessageAttachment({
       setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
       toast.success("Download started");
     } catch {
-      // Last-resort fallback: open in new tab so user can save manually
+      // Last-resort fallback: open a signed attachment URL so the browser can save it.
       try {
-        window.open(url, "_blank", "noopener,noreferrer");
+        const { data: fallbackDownload } = await supabase.storage
+          .from("message-media")
+          .createSignedUrl(path, 120, { download: filename });
+        window.open(fallbackDownload?.signedUrl || url, "_blank", "noopener,noreferrer");
       } catch {
         toast.error("Download failed");
       }
