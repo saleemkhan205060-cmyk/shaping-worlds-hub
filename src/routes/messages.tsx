@@ -516,7 +516,7 @@ function Messages() {
                             <MessageAttachment
                               path={m.content.slice(5)}
                               messageId={m.id}
-                              isMine={mine}
+                              onDeleted={() => setMsgs((prev) => prev.filter((msg) => msg.id !== m.id))}
                             />
                           ) : (
                             m.content
@@ -715,11 +715,11 @@ function Avatar({ p }: { p: Profile | undefined }) {
 function MessageAttachment({
   path,
   messageId,
-  isMine,
+  onDeleted,
 }: {
   path: string;
   messageId: string;
-  isMine: boolean;
+  onDeleted: () => void;
 }) {
   const [url, setUrl] = useState<string | null>(null);
   const [err, setErr] = useState(false);
@@ -769,11 +769,13 @@ function MessageAttachment({
   };
 
   const deleteMessage = async () => {
-    if (!isMine) return;
     if (!confirm("Delete this message? This cannot be undone.")) return;
     const { error } = await supabase.from("messages").delete().eq("id", messageId);
     if (error) toast.error("Couldn't delete");
-    else toast.success("Deleted");
+    else {
+      onDeleted();
+      toast.success("Deleted");
+    }
   };
 
   const startPress = () => {
@@ -800,12 +802,9 @@ function MessageAttachment({
   if (isImage)
     return (
       <>
-        <img
-          src={url}
-          alt="attachment"
-          loading="lazy"
-          draggable={false}
-          className="max-w-full max-h-64 rounded-lg cursor-zoom-in select-none"
+        <button
+          type="button"
+          className="media-actions block max-w-full rounded-lg cursor-zoom-in select-none overflow-hidden touch-manipulation"
           onClick={() => {
             if (longPressed.current) {
               longPressed.current = false;
@@ -821,7 +820,16 @@ function MessageAttachment({
           onTouchEnd={clearPress}
           onTouchMove={clearPress}
           onTouchCancel={clearPress}
-        />
+          aria-label="Open image"
+        >
+          <img
+            src={url}
+            alt="attachment"
+            loading="lazy"
+            draggable={false}
+            className="block max-w-full max-h-64 rounded-lg select-none"
+          />
+        </button>
         {open && (
           <div
             role="dialog"
@@ -829,12 +837,36 @@ function MessageAttachment({
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4"
           >
-            <img
-              src={url}
-              alt="attachment full size"
-              className="max-w-full max-h-full object-contain select-none"
-              onClick={(e) => e.stopPropagation()}
-            />
+            <div className="media-actions max-w-full max-h-full touch-manipulation">
+              <img
+                src={url}
+                alt="attachment full size"
+                draggable={false}
+                className="max-w-full max-h-full object-contain select-none"
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setMenuOpen(true);
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  startPress();
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  clearPress();
+                }}
+                onTouchMove={(e) => {
+                  e.stopPropagation();
+                  clearPress();
+                }}
+                onTouchCancel={(e) => {
+                  e.stopPropagation();
+                  clearPress();
+                }}
+              />
+            </div>
             <button
               type="button"
               onClick={(e) => {
@@ -876,17 +908,15 @@ function MessageAttachment({
               >
                 Download
               </button>
-              {isMine && (
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    void deleteMessage();
-                  }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
-                >
-                  Delete
-                </button>
-              )}
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  void deleteMessage();
+                }}
+                className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
+              >
+                Delete
+              </button>
               <button
                 onClick={() => setMenuOpen(false)}
                 className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
