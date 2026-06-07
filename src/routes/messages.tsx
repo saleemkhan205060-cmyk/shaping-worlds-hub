@@ -313,7 +313,7 @@ function Messages() {
 
   return (
     <Layout>
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100vh-12rem)] min-h-[480px]">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100dvh-15rem)] md:h-[calc(100vh-12rem)] md:min-h-[480px]">
         {/* Sidebar */}
         <aside
           className={`md:w-80 md:border-r border-slate-200 flex-col ${
@@ -505,7 +505,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5">
+              <div className="shrink-0 border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5" style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}>
                 <input
                   ref={attachInputRef}
                   type="file"
@@ -533,7 +533,7 @@ function Messages() {
                 <div className="flex-1 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
                   <button
                     type="button"
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
                     aria-label="Emoji"
                   >
                     <Smile className="h-6 w-6" />
@@ -557,7 +557,7 @@ function Messages() {
                     type="button"
                     onClick={() => attachInputRef.current?.click()}
                     disabled={busy}
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
                     aria-label="Attach file"
                   >
                     <Paperclip className="h-5 w-5" />
@@ -567,7 +567,7 @@ function Messages() {
                       type="button"
                       onClick={() => cameraInputRef.current?.click()}
                       disabled={busy}
-                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
                       aria-label="Camera"
                     >
                       <Camera className="h-5 w-5" />
