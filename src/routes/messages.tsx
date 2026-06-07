@@ -513,7 +513,11 @@ function Messages() {
                           }`}
                         >
                           {m.content.startsWith("mm://") ? (
-                            <MessageAttachment path={m.content.slice(5)} />
+                            <MessageAttachment
+                              path={m.content.slice(5)}
+                              messageId={m.id}
+                              isMine={mine}
+                            />
                           ) : (
                             m.content
                           )}
@@ -708,10 +712,22 @@ function Avatar({ p }: { p: Profile | undefined }) {
   );
 }
 
-function MessageAttachment({ path }: { path: string }) {
+function MessageAttachment({
+  path,
+  messageId,
+  isMine,
+}: {
+  path: string;
+  messageId: string;
+  isMine: boolean;
+}) {
   const [url, setUrl] = useState<string | null>(null);
   const [err, setErr] = useState(false);
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pressTimer = useRef<number | null>(null);
+  const longPressed = useRef(false);
+
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -734,29 +750,84 @@ function MessageAttachment({ path }: { path: string }) {
   const isAudio = isVoice || ["mp3", "wav", "m4a", "ogg", "oga", "weba"].includes(ext);
   const isVideo = !isAudio && ["mp4", "webm", "mov", "m4v"].includes(ext);
 
+  const downloadFile = async () => {
+    if (!url) return;
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objUrl;
+      a.download = fname || "image";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+    } catch {
+      toast.error("Download failed");
+    }
+  };
+
+  const deleteMessage = async () => {
+    if (!isMine) return;
+    if (!confirm("Delete this message? This cannot be undone.")) return;
+    const { error } = await supabase.from("messages").delete().eq("id", messageId);
+    if (error) toast.error("Couldn't delete");
+    else toast.success("Deleted");
+  };
+
+  const startPress = () => {
+    longPressed.current = false;
+    if (pressTimer.current) window.clearTimeout(pressTimer.current);
+    pressTimer.current = window.setTimeout(() => {
+      longPressed.current = true;
+      try {
+        if ("vibrate" in navigator) navigator.vibrate(15);
+      } catch {}
+      setMenuOpen(true);
+    }, 450);
+  };
+  const clearPress = () => {
+    if (pressTimer.current) {
+      window.clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
+  };
+
   if (err) return <span className="italic opacity-70">Attachment unavailable</span>;
   if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
+
   if (isImage)
     return (
       <>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="block p-0 border-0 bg-transparent cursor-zoom-in"
-        >
-          <img
-            src={url}
-            alt="attachment"
-            loading="lazy"
-            className="max-w-full max-h-64 rounded-lg"
-          />
-        </button>
+        <img
+          src={url}
+          alt="attachment"
+          loading="lazy"
+          draggable={false}
+          className="max-w-full max-h-64 rounded-lg cursor-zoom-in select-none"
+          onClick={() => {
+            if (longPressed.current) {
+              longPressed.current = false;
+              return;
+            }
+            setOpen(true);
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setMenuOpen(true);
+          }}
+          onTouchStart={startPress}
+          onTouchEnd={clearPress}
+          onTouchMove={clearPress}
+          onTouchCancel={clearPress}
+        />
         {open && (
           <div
             role="dialog"
             aria-modal="true"
             onClick={() => setOpen(false)}
-            className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4"
           >
             <img
               src={url}
@@ -766,21 +837,63 @@ function MessageAttachment({ path }: { path: string }) {
             />
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(false);
+              }}
               className="absolute top-4 right-4 text-white text-2xl leading-none w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center"
               aria-label="Close"
             >
               ×
             </button>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-4 right-4 text-white text-sm px-3 py-2 rounded-full bg-black/50 hover:bg-black/70"
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                void downloadFile();
+              }}
+              className="absolute bottom-4 right-4 text-white text-sm px-4 py-2 rounded-full bg-black/50 hover:bg-black/70"
             >
-              Open original
-            </a>
+              Download
+            </button>
+          </div>
+        )}
+        {menuOpen && (
+          <div
+            className="fixed inset-0 z-[400] bg-black/60 flex items-end sm:items-center justify-center"
+            onClick={() => setMenuOpen(false)}
+          >
+            <div
+              className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  void downloadFile();
+                }}
+                className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+              >
+                Download
+              </button>
+              {isMine && (
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    void deleteMessage();
+                  }}
+                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
+                >
+                  Delete
+                </button>
+              )}
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       </>
