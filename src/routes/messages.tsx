@@ -513,7 +513,11 @@ function Messages() {
                           }`}
                         >
                           {m.content.startsWith("mm://") ? (
-                            <MessageAttachment path={m.content.slice(5)} />
+                            <MessageAttachment
+                              path={m.content.slice(5)}
+                              messageId={m.id}
+                              isMine={mine}
+                            />
                           ) : (
                             m.content
                           )}
