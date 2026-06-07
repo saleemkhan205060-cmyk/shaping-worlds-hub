@@ -271,9 +271,9 @@ function Messages() {
   const pickMime = () => {
     const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"];
     if (typeof MediaRecorder === "undefined") return "";
+    const MR = MediaRecorder as unknown as { isTypeSupported?: (t: string) => boolean };
     for (const m of candidates) {
-      // @ts-expect-error - isTypeSupported is static
-      if (MediaRecorder.isTypeSupported?.(m)) return m;
+      if (MR.isTypeSupported?.(m)) return m;
     }
     return "";
   };
