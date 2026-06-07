@@ -557,7 +557,7 @@ function Messages() {
                     type="button"
                     onClick={() => attachInputRef.current?.click()}
                     disabled={busy}
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
                     aria-label="Attach file"
                   >
                     <Paperclip className="h-5 w-5" />
