@@ -190,9 +190,9 @@ function Messages() {
     return () => clearTimeout(t);
   }, [searchQ, searchOpen, user]);
 
-  const send = async () => {
+  const sendContent = async (content: string) => {
     if (!user || !activePeer) return;
-    const content = text.trim();
+    content = content.trim();
     if (!content) return;
     setBusy(true);
     const { data, error } = await supabase
@@ -205,8 +205,34 @@ function Messages() {
       toast.error("Couldn't send message");
       return;
     }
-    setText("");
     setMsgs((prev) => (prev.some((x) => x.id === data.id) ? prev : [...prev, data as Msg]));
+  };
+
+  const send = async () => {
+    const content = text.trim();
+    if (!content) return;
+    setText("");
+    await sendContent(content);
+  };
+
+  const uploadAndSend = async (file: File) => {
+    if (!user || !activePeer || !file) return;
+    setBusy(true);
+    try {
+      const ext = file.name.split(".").pop() || "bin";
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+      setBusy(false);
+      await sendContent(pub.publicUrl);
+    } catch (e) {
+      setBusy(false);
+      toast.error("Upload failed");
+    }
   };
 
   const peerName = (id: string) => {
