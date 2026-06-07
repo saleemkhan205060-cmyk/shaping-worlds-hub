@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic } from "lucide-react";
+import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/messages")({
@@ -259,39 +259,103 @@ function Messages() {
     }
   };
 
-  // voice recording
+  // voice recording (WhatsApp-style: tap mic to start, tap send to upload, tap trash to discard)
   const [recording, setRecording] = useState(false);
+  const [recordSecs, setRecordSecs] = useState(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const cancelledRef = useRef(false);
+
+  const pickMime = () => {
+    const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"];
+    if (typeof MediaRecorder === "undefined") return "";
+    const MR = MediaRecorder as unknown as { isTypeSupported?: (t: string) => boolean };
+    for (const m of candidates) {
+      if (MR.isTypeSupported?.(m)) return m;
+    }
+    return "";
+  };
+
+  const cleanupRecorder = () => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    recorderRef.current = null;
+    chunksRef.current = [];
+    setRecording(false);
+    setRecordSecs(0);
+  };
+
+  const uploadAndSendVoice = async (blob: Blob, mime: string) => {
+    if (!user || !activePeer) return;
+    setBusy(true);
+    try {
+      const ext = mime.includes("mp4") ? "m4a" : mime.includes("ogg") ? "ogg" : "webm";
+      const path = `${user.id}/voice-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const file = new File([blob], path.split("/").pop()!, { type: mime || "audio/webm" });
+      const { error: upErr } = await supabase.storage.from("message-media").upload(path, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      await sendContent(`mm://${path}`);
+    } catch {
+      toast.error("Couldn't send voice message");
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const startRecording = async () => {
     if (!user || !activePeer) return;
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      toast.error("Voice recording isn't supported on this device");
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
+      streamRef.current = stream;
+      const mime = pickMime();
+      const mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
       chunksRef.current = [];
-      mr.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
+      cancelledRef.current = false;
+      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
       mr.onstop = () => {
-        stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        const file = new File([blob], `voice-${Date.now()}.webm`, { type: "audio/webm" });
-        queueFile(file);
+        const actualMime = mr.mimeType || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: actualMime });
+        const wasCancelled = cancelledRef.current;
+        cleanupRecorder();
+        if (wasCancelled || blob.size === 0) return;
+        void uploadAndSendVoice(blob, actualMime);
       };
       recorderRef.current = mr;
       mr.start();
       setRecording(true);
+      setRecordSecs(0);
+      timerRef.current = setInterval(() => setRecordSecs((s) => s + 1), 1000);
     } catch {
       toast.error("Mic permission denied");
+      cleanupRecorder();
     }
   };
 
-  const stopRecording = () => {
-    recorderRef.current?.stop();
-    recorderRef.current = null;
-    setRecording(false);
+  const stopAndSendRecording = () => {
+    if (!recorderRef.current) return;
+    cancelledRef.current = false;
+    try { recorderRef.current.stop(); } catch { cleanupRecorder(); }
   };
+
+  const cancelRecording = () => {
+    if (!recorderRef.current) { cleanupRecorder(); return; }
+    cancelledRef.current = true;
+    try { recorderRef.current.stop(); } catch { cleanupRecorder(); }
+  };
+
+  useEffect(() => () => cleanupRecorder(), []);
+
+  const fmtSecs = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 
 
@@ -534,74 +598,90 @@ function Messages() {
                 />
 
 
-                <div className="flex-1 min-w-0 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
-                  <button
-                    type="button"
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
-                    aria-label="Emoji"
-                  >
-                    <Smile className="h-6 w-6" />
-                  </button>
-                  <textarea
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        send();
-                      }
-                    }}
-                    placeholder="Message"
-                    disabled={busy}
-                    maxLength={2000}
-                    rows={1}
-                    className="flex-1 resize-none bg-transparent text-[16px] leading-6 py-1.5 px-1 max-h-32 focus:outline-none placeholder:text-slate-500 text-slate-800"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => attachInputRef.current?.click()}
-                    disabled={busy}
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
-                    aria-label="Attach file"
-                  >
-                    <Paperclip className="h-5 w-5" />
-                  </button>
-                  {!text.trim() && (
+                {recording ? (
+                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1 shadow-sm min-h-12">
                     <button
                       type="button"
-                      onClick={() => cameraInputRef.current?.click()}
+                      onClick={cancelRecording}
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
+                      aria-label="Cancel recording"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-sm font-medium text-slate-700 tabular-nums">{fmtSecs(recordSecs)}</span>
+                    <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
+                  </div>
+                ) : (
+                  <div className="flex-1 min-w-0 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
+                    <button
+                      type="button"
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
+                      aria-label="Emoji"
+                    >
+                      <Smile className="h-6 w-6" />
+                    </button>
+                    <textarea
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          send();
+                        }
+                      }}
+                      placeholder="Message"
+                      disabled={busy}
+                      maxLength={2000}
+                      rows={1}
+                      className="flex-1 resize-none bg-transparent text-[16px] leading-6 py-1.5 px-1 max-h-32 focus:outline-none placeholder:text-slate-500 text-slate-800"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => attachInputRef.current?.click()}
                       disabled={busy}
                       className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
-                      aria-label="Camera"
+                      aria-label="Attach file"
                     >
-                      <Camera className="h-5 w-5" />
+                      <Paperclip className="h-5 w-5" />
                     </button>
-                  )}
-                </div>
+                    {!text.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => cameraInputRef.current?.click()}
+                        disabled={busy}
+                        className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                        aria-label="Camera"
+                      >
+                        <Camera className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
+                )}
 
                 <button
                   type="button"
                   onClick={() => {
+                    if (recording) return stopAndSendRecording();
                     if (text.trim()) return send();
-                    if (recording) return stopRecording();
                     return startRecording();
                   }}
-                  disabled={busy && !recording}
+                  disabled={busy}
                   className={`h-12 w-12 shrink-0 rounded-full text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors ${
-                    recording ? "bg-red-500 hover:bg-red-600 animate-pulse" : "bg-[#00a884] hover:bg-[#019574]"
+                    recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574]"
                   }`}
-                  aria-label={text.trim() ? "Send" : recording ? "Stop recording" : "Record voice"}
+                  aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
                 >
-                  {busy && !recording ? (
+                  {busy ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : text.trim() ? (
+                  ) : recording || text.trim() ? (
                     <Send className="h-5 w-5" />
-
                   ) : (
                     <Mic className="h-6 w-6" />
                   )}
                 </button>
               </div>
+
             </>
           ) : (
             <div className="hidden md:flex flex-1 items-center justify-center text-slate-400 flex-col gap-2">
@@ -647,9 +727,11 @@ function MessageAttachment({ path }: { path: string }) {
   }, [path]);
 
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
+  const fname = path.split("/").pop()?.toLowerCase() ?? "";
+  const isVoice = fname.startsWith("voice-");
   const isImage = ["png", "jpg", "jpeg", "gif", "webp", "avif"].includes(ext);
-  const isVideo = ["mp4", "webm", "mov", "m4v"].includes(ext);
-  const isAudio = ["webm", "mp3", "wav", "m4a", "ogg"].includes(ext) && !isVideo;
+  const isAudio = isVoice || ["mp3", "wav", "m4a", "ogg", "oga", "weba"].includes(ext);
+  const isVideo = !isAudio && ["mp4", "webm", "mov", "m4v"].includes(ext);
 
   if (err) return <span className="italic opacity-70">Attachment unavailable</span>;
   if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
