@@ -414,7 +414,7 @@ function Messages() {
         </aside>
 
         {/* Thread */}
-        <section className={`flex-1 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
+        <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
               <header className="p-3 border-b border-slate-200 flex items-center gap-2">
