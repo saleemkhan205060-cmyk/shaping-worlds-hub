@@ -727,9 +727,11 @@ function MessageAttachment({ path }: { path: string }) {
   }, [path]);
 
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
+  const fname = path.split("/").pop()?.toLowerCase() ?? "";
+  const isVoice = fname.startsWith("voice-");
   const isImage = ["png", "jpg", "jpeg", "gif", "webp", "avif"].includes(ext);
-  const isVideo = ["mp4", "webm", "mov", "m4v"].includes(ext);
-  const isAudio = ["webm", "mp3", "wav", "m4a", "ogg"].includes(ext) && !isVideo;
+  const isAudio = isVoice || ["mp3", "wav", "m4a", "ogg", "oga", "weba"].includes(ext);
+  const isVideo = !isAudio && ["mp4", "webm", "mov", "m4v"].includes(ext);
 
   if (err) return <span className="italic opacity-70">Attachment unavailable</span>;
   if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
