@@ -56,10 +56,13 @@ function CreateMarketProductPage() {
     if (!file) return toast.error("Add a product image");
     if (!title.trim()) return toast.error("Add a product title");
 
-    // Validate affiliate URL only if provided
+    // Validate affiliate URL only if provided — restrict to http(s) to prevent XSS via javascript: URLs
     if (affiliateUrl.trim()) {
       try {
-        new URL(affiliateUrl);
+        const parsed = new URL(affiliateUrl);
+        if (!["https:", "http:"].includes(parsed.protocol)) {
+          return toast.error("Only https:// or http:// links are allowed");
+        }
       } catch {
         return toast.error("Affiliate link must be a valid URL");
       }
