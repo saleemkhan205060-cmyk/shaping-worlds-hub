@@ -448,7 +448,11 @@ function Messages() {
                               : "bg-white border border-slate-200 rounded-bl-md"
                           }`}
                         >
-                          {m.content}
+                          {m.content.startsWith("mm://") ? (
+                            <MessageAttachment path={m.content.slice(5)} />
+                          ) : (
+                            m.content
+                          )}
                           <div
                             className={`text-[10px] mt-0.5 ${
                               mine ? "text-indigo-100" : "text-slate-400"
