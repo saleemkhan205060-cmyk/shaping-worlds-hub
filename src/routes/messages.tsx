@@ -407,7 +407,7 @@ function Messages() {
                 )}
                 <div ref={endRef} />
               </div>
-              <div className="border-t border-slate-200 bg-[#f0f2f5] px-2 py-2 flex items-end gap-2">
+              <div className="border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5">
                 <input
                   ref={attachInputRef}
                   type="file"
@@ -431,13 +431,13 @@ function Messages() {
                   }}
                 />
 
-                <div className="flex-1 flex items-center gap-1 bg-white rounded-full pl-2 pr-1 py-1 shadow-sm">
+                <div className="flex-1 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
                   <button
                     type="button"
                     className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"
                     aria-label="Emoji"
                   >
-                    <Smile className="h-5 w-5" />
+                    <Smile className="h-6 w-6" />
                   </button>
                   <textarea
                     value={text}
@@ -452,7 +452,7 @@ function Messages() {
                     disabled={busy}
                     maxLength={2000}
                     rows={1}
-                    className="flex-1 resize-none bg-transparent text-[15px] leading-6 py-1.5 max-h-32 focus:outline-none placeholder:text-slate-500"
+                    className="flex-1 resize-none bg-transparent text-[16px] leading-6 py-1.5 px-1 max-h-32 focus:outline-none placeholder:text-slate-500 text-slate-800"
                   />
                   <button
                     type="button"
@@ -461,7 +461,7 @@ function Messages() {
                     className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
                     aria-label="Attach file"
                   >
-                    <Paperclip className="h-5 w-5 -rotate-45" />
+                    <Paperclip className="h-5 w-5" />
                   </button>
                   {!text.trim() && (
                     <button
@@ -488,7 +488,7 @@ function Messages() {
                   ) : text.trim() ? (
                     <Send className="h-5 w-5" />
                   ) : (
-                    <Mic className="h-5 w-5" />
+                    <Mic className="h-6 w-6" />
                   )}
                 </button>
               </div>
