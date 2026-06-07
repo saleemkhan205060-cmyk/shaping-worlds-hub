@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { Send, Search, ArrowLeft, Loader2, MessageCircle } from "lucide-react";
+import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/messages")({
@@ -44,6 +44,8 @@ function Messages() {
   const [searchQ, setSearchQ] = useState("");
   const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
+  const attachInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // redirect to auth if not signed in
   useEffect(() => {
@@ -190,9 +192,9 @@ function Messages() {
     return () => clearTimeout(t);
   }, [searchQ, searchOpen, user]);
 
-  const send = async () => {
+  const sendContent = async (content: string) => {
     if (!user || !activePeer) return;
-    const content = text.trim();
+    content = content.trim();
     if (!content) return;
     setBusy(true);
     const { data, error } = await supabase
@@ -205,8 +207,34 @@ function Messages() {
       toast.error("Couldn't send message");
       return;
     }
-    setText("");
     setMsgs((prev) => (prev.some((x) => x.id === data.id) ? prev : [...prev, data as Msg]));
+  };
+
+  const send = async () => {
+    const content = text.trim();
+    if (!content) return;
+    setText("");
+    await sendContent(content);
+  };
+
+  const uploadAndSend = async (file: File) => {
+    if (!user || !activePeer || !file) return;
+    setBusy(true);
+    try {
+      const ext = file.name.split(".").pop() || "bin";
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+      setBusy(false);
+      await sendContent(pub.publicUrl);
+    } catch (e) {
+      setBusy(false);
+      toast.error("Upload failed");
+    }
   };
 
   const peerName = (id: string) => {
@@ -379,30 +407,88 @@ function Messages() {
                 )}
                 <div ref={endRef} />
               </div>
-              <div className="border-t border-slate-200 p-3 flex gap-2">
+              <div className="border-t border-slate-200 bg-[#f0f2f5] px-2 py-2 flex items-end gap-2">
                 <input
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      send();
-                    }
+                  ref={attachInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) uploadAndSend(f);
+                    e.target.value = "";
                   }}
-                  placeholder="Write a message…"
-                  disabled={busy}
-                  maxLength={2000}
-                  className="flex-1 h-10 px-4 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) uploadAndSend(f);
+                    e.target.value = "";
+                  }}
+                />
+
+                <div className="flex-1 flex items-center gap-1 bg-white rounded-full pl-2 pr-1 py-1 shadow-sm">
+                  <button
+                    type="button"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"
+                    aria-label="Emoji"
+                  >
+                    <Smile className="h-5 w-5" />
+                  </button>
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        send();
+                      }
+                    }}
+                    placeholder="Message"
+                    disabled={busy}
+                    maxLength={2000}
+                    rows={1}
+                    className="flex-1 resize-none bg-transparent text-[15px] leading-6 py-1.5 max-h-32 focus:outline-none placeholder:text-slate-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => attachInputRef.current?.click()}
+                    disabled={busy}
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                    aria-label="Attach file"
+                  >
+                    <Paperclip className="h-5 w-5 -rotate-45" />
+                  </button>
+                  {!text.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => cameraInputRef.current?.click()}
+                      disabled={busy}
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                      aria-label="Camera"
+                    >
+                      <Camera className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
+
                 <button
-                  onClick={send}
-                  disabled={busy || !text.trim()}
-                  className="h-10 px-4 rounded-full bg-indigo-600 text-white text-sm font-semibold disabled:opacity-50 inline-flex items-center gap-1"
+                  type="button"
+                  onClick={text.trim() ? send : undefined}
+                  disabled={busy}
+                  className="h-12 w-12 shrink-0 rounded-full bg-[#00a884] hover:bg-[#019574] text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors"
+                  aria-label={text.trim() ? "Send" : "Record voice"}
                 >
                   {busy ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : text.trim() ? (
+                    <Send className="h-5 w-5" />
                   ) : (
-                    <Send className="h-4 w-4" />
+                    <Mic className="h-5 w-5" />
                   )}
                 </button>
               </div>
