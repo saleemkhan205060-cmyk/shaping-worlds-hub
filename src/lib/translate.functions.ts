@@ -8,7 +8,18 @@ const LANG_NAMES: Record<string, string> = {
 };
 
 export const translateBatch = createServerFn({ method: "POST" })
-  .inputValidator((input: { texts: string[]; target: string }) => input)
+  .inputValidator((input: { texts: string[]; target: string }) => {
+    if (!input || !Array.isArray(input.texts) || typeof input.target !== "string") {
+      throw new Error("Invalid input");
+    }
+    if (input.target.length > 16) throw new Error("Invalid target");
+    if (input.texts.length > 80) throw new Error("Too many strings");
+    const texts = input.texts.map((t) => {
+      const s = typeof t === "string" ? t : String(t ?? "");
+      return s.length > 500 ? s.slice(0, 500) : s;
+    });
+    return { texts, target: input.target };
+  })
   .handler(async ({ data }) => {
     const { texts, target } = data;
     if (target === "en" || !texts.length) return { translations: texts };
