@@ -259,39 +259,103 @@ function Messages() {
     }
   };
 
-  // voice recording
+  // voice recording (WhatsApp-style: tap mic to start, tap send to upload, tap trash to discard)
   const [recording, setRecording] = useState(false);
+  const [recordSecs, setRecordSecs] = useState(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const cancelledRef = useRef(false);
+
+  const pickMime = () => {
+    const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"];
+    if (typeof MediaRecorder === "undefined") return "";
+    for (const m of candidates) {
+      // @ts-expect-error - isTypeSupported is static
+      if (MediaRecorder.isTypeSupported?.(m)) return m;
+    }
+    return "";
+  };
+
+  const cleanupRecorder = () => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    recorderRef.current = null;
+    chunksRef.current = [];
+    setRecording(false);
+    setRecordSecs(0);
+  };
+
+  const uploadAndSendVoice = async (blob: Blob, mime: string) => {
+    if (!user || !activePeer) return;
+    setBusy(true);
+    try {
+      const ext = mime.includes("mp4") ? "m4a" : mime.includes("ogg") ? "ogg" : "webm";
+      const path = `${user.id}/voice-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const file = new File([blob], path.split("/").pop()!, { type: mime || "audio/webm" });
+      const { error: upErr } = await supabase.storage.from("message-media").upload(path, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      await sendContent(`mm://${path}`);
+    } catch {
+      toast.error("Couldn't send voice message");
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const startRecording = async () => {
     if (!user || !activePeer) return;
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      toast.error("Voice recording isn't supported on this device");
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
+      streamRef.current = stream;
+      const mime = pickMime();
+      const mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
       chunksRef.current = [];
-      mr.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
+      cancelledRef.current = false;
+      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
       mr.onstop = () => {
-        stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        const file = new File([blob], `voice-${Date.now()}.webm`, { type: "audio/webm" });
-        queueFile(file);
+        const actualMime = mr.mimeType || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: actualMime });
+        const wasCancelled = cancelledRef.current;
+        cleanupRecorder();
+        if (wasCancelled || blob.size === 0) return;
+        void uploadAndSendVoice(blob, actualMime);
       };
       recorderRef.current = mr;
       mr.start();
       setRecording(true);
+      setRecordSecs(0);
+      timerRef.current = setInterval(() => setRecordSecs((s) => s + 1), 1000);
     } catch {
       toast.error("Mic permission denied");
+      cleanupRecorder();
     }
   };
 
-  const stopRecording = () => {
-    recorderRef.current?.stop();
-    recorderRef.current = null;
-    setRecording(false);
+  const stopAndSendRecording = () => {
+    if (!recorderRef.current) return;
+    cancelledRef.current = false;
+    try { recorderRef.current.stop(); } catch { cleanupRecorder(); }
   };
+
+  const cancelRecording = () => {
+    if (!recorderRef.current) { cleanupRecorder(); return; }
+    cancelledRef.current = true;
+    try { recorderRef.current.stop(); } catch { cleanupRecorder(); }
+  };
+
+  useEffect(() => () => cleanupRecorder(), []);
+
+  const fmtSecs = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 
 
