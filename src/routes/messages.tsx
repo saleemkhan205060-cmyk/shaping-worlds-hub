@@ -627,3 +627,38 @@ function Avatar({ p }: { p: Profile | undefined }) {
     </div>
   );
 }
+
+function MessageAttachment({ path }: { path: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [err, setErr] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data, error } = await supabase.storage
+        .from("message-media")
+        .createSignedUrl(path, 3600);
+      if (!alive) return;
+      if (error || !data?.signedUrl) setErr(true);
+      else setUrl(data.signedUrl);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [path]);
+
+  const ext = path.split(".").pop()?.toLowerCase() ?? "";
+  const isImage = ["png", "jpg", "jpeg", "gif", "webp", "avif"].includes(ext);
+  const isVideo = ["mp4", "webm", "mov", "m4v"].includes(ext);
+  const isAudio = ["webm", "mp3", "wav", "m4a", "ogg"].includes(ext) && !isVideo;
+
+  if (err) return <span className="italic opacity-70">Attachment unavailable</span>;
+  if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
+  if (isImage) return <img src={url} alt="attachment" className="max-w-full max-h-64 rounded-lg" />;
+  if (isVideo) return <video src={url} controls className="max-w-full max-h-64 rounded-lg" />;
+  if (isAudio) return <audio src={url} controls className="max-w-full" />;
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" className="underline">
+      Open attachment
+    </a>
+  );
+}
