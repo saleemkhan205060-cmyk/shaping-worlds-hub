@@ -244,13 +244,13 @@ function Messages() {
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
+      const { error: upErr } = await supabase.storage.from("message-media").upload(path, file, {
         contentType: file.type,
         upsert: false,
       });
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      await sendContent(pub.publicUrl);
+      // Store an opaque reference; recipients fetch a short-lived signed URL on render
+      await sendContent(`mm://${path}`);
       cancelPending();
     } catch {
       toast.error("Upload failed");
