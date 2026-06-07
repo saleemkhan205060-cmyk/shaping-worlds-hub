@@ -505,7 +505,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5">
+              <div className="shrink-0 border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5" style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}>
                 <input
                   ref={attachInputRef}
                   type="file"
