@@ -711,6 +711,7 @@ function Avatar({ p }: { p: Profile | undefined }) {
 function MessageAttachment({ path }: { path: string }) {
   const [url, setUrl] = useState<string | null>(null);
   const [err, setErr] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -735,7 +736,55 @@ function MessageAttachment({ path }: { path: string }) {
 
   if (err) return <span className="italic opacity-70">Attachment unavailable</span>;
   if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
-  if (isImage) return <img src={url} alt="attachment" className="max-w-full max-h-64 rounded-lg" />;
+  if (isImage)
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="block p-0 border-0 bg-transparent cursor-zoom-in"
+        >
+          <img
+            src={url}
+            alt="attachment"
+            loading="lazy"
+            className="max-w-full max-h-64 rounded-lg"
+          />
+        </button>
+        {open && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+          >
+            <img
+              src={url}
+              alt="attachment full size"
+              className="max-w-full max-h-full object-contain select-none"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="absolute top-4 right-4 text-white text-2xl leading-none w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center"
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-4 right-4 text-white text-sm px-3 py-2 rounded-full bg-black/50 hover:bg-black/70"
+            >
+              Open original
+            </a>
+          </div>
+        )}
+      </>
+    );
   if (isVideo) return <video src={url} controls className="max-w-full max-h-64 rounded-lg" />;
   if (isAudio) return <audio src={url} controls className="max-w-full" />;
   return (
@@ -744,3 +793,4 @@ function MessageAttachment({ path }: { path: string }) {
     </a>
   );
 }
+
