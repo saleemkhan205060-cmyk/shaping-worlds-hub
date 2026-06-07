@@ -244,13 +244,13 @@ function Messages() {
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
+      const { error: upErr } = await supabase.storage.from("message-media").upload(path, file, {
         contentType: file.type,
         upsert: false,
       });
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      await sendContent(pub.publicUrl);
+      // Store an opaque reference; recipients fetch a short-lived signed URL on render
+      await sendContent(`mm://${path}`);
       cancelPending();
     } catch {
       toast.error("Upload failed");
@@ -448,7 +448,11 @@ function Messages() {
                               : "bg-white border border-slate-200 rounded-bl-md"
                           }`}
                         >
-                          {m.content}
+                          {m.content.startsWith("mm://") ? (
+                            <MessageAttachment path={m.content.slice(5)} />
+                          ) : (
+                            m.content
+                          )}
                           <div
                             className={`text-[10px] mt-0.5 ${
                               mine ? "text-indigo-100" : "text-slate-400"
@@ -621,5 +625,40 @@ function Avatar({ p }: { p: Profile | undefined }) {
         name[0]?.toUpperCase()
       )}
     </div>
+  );
+}
+
+function MessageAttachment({ path }: { path: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [err, setErr] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data, error } = await supabase.storage
+        .from("message-media")
+        .createSignedUrl(path, 3600);
+      if (!alive) return;
+      if (error || !data?.signedUrl) setErr(true);
+      else setUrl(data.signedUrl);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [path]);
+
+  const ext = path.split(".").pop()?.toLowerCase() ?? "";
+  const isImage = ["png", "jpg", "jpeg", "gif", "webp", "avif"].includes(ext);
+  const isVideo = ["mp4", "webm", "mov", "m4v"].includes(ext);
+  const isAudio = ["webm", "mp3", "wav", "m4a", "ogg"].includes(ext) && !isVideo;
+
+  if (err) return <span className="italic opacity-70">Attachment unavailable</span>;
+  if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
+  if (isImage) return <img src={url} alt="attachment" className="max-w-full max-h-64 rounded-lg" />;
+  if (isVideo) return <video src={url} controls className="max-w-full max-h-64 rounded-lg" />;
+  if (isAudio) return <audio src={url} controls className="max-w-full" />;
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" className="underline">
+      Open attachment
+    </a>
   );
 }
