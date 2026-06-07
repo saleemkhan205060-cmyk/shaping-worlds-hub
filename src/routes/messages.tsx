@@ -751,20 +751,65 @@ function MessageAttachment({
   const isVideo = !isAudio && ["mp4", "webm", "mov", "m4v"].includes(ext);
 
   const downloadFile = async () => {
-    if (!url) return;
+    if (!url) {
+      toast.error("Image not ready yet");
+      return;
+    }
+    const filename = fname || `image-${Date.now()}.${ext || "jpg"}`;
     try {
       const res = await fetch(url);
+      if (!res.ok) throw new Error("fetch failed");
       const blob = await res.blob();
+
+      // Capacitor (Android/iOS) — write to device Documents folder
+      const isNative =
+        typeof (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } })
+          .Capacitor?.isNativePlatform === "function" &&
+        (window as unknown as { Capacitor: { isNativePlatform: () => boolean } })
+          .Capacitor.isNativePlatform();
+      if (isNative) {
+        const [{ Filesystem, Directory }] = await Promise.all([
+          import("@capacitor/filesystem"),
+        ]);
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const result = reader.result as string;
+            const comma = result.indexOf(",");
+            resolve(comma >= 0 ? result.slice(comma + 1) : result);
+          };
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(blob);
+        });
+        await Filesystem.writeFile({
+          path: filename,
+          data: base64,
+          directory: Directory.Documents,
+          recursive: true,
+        });
+        toast.success("Saved to Documents");
+        return;
+      }
+
+      // Web — trigger anchor download
       const objUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = objUrl;
-      a.download = fname || "image";
+      a.download = filename;
+      a.rel = "noopener";
+      a.target = "_blank";
       document.body.appendChild(a);
       a.click();
       a.remove();
-      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+      setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
+      toast.success("Download started");
     } catch {
-      toast.error("Download failed");
+      // Last-resort fallback: open in new tab so user can save manually
+      try {
+        window.open(url, "_blank", "noopener,noreferrer");
+      } catch {
+        toast.error("Download failed");
+      }
     }
   };
 
