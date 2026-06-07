@@ -237,6 +237,42 @@ function Messages() {
     }
   };
 
+  // voice recording
+  const [recording, setRecording] = useState(false);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
+  const startRecording = async () => {
+    if (!user || !activePeer) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream);
+      chunksRef.current = [];
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      mr.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const file = new File([blob], `voice-${Date.now()}.webm`, { type: "audio/webm" });
+        await uploadAndSend(file);
+      };
+      recorderRef.current = mr;
+      mr.start();
+      setRecording(true);
+    } catch {
+      toast.error("Mic permission denied");
+    }
+  };
+
+  const stopRecording = () => {
+    recorderRef.current?.stop();
+    recorderRef.current = null;
+    setRecording(false);
+  };
+
+
+
   const peerName = (id: string) => {
     const p = profiles[id];
     return p?.display_name ?? p?.username ?? "User";
@@ -458,7 +494,7 @@ function Messages() {
                     type="button"
                     onClick={() => attachInputRef.current?.click()}
                     disabled={busy}
-                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                    className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
                     aria-label="Attach file"
                   >
                     <Paperclip className="h-5 w-5" />
@@ -468,7 +504,7 @@ function Messages() {
                       type="button"
                       onClick={() => cameraInputRef.current?.click()}
                       disabled={busy}
-                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100 disabled:opacity-50"
                       aria-label="Camera"
                     >
                       <Camera className="h-5 w-5" />
@@ -478,15 +514,22 @@ function Messages() {
 
                 <button
                   type="button"
-                  onClick={text.trim() ? send : undefined}
-                  disabled={busy}
-                  className="h-12 w-12 shrink-0 rounded-full bg-[#00a884] hover:bg-[#019574] text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors"
-                  aria-label={text.trim() ? "Send" : "Record voice"}
+                  onClick={() => {
+                    if (text.trim()) return send();
+                    if (recording) return stopRecording();
+                    return startRecording();
+                  }}
+                  disabled={busy && !recording}
+                  className={`h-12 w-12 shrink-0 rounded-full text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors ${
+                    recording ? "bg-red-500 hover:bg-red-600 animate-pulse" : "bg-[#00a884] hover:bg-[#019574]"
+                  }`}
+                  aria-label={text.trim() ? "Send" : recording ? "Stop recording" : "Record voice"}
                 >
-                  {busy ? (
+                  {busy && !recording ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : text.trim() ? (
                     <Send className="h-5 w-5" />
+
                   ) : (
                     <Mic className="h-6 w-6" />
                   )}
