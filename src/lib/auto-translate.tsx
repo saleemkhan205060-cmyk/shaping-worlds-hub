@@ -160,9 +160,11 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     langRef.current = lang;
+    authedRef.current = !!user;
     cacheRef.current = loadCache(lang);
     processAll(lang);
-  }, [lang, processAll]);
+  }, [lang, user, processAll]);
+
 
   // Observe DOM mutations to translate newly added text
   React.useEffect(() => {
