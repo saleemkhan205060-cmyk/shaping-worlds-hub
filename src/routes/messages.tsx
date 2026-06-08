@@ -378,7 +378,7 @@ function Messages() {
 
   return (
     <Layout>
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100dvh-8rem)] md:h-[calc(100vh-6rem)] md:min-h-[600px]">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row h-[calc(100dvh-4rem)] md:h-[calc(100vh-4rem)] md:min-h-[600px]">
         {/* Sidebar */}
         <aside
           className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${
@@ -490,7 +490,7 @@ function Messages() {
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </button>
-                <Avatar p={profiles[activePeer]} />
+                <Avatar p={profiles[activePeer]} size="h-11 w-11 text-base" />
                 <div className="flex-1 min-w-0 leading-tight">
                   <p className="font-semibold text-base truncate">{peerName(activePeer)}</p>
                   <p className="text-[11px] text-emerald-100/90">Online</p>
@@ -510,7 +510,7 @@ function Messages() {
                         className={`flex ${mine ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap break-words ${
+                          className={`max-w-[75%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words ${
                             mine
                               ? "bg-indigo-600 text-white rounded-br-md"
                               : "bg-white border border-slate-200 rounded-bl-md"
@@ -526,7 +526,7 @@ function Messages() {
                             m.content
                           )}
                           <div
-                            className={`text-[10px] mt-0.5 ${
+                            className={`text-[11px] mt-0.5 ${
                               mine ? "text-indigo-100" : "text-slate-400"
                             }`}
                           >
@@ -607,27 +607,27 @@ function Messages() {
 
 
                 {recording ? (
-                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[52px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
                     <button
                       type="button"
                       onClick={cancelRecording}
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
                       aria-label="Cancel recording"
                     >
-                      <Trash2 className="h-6 w-6" />
+                      <Trash2 className="h-7 w-7" />
                     </button>
                     <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
                     <span className="text-base font-medium text-slate-700 tabular-nums">{fmtSecs(recordSecs)}</span>
                     <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[52px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
                     <button
                       type="button"
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
                       aria-label="Emoji"
                     >
-                      <Smile className="h-7 w-7" />
+                      <Smile className="h-8 w-8" />
                     </button>
                     <textarea
                       value={text}
@@ -651,7 +651,7 @@ function Messages() {
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
                       aria-label="Attach file"
                     >
-                      <Paperclip className="h-6 w-6" />
+                      <Paperclip className="h-7 w-7" />
                     </button>
                     {!text.trim() && (
                       <button
@@ -661,7 +661,7 @@ function Messages() {
                         className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 disabled:opacity-50 transition-colors"
                         aria-label="Camera"
                       >
-                        <Camera className="h-6 w-6" />
+                        <Camera className="h-7 w-7" />
                       </button>
                     )}
                   </div>
@@ -675,17 +675,17 @@ function Messages() {
                     return startRecording();
                   }}
                   disabled={busy}
-                  className={`h-[52px] w-[52px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
+                  className={`h-[56px] w-[56px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
                     recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574] active:bg-[#017d63]"
                   }`}
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
                 >
                   {busy ? (
-                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <Loader2 className="h-7 w-7 animate-spin" />
                   ) : recording || text.trim() ? (
-                    <Send className="h-6 w-6" />
+                    <Send className="h-7 w-7" />
                   ) : (
-                    <Mic className="h-7 w-7" />
+                    <Mic className="h-8 w-8" />
                   )}
                 </button>
               </div>
@@ -703,10 +703,10 @@ function Messages() {
   );
 }
 
-function Avatar({ p }: { p: Profile | undefined }) {
+function Avatar({ p, size }: { p: Profile | undefined; size?: string }) {
   const name = p?.display_name ?? p?.username ?? "U";
   return (
-    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
+    <div className={`shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden ${size ?? "h-10 w-10 text-sm"}`}>
       {p?.avatar_url ? (
         <img src={p.avatar_url} alt={name} className="h-full w-full object-cover" />
       ) : (
