@@ -34,7 +34,6 @@ export function AvatarImg({ src, alt = "", className, fallback }: Props) {
       loading="lazy"
       decoding="async"
       referrerPolicy="no-referrer"
-      crossOrigin="anonymous"
       onError={() => setErrored(true)}
     />
   );
