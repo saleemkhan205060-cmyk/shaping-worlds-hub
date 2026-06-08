@@ -168,6 +168,17 @@ function UploadPage() {
             </div>
           </div>
 
+
+          {uploading && (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-600">
+                <span>Uploading…</span>
+                <span className="font-semibold tabular-nums">{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-2 pt-2">
             <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} />
             <div className="flex gap-2">
@@ -183,10 +194,11 @@ function UploadPage() {
                 disabled={!file || uploading}
                 className="px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</> : "Share"}
+                {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> {progress}%</> : "Share"}
               </button>
             </div>
           </div>
+
 
         </div>
       </div>
