@@ -3,6 +3,7 @@ import { X, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { AvatarImg } from "@/components/AvatarImg";
 
 type Comment = {
   id: string;
