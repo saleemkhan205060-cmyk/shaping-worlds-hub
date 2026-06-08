@@ -28,6 +28,8 @@ import {
   DEFAULT_TEXT_STYLE,
   type TextStyle,
 } from "@/components/TextPostStyles";
+import { uploadToStorage } from "@/lib/resumable-upload";
+import { Progress } from "@/components/ui/progress";
 
 
 type Post = {
@@ -93,6 +95,7 @@ export function HomeFeed() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [posting, setPosting] = useState(false);
+  const [uploadPct, setUploadPct] = useState(0);
   const [isPrivate, setIsPrivate] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
@@ -274,10 +277,13 @@ export function HomeFeed() {
 
         const ext = file.name.split(".").pop() || "bin";
         const path = `${user.id}/${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("media")
-          .upload(path, file, { contentType: file.type, upsert: false });
-        if (upErr) throw upErr;
+        setUploadPct(0);
+        await uploadToStorage({
+          bucket: "media",
+          path,
+          file,
+          onProgress: (pct) => setUploadPct(pct),
+        });
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         const media_url = pub.publicUrl;
         const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
@@ -302,6 +308,7 @@ export function HomeFeed() {
       toast.error("Couldn't post. Please try again.");
     } finally {
       setPosting(false);
+      setUploadPct(0);
     }
   };
 
@@ -553,6 +560,15 @@ export function HomeFeed() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
+              {posting && file && (
+                <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 space-y-1">
+                  <div className="flex items-center justify-between text-[11px] text-white">
+                    <span>Uploading…</span>
+                    <span className="font-semibold tabular-nums">{uploadPct}%</span>
+                  </div>
+                  <Progress value={uploadPct} className="h-1.5 bg-white/20" />
+                </div>
+              )}
             </div>
           )}
           {!file && caption.trim().length > 0 && (

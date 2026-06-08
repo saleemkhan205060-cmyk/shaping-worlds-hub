@@ -6,6 +6,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PostPrivacySettings } from "@/components/PostPrivacySettings";
+import { uploadToStorage } from "@/lib/resumable-upload";
+import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/market_/create")({
   component: CreateMarketProductPage,
@@ -28,6 +30,7 @@ function CreateMarketProductPage() {
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("fashion");
   const [isPrivate, setIsPrivate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -69,14 +72,18 @@ function CreateMarketProductPage() {
     }
 
     setSubmitting(true);
+    setProgress(0);
     try {
       const ext = file.name.split(".").pop() || "jpg";
       const path = `market/${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
-        contentType: file.type, upsert: false,
+      await uploadToStorage({
+        bucket: "media",
+        path,
+        file,
+        onProgress: (pct) => setProgress(pct),
       });
-      if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+
 
       const { error: insErr } = await supabase.from("market_products").insert({
         user_id: user.id,
@@ -178,6 +185,17 @@ function CreateMarketProductPage() {
             </div>
           </Field>
 
+
+          {submitting && (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-600">
+                <span>Uploading…</span>
+                <span className="font-semibold tabular-nums">{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-2 pt-2">
             <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} accent="violet" />
             <div className="flex gap-2">
@@ -187,7 +205,7 @@ function CreateMarketProductPage() {
               </button>
               <button onClick={handleSubmit} disabled={submitting}
                 className="px-4 py-2.5 rounded-full bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 disabled:opacity-50 inline-flex items-center justify-center gap-2">
-                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing…</> : "Publish"}
+                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> {progress}%</> : "Publish"}
               </button>
             </div>
           </div>

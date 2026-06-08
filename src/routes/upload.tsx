@@ -6,6 +6,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PostPrivacySettings } from "@/components/PostPrivacySettings";
+import { uploadToStorage } from "@/lib/resumable-upload";
+import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
@@ -21,6 +23,7 @@ function UploadPage() {
   const [category, setCategory] = useState("For You");
   const [isPrivate, setIsPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -50,14 +53,16 @@ function UploadPage() {
   const handleUpload = async () => {
     if (!user || !file) return;
     setUploading(true);
+    setProgress(0);
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
-        contentType: file.type,
-        upsert: false,
+      await uploadToStorage({
+        bucket: "media",
+        path,
+        file,
+        onProgress: (pct) => setProgress(pct),
       });
-      if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
       const mediaType = file.type.startsWith("video/") ? "video" : "image";
       const { error: insErr } = await supabase.from("posts").insert({
@@ -163,6 +168,17 @@ function UploadPage() {
             </div>
           </div>
 
+
+          {uploading && (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-600">
+                <span>Uploading…</span>
+                <span className="font-semibold tabular-nums">{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-2 pt-2">
             <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} />
             <div className="flex gap-2">
@@ -178,10 +194,11 @@ function UploadPage() {
                 disabled={!file || uploading}
                 className="px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</> : "Share"}
+                {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> {progress}%</> : "Share"}
               </button>
             </div>
           </div>
+
 
         </div>
       </div>
