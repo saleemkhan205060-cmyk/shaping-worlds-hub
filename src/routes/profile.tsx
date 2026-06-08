@@ -126,14 +126,69 @@ function Profile() {
 
   useEffect(() => {
     if (!user) return;
+    let cancelled = false;
     const base = { ...defaultAbout(), email: user.email ?? "" };
-    try {
-      const raw = localStorage.getItem(`about:${user.id}`);
-      setAbout(raw ? { ...base, ...JSON.parse(raw) } : base);
-    } catch {
+    (async () => {
+      const { data } = await supabase
+        .from("profile_about")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (data) {
+        setAbout({
+          ...base,
+          userName: data.user_name ?? "",
+          gender: data.gender ?? "",
+          dob: data.dob ?? "",
+          profession: data.profession ?? "",
+          education: data.education ?? "",
+          country: data.country ?? "",
+          maritalStatus: data.marital_status ?? "",
+          languages: data.languages ?? "",
+          email: data.email || base.email,
+          emailPrivate: data.email_private ?? true,
+          mobile: data.mobile ?? "",
+          mobilePrivate: data.mobile_private ?? true,
+          website: data.website ?? "",
+        });
+        return;
+      }
+      // One-time migration from legacy localStorage
+      try {
+        const raw = localStorage.getItem(`about:${user.id}`);
+        if (raw) {
+          const parsed = { ...base, ...JSON.parse(raw) };
+          setAbout(parsed);
+          await supabase.from("profile_about").upsert({
+            user_id: user.id,
+            user_name: parsed.userName ?? "",
+            gender: parsed.gender ?? "",
+            dob: parsed.dob ?? "",
+            profession: parsed.profession ?? "",
+            education: parsed.education ?? "",
+            country: parsed.country ?? "",
+            marital_status: parsed.maritalStatus ?? "",
+            languages: parsed.languages ?? "",
+            email: parsed.email ?? "",
+            email_private: parsed.emailPrivate ?? true,
+            mobile: parsed.mobile ?? "",
+            mobile_private: parsed.mobilePrivate ?? true,
+            website: parsed.website ?? "",
+          });
+          localStorage.removeItem(`about:${user.id}`);
+          return;
+        }
+      } catch {
+        // ignore
+      }
       setAbout(base);
-    }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [user?.id]);
+
 
   useEffect(() => {
     if (search.about === "open") {
@@ -193,17 +248,33 @@ function Profile() {
       return;
     }
     setSavingAbout(true);
-    try {
-      localStorage.setItem(`about:${user.id}`, JSON.stringify(next));
-      setAbout(next);
-      toast.success("About updated");
-      setEditingAbout(false);
-    } catch {
+    const { error } = await supabase.from("profile_about").upsert({
+      user_id: user.id,
+      user_name: next.userName ?? "",
+      gender: next.gender ?? "",
+      dob: next.dob ?? "",
+      profession: next.profession ?? "",
+      education: next.education ?? "",
+      country: next.country ?? "",
+      marital_status: next.maritalStatus ?? "",
+      languages: next.languages ?? "",
+      email: next.email ?? "",
+      email_private: next.emailPrivate ?? true,
+      mobile: next.mobile ?? "",
+      mobile_private: next.mobilePrivate ?? true,
+      website: next.website ?? "",
+    });
+    if (error) {
       toast.error("Failed to save");
-    } finally {
       setSavingAbout(false);
+      return;
     }
+    setAbout(next);
+    toast.success("About updated");
+    setEditingAbout(false);
+    setSavingAbout(false);
   };
+
 
 
   useEffect(() => {

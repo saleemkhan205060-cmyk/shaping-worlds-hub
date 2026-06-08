@@ -311,6 +311,63 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_about: {
+        Row: {
+          country: string
+          created_at: string
+          dob: string
+          education: string
+          email: string
+          email_private: boolean
+          gender: string
+          languages: string
+          marital_status: string
+          mobile: string
+          mobile_private: boolean
+          profession: string
+          updated_at: string
+          user_id: string
+          user_name: string
+          website: string
+        }
+        Insert: {
+          country?: string
+          created_at?: string
+          dob?: string
+          education?: string
+          email?: string
+          email_private?: boolean
+          gender?: string
+          languages?: string
+          marital_status?: string
+          mobile?: string
+          mobile_private?: boolean
+          profession?: string
+          updated_at?: string
+          user_id: string
+          user_name?: string
+          website?: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          dob?: string
+          education?: string
+          email?: string
+          email_private?: boolean
+          gender?: string
+          languages?: string
+          marital_status?: string
+          mobile?: string
+          mobile_private?: boolean
+          profession?: string
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+          website?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
