@@ -471,11 +471,11 @@ export function HomeFeed() {
                 className="shrink-0 flex flex-col items-center w-16"
               >
                 <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden">
-                  {p.avatar_url ? (
-                    <img src={p.avatar_url} alt={p.display_name ?? ""} className="h-full w-full object-cover" />
-                  ) : (
-                    (p.display_name ?? p.username ?? "?")[0]?.toUpperCase()
-                  )}
+                  <AvatarImg
+                    src={p.avatar_url}
+                    alt={p.display_name ?? p.username ?? "?"}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
                 <span className="text-[11px] mt-1 truncate w-full text-center">
                   {p.display_name ?? p.username}
