@@ -734,7 +734,15 @@ function Avatar({ p, size }: { p: Profile | undefined; size?: string }) {
   return (
     <div className={`shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden ${size ?? "h-10 w-10 text-sm"}`}>
       {p?.avatar_url ? (
-        <img src={p.avatar_url} alt={name} className="h-full w-full object-cover" />
+        <img
+          src={p.avatar_url}
+          alt={name}
+          className="h-full w-full object-cover"
+          referrerPolicy="no-referrer"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
       ) : (
         name[0]?.toUpperCase()
       )}
