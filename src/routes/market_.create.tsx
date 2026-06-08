@@ -30,6 +30,7 @@ function CreateMarketProductPage() {
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("fashion");
   const [isPrivate, setIsPrivate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
