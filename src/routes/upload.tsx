@@ -41,7 +41,7 @@ function UploadPage() {
       return;
     }
     if (f.size > MAX_BYTES) {
-      toast.error("File must be under 50MB");
+      toast.error("File must be under 500MB");
       return;
     }
     setFile(f);
