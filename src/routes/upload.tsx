@@ -53,14 +53,16 @@ function UploadPage() {
   const handleUpload = async () => {
     if (!user || !file) return;
     setUploading(true);
+    setProgress(0);
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
-        contentType: file.type,
-        upsert: false,
+      await uploadToStorage({
+        bucket: "media",
+        path,
+        file,
+        onProgress: (pct) => setProgress(pct),
       });
-      if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
       const mediaType = file.type.startsWith("video/") ? "video" : "image";
       const { error: insErr } = await supabase.from("posts").insert({
