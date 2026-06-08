@@ -5,6 +5,7 @@ import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/messages")({
@@ -622,13 +623,31 @@ function Messages() {
                   </div>
                 ) : (
                   <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
-                    <button
-                      type="button"
-                      className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
-                      aria-label="Emoji"
-                    >
-                      <Smile className="h-8 w-8" />
-                    </button>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
+                          aria-label="Emoji"
+                        >
+                          <Smile className="h-8 w-8" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" side="top" className="w-64 p-2">
+                        <div className="grid grid-cols-8 gap-1 text-xl">
+                          {["😀","😁","😂","🤣","😊","😍","😘","😎","🤩","🥳","😇","🙂","😉","😋","😜","🤔","😴","😢","😭","😡","👍","👎","🙏","👏","🙌","💪","👌","✌️","🤝","❤️","🧡","💛","💚","💙","💜","🖤","🤍","💔","💯","🔥","✨","🎉","🎊","🎁","🌹","🌸","☀️","🌙","⭐","⚡","☕","🍕","🍔","🍰","🍎","🍓","🍩","🍻"].map((e) => (
+                            <button
+                              key={e}
+                              type="button"
+                              className="h-8 w-8 rounded hover:bg-slate-100 flex items-center justify-center"
+                              onClick={() => setText((t) => t + e)}
+                            >
+                              {e}
+                            </button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <textarea
                       value={text}
                       onChange={(e) => setText(e.target.value)}
@@ -646,7 +665,10 @@ function Messages() {
                     />
                     <button
                       type="button"
-                      onClick={() => attachInputRef.current?.click()}
+                      onPointerDown={(e) => {
+                        e.preventDefault();
+                        attachInputRef.current?.click();
+                      }}
                       disabled={busy}
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
                       aria-label="Attach file"
@@ -656,7 +678,10 @@ function Messages() {
                     {!text.trim() && (
                       <button
                         type="button"
-                        onClick={() => cameraInputRef.current?.click()}
+                        onPointerDown={(e) => {
+                          e.preventDefault();
+                          cameraInputRef.current?.click();
+                        }}
                         disabled={busy}
                         className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 disabled:opacity-50 transition-colors"
                         aria-label="Camera"
@@ -665,6 +690,7 @@ function Messages() {
                       </button>
                     )}
                   </div>
+
                 )}
 
                 <button
