@@ -10,7 +10,7 @@ import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
 const CATEGORIES = ["For You", "Trending", "Music", "Food", "Travel"];
-const MAX_BYTES = 50 * 1024 * 1024; // 50MB
+const MAX_BYTES = 500 * 1024 * 1024; // 500MB
 
 function UploadPage() {
   const { user, loading } = useAuth();
