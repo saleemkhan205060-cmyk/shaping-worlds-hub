@@ -483,18 +483,18 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <header className="px-3 py-3 bg-[#075E54] text-white flex items-center gap-3 shadow-md">
+              <header className="mx-3 mt-3 mb-1 px-2 py-1.5 bg-[#075E54] text-white flex items-center gap-2.5 shadow-md rounded-full ring-1 ring-black/5">
                 <button
                   onClick={() => setActivePeer(null)}
-                  className="md:hidden h-10 w-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white"
+                  className="md:hidden h-8 w-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
                   aria-label="Back"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="h-4 w-4" />
                 </button>
-                <Avatar p={profiles[activePeer]} size="h-11 w-11 text-base" />
-                <div className="flex-1 min-w-0 leading-tight">
-                  <p className="font-semibold text-base truncate">{peerName(activePeer)}</p>
-                  <p className="text-[11px] text-emerald-100/90">Online</p>
+                <Avatar p={profiles[activePeer]} size="h-9 w-9 text-sm" />
+                <div className="flex-1 min-w-0 leading-tight pr-3">
+                  <p className="font-semibold text-sm truncate">{peerName(activePeer)}</p>
+                  <p className="text-[10px] text-emerald-100/90">Online</p>
                 </div>
               </header>
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-2 bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
