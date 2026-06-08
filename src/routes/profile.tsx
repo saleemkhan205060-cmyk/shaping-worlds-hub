@@ -397,7 +397,15 @@ function Profile() {
         <div className="flex justify-center mt-6">
           <div className="relative h-28 w-28">
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt={displayName} className="h-full w-full rounded-full object-cover" />
+              <img
+                src={profile.avatar_url}
+                alt={displayName}
+                className="h-full w-full rounded-full object-cover"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
+              />
             ) : (
               <div className="h-full w-full rounded-full bg-gradient-to-br from-amber-300 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
                 {displayName[0]?.toUpperCase()}
