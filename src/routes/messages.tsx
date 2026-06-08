@@ -627,7 +627,7 @@ function Messages() {
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
                       aria-label="Emoji"
                     >
-                      <Smile className="h-7 w-7" />
+                      <Smile className="h-8 w-8" />
                     </button>
                     <textarea
                       value={text}
