@@ -277,10 +277,13 @@ export function HomeFeed() {
 
         const ext = file.name.split(".").pop() || "bin";
         const path = `${user.id}/${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("media")
-          .upload(path, file, { contentType: file.type, upsert: false });
-        if (upErr) throw upErr;
+        setUploadPct(0);
+        await uploadToStorage({
+          bucket: "media",
+          path,
+          file,
+          onProgress: (pct) => setUploadPct(pct),
+        });
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         const media_url = pub.publicUrl;
         const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
