@@ -308,6 +308,7 @@ export function HomeFeed() {
       toast.error("Couldn't post. Please try again.");
     } finally {
       setPosting(false);
+      setUploadPct(0);
     }
   };
 
