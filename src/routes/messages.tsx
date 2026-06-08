@@ -675,7 +675,7 @@ function Messages() {
                     return startRecording();
                   }}
                   disabled={busy}
-                  className={`h-[52px] w-[52px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
+                  className={`h-[56px] w-[56px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
                     recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574] active:bg-[#017d63]"
                   }`}
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
