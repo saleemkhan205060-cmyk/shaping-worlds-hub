@@ -2,6 +2,8 @@ import * as React from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useI18n } from "@/lib/i18n";
 import { translateBatch } from "@/lib/translate.functions";
+import { useAuth } from "@/hooks/use-auth";
+
 
 const SKIP_TAGS = new Set([
   "SCRIPT", "STYLE", "NOSCRIPT", "CODE", "PRE", "TEXTAREA",
@@ -68,8 +70,11 @@ function saveCache(lang: string, cache: Record<string, string>) {
 
 export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const { lang } = useI18n();
+  const { user } = useAuth();
   const translate = useServerFn(translateBatch);
   const langRef = React.useRef(lang);
+  const authedRef = React.useRef(!!user);
+
   const cacheRef = React.useRef<Record<string, string>>({});
   const pendingRef = React.useRef<Set<Text>>(new Set());
   const inflightRef = React.useRef<Set<string>>(new Set());
@@ -100,9 +105,10 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const flush = React.useCallback(async () => {
     scheduledRef.current = false;
     const lng = langRef.current;
-    if (lng === "en") return;
+    if (lng === "en" || !authedRef.current) return;
     const nodes = Array.from(pendingRef.current);
     pendingRef.current.clear();
+
     const uniqueKeys = new Set<string>();
     for (const n of nodes) {
       const key = (originals.get(n) ?? n.nodeValue ?? "").trim();
@@ -154,9 +160,11 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     langRef.current = lang;
+    authedRef.current = !!user;
     cacheRef.current = loadCache(lang);
     processAll(lang);
-  }, [lang, processAll]);
+  }, [lang, user, processAll]);
+
 
   // Observe DOM mutations to translate newly added text
   React.useEffect(() => {
