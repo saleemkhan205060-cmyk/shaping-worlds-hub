@@ -510,7 +510,7 @@ function Messages() {
                         className={`flex ${mine ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap break-words ${
+                          className={`max-w-[75%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words ${
                             mine
                               ? "bg-indigo-600 text-white rounded-br-md"
                               : "bg-white border border-slate-200 rounded-bl-md"
