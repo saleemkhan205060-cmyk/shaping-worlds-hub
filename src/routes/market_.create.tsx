@@ -72,14 +72,18 @@ function CreateMarketProductPage() {
     }
 
     setSubmitting(true);
+    setProgress(0);
     try {
       const ext = file.name.split(".").pop() || "jpg";
       const path = `market/${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
-        contentType: file.type, upsert: false,
+      await uploadToStorage({
+        bucket: "media",
+        path,
+        file,
+        onProgress: (pct) => setProgress(pct),
       });
-      if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+
 
       const { error: insErr } = await supabase.from("market_products").insert({
         user_id: user.id,
