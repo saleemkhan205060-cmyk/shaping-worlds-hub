@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const LANG_NAMES: Record<string, string> = {
   en: "English", es: "Spanish", fr: "French", pt: "Portuguese", de: "German",
@@ -8,6 +9,8 @@ const LANG_NAMES: Record<string, string> = {
 };
 
 export const translateBatch = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+
   .inputValidator((input: { texts: string[]; target: string }) => {
     if (!input || !Array.isArray(input.texts) || typeof input.target !== "string") {
       throw new Error("Invalid input");
