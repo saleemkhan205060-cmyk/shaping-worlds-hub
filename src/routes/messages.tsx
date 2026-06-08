@@ -681,11 +681,11 @@ function Messages() {
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
                 >
                   {busy ? (
-                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <Loader2 className="h-7 w-7 animate-spin" />
                   ) : recording || text.trim() ? (
-                    <Send className="h-6 w-6" />
+                    <Send className="h-7 w-7" />
                   ) : (
-                    <Mic className="h-7 w-7" />
+                    <Mic className="h-8 w-8" />
                   )}
                 </button>
               </div>
