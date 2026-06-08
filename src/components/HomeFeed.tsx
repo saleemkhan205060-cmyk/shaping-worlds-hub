@@ -28,6 +28,8 @@ import {
   DEFAULT_TEXT_STYLE,
   type TextStyle,
 } from "@/components/TextPostStyles";
+import { uploadToStorage } from "@/lib/resumable-upload";
+import { Progress } from "@/components/ui/progress";
 
 
 type Post = {
