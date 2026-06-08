@@ -2,6 +2,8 @@ import * as React from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useI18n } from "@/lib/i18n";
 import { translateBatch } from "@/lib/translate.functions";
+import { useAuth } from "@/hooks/use-auth";
+
 
 const SKIP_TAGS = new Set([
   "SCRIPT", "STYLE", "NOSCRIPT", "CODE", "PRE", "TEXTAREA",
