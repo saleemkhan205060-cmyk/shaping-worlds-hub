@@ -10,7 +10,7 @@ import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
 const CATEGORIES = ["For You", "Trending", "Music", "Food", "Travel"];
-const MAX_BYTES = 50 * 1024 * 1024; // 50MB
+const MAX_BYTES = 500 * 1024 * 1024; // 500MB
 
 function UploadPage() {
   const { user, loading } = useAuth();
@@ -41,7 +41,7 @@ function UploadPage() {
       return;
     }
     if (f.size > MAX_BYTES) {
-      toast.error("File must be under 50MB");
+      toast.error("File must be under 500MB");
       return;
     }
     setFile(f);
@@ -103,7 +103,7 @@ function UploadPage() {
             >
               <UploadCloud className="h-10 w-10 mb-2 text-indigo-500" />
               <span className="font-semibold text-slate-700">Tap to choose a file</span>
-              <span className="text-xs mt-1">Images or videos · up to 50MB</span>
+              <span className="text-xs mt-1">Images or videos · up to 500MB</span>
             </button>
           ) : (
             <div className="relative rounded-xl overflow-hidden bg-slate-100">

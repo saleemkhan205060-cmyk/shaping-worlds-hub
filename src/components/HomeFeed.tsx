@@ -57,7 +57,7 @@ type Comment = {
   created_at: string;
 };
 
-const MAX_BYTES = 50 * 1024 * 1024;
+const MAX_BYTES = 500 * 1024 * 1024;
 
 type SearchTab = "all" | "videos" | "photos" | "users" | "marriage" | "market";
 const TABS: { id: SearchTab; label: string }[] = [
@@ -241,7 +241,7 @@ export function HomeFeed() {
       return;
     }
     if (f.size > MAX_BYTES) {
-      toast.error("File must be under 50MB");
+      toast.error("File must be under 500MB");
       return;
     }
     setFile(f);
