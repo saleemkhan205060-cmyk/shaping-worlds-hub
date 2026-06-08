@@ -651,7 +651,7 @@ function Messages() {
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
                       aria-label="Attach file"
                     >
-                      <Paperclip className="h-6 w-6" />
+                      <Paperclip className="h-7 w-7" />
                     </button>
                     {!text.trim() && (
                       <button
