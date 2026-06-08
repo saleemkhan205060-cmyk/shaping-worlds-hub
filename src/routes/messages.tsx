@@ -607,7 +607,7 @@ function Messages() {
 
 
                 {recording ? (
-                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[52px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
                     <button
                       type="button"
                       onClick={cancelRecording}
