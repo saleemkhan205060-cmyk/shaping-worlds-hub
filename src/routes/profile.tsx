@@ -248,17 +248,33 @@ function Profile() {
       return;
     }
     setSavingAbout(true);
-    try {
-      localStorage.setItem(`about:${user.id}`, JSON.stringify(next));
-      setAbout(next);
-      toast.success("About updated");
-      setEditingAbout(false);
-    } catch {
+    const { error } = await supabase.from("profile_about").upsert({
+      user_id: user.id,
+      user_name: next.userName ?? "",
+      gender: next.gender ?? "",
+      dob: next.dob ?? "",
+      profession: next.profession ?? "",
+      education: next.education ?? "",
+      country: next.country ?? "",
+      marital_status: next.maritalStatus ?? "",
+      languages: next.languages ?? "",
+      email: next.email ?? "",
+      email_private: next.emailPrivate ?? true,
+      mobile: next.mobile ?? "",
+      mobile_private: next.mobilePrivate ?? true,
+      website: next.website ?? "",
+    });
+    if (error) {
       toast.error("Failed to save");
-    } finally {
       setSavingAbout(false);
+      return;
     }
+    setAbout(next);
+    toast.success("About updated");
+    setEditingAbout(false);
+    setSavingAbout(false);
   };
+
 
 
   useEffect(() => {
