@@ -70,8 +70,11 @@ function saveCache(lang: string, cache: Record<string, string>) {
 
 export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const { lang } = useI18n();
+  const { user } = useAuth();
   const translate = useServerFn(translateBatch);
   const langRef = React.useRef(lang);
+  const authedRef = React.useRef(!!user);
+
   const cacheRef = React.useRef<Record<string, string>>({});
   const pendingRef = React.useRef<Set<Text>>(new Set());
   const inflightRef = React.useRef<Set<string>>(new Set());
