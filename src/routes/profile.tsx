@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
+import { AvatarImg } from "@/components/AvatarImg";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { SearchablePicker } from "@/components/SearchablePicker";
 import { COUNTRIES, LANGUAGES, PROFESSIONS, EDUCATION } from "@/lib/picker-options";
