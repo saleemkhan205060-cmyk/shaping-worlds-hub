@@ -105,9 +105,10 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const flush = React.useCallback(async () => {
     scheduledRef.current = false;
     const lng = langRef.current;
-    if (lng === "en") return;
+    if (lng === "en" || !authedRef.current) return;
     const nodes = Array.from(pendingRef.current);
     pendingRef.current.clear();
+
     const uniqueKeys = new Set<string>();
     for (const n of nodes) {
       const key = (originals.get(n) ?? n.nodeValue ?? "").trim();
