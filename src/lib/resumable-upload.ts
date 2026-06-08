@@ -70,7 +70,7 @@ async function uploadDirect(opts: UploadOptions, token: string) {
     xhr.open("POST", url, true);
     xhr.setRequestHeader("authorization", `Bearer ${token}`);
     xhr.setRequestHeader("x-upsert", String(upsert));
-    xhr.setRequestHeader("cache-control", "3600");
+    xhr.setRequestHeader("cache-control", "max-age=3600");
     if (file.type) xhr.setRequestHeader("content-type", file.type);
 
     xhr.upload.onprogress = (e) => {
@@ -86,10 +86,10 @@ async function uploadDirect(opts: UploadOptions, token: string) {
     xhr.onabort = () => reject(new DOMException("Aborted", "AbortError"));
     signal?.addEventListener("abort", () => xhr.abort());
 
-    const fd = new FormData();
-    fd.append("cacheControl", "3600");
-    fd.append("", file, file.name);
-    xhr.send(fd);
+    // Send the file bytes directly. A previous FormData upload path forced
+    // `content-type: image/*`, causing the multipart wrapper bytes to be
+    // stored as the image itself and producing broken image icons.
+    xhr.send(file);
   });
 }
 
