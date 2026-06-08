@@ -621,7 +621,7 @@ function Messages() {
                     <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[52px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
                     <button
                       type="button"
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
