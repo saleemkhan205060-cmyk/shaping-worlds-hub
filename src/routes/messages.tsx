@@ -490,7 +490,7 @@ function Messages() {
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </button>
-                <Avatar p={profiles[activePeer]} />
+                <Avatar p={profiles[activePeer]} size="h-11 w-11 text-base" />
                 <div className="flex-1 min-w-0 leading-tight">
                   <p className="font-semibold text-base truncate">{peerName(activePeer)}</p>
                   <p className="text-[11px] text-emerald-100/90">Online</p>
@@ -703,10 +703,10 @@ function Messages() {
   );
 }
 
-function Avatar({ p }: { p: Profile | undefined }) {
+function Avatar({ p, size }: { p: Profile | undefined; size?: string }) {
   const name = p?.display_name ?? p?.username ?? "U";
   return (
-    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
+    <div className={`shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden ${size ?? "h-10 w-10 text-sm"}`}>
       {p?.avatar_url ? (
         <img src={p.avatar_url} alt={name} className="h-full w-full object-cover" />
       ) : (
