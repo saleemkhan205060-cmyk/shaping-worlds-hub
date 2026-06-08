@@ -103,7 +103,7 @@ function UploadPage() {
             >
               <UploadCloud className="h-10 w-10 mb-2 text-indigo-500" />
               <span className="font-semibold text-slate-700">Tap to choose a file</span>
-              <span className="text-xs mt-1">Images or videos · up to 50MB</span>
+              <span className="text-xs mt-1">Images or videos · up to 500MB</span>
             </button>
           ) : (
             <div className="relative rounded-xl overflow-hidden bg-slate-100">
