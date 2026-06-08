@@ -148,6 +148,10 @@ function MarriagePage() {
                       src={c.profile.avatar_url}
                       alt={name}
                       className="h-16 w-16 rounded-full object-cover ring-2 ring-pink-100"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
                     />
                   ) : (
                     <div className="h-16 w-16 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-xl font-bold">

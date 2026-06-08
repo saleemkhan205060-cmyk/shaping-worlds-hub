@@ -3,6 +3,7 @@ import { X, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { AvatarImg } from "@/components/AvatarImg";
 
 type Comment = {
   id: string;
@@ -109,11 +110,7 @@ export function CommentsSheet({
               return (
                 <div key={c.id} className="flex gap-2">
                   <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
-                    {prof?.avatar_url ? (
-                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
-                    ) : (
-                      name[0]?.toUpperCase()
-                    )}
+                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold">{name}</p>

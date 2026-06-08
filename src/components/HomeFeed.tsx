@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
+import { AvatarImg } from "@/components/AvatarImg";
 import { Globe2, Lock } from "lucide-react";
 import { TextPostCard } from "@/components/TextPostCard";
 import {
@@ -470,11 +471,11 @@ export function HomeFeed() {
                 className="shrink-0 flex flex-col items-center w-16"
               >
                 <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden">
-                  {p.avatar_url ? (
-                    <img src={p.avatar_url} alt={p.display_name ?? ""} className="h-full w-full object-cover" />
-                  ) : (
-                    (p.display_name ?? p.username ?? "?")[0]?.toUpperCase()
-                  )}
+                  <AvatarImg
+                    src={p.avatar_url}
+                    alt={p.display_name ?? p.username ?? "?"}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
                 <span className="text-[11px] mt-1 truncate w-full text-center">
                   {p.display_name ?? p.username}
@@ -502,11 +503,7 @@ export function HomeFeed() {
                   className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition"
                 >
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold overflow-hidden">
-                    {prof?.avatar_url ? (
-                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
-                    ) : (
-                      name[0]?.toUpperCase()
-                    )}
+                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate">{name}</p>
@@ -784,11 +781,7 @@ export function HomeFeed() {
                   className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition"
                 >
                   <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
-                    {prof?.avatar_url ? (
-                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
-                    ) : (
-                      name[0]?.toUpperCase()
-                    )}
+                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>

@@ -176,6 +176,10 @@ function UserProfile() {
                 src={profile.avatar_url}
                 alt={displayName}
                 className="h-24 w-24 sm:h-28 sm:w-28 rounded-full ring-4 ring-white object-cover"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
               />
             ) : (
               <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gradient-to-br from-amber-300 to-pink-500 ring-4 ring-white flex items-center justify-center text-white text-3xl font-bold">
