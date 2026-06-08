@@ -661,7 +661,7 @@ function Messages() {
                         className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 disabled:opacity-50 transition-colors"
                         aria-label="Camera"
                       >
-                        <Camera className="h-6 w-6" />
+                        <Camera className="h-7 w-7" />
                       </button>
                     )}
                   </div>
