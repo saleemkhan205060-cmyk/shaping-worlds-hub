@@ -6,6 +6,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PostPrivacySettings } from "@/components/PostPrivacySettings";
+import { uploadToStorage } from "@/lib/resumable-upload";
+import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/market_/create")({
   component: CreateMarketProductPage,
