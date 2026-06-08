@@ -526,7 +526,7 @@ function Messages() {
                             m.content
                           )}
                           <div
-                            className={`text-[10px] mt-0.5 ${
+                            className={`text-[11px] mt-0.5 ${
                               mine ? "text-indigo-100" : "text-slate-400"
                             }`}
                           >
