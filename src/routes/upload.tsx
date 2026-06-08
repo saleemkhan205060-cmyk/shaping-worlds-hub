@@ -23,6 +23,7 @@ function UploadPage() {
   const [category, setCategory] = useState("For You");
   const [isPrivate, setIsPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
