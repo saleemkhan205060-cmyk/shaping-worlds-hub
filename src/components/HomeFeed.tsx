@@ -560,6 +560,15 @@ export function HomeFeed() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
+              {posting && file && (
+                <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 space-y-1">
+                  <div className="flex items-center justify-between text-[11px] text-white">
+                    <span>Uploading…</span>
+                    <span className="font-semibold tabular-nums">{uploadPct}%</span>
+                  </div>
+                  <Progress value={uploadPct} className="h-1.5 bg-white/20" />
+                </div>
+              )}
             </div>
           )}
           {!file && caption.trim().length > 0 && (
