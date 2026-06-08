@@ -614,7 +614,7 @@ function Messages() {
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
                       aria-label="Cancel recording"
                     >
-                      <Trash2 className="h-6 w-6" />
+                      <Trash2 className="h-7 w-7" />
                     </button>
                     <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
                     <span className="text-base font-medium text-slate-700 tabular-nums">{fmtSecs(recordSecs)}</span>
