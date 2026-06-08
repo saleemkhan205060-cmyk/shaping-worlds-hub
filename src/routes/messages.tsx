@@ -482,16 +482,19 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <header className="p-3 border-b border-slate-200 flex items-center gap-2">
+              <header className="px-3 py-3 bg-[#075E54] text-white flex items-center gap-3 shadow-md">
                 <button
                   onClick={() => setActivePeer(null)}
-                  className="md:hidden h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="md:hidden h-10 w-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white"
                   aria-label="Back"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-5 w-5" />
                 </button>
                 <Avatar p={profiles[activePeer]} />
-                <p className="font-semibold text-sm">{peerName(activePeer)}</p>
+                <div className="flex-1 min-w-0 leading-tight">
+                  <p className="font-semibold text-base truncate">{peerName(activePeer)}</p>
+                  <p className="text-[11px] text-emerald-100/90">Online</p>
+                </div>
               </header>
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-2 bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
                 {thread.length === 0 ? (
@@ -578,7 +581,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="shrink-0 border-t border-slate-200 bg-[#ebe5dc] px-2 py-2 flex items-end gap-1.5" style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}>
+              <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-2.5 py-2.5 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
                 <input
                   ref={attachInputRef}
                   type="file"
@@ -604,27 +607,27 @@ function Messages() {
 
 
                 {recording ? (
-                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1 shadow-sm min-h-12">
+                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[52px]">
                     <button
                       type="button"
                       onClick={cancelRecording}
-                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
+                      className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
                       aria-label="Cancel recording"
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-6 w-6" />
                     </button>
                     <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-sm font-medium text-slate-700 tabular-nums">{fmtSecs(recordSecs)}</span>
+                    <span className="text-base font-medium text-slate-700 tabular-nums">{fmtSecs(recordSecs)}</span>
                     <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-0.5 bg-white rounded-full pl-2 pr-2 py-1 shadow-sm min-h-12">
+                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[52px]">
                     <button
                       type="button"
-                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100"
+                      className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
                       aria-label="Emoji"
                     >
-                      <Smile className="h-6 w-6" />
+                      <Smile className="h-7 w-7" />
                     </button>
                     <textarea
                       value={text}
@@ -639,26 +642,26 @@ function Messages() {
                       disabled={busy}
                       maxLength={2000}
                       rows={1}
-                      className="flex-1 resize-none bg-transparent text-[16px] leading-6 py-1.5 px-1 max-h-32 focus:outline-none placeholder:text-slate-500 text-slate-800"
+                      className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-2 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
                     />
                     <button
                       type="button"
                       onClick={() => attachInputRef.current?.click()}
                       disabled={busy}
-                      className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                      className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
                       aria-label="Attach file"
                     >
-                      <Paperclip className="h-5 w-5" />
+                      <Paperclip className="h-6 w-6" />
                     </button>
                     {!text.trim() && (
                       <button
                         type="button"
                         onClick={() => cameraInputRef.current?.click()}
                         disabled={busy}
-                        className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                        className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 disabled:opacity-50 transition-colors"
                         aria-label="Camera"
                       >
-                        <Camera className="h-5 w-5" />
+                        <Camera className="h-6 w-6" />
                       </button>
                     )}
                   </div>
@@ -672,17 +675,17 @@ function Messages() {
                     return startRecording();
                   }}
                   disabled={busy}
-                  className={`h-12 w-12 shrink-0 rounded-full text-white flex items-center justify-center shadow-md disabled:opacity-60 transition-colors ${
-                    recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574]"
+                  className={`h-[52px] w-[52px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
+                    recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574] active:bg-[#017d63]"
                   }`}
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
                 >
                   {busy ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <Loader2 className="h-6 w-6 animate-spin" />
                   ) : recording || text.trim() ? (
-                    <Send className="h-5 w-5" />
+                    <Send className="h-6 w-6" />
                   ) : (
-                    <Mic className="h-6 w-6" />
+                    <Mic className="h-7 w-7" />
                   )}
                 </button>
               </div>
