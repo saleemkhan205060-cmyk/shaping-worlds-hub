@@ -781,11 +781,7 @@ export function HomeFeed() {
                   className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition"
                 >
                   <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
-                    {prof?.avatar_url ? (
-                      <img src={prof.avatar_url} alt={name} className="h-full w-full object-cover" />
-                    ) : (
-                      name[0]?.toUpperCase()
-                    )}
+                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
