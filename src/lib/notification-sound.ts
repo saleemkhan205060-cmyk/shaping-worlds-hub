@@ -8,6 +8,7 @@ let unlockBound = false;
 let unlocked = false;
 let pendingChime = false;
 let loadStarted = false;
+const playedChimeKeys = new Set<string>();
 
 type AudioWindow = Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext };
 
@@ -165,6 +166,13 @@ export function initNotificationSoundUnlock() {
 
 export function playSoftChime() {
   try {
+export function playSoftChime(chimeKey?: string) {
+  try {
+    if (chimeKey) {
+      if (playedChimeKeys.has(chimeKey)) return;
+      playedChimeKeys.add(chimeKey);
+      window.setTimeout(() => playedChimeKeys.delete(chimeKey), 60_000);
+    }
     initNotificationSoundUnlock();
     if (!unlocked) {
       pendingChime = true;
