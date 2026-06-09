@@ -543,6 +543,7 @@ function Messages() {
                   })
                 )}
                 <div ref={endRef} />
+                </div>
               </div>
               {pending && (
                 <div className="border-t border-slate-200 bg-white p-3 flex items-center gap-3">
