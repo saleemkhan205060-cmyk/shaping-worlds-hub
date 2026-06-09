@@ -27,9 +27,13 @@ type Props = {
 
 export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const { user } = useAuth();
+  const initialActiveId = items[startIndex]?.id ?? "";
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const [activeId, setActiveId] = useState(items[startIndex]?.id ?? "");
+  const activeIdRef = useRef(initialActiveId);
+  const userMutedRef = useRef(false);
+  const ignoreNextVideoClickRef = useRef(false);
+  const [activeId, setActiveId] = useState(initialActiveId);
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
@@ -45,6 +49,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    const targetId = items[startIndex]?.id ?? "";
+    activeIdRef.current = targetId;
+    setActiveId(targetId);
     const target = el.children[startIndex] as HTMLElement | undefined;
     if (target) el.scrollTo({ top: target.offsetTop, behavior: "instant" as ScrollBehavior });
     const prev = document.body.style.overflow;
@@ -52,7 +59,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [startIndex]);
+  }, [items, startIndex]);
 
   // Load likes & comment counts
   useEffect(() => {
