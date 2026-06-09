@@ -101,12 +101,12 @@ export function Layout({
       .channel("layout-unread")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        { event: "*", schema: "public", table: "messages" },
         refreshUnreadMsgs,
       )
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        { event: "INSERT", schema: "public", table: "messages" },
         (payload) => {
           const message = payload.new as { id?: string; sender_id?: string; recipient_id?: string };
           if (message.recipient_id === user.id && message.sender_id !== user.id) {
