@@ -168,20 +168,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-black">
-      <button
-        onClick={onClose}
-        className="absolute top-4 left-4 z-20 h-10 w-10 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-sm"
-        aria-label="Close"
-      >
-        <X className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => setMuted((m) => !m)}
-        className="absolute top-4 right-4 z-20 h-10 w-10 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-sm"
-        aria-label={muted ? "Unmute" : "Mute"}
-      >
-        {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-      </button>
+
 
       <div
         ref={containerRef}
