@@ -62,3 +62,20 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || "/messages";
+  event.waitUntil(
+    (async () => {
+      const allClients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      const existing = allClients.find((client) => "focus" in client);
+      if (existing) {
+        await existing.focus();
+        if ("navigate" in existing) await existing.navigate(targetUrl);
+        return;
+      }
+      await self.clients.openWindow(targetUrl);
+    })()
+  );
+});

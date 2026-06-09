@@ -19,7 +19,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
-import { initNotificationSoundUnlock, playSoftChime } from "@/lib/notification-sound";
+import { initNotificationSoundUnlock } from "@/lib/notification-sound";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
@@ -107,12 +107,7 @@ export function Layout({
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
-        (payload) => {
-          const message = payload.new as { id?: string; sender_id?: string; recipient_id?: string };
-          if (message.recipient_id === user.id && message.sender_id !== user.id) {
-            playSoftChime(message.id);
-          }
-        },
+        refreshUnreadMsgs,
       )
       .on(
         "postgres_changes",
