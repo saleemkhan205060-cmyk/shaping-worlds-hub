@@ -55,7 +55,11 @@ function getAudioContext(): AudioContext | null {
   const Ctor = w.AudioContext || w.webkitAudioContext;
   if (!Ctor) return null;
   if (!audioCtx) {
-    try { audioCtx = new Ctor(); } catch { return null; }
+    try {
+      audioCtx = new Ctor();
+    } catch {
+      return null;
+    }
   }
   return audioCtx;
 }
@@ -82,8 +86,10 @@ function playFallbackChime(ctx: AudioContext) {
     gain.gain.setValueAtTime(0.0001, start);
     gain.gain.exponentialRampToValueAtTime(0.9, start + 0.025);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.75);
-    osc.connect(gain); gain.connect(master);
-    osc.start(start); osc.stop(start + 0.85);
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(start);
+    osc.stop(start + 0.85);
   });
 }
 
@@ -134,7 +140,9 @@ async function unlockFromGesture() {
     try {
       if (ctx.state === "suspended") await ctx.resume();
       didUnlock = didUnlock || ctx.state === "running";
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
   if (!didUnlock) return;
   unlocked = true;
