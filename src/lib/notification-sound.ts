@@ -164,8 +164,6 @@ export function initNotificationSoundUnlock() {
   );
 }
 
-export function playSoftChime() {
-  try {
 export function playSoftChime(chimeKey?: string) {
   try {
     if (chimeKey) {
