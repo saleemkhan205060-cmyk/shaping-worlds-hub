@@ -541,9 +541,6 @@ function Messages() {
               </header>
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-[#edf0e4]" style={{ WebkitOverflowScrolling: "touch" }}>
                 <div className="min-h-full flex flex-col p-4 space-y-2">
-                <div className="sticky top-3 z-10 mx-auto mb-auto rounded-xl bg-white px-5 py-2 text-[20px] font-semibold text-slate-500 shadow-sm ring-1 ring-black/5">
-                  Today
-                </div>
                 {thread.length === 0 ? (
                   <div className="flex-1" />
                 ) : (
