@@ -260,12 +260,16 @@ export async function showNewMessageNotification({
     icon: NOTIFICATION_ICON,
     badge: NOTIFICATION_ICON,
     tag,
-    renotify: true,
     data: { url },
-  };
+  } as NotificationOptions;
 
   try {
-    const registration = await navigator.serviceWorker?.ready;
+    const registration = navigator.serviceWorker?.controller
+      ? await Promise.race<ServiceWorkerRegistration | null>([
+          navigator.serviceWorker.ready,
+          new Promise((resolve) => window.setTimeout(() => resolve(null), 400)),
+        ])
+      : null;
     if (registration?.showNotification) {
       await registration.showNotification(title, options);
       return;
