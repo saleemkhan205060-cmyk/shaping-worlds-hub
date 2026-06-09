@@ -168,17 +168,16 @@ async function tryPlay(): Promise<boolean> {
 }
 
 async function unlockFromGesture() {
-  // Prime HTMLAudio (a play+pause inside a user gesture grants permission for later programmatic plays).
+  // Prime audio inside a real user gesture so later message events may play it.
   let didUnlock = false;
   const el = getAudioEl();
   if (el) {
     try {
-      const prevVol = el.volume;
-      el.volume = 0;
+      el.muted = true;
       await el.play();
       el.pause();
       el.currentTime = 0;
-      el.volume = prevVol;
+      el.muted = false;
       didUnlock = true;
     } catch {
       /* ignore */
@@ -207,9 +206,10 @@ export function initNotificationSoundUnlock() {
   preloadNotificationSound();
   if (unlockBound || unlocked) return;
   unlockBound = true;
-  unlockEvents.forEach((e) =>
-    window.addEventListener(e, unlockFromGesture, { capture: true, passive: true }),
-  );
+  unlockEvents.forEach((e) => {
+    window.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
+    document.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
+  });
 }
 
 export function playSoftChime(chimeKey?: string) {
@@ -217,7 +217,9 @@ export function playSoftChime(chimeKey?: string) {
     if (chimeKey) {
       if (playedChimeKeys.has(chimeKey)) return;
       playedChimeKeys.add(chimeKey);
-      window.setTimeout(() => playedChimeKeys.delete(chimeKey), 60_000);
+      if (typeof window !== "undefined") {
+        window.setTimeout(() => playedChimeKeys.delete(chimeKey), 60_000);
+      }
     }
     initNotificationSoundUnlock();
     if (!unlocked) {
