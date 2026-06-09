@@ -8,6 +8,7 @@ import {
   playSoftChime,
   showNewMessageNotification,
 } from "@/lib/notification-sound";
+import { initNativePushNotifications } from "@/lib/push";
 
 type MessagePayload = {
   id?: string;
