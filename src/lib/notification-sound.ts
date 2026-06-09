@@ -58,7 +58,7 @@ function getGeneratedChimeUrl(): string | null {
     const envelope = attack * release * release;
     const first = Math.sin(2 * Math.PI * 880 * t);
     const second = t > 0.07 ? Math.sin(2 * Math.PI * 1318.51 * (t - 0.07)) : 0;
-    const sample = Math.max(-1, Math.min(1, (first * 0.48 + second * 0.36) * envelope));
+    const sample = Math.max(-1, Math.min(1, (first * 0.72 + second * 0.58) * envelope));
     view.setInt16(44 + i * 2, sample * 0x7fff, true);
   }
 
@@ -123,7 +123,7 @@ function playFallbackChime(ctx: AudioContext) {
   const now = ctx.currentTime;
   const master = ctx.createGain();
   master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(0.25, now + 0.025);
+  master.gain.exponentialRampToValueAtTime(0.75, now + 0.025);
   master.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
   master.connect(ctx.destination);
   [880, 1318.51].forEach((freq, index) => {
@@ -133,7 +133,7 @@ function playFallbackChime(ctx: AudioContext) {
     osc.type = "sine";
     osc.frequency.setValueAtTime(freq, start);
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(0.9, start + 0.025);
+    gain.gain.exponentialRampToValueAtTime(1.0, start + 0.025);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.75);
     osc.connect(gain);
     gain.connect(master);
