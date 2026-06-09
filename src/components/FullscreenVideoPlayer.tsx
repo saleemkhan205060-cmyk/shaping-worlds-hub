@@ -165,7 +165,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     );
     Array.from(root.children).forEach((c) => io.observe(c));
     return () => io.disconnect();
-  }, [items.length]);
+  }, [items.length, playWithCurrentSoundPreference]);
 
   // On the first real touch/click in the player, unlock sound without changing the user's ON preference.
   useEffect(() => {
@@ -189,7 +189,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     root.addEventListener("click", handler, { capture: true });
     root.addEventListener("touchstart", handler, { capture: true, passive: true });
     return removeUnlockListeners;
-  }, []);
+  }, [setSoundMuted]);
 
   // Esc to close
   useEffect(() => {
@@ -257,7 +257,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     try {
       if (navigator.share) await navigator.share(data);
       else await navigator.clipboard.writeText(data.url);
-    } catch {}
+    } catch {
+      // Ignore share cancellations and clipboard permission denials.
+    }
   };
 
   return (
