@@ -173,11 +173,12 @@ async function unlockFromGesture() {
   const el = getAudioEl();
   if (el) {
     try {
-      el.muted = true;
+      const previousVolume = el.volume;
+      el.volume = 0.01;
       await el.play();
       el.pause();
       el.currentTime = 0;
-      el.muted = false;
+      el.volume = previousVolume;
       didUnlock = true;
     } catch {
       /* ignore */
