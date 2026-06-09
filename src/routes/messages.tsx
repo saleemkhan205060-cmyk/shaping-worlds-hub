@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { playSoftChime } from "@/lib/notification-sound";
 import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2, Images, MapPin, FileText, User as UserIcon, MoreVertical } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerTitle } from "@/components/ui/drawer";
@@ -106,6 +107,7 @@ function Messages() {
         async (payload) => {
           const m = payload.new as Msg;
           if (m.sender_id !== user.id && m.recipient_id !== user.id) return;
+          if (m.recipient_id === user.id && m.sender_id !== user.id) playSoftChime(m.id);
           setMsgs((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
           const otherId = m.sender_id === user.id ? m.recipient_id : m.sender_id;
           if (!profiles[otherId]) {

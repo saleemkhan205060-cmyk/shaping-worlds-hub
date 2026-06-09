@@ -108,9 +108,9 @@ export function Layout({
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
         (payload) => {
-          const message = payload.new as { sender_id?: string; recipient_id?: string };
+          const message = payload.new as { id?: string; sender_id?: string; recipient_id?: string };
           if (message.recipient_id === user.id && message.sender_id !== user.id) {
-            playSoftChime();
+            playSoftChime(message.id);
           }
         },
       )
