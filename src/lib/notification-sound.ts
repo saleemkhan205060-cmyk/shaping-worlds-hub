@@ -1,8 +1,11 @@
-// Notification chime: generated with WebAudio so it cannot fail because of a
-// missing/blocked audio file. The AudioContext is resumed synchronously from a
-// real user gesture, then reused for message events.
+// Notification chime: plays an uploaded MP3 file. Falls back to a WebAudio
+// synth if HTMLAudioElement playback fails. The audio is unlocked on the
+// first user gesture so it can play reliably on later message events.
+
+import notificationAsset from "@/assets/notification.mp3.asset.json";
 
 let audioCtx: AudioContext | null = null;
+let htmlAudio: HTMLAudioElement | null = null;
 let unlockBound = false;
 let unlocked = false;
 let pendingChimes = 0;
@@ -25,6 +28,21 @@ const unlockEvents: (keyof WindowEventMap)[] = [
   "keydown",
   "click",
 ];
+
+function getAudioElement(): HTMLAudioElement | null {
+  if (typeof window === "undefined") return null;
+  if (!htmlAudio) {
+    try {
+      htmlAudio = new Audio(notificationAsset.url);
+      htmlAudio.preload = "auto";
+      htmlAudio.volume = 1;
+      htmlAudio.crossOrigin = "anonymous";
+    } catch {
+      return null;
+    }
+  }
+  return htmlAudio;
+}
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -50,59 +68,57 @@ function removeUnlockListeners() {
   unlockBound = false;
 }
 
-function playSilentUnlockTone(ctx: AudioContext) {
+function playFallbackChime(ctx: AudioContext) {
   const now = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.frequency.setValueAtTime(440, now);
-  gain.gain.setValueAtTime(0.00001, now);
-  gain.gain.setValueAtTime(0.00001, now + 0.03);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(now);
-  osc.stop(now + 0.03);
-}
-
-function playGeneratedChime(ctx: AudioContext) {
-  const now = ctx.currentTime;
-  const compressor = ctx.createDynamicsCompressor();
   const master = ctx.createGain();
-
-  compressor.threshold.setValueAtTime(-6, now);
-  compressor.knee.setValueAtTime(20, now);
-  compressor.ratio.setValueAtTime(3, now);
-  compressor.attack.setValueAtTime(0.001, now);
-  compressor.release.setValueAtTime(0.15, now);
-
   master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(1.6, now + 0.015);
-  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.52);
-  master.connect(compressor);
-  compressor.connect(ctx.destination);
-
-  [
-    { freq: 880, start: 0, stop: 0.28, gain: 1.4, type: "triangle" as OscillatorType },
-    { freq: 1318.51, start: 0.055, stop: 0.36, gain: 1.2, type: "sine" as OscillatorType },
-    { freq: 1760, start: 0.12, stop: 0.42, gain: 0.9, type: "sine" as OscillatorType },
-    { freq: 2349.32, start: 0.18, stop: 0.48, gain: 0.6, type: "sine" as OscillatorType },
-  ].forEach((tone) => {
+  master.gain.exponentialRampToValueAtTime(1.2, now + 0.015);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+  master.connect(ctx.destination);
+  [880, 1318.51, 1760].forEach((freq, i) => {
     const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const start = now + tone.start;
-    const stop = now + tone.stop;
-    osc.type = tone.type;
-    osc.frequency.setValueAtTime(tone.freq, start);
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(tone.gain, start + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, stop);
-    osc.connect(gain);
-    gain.connect(master);
+    const g = ctx.createGain();
+    const start = now + i * 0.06;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, start);
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(0.8, start + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + 0.32);
+    osc.connect(g);
+    g.connect(master);
     osc.start(start);
-    osc.stop(stop + 0.04);
+    osc.stop(start + 0.36);
   });
 }
 
+async function playUploadedSound(): Promise<boolean> {
+  const el = getAudioElement();
+  if (!el) return false;
+  try {
+    el.currentTime = 0;
+  } catch {
+    /* ignore */
+  }
+  try {
+    const p = el.play();
+    if (p && typeof p.then === "function") {
+      await p;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function tryPlay(): Promise<boolean> {
+  // Try uploaded MP3 first
+  const ok = await playUploadedSound();
+  if (ok) {
+    unlocked = true;
+    removeUnlockListeners();
+    return true;
+  }
+  // Fallback to WebAudio synth
   const ctx = getAudioContext();
   if (!ctx) return false;
   try {
@@ -110,7 +126,7 @@ async function tryPlay(): Promise<boolean> {
     if (ctx.state !== "running") return false;
     unlocked = true;
     removeUnlockListeners();
-    playGeneratedChime(ctx);
+    playFallbackChime(ctx);
     return true;
   } catch {
     return false;
@@ -126,7 +142,6 @@ function drainChimeQueue() {
       queueRunning = false;
       return;
     }
-
     void tryPlay().then((ok) => {
       if (!ok) {
         unlocked = false;
@@ -134,10 +149,9 @@ function drainChimeQueue() {
         initNotificationSoundUnlock();
         return;
       }
-
       pendingChimes -= 1;
       if (pendingChimes > 0) {
-        window.setTimeout(playNext, 620);
+        window.setTimeout(playNext, 700);
       } else {
         queueRunning = false;
       }
@@ -148,43 +162,62 @@ function drainChimeQueue() {
 }
 
 function unlockFromGesture() {
-  // Keep media calls inside the original gesture stack; do not await before
-  // resuming/starting audio, because mobile browsers drop the activation token.
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
-  try {
-    const resumePromise = ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
-    playSilentUnlockTone(ctx);
-    void resumePromise.then(() => {
-      if (ctx.state !== "running") return;
-      unlocked = true;
-      removeUnlockListeners();
-      drainChimeQueue();
-    });
-    if (ctx.state === "running") {
-      unlocked = true;
-      removeUnlockListeners();
-      drainChimeQueue();
+  // Prime HTMLAudio inside the gesture so future programmatic plays work
+  const el = getAudioElement();
+  if (el) {
+    try {
+      const prevVol = el.volume;
+      el.muted = true;
+      const p = el.play();
+      if (p && typeof p.then === "function") {
+        void p
+          .then(() => {
+            el.pause();
+            try {
+              el.currentTime = 0;
+            } catch {
+              /* ignore */
+            }
+            el.muted = false;
+            el.volume = prevVol;
+            unlocked = true;
+            removeUnlockListeners();
+            drainChimeQueue();
+          })
+          .catch(() => {
+            el.muted = false;
+            el.volume = prevVol;
+          });
+      } else {
+        el.pause();
+        el.muted = false;
+        unlocked = true;
+        removeUnlockListeners();
+        drainChimeQueue();
+      }
+    } catch {
+      /* ignore */
     }
-  } catch {
-    /* ignore */
+  }
+
+  // Also resume AudioContext as a fallback
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === "suspended") {
+    void ctx.resume().catch(() => {});
   }
 }
 
 export function initNotificationSoundUnlock() {
   if (typeof window === "undefined") return;
-  if (audioCtx?.state === "running") {
-    unlocked = true;
-    removeUnlockListeners();
-    return;
-  }
-  if (unlockBound || unlocked) return;
+  if (unlocked) return;
+  if (unlockBound) return;
   unlockBound = true;
   unlockEvents.forEach((e) => {
     window.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
     document.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
   });
+  // Start loading the audio file
+  getAudioElement();
 }
 
 export function isNotificationChimeEnabled(): boolean {
@@ -232,7 +265,6 @@ export function playSoftChime(chimeKey?: string) {
         window.setTimeout(() => playedChimeKeys.delete(chimeKey), 60_000);
       }
     }
-
     pendingChimes = Math.min(MAX_PENDING_CHIMES, pendingChimes + 1);
     initNotificationSoundUnlock();
     drainChimeQueue();
