@@ -1,9 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft } from "lucide-react";
+import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  isNotificationChimeEnabled,
+  setNotificationChimeEnabled,
+  subscribeNotificationChimePref,
+  playSoftChime,
+} from "@/lib/notification-sound";
 
 export const Route = createFileRoute("/notifications")({
   component: NotificationsPage,
