@@ -1,4 +1,8 @@
-// One shared AudioContext powers every notification chime app-wide.
+// Notification chime: uses an HTMLAudioElement (works reliably on mobile,
+// respects media volume) with a WebAudio fallback.
+import chimeUrl from "@/assets/notification-chime.wav";
+
+let audioEl: HTMLAudioElement | null = null;
 let audioCtx: AudioContext | null = null;
 let unlockBound = false;
 let unlocked = false;
@@ -17,126 +21,130 @@ const unlockEvents: (keyof WindowEventMap)[] = [
   "click",
 ];
 
-function getAudioContext(): AudioContext | null {
+function getAudioEl(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
-  const audioWindow = window as AudioWindow;
-  const Ctor = audioWindow.AudioContext || audioWindow.webkitAudioContext;
-  if (!Ctor) return null;
-  if (!audioCtx) {
+  if (!audioEl) {
     try {
-      audioCtx = new Ctor();
+      audioEl = new Audio(chimeUrl);
+      audioEl.preload = "auto";
+      audioEl.volume = 1.0;
     } catch {
       return null;
     }
+  }
+  return audioEl;
+}
+
+function getAudioContext(): AudioContext | null {
+  if (typeof window === "undefined") return null;
+  const w = window as AudioWindow;
+  const Ctor = w.AudioContext || w.webkitAudioContext;
+  if (!Ctor) return null;
+  if (!audioCtx) {
+    try { audioCtx = new Ctor(); } catch { return null; }
   }
   return audioCtx;
 }
 
 function removeUnlockListeners() {
   if (!unlockBound || typeof window === "undefined") return;
-  unlockEvents.forEach((eventName) =>
-    window.removeEventListener(eventName, unlockFromGesture, true),
-  );
+  unlockEvents.forEach((e) => window.removeEventListener(e, unlockFromGesture, true));
   unlockBound = false;
 }
 
-function playSilentUnlockBuffer(ctx: AudioContext) {
-  try {
-    const buffer = ctx.createBuffer(1, 1, ctx.sampleRate || 22050);
-    const source = ctx.createBufferSource();
+function playFallbackChime(ctx: AudioContext) {
+  const now = ctx.currentTime;
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.25, now + 0.025);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+  master.connect(ctx.destination);
+  [880, 1318.51].forEach((freq, index) => {
+    const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    gain.gain.value = 0;
-    source.buffer = buffer;
-    source.connect(gain);
-    gain.connect(ctx.destination);
-    source.start(0);
-    source.stop(ctx.currentTime + 0.01);
-  } catch {
-    /* ignore unlock buffer failures */
-  }
+    const start = now + index * 0.06;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.9, start + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.75);
+    osc.connect(gain); gain.connect(master);
+    osc.start(start); osc.stop(start + 0.85);
+  });
 }
 
-async function unlockAudioContext() {
+async function tryPlay(): Promise<boolean> {
+  // Prefer HTMLAudio — more reliable, especially on mobile.
+  const el = getAudioEl();
+  if (el) {
+    try {
+      el.pause();
+      el.currentTime = 0;
+      await el.play();
+      return true;
+    } catch {
+      /* blocked — fall through to WebAudio */
+    }
+  }
   const ctx = getAudioContext();
   if (!ctx) return false;
-
   try {
-    if (ctx.state === "suspended") {
-      await ctx.resume();
-    }
-    playSilentUnlockBuffer(ctx);
-    unlocked = ctx.state === "running";
-    if (unlocked) {
-      removeUnlockListeners();
-      if (pendingChime) {
-        pendingChime = false;
-        playChime(ctx);
-      }
-    }
-    return unlocked;
+    if (ctx.state === "suspended") await ctx.resume();
+    if (ctx.state !== "running") return false;
+    playFallbackChime(ctx);
+    return true;
   } catch {
     return false;
   }
 }
 
-function unlockFromGesture() {
-  void unlockAudioContext();
+async function unlockFromGesture() {
+  // Prime HTMLAudio (a play+pause inside a user gesture grants permission for later programmatic plays).
+  const el = getAudioEl();
+  if (el) {
+    try {
+      const prevVol = el.volume;
+      el.volume = 0;
+      await el.play();
+      el.pause();
+      el.currentTime = 0;
+      el.volume = prevVol;
+    } catch {
+      /* ignore */
+    }
+  }
+  const ctx = getAudioContext();
+  if (ctx) {
+    try { if (ctx.state === "suspended") await ctx.resume(); } catch { /* ignore */ }
+  }
+  unlocked = true;
+  removeUnlockListeners();
+  if (pendingChime) {
+    pendingChime = false;
+    void tryPlay();
+  }
 }
 
 export function initNotificationSoundUnlock() {
   if (unlockBound || unlocked || typeof window === "undefined") return;
   unlockBound = true;
-  unlockEvents.forEach((eventName) =>
-    window.addEventListener(eventName, unlockFromGesture, {
-      capture: true,
-      passive: true,
-    }),
+  unlockEvents.forEach((e) =>
+    window.addEventListener(e, unlockFromGesture, { capture: true, passive: true }),
   );
-}
-
-function playChime(ctx: AudioContext) {
-  const now = ctx.currentTime;
-  const master = ctx.createGain();
-  master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(0.18, now + 0.025);
-  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
-  master.connect(ctx.destination);
-
-  [659.25, 830.61].forEach((freq, index) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const start = now + index * 0.045;
-
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(freq, start);
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(0.75, start + 0.025);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.75);
-
-    osc.connect(gain);
-    gain.connect(master);
-    osc.start(start);
-    osc.stop(start + 0.85);
-  });
 }
 
 export function playSoftChime() {
   try {
     initNotificationSoundUnlock();
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    if (ctx.state !== "running") {
+    if (!unlocked) {
       pendingChime = true;
-      void unlockAudioContext();
       return;
     }
-
-    unlocked = true;
-    removeUnlockListeners();
-    playChime(ctx);
+    void tryPlay().then((ok) => {
+      if (!ok) pendingChime = true;
+    });
   } catch {
-    /* ignore audio errors */
+    /* ignore */
   }
 }
 
