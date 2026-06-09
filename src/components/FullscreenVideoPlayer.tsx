@@ -254,15 +254,11 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   onClick={() => share(it.caption)}
                 />
                 {it.media_type === "video" && (
-                  <button
+                  <ActionBtn
+                    icon={muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
+                    label={muted ? "Muted" : "Sound"}
                     onClick={() => setMuted((m) => !m)}
-                    aria-label={muted ? "Unmute" : "Mute"}
-                    className="flex flex-col items-center gap-1 text-slate-900 drop-shadow-lg"
-                  >
-                    <span className="h-9 w-9 rounded-full bg-white flex items-center justify-center active:scale-95 transition">
-                      {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                    </span>
-                  </button>
+                  />
                 )}
               </div>
             </div>
