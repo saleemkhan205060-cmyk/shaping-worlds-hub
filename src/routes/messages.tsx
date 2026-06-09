@@ -223,7 +223,34 @@ function Messages() {
     await sendContent(content);
   };
 
-  // pending file preview before send
+  const shareLocation = () => {
+    setAttachOpen(false);
+    if (!navigator.geolocation) {
+      toast.error("Location not supported on this device");
+      return;
+    }
+    toast.message("Getting your location…");
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const url = `https://maps.google.com/?q=${latitude},${longitude}`;
+        await sendContent(`📍 My location: ${url}`);
+      },
+      () => toast.error("Couldn't get your location"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+
+  const shareContact = async () => {
+    setAttachOpen(false);
+    const name = window.prompt("Contact name");
+    if (!name) return;
+    const phone = window.prompt("Phone number");
+    if (!phone) return;
+    await sendContent(`👤 Contact\nName: ${name}\nPhone: ${phone}`);
+  };
+
+
   const [pending, setPending] = useState<{ file: File; url: string; kind: "image" | "video" | "audio" | "file" } | null>(null);
 
   const kindOf = (file: File): "image" | "video" | "audio" | "file" => {
