@@ -40,6 +40,7 @@ export function AppMessageNotifications() {
 
     initNotificationSoundUnlock();
     initBackgroundMessageNotifications();
+    void initNativePushNotifications(user.id);
 
     const channel = supabase
       .channel(`app-message-notifications-${user.id}`)
