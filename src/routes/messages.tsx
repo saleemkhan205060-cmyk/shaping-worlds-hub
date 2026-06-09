@@ -718,32 +718,42 @@ function Messages() {
                       rows={1}
                       className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-2 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
                     />
-                    <button
-                      type="button"
-                      onPointerDown={(e) => {
-                        e.preventDefault();
-                        attachInputRef.current?.click();
-                      }}
-                      disabled={busy}
-                      className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
-                      aria-label="Attach file"
-                    >
-                      <Paperclip className="h-7 w-7" />
-                    </button>
-                    {!text.trim() && (
-                      <button
-                        type="button"
-                        onPointerDown={(e) => {
-                          e.preventDefault();
-                          cameraInputRef.current?.click();
-                        }}
-                        disabled={busy}
-                        className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 disabled:opacity-50 transition-colors"
-                        aria-label="Camera"
-                      >
-                        <Camera className="h-7 w-7" />
-                      </button>
-                    )}
+                    <Drawer open={attachOpen} onOpenChange={setAttachOpen}>
+                      <DrawerTrigger asChild>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
+                          aria-label="Attach"
+                        >
+                          <Paperclip className="h-7 w-7" />
+                        </button>
+                      </DrawerTrigger>
+                      <DrawerContent className="rounded-t-3xl border-0 bg-white">
+                        <DrawerTitle className="sr-only">Attach</DrawerTitle>
+                        <div className="px-4 pt-4 pb-8 grid grid-cols-5 gap-2">
+                          {[
+                            { label: "Gallery", icon: Images, bg: "bg-blue-50", fg: "text-blue-600", onClick: () => { setAttachOpen(false); galleryInputRef.current?.click(); } },
+                            { label: "Camera", icon: Camera, bg: "bg-rose-50", fg: "text-rose-500", onClick: () => { setAttachOpen(false); cameraInputRef.current?.click(); } },
+                            { label: "Location", icon: MapPin, bg: "bg-emerald-50", fg: "text-emerald-500", onClick: shareLocation },
+                            { label: "Document", icon: FileText, bg: "bg-violet-50", fg: "text-violet-500", onClick: () => { setAttachOpen(false); documentInputRef.current?.click(); } },
+                            { label: "Contact", icon: UserIcon, bg: "bg-sky-50", fg: "text-sky-500", onClick: shareContact },
+                          ].map(({ label, icon: Icon, bg, fg, onClick }) => (
+                            <button
+                              key={label}
+                              type="button"
+                              onClick={onClick}
+                              className="flex flex-col items-center gap-1.5"
+                            >
+                              <span className={`h-14 w-14 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center ${bg}`}>
+                                <Icon className={`h-7 w-7 ${fg}`} strokeWidth={2.2} />
+                              </span>
+                              <span className="text-[11px] font-medium text-slate-700">{label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </DrawerContent>
+                    </Drawer>
                   </div>
 
                 )}
