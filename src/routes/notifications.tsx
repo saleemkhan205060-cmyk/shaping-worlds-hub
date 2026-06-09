@@ -1,9 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft } from "lucide-react";
+import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  isNotificationChimeEnabled,
+  setNotificationChimeEnabled,
+  subscribeNotificationChimePref,
+  playSoftChime,
+} from "@/lib/notification-sound";
 
 export const Route = createFileRoute("/notifications")({
   component: NotificationsPage,
@@ -37,6 +43,20 @@ function NotificationsPage() {
   const { user, loading } = useAuth();
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(true);
+  const [chimeOn, setChimeOn] = useState(true);
+
+  useEffect(() => {
+    setChimeOn(isNotificationChimeEnabled());
+    return subscribeNotificationChimePref(setChimeOn);
+  }, []);
+
+  const toggleChime = () => {
+    const next = !chimeOn;
+    setChimeOn(next);
+    setNotificationChimeEnabled(next);
+    if (next) playSoftChime(`pref-${Date.now()}`);
+  };
+
 
   useEffect(() => {
     if (loading) return;
@@ -119,6 +139,27 @@ function NotificationsPage() {
           <h1 className="text-2xl font-extrabold">Notifications</h1>
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={toggleChime}
+        className="w-full mb-3 flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl p-3 shadow-sm"
+        aria-pressed={chimeOn}
+      >
+        <span className="flex items-center gap-3">
+          <span className={`h-10 w-10 rounded-full flex items-center justify-center text-white bg-gradient-to-br ${chimeOn ? "from-indigo-500 to-violet-500" : "from-slate-300 to-slate-400"}`}>
+            {chimeOn ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+          </span>
+          <span className="text-left">
+            <p className="text-sm font-semibold">Notification sound</p>
+            <p className="text-xs text-slate-500">{chimeOn ? "Chime plays for new messages" : "Muted — no chime will play"}</p>
+          </span>
+        </span>
+        <span className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${chimeOn ? "bg-indigo-600" : "bg-slate-300"}`}>
+          <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${chimeOn ? "translate-x-5" : "translate-x-1"}`} />
+        </span>
+      </button>
+
 
       {!user && !loading ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center">
