@@ -17,6 +17,7 @@ type AudioWindow = Window & typeof globalThis & { webkitAudioContext?: typeof Au
 const CHIME_PREF_KEY = "vip:notification-chime-enabled";
 const CHIME_PREF_EVENT = "vip:notification-chime-changed";
 const MAX_PENDING_CHIMES = 6;
+const NOTIFICATION_ICON = "/logo.png";
 
 const unlockEvents: (keyof WindowEventMap)[] = [
   "pointerdown",
@@ -162,6 +163,8 @@ function drainChimeQueue() {
 }
 
 function unlockFromGesture() {
+  requestNotificationPermissionFromGesture();
+
   // Prime HTMLAudio inside the gesture so future programmatic plays work
   const el = getAudioElement();
   if (el) {
@@ -218,6 +221,69 @@ export function initNotificationSoundUnlock() {
   });
   // Start loading the audio file
   getAudioElement();
+}
+
+function canUseBrowserNotifications() {
+  return typeof window !== "undefined" && "Notification" in window;
+}
+
+function requestNotificationPermissionFromGesture() {
+  if (!canUseBrowserNotifications()) return;
+  if (window.Notification.permission !== "default") return;
+  void window.Notification.requestPermission().catch(() => {});
+}
+
+export function initBackgroundMessageNotifications() {
+  if (typeof window === "undefined") return;
+  if (!canUseBrowserNotifications()) return;
+  if (window.Notification.permission === "default") {
+    requestNotificationPermissionFromGesture();
+  }
+}
+
+export async function showNewMessageNotification({
+  title,
+  body,
+  tag,
+  url = "/messages",
+}: {
+  title: string;
+  body: string;
+  tag?: string;
+  url?: string;
+}) {
+  if (typeof window === "undefined" || !canUseBrowserNotifications()) return;
+  if (window.Notification.permission !== "granted") return;
+
+  const options: NotificationOptions = {
+    body,
+    icon: NOTIFICATION_ICON,
+    badge: NOTIFICATION_ICON,
+    tag,
+    renotify: true,
+    data: { url },
+  };
+
+  try {
+    const registration = await navigator.serviceWorker?.ready;
+    if (registration?.showNotification) {
+      await registration.showNotification(title, options);
+      return;
+    }
+  } catch {
+    /* fall back to window Notification */
+  }
+
+  try {
+    const notification = new window.Notification(title, options);
+    notification.onclick = () => {
+      window.focus();
+      window.location.href = url;
+      notification.close();
+    };
+  } catch {
+    /* ignore */
+  }
 }
 
 export function isNotificationChimeEnabled(): boolean {
