@@ -68,22 +68,23 @@ function playGeneratedChime(ctx: AudioContext) {
   const compressor = ctx.createDynamicsCompressor();
   const master = ctx.createGain();
 
-  compressor.threshold.setValueAtTime(-12, now);
-  compressor.knee.setValueAtTime(16, now);
-  compressor.ratio.setValueAtTime(4, now);
-  compressor.attack.setValueAtTime(0.002, now);
-  compressor.release.setValueAtTime(0.18, now);
+  compressor.threshold.setValueAtTime(-6, now);
+  compressor.knee.setValueAtTime(20, now);
+  compressor.ratio.setValueAtTime(3, now);
+  compressor.attack.setValueAtTime(0.001, now);
+  compressor.release.setValueAtTime(0.15, now);
 
   master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(0.95, now + 0.018);
-  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.58);
+  master.gain.exponentialRampToValueAtTime(1.6, now + 0.015);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.52);
   master.connect(compressor);
   compressor.connect(ctx.destination);
 
   [
-    { freq: 880, start: 0, stop: 0.28, gain: 1, type: "triangle" as OscillatorType },
-    { freq: 1318.51, start: 0.055, stop: 0.36, gain: 0.88, type: "sine" as OscillatorType },
-    { freq: 1760, start: 0.12, stop: 0.42, gain: 0.38, type: "sine" as OscillatorType },
+    { freq: 880, start: 0, stop: 0.28, gain: 1.4, type: "triangle" as OscillatorType },
+    { freq: 1318.51, start: 0.055, stop: 0.36, gain: 1.2, type: "sine" as OscillatorType },
+    { freq: 1760, start: 0.12, stop: 0.42, gain: 0.9, type: "sine" as OscillatorType },
+    { freq: 2349.32, start: 0.18, stop: 0.48, gain: 0.6, type: "sine" as OscillatorType },
   ].forEach((tone) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -92,7 +93,7 @@ function playGeneratedChime(ctx: AudioContext) {
     osc.type = tone.type;
     osc.frequency.setValueAtTime(tone.freq, start);
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(tone.gain, start + 0.018);
+    gain.gain.exponentialRampToValueAtTime(tone.gain, start + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, stop);
     osc.connect(gain);
     gain.connect(master);
