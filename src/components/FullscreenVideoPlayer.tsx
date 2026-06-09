@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,15 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 
-type UploaderProfile = { id: string; username: string | null; display_name: string | null; avatar_url: string | null };
+type UploaderProfile = {
+  id: string;
+  username: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
+};
+
+type PostLikeRow = { post_id: string; user_id: string | null };
+type PostCommentRow = { post_id: string };
 
 export type FsItem = {
   id: string;
