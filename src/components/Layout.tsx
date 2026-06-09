@@ -37,7 +37,15 @@ const navItems = [
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
 
-export function Layout({ children, hideMobileNav = false }: { children: React.ReactNode; hideMobileNav?: boolean }) {
+export function Layout({
+  children,
+  hideMobileNav = false,
+  fullScreenMobile = false,
+}: {
+  children: React.ReactNode;
+  hideMobileNav?: boolean;
+  fullScreenMobile?: boolean;
+}) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -158,7 +166,7 @@ export function Layout({ children, hideMobileNav = false }: { children: React.Re
   return (
     <div className={`min-h-screen bg-slate-50 text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
 
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
+      <header className={`sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
@@ -274,7 +282,7 @@ export function Layout({ children, hideMobileNav = false }: { children: React.Re
         </DialogContent>
       </Dialog>
 
-      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
+      <main className={fullScreenMobile ? "h-[100svh] overflow-hidden md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6" : "max-w-6xl mx-auto px-3 sm:px-4 py-6"}>{children}</main>
 
       {!hideMobileNav && (
       <nav
