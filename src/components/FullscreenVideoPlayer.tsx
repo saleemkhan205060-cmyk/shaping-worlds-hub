@@ -269,8 +269,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-black">
-
-
       <div
         ref={containerRef}
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
@@ -309,7 +307,11 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     onClick={() => togglePlay(it.id)}
                   />
                 ) : (
-                  <img src={it.media_url} alt={it.caption ?? ""} className="h-full w-full object-cover" />
+                  <img
+                    src={it.media_url}
+                    alt={it.caption ?? ""}
+                    className="h-full w-full object-cover"
+                  />
                 )}
               </MediaActions>
 
@@ -334,12 +336,16 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
               )}
 
               <div className="absolute inset-x-0 bottom-0 p-5 pb-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent text-white pointer-events-none">
-                {it.caption && <p className="text-sm leading-relaxed line-clamp-3 max-w-[80%]">{it.caption}</p>}
+                {it.caption && (
+                  <p className="text-sm leading-relaxed line-clamp-3 max-w-[80%]">{it.caption}</p>
+                )}
               </div>
 
               <div className="absolute right-3 bottom-24 flex flex-col gap-5 z-10">
                 <ActionBtn
-                  icon={<Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />}
+                  icon={
+                    <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />
+                  }
                   label={likes > 0 ? String(likes) : "Like"}
                   onClick={() => toggleLike(it.id)}
                   active={isLiked}
@@ -356,7 +362,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 />
                 {it.media_type === "video" && (
                   <ActionBtn
-                    icon={muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
+                    icon={
+                      muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />
+                    }
                     label={muted ? "Muted" : "Sound"}
                     onClick={() => setSoundMuted(!userMutedRef.current)}
                   />
@@ -371,8 +379,14 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     <span className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
                       <AvatarImg
                         src={profiles[it.user_id]?.avatar_url}
-                        alt={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "User"}
-                        fallback={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "U"}
+                        alt={
+                          profiles[it.user_id]?.display_name ??
+                          profiles[it.user_id]?.username ??
+                          "User"
+                        }
+                        fallback={
+                          profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "U"
+                        }
                         className="h-full w-full object-cover"
                       />
                     </span>
@@ -380,8 +394,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 )}
               </div>
             </div>
-
-
           );
         })}
       </div>
@@ -390,9 +402,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         <CommentsSheet
           postId={commentsOpenFor}
           onClose={() => setCommentsOpenFor(null)}
-          onCountChange={(n) =>
-            setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))
-          }
+          onCountChange={(n) => setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))}
         />
       )}
     </div>
