@@ -4,8 +4,9 @@ import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2 } from "lucide-react";
+import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2, Images, MapPin, FileText, User as UserIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Drawer, DrawerContent, DrawerTrigger, DrawerTitle } from "@/components/ui/drawer";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/messages")({
@@ -47,7 +48,10 @@ function Messages() {
   const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
   const attachInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const documentInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [attachOpen, setAttachOpen] = useState(false);
 
   // redirect to auth if not signed in
   useEffect(() => {
@@ -219,7 +223,34 @@ function Messages() {
     await sendContent(content);
   };
 
-  // pending file preview before send
+  const shareLocation = () => {
+    setAttachOpen(false);
+    if (!navigator.geolocation) {
+      toast.error("Location not supported on this device");
+      return;
+    }
+    toast.message("Getting your location…");
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const url = `https://maps.google.com/?q=${latitude},${longitude}`;
+        await sendContent(`📍 My location: ${url}`);
+      },
+      () => toast.error("Couldn't get your location"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+
+  const shareContact = async () => {
+    setAttachOpen(false);
+    const name = window.prompt("Contact name");
+    if (!name) return;
+    const phone = window.prompt("Phone number");
+    if (!phone) return;
+    await sendContent(`👤 Contact\nName: ${name}\nPhone: ${phone}`);
+  };
+
+
   const [pending, setPending] = useState<{ file: File; url: string; kind: "image" | "video" | "audio" | "file" } | null>(null);
 
   const kindOf = (file: File): "image" | "video" | "audio" | "file" => {
@@ -586,6 +617,28 @@ function Messages() {
 
               <div className="shrink-0 bg-slate-50 px-2.5 py-2.5 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
                 <input
+                  ref={galleryInputRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) queueFile(f);
+                    e.target.value = "";
+                  }}
+                />
+                <input
+                  ref={documentInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.csv,application/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) queueFile(f);
+                    e.target.value = "";
+                  }}
+                />
+                <input
                   ref={attachInputRef}
                   type="file"
                   className="hidden"
@@ -665,32 +718,42 @@ function Messages() {
                       rows={1}
                       className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-2 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
                     />
-                    <button
-                      type="button"
-                      onPointerDown={(e) => {
-                        e.preventDefault();
-                        attachInputRef.current?.click();
-                      }}
-                      disabled={busy}
-                      className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
-                      aria-label="Attach file"
-                    >
-                      <Paperclip className="h-7 w-7" />
-                    </button>
-                    {!text.trim() && (
-                      <button
-                        type="button"
-                        onPointerDown={(e) => {
-                          e.preventDefault();
-                          cameraInputRef.current?.click();
-                        }}
-                        disabled={busy}
-                        className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 disabled:opacity-50 transition-colors"
-                        aria-label="Camera"
-                      >
-                        <Camera className="h-7 w-7" />
-                      </button>
-                    )}
+                    <Drawer open={attachOpen} onOpenChange={setAttachOpen}>
+                      <DrawerTrigger asChild>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
+                          aria-label="Attach"
+                        >
+                          <Paperclip className="h-7 w-7" />
+                        </button>
+                      </DrawerTrigger>
+                      <DrawerContent className="rounded-t-3xl border-0 bg-white">
+                        <DrawerTitle className="sr-only">Attach</DrawerTitle>
+                        <div className="px-4 pt-4 pb-8 grid grid-cols-5 gap-2">
+                          {[
+                            { label: "Gallery", icon: Images, bg: "bg-blue-50", fg: "text-blue-600", onClick: () => { setAttachOpen(false); galleryInputRef.current?.click(); } },
+                            { label: "Camera", icon: Camera, bg: "bg-rose-50", fg: "text-rose-500", onClick: () => { setAttachOpen(false); cameraInputRef.current?.click(); } },
+                            { label: "Location", icon: MapPin, bg: "bg-emerald-50", fg: "text-emerald-500", onClick: shareLocation },
+                            { label: "Document", icon: FileText, bg: "bg-violet-50", fg: "text-violet-500", onClick: () => { setAttachOpen(false); documentInputRef.current?.click(); } },
+                            { label: "Contact", icon: UserIcon, bg: "bg-sky-50", fg: "text-sky-500", onClick: shareContact },
+                          ].map(({ label, icon: Icon, bg, fg, onClick }) => (
+                            <button
+                              key={label}
+                              type="button"
+                              onClick={onClick}
+                              className="flex flex-col items-center gap-1.5"
+                            >
+                              <span className={`h-14 w-14 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center ${bg}`}>
+                                <Icon className={`h-7 w-7 ${fg}`} strokeWidth={2.2} />
+                              </span>
+                              <span className="text-[11px] font-medium text-slate-700">{label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </DrawerContent>
+                    </Drawer>
                   </div>
 
                 )}
