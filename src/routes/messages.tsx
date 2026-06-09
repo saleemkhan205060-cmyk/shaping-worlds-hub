@@ -617,6 +617,28 @@ function Messages() {
 
               <div className="shrink-0 bg-slate-50 px-2.5 py-2.5 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
                 <input
+                  ref={galleryInputRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) queueFile(f);
+                    e.target.value = "";
+                  }}
+                />
+                <input
+                  ref={documentInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.csv,application/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) queueFile(f);
+                    e.target.value = "";
+                  }}
+                />
+                <input
                   ref={attachInputRef}
                   type="file"
                   className="hidden"
