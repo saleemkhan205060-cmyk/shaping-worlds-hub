@@ -300,6 +300,7 @@ export function Layout({ children, hideMobileNav = false }: { children: React.Re
           })}
         </div>
       </nav>
+      )}
     </div>
   );
 }
