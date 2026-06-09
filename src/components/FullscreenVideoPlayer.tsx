@@ -114,6 +114,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
             setPaused(false);
             if (v) {
               v.currentTime = 0;
+              v.muted = muted;
               v.play().catch(() => {
                 // Autoplay with sound blocked — fall back to muted autoplay
                 v.muted = true;
@@ -130,7 +131,25 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     );
     Array.from(root.children).forEach((c) => io.observe(c));
     return () => io.disconnect();
-  }, [items.length]);
+  }, [items.length, muted]);
+
+  // On first user touch anywhere in the player, unmute automatically
+  useEffect(() => {
+    if (!muted) return;
+    const root = containerRef.current;
+    if (!root) return;
+    const handler = () => {
+      setMuted(false);
+      Object.values(videoRefs.current).forEach((v) => {
+        if (!v) return;
+        v.muted = false;
+        if (!v.paused) v.play().catch(() => {});
+      });
+      root.removeEventListener("pointerdown", handler);
+    };
+    root.addEventListener("pointerdown", handler, { once: false });
+    return () => root.removeEventListener("pointerdown", handler);
+  }, [muted]);
 
   // Esc to close
   useEffect(() => {
