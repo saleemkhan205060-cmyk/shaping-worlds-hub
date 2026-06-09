@@ -267,7 +267,7 @@ export async function showNewMessageNotification({
     const registration = navigator.serviceWorker?.controller
       ? await Promise.race<ServiceWorkerRegistration | null>([
           navigator.serviceWorker.ready,
-          new Promise((resolve) => window.setTimeout(() => resolve(null), 400)),
+          new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 400)),
         ])
       : null;
     if (registration?.showNotification) {
