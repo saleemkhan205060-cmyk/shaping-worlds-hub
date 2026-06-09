@@ -26,7 +26,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
   const [activeId, setActiveId] = useState(items[startIndex]?.id ?? "");
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
 
@@ -168,20 +168,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-black">
-      <button
-        onClick={onClose}
-        className="absolute top-4 left-4 z-20 h-10 w-10 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-sm"
-        aria-label="Close"
-      >
-        <X className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => setMuted((m) => !m)}
-        className="absolute top-4 right-4 z-20 h-10 w-10 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-sm"
-        aria-label={muted ? "Unmute" : "Mute"}
-      >
-        {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-      </button>
+
 
       <div
         ref={containerRef}
@@ -247,9 +234,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
               <div className="absolute inset-x-0 bottom-0 p-5 pb-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent text-white pointer-events-none">
                 {it.caption && <p className="text-sm leading-relaxed line-clamp-3 max-w-[80%]">{it.caption}</p>}
-                <p className="text-xs text-white/60 mt-1">
-                  {new Date(it.created_at).toLocaleDateString()}
-                </p>
               </div>
 
               <div className="absolute right-3 bottom-24 flex flex-col gap-5 z-10">
@@ -269,8 +253,20 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   label="Share"
                   onClick={() => share(it.caption)}
                 />
+                {it.media_type === "video" && (
+                  <button
+                    onClick={() => setMuted((m) => !m)}
+                    aria-label={muted ? "Unmute" : "Mute"}
+                    className="flex flex-col items-center gap-1 text-slate-900 drop-shadow-lg"
+                  >
+                    <span className="h-9 w-9 rounded-full bg-white flex items-center justify-center active:scale-95 transition">
+                      {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
+
           );
         })}
       </div>
