@@ -37,7 +37,7 @@ const navItems = [
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children, hideMobileNav = false }: { children: React.ReactNode; hideMobileNav?: boolean }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { user } = useAuth();
