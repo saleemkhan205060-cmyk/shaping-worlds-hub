@@ -286,8 +286,26 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     onClick={() => setMuted((m) => !m)}
                   />
                 )}
+                {it.user_id && (
+                  <Link
+                    to="/u/$id"
+                    params={{ id: it.user_id }}
+                    className="flex items-center justify-center mt-1"
+                    aria-label="View profile"
+                  >
+                    <span className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
+                      <AvatarImg
+                        src={profiles[it.user_id]?.avatar_url}
+                        alt={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "User"}
+                        fallback={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "U"}
+                        className="h-full w-full object-cover"
+                      />
+                    </span>
+                  </Link>
+                )}
               </div>
             </div>
+
 
           );
         })}
