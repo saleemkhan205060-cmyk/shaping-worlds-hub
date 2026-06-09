@@ -79,6 +79,27 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     })();
   }, [items, user]);
 
+  // Load uploader profiles
+  useEffect(() => {
+    const ids = Array.from(
+      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x))
+    ).filter((id) => !profiles[id]);
+    if (ids.length === 0) return;
+    supabase
+      .from("profiles")
+      .select("id, username, display_name, avatar_url")
+      .in("id", ids)
+      .then(({ data }) => {
+        if (!data) return;
+        setProfiles((prev) => {
+          const next = { ...prev };
+          for (const p of data as UploaderProfile[]) next[p.id] = p;
+          return next;
+        });
+      });
+  }, [items, profiles]);
+
+
   // Observe which video is in view -> autoplay it, pause the rest
   useEffect(() => {
     const root = containerRef.current;
