@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,15 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 
-type UploaderProfile = { id: string; username: string | null; display_name: string | null; avatar_url: string | null };
+type UploaderProfile = {
+  id: string;
+  username: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
+};
+
+type PostLikeRow = { post_id: string; user_id: string | null };
+type PostCommentRow = { post_id: string };
 
 export type FsItem = {
   id: string;
@@ -27,9 +35,13 @@ type Props = {
 
 export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const { user } = useAuth();
+  const initialActiveId = items[startIndex]?.id ?? "";
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const [activeId, setActiveId] = useState(items[startIndex]?.id ?? "");
+  const activeIdRef = useRef(initialActiveId);
+  const userMutedRef = useRef(false);
+  const ignoreNextVideoClickRef = useRef(false);
+  const [activeId, setActiveId] = useState(initialActiveId);
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
@@ -41,10 +53,43 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Record<string, UploaderProfile>>({});
 
+  const playWithCurrentSoundPreference = useCallback((id: string, reset = false) => {
+    const v = videoRefs.current[id];
+    if (!v) return;
+    if (reset) v.currentTime = 0;
+    v.volume = 1;
+    v.muted = userMutedRef.current;
+    v.play().catch(() => {
+      if (!userMutedRef.current) {
+        // Browser blocked sound autoplay. Keep the speaker preference ON,
+        // but allow muted autoplay until the next user touch unlocks sound.
+        v.muted = true;
+        v.play().catch(() => {});
+      }
+    });
+  }, []);
+
+  const setSoundMuted = useCallback(
+    (nextMuted: boolean) => {
+      userMutedRef.current = nextMuted;
+      setMuted(nextMuted);
+      Object.values(videoRefs.current).forEach((v) => {
+        if (!v) return;
+        v.muted = nextMuted;
+        v.volume = 1;
+      });
+      if (!nextMuted) playWithCurrentSoundPreference(activeIdRef.current);
+    },
+    [playWithCurrentSoundPreference],
+  );
+
   // Lock body scroll & scroll to start index
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    const targetId = items[startIndex]?.id ?? "";
+    activeIdRef.current = targetId;
+    setActiveId(targetId);
     const target = el.children[startIndex] as HTMLElement | undefined;
     if (target) el.scrollTo({ top: target.offsetTop, behavior: "instant" as ScrollBehavior });
     const prev = document.body.style.overflow;
@@ -52,7 +97,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [startIndex]);
+  }, [items, startIndex]);
 
   // Load likes & comment counts
   useEffect(() => {
@@ -65,12 +110,12 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       ]);
       const lc: Record<string, number> = {};
       const me: Record<string, boolean> = {};
-      (likes ?? []).forEach((l: any) => {
+      ((likes ?? []) as PostLikeRow[]).forEach((l) => {
         lc[l.post_id] = (lc[l.post_id] ?? 0) + 1;
         if (user && l.user_id === user.id) me[l.post_id] = true;
       });
       const cc: Record<string, number> = {};
-      (comments ?? []).forEach((c: any) => {
+      ((comments ?? []) as PostCommentRow[]).forEach((c) => {
         cc[c.post_id] = (cc[c.post_id] ?? 0) + 1;
       });
       setLikeCounts(lc);
@@ -82,7 +127,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   // Load uploader profiles
   useEffect(() => {
     const ids = Array.from(
-      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x))
+      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x)),
     ).filter((id) => !profiles[id]);
     if (ids.length === 0) return;
     supabase
@@ -99,7 +144,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       });
   }, [items, profiles]);
 
-
   // Observe which video is in view -> autoplay it, pause the rest
   useEffect(() => {
     const root = containerRef.current;
@@ -111,45 +155,43 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           const v = videoRefs.current[id];
           if (e.isIntersecting && e.intersectionRatio > 0.6) {
             setActiveId(id);
+            activeIdRef.current = id;
             setPaused(false);
-            if (v) {
-              v.currentTime = 0;
-              v.muted = muted;
-              v.play().catch(() => {
-                // Autoplay with sound blocked — fall back to muted autoplay
-                v.muted = true;
-                setMuted(true);
-                v.play().catch(() => {});
-              });
-            }
+            playWithCurrentSoundPreference(id, true);
           } else {
             v?.pause();
           }
         });
       },
-      { root, threshold: [0, 0.6, 1] }
+      { root, threshold: [0, 0.6, 1] },
     );
     Array.from(root.children).forEach((c) => io.observe(c));
     return () => io.disconnect();
-  }, [items.length, muted]);
+  }, [items.length, playWithCurrentSoundPreference]);
 
-  // On first user touch anywhere in the player, unmute automatically
+  // On the first real touch/click in the player, unlock sound without changing the user's ON preference.
   useEffect(() => {
-    if (!muted) return;
     const root = containerRef.current;
     if (!root) return;
-    const handler = () => {
-      setMuted(false);
-      Object.values(videoRefs.current).forEach((v) => {
-        if (!v) return;
-        v.muted = false;
-        if (!v.paused) v.play().catch(() => {});
-      });
-      root.removeEventListener("pointerdown", handler);
+    const removeUnlockListeners = () => {
+      root.removeEventListener("pointerdown", handler, true);
+      root.removeEventListener("click", handler, true);
+      root.removeEventListener("touchstart", handler, true);
     };
-    root.addEventListener("pointerdown", handler, { once: false });
-    return () => root.removeEventListener("pointerdown", handler);
-  }, [muted]);
+    const handler = () => {
+      removeUnlockListeners();
+      if (userMutedRef.current) return;
+      ignoreNextVideoClickRef.current = true;
+      setSoundMuted(false);
+      window.setTimeout(() => {
+        ignoreNextVideoClickRef.current = false;
+      }, 350);
+    };
+    root.addEventListener("pointerdown", handler, { capture: true });
+    root.addEventListener("click", handler, { capture: true });
+    root.addEventListener("touchstart", handler, { capture: true, passive: true });
+    return removeUnlockListeners;
+  }, [setSoundMuted]);
 
   // Esc to close
   useEffect(() => {
@@ -161,10 +203,14 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   }, [onClose]);
 
   const togglePlay = (id: string) => {
+    if (ignoreNextVideoClickRef.current) {
+      ignoreNextVideoClickRef.current = false;
+      return;
+    }
     const v = videoRefs.current[id];
     if (!v) return;
     if (v.paused) {
-      v.play().catch(() => {});
+      playWithCurrentSoundPreference(id);
       setPaused(false);
     } else {
       v.pause();
@@ -213,13 +259,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     try {
       if (navigator.share) await navigator.share(data);
       else await navigator.clipboard.writeText(data.url);
-    } catch {}
+    } catch {
+      // Ignore share cancellations and clipboard permission denials.
+    }
   };
 
   return (
     <div className="fixed inset-0 z-[100] bg-black">
-
-
       <div
         ref={containerRef}
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
@@ -258,7 +304,11 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     onClick={() => togglePlay(it.id)}
                   />
                 ) : (
-                  <img src={it.media_url} alt={it.caption ?? ""} className="h-full w-full object-cover" />
+                  <img
+                    src={it.media_url}
+                    alt={it.caption ?? ""}
+                    className="h-full w-full object-cover"
+                  />
                 )}
               </MediaActions>
 
@@ -283,12 +333,16 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
               )}
 
               <div className="absolute inset-x-0 bottom-0 p-5 pb-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent text-white pointer-events-none">
-                {it.caption && <p className="text-sm leading-relaxed line-clamp-3 max-w-[80%]">{it.caption}</p>}
+                {it.caption && (
+                  <p className="text-sm leading-relaxed line-clamp-3 max-w-[80%]">{it.caption}</p>
+                )}
               </div>
 
               <div className="absolute right-3 bottom-24 flex flex-col gap-5 z-10">
                 <ActionBtn
-                  icon={<Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />}
+                  icon={
+                    <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />
+                  }
                   label={likes > 0 ? String(likes) : "Like"}
                   onClick={() => toggleLike(it.id)}
                   active={isLiked}
@@ -307,7 +361,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   <ActionBtn
                     icon={muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
                     label={muted ? "Muted" : "Sound"}
-                    onClick={() => setMuted((m) => !m)}
+                    onClick={() => setSoundMuted(!userMutedRef.current)}
                   />
                 )}
                 {it.user_id && (
@@ -320,8 +374,16 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     <span className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
                       <AvatarImg
                         src={profiles[it.user_id]?.avatar_url}
-                        alt={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "User"}
-                        fallback={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "U"}
+                        alt={
+                          profiles[it.user_id]?.display_name ??
+                          profiles[it.user_id]?.username ??
+                          "User"
+                        }
+                        fallback={
+                          profiles[it.user_id]?.display_name ??
+                          profiles[it.user_id]?.username ??
+                          "U"
+                        }
                         className="h-full w-full object-cover"
                       />
                     </span>
@@ -329,8 +391,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 )}
               </div>
             </div>
-
-
           );
         })}
       </div>
@@ -339,9 +399,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         <CommentsSheet
           postId={commentsOpenFor}
           onClose={() => setCommentsOpenFor(null)}
-          onCountChange={(n) =>
-            setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))
-          }
+          onCountChange={(n) => setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))}
         />
       )}
     </div>
