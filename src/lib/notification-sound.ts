@@ -123,7 +123,7 @@ function playFallbackChime(ctx: AudioContext) {
   const now = ctx.currentTime;
   const master = ctx.createGain();
   master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(0.25, now + 0.025);
+  master.gain.exponentialRampToValueAtTime(0.75, now + 0.025);
   master.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
   master.connect(ctx.destination);
   [880, 1318.51].forEach((freq, index) => {
