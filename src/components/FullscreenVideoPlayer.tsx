@@ -26,7 +26,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
   const [activeId, setActiveId] = useState(items[startIndex]?.id ?? "");
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
 
