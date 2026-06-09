@@ -53,32 +53,38 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Record<string, UploaderProfile>>({});
 
-  const playWithCurrentSoundPreference = useCallback((id: string, reset = false) => {
-    const v = videoRefs.current[id];
-    if (!v) return;
-    if (reset) v.currentTime = 0;
-    v.volume = 1;
-    v.muted = userMutedRef.current;
-    v.play().catch(() => {
-      if (!userMutedRef.current) {
-        // Browser blocked sound autoplay. Keep the speaker preference ON,
-        // but allow muted autoplay until the next user touch unlocks sound.
-        v.muted = true;
-        v.play().catch(() => {});
-      }
-    });
-  }, []);
-
-  const setSoundMuted = useCallback((nextMuted: boolean) => {
-    userMutedRef.current = nextMuted;
-    setMuted(nextMuted);
-    Object.values(videoRefs.current).forEach((v) => {
+  const playWithCurrentSoundPreference = useCallback(
+    (id: string, reset = false) => {
+      const v = videoRefs.current[id];
       if (!v) return;
-      v.muted = nextMuted;
+      if (reset) v.currentTime = 0;
       v.volume = 1;
-    });
-    if (!nextMuted) playWithCurrentSoundPreference(activeIdRef.current);
-  }, [playWithCurrentSoundPreference]);
+      v.muted = userMutedRef.current;
+      v.play().catch(() => {
+        if (!userMutedRef.current) {
+          // Browser blocked sound autoplay. Keep the speaker preference ON,
+          // but allow muted autoplay until the next user touch unlocks sound.
+          v.muted = true;
+          v.play().catch(() => {});
+        }
+      });
+    },
+    [],
+  );
+
+  const setSoundMuted = useCallback(
+    (nextMuted: boolean) => {
+      userMutedRef.current = nextMuted;
+      setMuted(nextMuted);
+      Object.values(videoRefs.current).forEach((v) => {
+        if (!v) return;
+        v.muted = nextMuted;
+        v.volume = 1;
+      });
+      if (!nextMuted) playWithCurrentSoundPreference(activeIdRef.current);
+    },
+    [playWithCurrentSoundPreference],
+  );
 
   // Lock body scroll & scroll to start index
   useEffect(() => {
