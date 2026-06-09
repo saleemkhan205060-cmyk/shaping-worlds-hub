@@ -163,7 +163,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   useEffect(() => {
     const root = containerRef.current;
     if (!root) return;
+    const removeUnlockListeners = () => {
+      root.removeEventListener("pointerdown", handler, true);
+      root.removeEventListener("click", handler, true);
+      root.removeEventListener("touchstart", handler, true);
+    };
     const handler = () => {
+      removeUnlockListeners();
       if (userMutedRef.current) return;
       ignoreNextVideoClickRef.current = true;
       setSoundMuted(false);
@@ -171,10 +177,10 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         ignoreNextVideoClickRef.current = false;
       }, 350);
     };
-    root.addEventListener("pointerdown", handler, { once: true, capture: true });
-    root.addEventListener("click", handler, { once: true, capture: true });
-    root.addEventListener("touchstart", handler, { once: true, capture: true, passive: true });
-    return () => root.removeEventListener("pointerdown", handler);
+    root.addEventListener("pointerdown", handler, { capture: true });
+    root.addEventListener("click", handler, { capture: true });
+    root.addEventListener("touchstart", handler, { capture: true, passive: true });
+    return removeUnlockListeners;
   }, []);
 
   // Esc to close
@@ -337,7 +343,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   <ActionBtn
                     icon={muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
                     label={muted ? "Muted" : "Sound"}
-                    onClick={() => setMuted((m) => !m)}
+                    onClick={() => setSoundMuted(!userMutedRef.current)}
                   />
                 )}
                 {it.user_id && (
