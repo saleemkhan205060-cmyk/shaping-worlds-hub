@@ -213,8 +213,46 @@ export function initNotificationSoundUnlock() {
   });
 }
 
+const CHIME_PREF_KEY = "vip:notification-chime-enabled";
+const CHIME_PREF_EVENT = "vip:notification-chime-changed";
+
+export function isNotificationChimeEnabled(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const v = window.localStorage.getItem(CHIME_PREF_KEY);
+    return v === null ? true : v === "1";
+  } catch {
+    return true;
+  }
+}
+
+export function setNotificationChimeEnabled(enabled: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CHIME_PREF_KEY, enabled ? "1" : "0");
+    window.dispatchEvent(new CustomEvent(CHIME_PREF_EVENT, { detail: enabled }));
+  } catch {
+    /* ignore */
+  }
+}
+
+export function subscribeNotificationChimePref(cb: (enabled: boolean) => void) {
+  if (typeof window === "undefined") return () => {};
+  const handler = (e: Event) => cb((e as CustomEvent<boolean>).detail);
+  const storageHandler = (e: StorageEvent) => {
+    if (e.key === CHIME_PREF_KEY) cb(e.newValue !== "0");
+  };
+  window.addEventListener(CHIME_PREF_EVENT, handler);
+  window.addEventListener("storage", storageHandler);
+  return () => {
+    window.removeEventListener(CHIME_PREF_EVENT, handler);
+    window.removeEventListener("storage", storageHandler);
+  };
+}
+
 export function playSoftChime(chimeKey?: string) {
   try {
+    if (!isNotificationChimeEnabled()) return;
     if (chimeKey) {
       if (playedChimeKeys.has(chimeKey)) return;
       playedChimeKeys.add(chimeKey);
