@@ -276,6 +276,7 @@ export function Layout({ children, hideMobileNav = false }: { children: React.Re
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
 
+      {!hideMobileNav && (
       <nav
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
