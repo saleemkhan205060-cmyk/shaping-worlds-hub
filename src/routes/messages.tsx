@@ -483,7 +483,7 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <header className="mx-3 mt-3 mb-1 px-2 py-1.5 bg-[#075E54] text-white flex items-center gap-2.5 shadow-md rounded-full ring-1 ring-black/5">
+              <header className="mx-2 mt-0 mb-0 px-2 py-1.5 bg-[#075E54] text-white flex items-center gap-2.5 shadow-md rounded-full ring-1 ring-black/5">
                 <button
                   onClick={() => setActivePeer(null)}
                   className="md:hidden h-8 w-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
@@ -497,7 +497,8 @@ function Messages() {
                   <p className="text-[10px] text-emerald-100/90">Online</p>
                 </div>
               </header>
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-2 bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
+                <div className="min-h-full flex flex-col justify-end p-4 space-y-2">
                 {thread.length === 0 ? (
                   <p className="text-center text-sm text-slate-400 py-8">
                     Say hi 👋
@@ -542,6 +543,7 @@ function Messages() {
                   })
                 )}
                 <div ref={endRef} />
+                </div>
               </div>
               {pending && (
                 <div className="border-t border-slate-200 bg-white p-3 flex items-center gap-3">
