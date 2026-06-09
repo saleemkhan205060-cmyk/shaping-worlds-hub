@@ -43,6 +43,20 @@ function NotificationsPage() {
   const { user, loading } = useAuth();
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(true);
+  const [chimeOn, setChimeOn] = useState(true);
+
+  useEffect(() => {
+    setChimeOn(isNotificationChimeEnabled());
+    return subscribeNotificationChimePref(setChimeOn);
+  }, []);
+
+  const toggleChime = () => {
+    const next = !chimeOn;
+    setChimeOn(next);
+    setNotificationChimeEnabled(next);
+    if (next) playSoftChime(`pref-${Date.now()}`);
+  };
+
 
   useEffect(() => {
     if (loading) return;
