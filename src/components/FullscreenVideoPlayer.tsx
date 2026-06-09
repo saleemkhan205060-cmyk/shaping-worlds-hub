@@ -39,6 +39,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
+  const [profiles, setProfiles] = useState<Record<string, UploaderProfile>>({});
 
   // Lock body scroll & scroll to start index
   useEffect(() => {
