@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
+import { AvatarImg } from "@/components/AvatarImg";
+
+type UploaderProfile = { id: string; username: string | null; display_name: string | null; avatar_url: string | null };
 
 export type FsItem = {
   id: string;
