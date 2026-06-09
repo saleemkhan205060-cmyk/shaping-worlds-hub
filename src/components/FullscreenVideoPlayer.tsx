@@ -53,7 +53,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Record<string, UploaderProfile>>({});
 
-  const playWithCurrentSoundPreference = (id: string, reset = false) => {
+  const playWithCurrentSoundPreference = useCallback((id: string, reset = false) => {
     const v = videoRefs.current[id];
     if (!v) return;
     if (reset) v.currentTime = 0;
@@ -67,9 +67,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         v.play().catch(() => {});
       }
     });
-  };
+  }, []);
 
-  const setSoundMuted = (nextMuted: boolean) => {
+  const setSoundMuted = useCallback((nextMuted: boolean) => {
     userMutedRef.current = nextMuted;
     setMuted(nextMuted);
     Object.values(videoRefs.current).forEach((v) => {
@@ -78,7 +78,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       v.volume = 1;
     });
     if (!nextMuted) playWithCurrentSoundPreference(activeIdRef.current);
-  };
+  }, [playWithCurrentSoundPreference]);
 
   // Lock body scroll & scroll to start index
   useEffect(() => {
@@ -107,12 +107,12 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       ]);
       const lc: Record<string, number> = {};
       const me: Record<string, boolean> = {};
-      (likes ?? []).forEach((l: any) => {
+      ((likes ?? []) as PostLikeRow[]).forEach((l) => {
         lc[l.post_id] = (lc[l.post_id] ?? 0) + 1;
         if (user && l.user_id === user.id) me[l.post_id] = true;
       });
       const cc: Record<string, number> = {};
-      (comments ?? []).forEach((c: any) => {
+      ((comments ?? []) as PostCommentRow[]).forEach((c) => {
         cc[c.post_id] = (cc[c.post_id] ?? 0) + 1;
       });
       setLikeCounts(lc);
