@@ -1,9 +1,9 @@
-// Notification chime: uses an HTMLAudioElement (works reliably on mobile,
-// respects media volume) with a WebAudio fallback.
-import chimeUrl from "@/assets/notification-chime.wav";
+// Notification chime: generated in-browser so it cannot fail because of a
+// missing/blocked audio asset request. HTMLAudio is primary; WebAudio is fallback.
 
 let audioEl: HTMLAudioElement | null = null;
 let audioCtx: AudioContext | null = null;
+let generatedChimeUrl: string | null = null;
 let unlockBound = false;
 let unlocked = false;
 let pendingChime = false;
@@ -23,8 +23,53 @@ const unlockEvents: (keyof WindowEventMap)[] = [
   "click",
 ];
 
+function writeAscii(view: DataView, offset: number, value: string) {
+  for (let i = 0; i < value.length; i += 1) view.setUint8(offset + i, value.charCodeAt(i));
+}
+
+function getGeneratedChimeUrl(): string | null {
+  if (typeof window === "undefined") return null;
+  if (generatedChimeUrl) return generatedChimeUrl;
+
+  const sampleRate = 22_050;
+  const duration = 0.42;
+  const sampleCount = Math.floor(sampleRate * duration);
+  const buffer = new ArrayBuffer(44 + sampleCount * 2);
+  const view = new DataView(buffer);
+
+  writeAscii(view, 0, "RIFF");
+  view.setUint32(4, 36 + sampleCount * 2, true);
+  writeAscii(view, 8, "WAVE");
+  writeAscii(view, 12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeAscii(view, 36, "data");
+  view.setUint32(40, sampleCount * 2, true);
+
+  for (let i = 0; i < sampleCount; i += 1) {
+    const t = i / sampleRate;
+    const attack = Math.min(1, t / 0.018);
+    const release = Math.max(0, 1 - t / duration);
+    const envelope = attack * release * release;
+    const first = Math.sin(2 * Math.PI * 880 * t);
+    const second = t > 0.07 ? Math.sin(2 * Math.PI * 1318.51 * (t - 0.07)) : 0;
+    const sample = Math.max(-1, Math.min(1, (first * 0.48 + second * 0.36) * envelope));
+    view.setInt16(44 + i * 2, sample * 0x7fff, true);
+  }
+
+  generatedChimeUrl = URL.createObjectURL(new Blob([buffer], { type: "audio/wav" }));
+  return generatedChimeUrl;
+}
+
 function getAudioEl(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
+  const chimeUrl = getGeneratedChimeUrl();
+  if (!chimeUrl) return null;
   if (!audioEl) {
     try {
       audioEl = new Audio(chimeUrl);
@@ -67,7 +112,10 @@ function getAudioContext(): AudioContext | null {
 
 function removeUnlockListeners() {
   if (!unlockBound || typeof window === "undefined") return;
-  unlockEvents.forEach((e) => window.removeEventListener(e, unlockFromGesture, true));
+  unlockEvents.forEach((e) => {
+    window.removeEventListener(e, unlockFromGesture, true);
+    document.removeEventListener(e, unlockFromGesture, true);
+  });
   unlockBound = false;
 }
 
