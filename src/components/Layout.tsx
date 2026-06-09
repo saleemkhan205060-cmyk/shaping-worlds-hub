@@ -156,7 +156,8 @@ export function Layout({ children, hideMobileNav = false }: { children: React.Re
     ) : null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-24 md:pb-0">
+    <div className={`min-h-screen bg-slate-50 text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
+
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
