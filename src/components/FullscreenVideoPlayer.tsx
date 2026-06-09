@@ -114,7 +114,12 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
             setPaused(false);
             if (v) {
               v.currentTime = 0;
-              v.play().catch(() => {});
+              v.play().catch(() => {
+                // Autoplay with sound blocked — fall back to muted autoplay
+                v.muted = true;
+                setMuted(true);
+                v.play().catch(() => {});
+              });
             }
           } else {
             v?.pause();
