@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2, Images, MapPin, FileText, User as UserIcon } from "lucide-react";
+import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2, Images, MapPin, FileText, User as UserIcon, MoreVertical } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerTitle } from "@/components/ui/drawer";
 import { toast } from "sonner";
@@ -511,29 +511,41 @@ function Messages() {
         </aside>
 
         {/* Thread */}
-        <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
+        <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex bg-[#edf0e4]" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <header className="shrink-0 mx-2 mt-2 md:mt-0 mb-0 px-2 py-1.5 bg-[#075E54] text-white flex items-center gap-2.5 shadow-md rounded-full ring-1 ring-black/5">
-                <button
-                  onClick={() => setActivePeer(null)}
-                  className="md:hidden h-8 w-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
-                  aria-label="Back"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </button>
-                <Avatar p={profiles[activePeer]} size="h-9 w-9 text-sm" />
-                <div className="flex-1 min-w-0 leading-tight pr-3">
-                  <p className="font-semibold text-sm truncate">{peerName(activePeer)}</p>
-                  <p className="text-[10px] text-emerald-100/90">Online</p>
+              <header className="shrink-0 bg-white px-3 pt-3 pb-2 md:px-2 md:pt-2">
+                <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-3 px-3 py-2 shadow-sm ring-1 ring-black/5">
+                    <button
+                      onClick={() => setActivePeer(null)}
+                      className="md:hidden h-10 w-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
+                      aria-label="Back"
+                    >
+                      <ArrowLeft className="h-7 w-7" />
+                    </button>
+                    <Avatar p={profiles[activePeer]} size="h-14 w-14 text-base" />
+                    <div className="flex-1 min-w-0 leading-tight pr-3">
+                      <p className="font-bold text-[20px] leading-6 truncate">{peerName(activePeer)}</p>
+                      <p className="text-[15px] leading-5 text-white/85">Online</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="h-12 w-8 shrink-0 flex items-center justify-center text-slate-800 rounded-full hover:bg-slate-100"
+                    aria-label="Conversation menu"
+                  >
+                    <MoreVertical className="h-8 w-8" />
+                  </button>
                 </div>
               </header>
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
-                <div className="min-h-full flex flex-col justify-end p-4 space-y-2">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-[#edf0e4]" style={{ WebkitOverflowScrolling: "touch" }}>
+                <div className="min-h-full flex flex-col p-4 space-y-2">
+                <div className="sticky top-3 z-10 mx-auto mb-auto rounded-xl bg-white px-5 py-2 text-[20px] font-semibold text-slate-500 shadow-sm ring-1 ring-black/5">
+                  Today
+                </div>
                 {thread.length === 0 ? (
-                  <p className="text-center text-sm text-slate-400 py-8">
-                    Say hi 👋
-                  </p>
+                  <div className="flex-1" />
                 ) : (
                   thread.map((m) => {
                     const mine = m.sender_id === user.id;
@@ -615,7 +627,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="shrink-0 bg-slate-50 px-2.5 py-2.5 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
+              <div className="shrink-0 bg-[#edf0e4] px-3 py-2 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
                 <input
                   ref={galleryInputRef}
                   type="file"
@@ -677,7 +689,7 @@ function Messages() {
                     <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-black/5 min-h-[56px]">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
