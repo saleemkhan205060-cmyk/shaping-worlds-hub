@@ -624,7 +624,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="shrink-0 bg-[#edf0e4] px-3 py-2 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
+              <div className="shrink-0 bg-[#edf0e4] px-3 py-2 pb-2 flex items-end gap-2">
                 <input
                   ref={galleryInputRef}
                   type="file"
