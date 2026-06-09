@@ -133,7 +133,7 @@ function playFallbackChime(ctx: AudioContext) {
     osc.type = "sine";
     osc.frequency.setValueAtTime(freq, start);
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(0.9, start + 0.025);
+    gain.gain.exponentialRampToValueAtTime(1.0, start + 0.025);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.75);
     osc.connect(gain);
     gain.connect(master);
