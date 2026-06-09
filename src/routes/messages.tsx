@@ -48,7 +48,10 @@ function Messages() {
   const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
   const attachInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const documentInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [attachOpen, setAttachOpen] = useState(false);
 
   // redirect to auth if not signed in
   useEffect(() => {
