@@ -584,7 +584,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-2.5 py-2.5 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
+              <div className="shrink-0 bg-slate-50 px-2.5 py-2.5 flex items-end gap-2" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
                 <input
                   ref={attachInputRef}
                   type="file"
