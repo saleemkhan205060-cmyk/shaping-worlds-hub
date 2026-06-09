@@ -265,9 +265,8 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   </button>
                 )}
               </div>
-
-              </div>
             </div>
+
           );
         })}
       </div>
