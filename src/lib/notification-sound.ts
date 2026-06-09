@@ -7,6 +7,7 @@ let audioCtx: AudioContext | null = null;
 let unlockBound = false;
 let unlocked = false;
 let pendingChime = false;
+let loadStarted = false;
 
 type AudioWindow = Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext };
 
@@ -28,11 +29,24 @@ function getAudioEl(): HTMLAudioElement | null {
       audioEl = new Audio(chimeUrl);
       audioEl.preload = "auto";
       audioEl.volume = 1.0;
+      audioEl.load();
+      loadStarted = true;
     } catch {
       return null;
     }
   }
   return audioEl;
+}
+
+function preloadNotificationSound() {
+  const el = getAudioEl();
+  if (!el || loadStarted) return;
+  try {
+    el.load();
+    loadStarted = true;
+  } catch {
+    /* ignore */
+  }
 }
 
 function getAudioContext(): AudioContext | null {
@@ -100,6 +114,7 @@ async function tryPlay(): Promise<boolean> {
 
 async function unlockFromGesture() {
   // Prime HTMLAudio (a play+pause inside a user gesture grants permission for later programmatic plays).
+  let didUnlock = false;
   const el = getAudioEl();
   if (el) {
     try {
@@ -109,14 +124,19 @@ async function unlockFromGesture() {
       el.pause();
       el.currentTime = 0;
       el.volume = prevVol;
+      didUnlock = true;
     } catch {
       /* ignore */
     }
   }
   const ctx = getAudioContext();
   if (ctx) {
-    try { if (ctx.state === "suspended") await ctx.resume(); } catch { /* ignore */ }
+    try {
+      if (ctx.state === "suspended") await ctx.resume();
+      didUnlock = didUnlock || ctx.state === "running";
+    } catch { /* ignore */ }
   }
+  if (!didUnlock) return;
   unlocked = true;
   removeUnlockListeners();
   if (pendingChime) {
@@ -126,7 +146,9 @@ async function unlockFromGesture() {
 }
 
 export function initNotificationSoundUnlock() {
-  if (unlockBound || unlocked || typeof window === "undefined") return;
+  if (typeof window === "undefined") return;
+  preloadNotificationSound();
+  if (unlockBound || unlocked) return;
   unlockBound = true;
   unlockEvents.forEach((e) =>
     window.addEventListener(e, unlockFromGesture, { capture: true, passive: true }),
@@ -138,10 +160,21 @@ export function playSoftChime() {
     initNotificationSoundUnlock();
     if (!unlocked) {
       pendingChime = true;
+      void tryPlay().then((ok) => {
+        if (ok) {
+          pendingChime = false;
+          unlocked = true;
+          removeUnlockListeners();
+        }
+      });
       return;
     }
     void tryPlay().then((ok) => {
-      if (!ok) pendingChime = true;
+      if (!ok) {
+        unlocked = false;
+        pendingChime = true;
+        initNotificationSoundUnlock();
+      }
     });
   } catch {
     /* ignore */
