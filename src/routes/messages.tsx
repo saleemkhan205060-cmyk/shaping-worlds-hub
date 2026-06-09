@@ -497,7 +497,8 @@ function Messages() {
                   <p className="text-[10px] text-emerald-100/90">Online</p>
                 </div>
               </header>
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-2 bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-slate-50" style={{ WebkitOverflowScrolling: "touch" }}>
+                <div className="min-h-full flex flex-col justify-end p-4 space-y-2">
                 {thread.length === 0 ? (
                   <p className="text-center text-sm text-slate-400 py-8">
                     Say hi 👋
