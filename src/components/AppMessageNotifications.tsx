@@ -8,6 +8,7 @@ import {
   playSoftChime,
   showNewMessageNotification,
 } from "@/lib/notification-sound";
+import { initNativePushNotifications } from "@/lib/push";
 
 type MessagePayload = {
   id?: string;
@@ -39,6 +40,7 @@ export function AppMessageNotifications() {
 
     initNotificationSoundUnlock();
     initBackgroundMessageNotifications();
+    void initNativePushNotifications(user.id);
 
     const channel = supabase
       .channel(`app-message-notifications-${user.id}`)
