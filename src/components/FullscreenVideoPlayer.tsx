@@ -130,7 +130,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   // Load uploader profiles
   useEffect(() => {
     const ids = Array.from(
-      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x))
+      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x)),
     ).filter((id) => !profiles[id]);
     if (ids.length === 0) return;
     supabase
@@ -146,7 +146,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         });
       });
   }, [items, profiles]);
-
 
   // Observe which video is in view -> autoplay it, pause the rest
   useEffect(() => {
@@ -167,7 +166,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           }
         });
       },
-      { root, threshold: [0, 0.6, 1] }
+      { root, threshold: [0, 0.6, 1] },
     );
     Array.from(root.children).forEach((c) => io.observe(c));
     return () => io.disconnect();
