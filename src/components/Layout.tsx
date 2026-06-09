@@ -37,7 +37,7 @@ const navItems = [
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children, hideMobileNav = false }: { children: React.ReactNode; hideMobileNav?: boolean }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -156,7 +156,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     ) : null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-24 md:pb-0">
+    <div className={`min-h-screen bg-slate-50 text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
+
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center justify-between gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
@@ -275,6 +276,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6">{children}</main>
 
+      {!hideMobileNav && (
       <nav
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
@@ -298,6 +300,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           })}
         </div>
       </nav>
+      )}
     </div>
   );
 }
