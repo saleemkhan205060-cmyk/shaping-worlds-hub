@@ -409,8 +409,8 @@ function Messages() {
   }
 
   return (
-    <Layout hideMobileNav={!!activePeer}>
-      <div className={`bg-white border border-slate-200 overflow-hidden flex flex-col md:flex-row -mt-6 md:mt-0 md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${activePeer ? "h-[calc(100svh-68px)] -mb-6" : "h-[calc(100svh-68px-56px)] -mb-24"}`}>
+    <Layout hideMobileNav={!!activePeer} fullScreenMobile={!!activePeer}>
+      <div className={`bg-white border-slate-200 overflow-hidden flex flex-col md:flex-row md:border md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${activePeer ? "h-[100svh]" : "h-[calc(100svh-68px-56px)] -mb-24 border"}`}>
         {/* Sidebar */}
         <aside
           className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${
@@ -514,7 +514,7 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <header className="mx-2 mt-0 mb-0 px-2 py-1.5 bg-[#075E54] text-white flex items-center gap-2.5 shadow-md rounded-full ring-1 ring-black/5">
+              <header className="shrink-0 mx-2 mt-2 md:mt-0 mb-0 px-2 py-1.5 bg-[#075E54] text-white flex items-center gap-2.5 shadow-md rounded-full ring-1 ring-black/5">
                 <button
                   onClick={() => setActivePeer(null)}
                   className="md:hidden h-8 w-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
