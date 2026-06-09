@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
+import { AvatarImg } from "@/components/AvatarImg";
+
+type UploaderProfile = { id: string; username: string | null; display_name: string | null; avatar_url: string | null };
 
 export type FsItem = {
   id: string;
@@ -35,6 +39,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
+  const [profiles, setProfiles] = useState<Record<string, UploaderProfile>>({});
 
   // Lock body scroll & scroll to start index
   useEffect(() => {
@@ -73,6 +78,27 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       setCommentCounts(cc);
     })();
   }, [items, user]);
+
+  // Load uploader profiles
+  useEffect(() => {
+    const ids = Array.from(
+      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x))
+    ).filter((id) => !profiles[id]);
+    if (ids.length === 0) return;
+    supabase
+      .from("profiles")
+      .select("id, username, display_name, avatar_url")
+      .in("id", ids)
+      .then(({ data }) => {
+        if (!data) return;
+        setProfiles((prev) => {
+          const next = { ...prev };
+          for (const p of data as UploaderProfile[]) next[p.id] = p;
+          return next;
+        });
+      });
+  }, [items, profiles]);
+
 
   // Observe which video is in view -> autoplay it, pause the rest
   useEffect(() => {
@@ -260,8 +286,26 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     onClick={() => setMuted((m) => !m)}
                   />
                 )}
+                {it.user_id && (
+                  <Link
+                    to="/u/$id"
+                    params={{ id: it.user_id }}
+                    className="flex items-center justify-center mt-1"
+                    aria-label="View profile"
+                  >
+                    <span className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
+                      <AvatarImg
+                        src={profiles[it.user_id]?.avatar_url}
+                        alt={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "User"}
+                        fallback={profiles[it.user_id]?.display_name ?? profiles[it.user_id]?.username ?? "U"}
+                        className="h-full w-full object-cover"
+                      />
+                    </span>
+                  </Link>
+                )}
               </div>
             </div>
+
 
           );
         })}
