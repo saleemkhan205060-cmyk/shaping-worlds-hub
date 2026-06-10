@@ -552,6 +552,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         <div className="h-14 w-14" />
 
         <div className="relative flex items-center">
+          {(recording || hasClip) && (
+            <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 text-[13px] font-bold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] bg-black/45 rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 whitespace-nowrap">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+              {fmt(elapsed)}
+            </span>
+          )}
           <button
             onClick={onTapRecord}
             className="relative h-[84px] w-[84px] rounded-full flex items-center justify-center bg-transparent overflow-visible active:scale-[0.98]"
@@ -577,12 +583,6 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
               }`}
             />
           </button>
-          {(recording || hasClip) && (
-            <span className="absolute left-full ml-2 top-1/2 -translate-y-1/2 text-[13px] font-bold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] bg-black/45 rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 whitespace-nowrap">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-              {fmt(elapsed)}
-            </span>
-          )}
         </div>
 
 
