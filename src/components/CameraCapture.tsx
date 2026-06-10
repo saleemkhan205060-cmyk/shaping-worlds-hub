@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw } from "lucide-react";
+import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw, ChevronRight } from "lucide-react";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
