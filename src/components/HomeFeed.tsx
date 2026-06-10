@@ -305,8 +305,9 @@ export function HomeFeed() {
 
       toast.success("Posted!");
     } catch (e) {
-      console.error(e);
-      toast.error("Couldn't post. Please try again.");
+      console.error("[HomeFeed.submit] post failed:", e);
+      const msg = e instanceof Error ? e.message : String(e);
+      toast.error(`Couldn't post: ${msg}`);
     } finally {
       setPosting(false);
       setUploadPct(0);
