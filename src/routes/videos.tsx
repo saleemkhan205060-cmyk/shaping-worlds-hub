@@ -232,6 +232,26 @@ function Videos() {
           onClose={() => setFsIndex(null)}
         />
       )}
+
+      {editingId && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={() => setEditingId(null)}>
+          <div className="bg-white rounded-2xl p-5 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-base font-bold mb-3">Edit title</h3>
+            <input
+              autoFocus
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              maxLength={120}
+              placeholder="Post title"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <button onClick={() => setEditingId(null)} className="px-3 py-1.5 rounded-full text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+              <button onClick={saveTitle} className="px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Save</button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
