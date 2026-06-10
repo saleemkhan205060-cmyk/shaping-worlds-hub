@@ -20,6 +20,10 @@ function UploadPage() {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [thumbTitle, setThumbTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -31,6 +35,7 @@ function UploadPage() {
   const galleryVidRef = useRef<HTMLInputElement>(null);
   const cameraPhotoRef = useRef<HTMLInputElement>(null);
   const cameraVideoRef = useRef<HTMLInputElement>(null);
+  const thumbRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
