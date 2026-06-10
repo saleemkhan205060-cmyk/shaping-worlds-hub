@@ -682,10 +682,7 @@ export function HomeFeed() {
                 <ImageIcon className="h-4 w-4" /> Photo
               </button>
               <button
-                onClick={() => {
-                  if (fileRef.current) fileRef.current.accept = "video/*";
-                  fileRef.current?.click();
-                }}
+                onClick={() => setShowCamera(true)}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-rose-700 hover:bg-rose-50 transition"
               >
                 <VideoIcon className="h-4 w-4" /> Video
