@@ -234,6 +234,59 @@ function UploadPage() {
           />
 
           <div>
+            <label className="text-sm font-medium text-slate-700">Title</label>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              maxLength={120}
+              placeholder="Give your video a title..."
+              className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">Thumbnail</label>
+            <div className="mt-1 flex items-start gap-3">
+              <button
+                type="button"
+                onClick={() => thumbRef.current?.click()}
+                className="relative h-24 w-24 shrink-0 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden hover:border-indigo-400"
+              >
+                {thumbPreview ? (
+                  <img src={thumbPreview} alt="thumb" className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon className="h-6 w-6 text-slate-400" />
+                )}
+              </button>
+              <div className="flex-1 space-y-2">
+                <input
+                  value={thumbTitle}
+                  onChange={(e) => setThumbTitle(e.target.value)}
+                  maxLength={80}
+                  placeholder="Thumbnail title (text on cover)"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
+                />
+                {thumbFile && (
+                  <button
+                    type="button"
+                    onClick={() => setThumbFile(null)}
+                    className="text-xs text-rose-600 font-medium"
+                  >
+                    Remove thumbnail
+                  </button>
+                )}
+              </div>
+            </div>
+            <input
+              ref={thumbRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => onPickThumb(e.target.files?.[0] ?? null)}
+            />
+          </div>
+
+          <div>
             <label className="text-sm font-medium text-slate-700">Caption</label>
             <textarea
               value={caption}
