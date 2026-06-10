@@ -516,28 +516,28 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex bg-[#edf0e4]" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <header className="shrink-0 bg-white px-3 pt-3 pb-2 md:px-2 md:pt-2">
-                <div className="flex items-center gap-2">
-                  <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-3 px-3 py-2 shadow-sm ring-1 ring-black/5">
+              <header className="shrink-0 bg-[#edf0e4] px-2 pt-1 pb-1 md:px-2">
+                <div className="flex items-center gap-1.5">
+                  <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-black/5">
                     <button
                       onClick={() => setActivePeer(null)}
-                      className="md:hidden h-10 w-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
+                      className="md:hidden h-9 w-9 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
                       aria-label="Back"
                     >
-                      <ArrowLeft className="h-7 w-7" />
+                      <ArrowLeft className="h-6 w-6" />
                     </button>
-                    <Avatar p={profiles[activePeer]} size="h-14 w-14 text-base" />
+                    <Avatar p={profiles[activePeer]} size="h-11 w-11 text-sm" />
                     <div className="flex-1 min-w-0 leading-tight pr-3">
-                      <p className="font-bold text-[20px] leading-6 truncate">{peerName(activePeer)}</p>
-                      <p className="text-[15px] leading-5 text-white/85">Online</p>
+                      <p className="font-bold text-[18px] leading-5 truncate">{peerName(activePeer)}</p>
+                      <p className="text-[13px] leading-4 text-white/85">Online</p>
                     </div>
                   </div>
                   <button
                     type="button"
-                    className="h-12 w-8 shrink-0 flex items-center justify-center text-slate-800 rounded-full hover:bg-slate-100"
+                    className="h-10 w-8 shrink-0 flex items-center justify-center text-slate-800 rounded-full hover:bg-slate-100"
                     aria-label="Conversation menu"
                   >
-                    <MoreVertical className="h-8 w-8" />
+                    <MoreVertical className="h-7 w-7" />
                   </button>
                 </div>
               </header>
