@@ -910,6 +910,18 @@ export function HomeFeed() {
         />
       )}
 
+      {showCamera && (
+        <CameraCapture
+          onClose={() => setShowCamera(false)}
+          onPickGallery={() => {
+            setShowCamera(false);
+            if (fileRef.current) fileRef.current.accept = "video/*";
+            fileRef.current?.click();
+          }}
+          onCapture={(f) => { setShowCamera(false); pickFile(f); }}
+        />
+      )}
+
     </section>
   );
 }
