@@ -23,11 +23,37 @@ export const Route = createFileRoute("/videos")({ component: Videos });
 const TABS = ["For You", "Trending", "Music", "Food", "Travel"];
 
 function Videos() {
+  const { user } = useAuth();
   const [tab, setTab] = useState("For You");
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [fsIndex, setFsIndex] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const pressTimer = useRef<number | null>(null);
+
+  const startPress = (p: Post) => {
+    if (!user || p.user_id !== user.id) return;
+    if (pressTimer.current) window.clearTimeout(pressTimer.current);
+    pressTimer.current = window.setTimeout(() => {
+      setEditValue(p.title ?? "");
+      setEditingId(p.id);
+    }, 500);
+  };
+  const cancelPress = () => {
+    if (pressTimer.current) { window.clearTimeout(pressTimer.current); pressTimer.current = null; }
+  };
+
+  const saveTitle = async () => {
+    if (!editingId) return;
+    const newTitle = editValue.trim() || null;
+    const { error } = await supabase.from("posts").update({ title: newTitle } as any).eq("id", editingId);
+    if (error) { toast.error("Failed to update"); return; }
+    setPosts((prev) => prev.map((p) => (p.id === editingId ? { ...p, title: newTitle } : p)));
+    setEditingId(null);
+    toast.success("Title updated");
+  };
 
   useEffect(() => {
     supabase
