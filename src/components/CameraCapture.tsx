@@ -87,8 +87,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: facing,
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
+            width: { ideal: 1080 },
+            height: { ideal: 1920 },
+            aspectRatio: { ideal: 9 / 16 },
             frameRate: { ideal: 30, max: 60 },
           },
           audio: true,
