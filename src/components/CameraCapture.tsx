@@ -178,9 +178,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       const blob = new Blob(chunksRef.current, { type });
       const ext = type.includes("mp4") ? "mp4" : "webm";
       const f = new File([blob], `video-${Date.now()}.${ext}`, { type });
-      setPreviewFile(f, "video");
+      pendingFileRef.current = f;
+      setHasClip(true);
     };
     mr.start(250);
+    pendingFileRef.current = null;
+    setHasClip(false);
     setRecording(true);
     setElapsed(0);
     startTimer();
