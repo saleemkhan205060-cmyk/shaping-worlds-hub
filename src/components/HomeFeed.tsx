@@ -101,10 +101,12 @@ export function HomeFeed() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
-
-  
+  const [captionMenuFor, setCaptionMenuFor] = useState<string | null>(null);
+  const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
+  const [editCaptionValue, setEditCaptionValue] = useState("");
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const captionPressTimer = useRef<number | null>(null);
 
 
   // Likes & comments aggregates
@@ -425,6 +427,46 @@ export function HomeFeed() {
         toast.error("Couldn't like");
       }
     }
+  };
+
+  const cancelCaptionPress = () => {
+    if (captionPressTimer.current) {
+      window.clearTimeout(captionPressTimer.current);
+      captionPressTimer.current = null;
+    }
+  };
+
+  const startCaptionPress = (post: Post) => {
+    if (!user || user.id !== post.user_id) return;
+    cancelCaptionPress();
+    captionPressTimer.current = window.setTimeout(() => {
+      setCaptionMenuFor(post.id);
+      captionPressTimer.current = null;
+    }, 550);
+  };
+
+  const openCaptionEditor = (post: Post) => {
+    setCaptionMenuFor(null);
+    setEditCaptionValue(post.caption ?? "");
+    setEditingCaptionId(post.id);
+  };
+
+  const saveCaptionEdit = async () => {
+    if (!editingCaptionId || !user) return;
+    const newCaption = editCaptionValue.trim();
+    const { error } = await supabase
+      .from("posts")
+      .update({ caption: newCaption || null })
+      .eq("id", editingCaptionId)
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Couldn't update title");
+      return;
+    }
+    setPosts((prev) => prev.map((p) => (p.id === editingCaptionId ? { ...p, caption: newCaption || null } : p)));
+    setEditingCaptionId(null);
+    setEditCaptionValue("");
+    toast.success("Title updated");
   };
 
   return (
@@ -791,7 +833,31 @@ export function HomeFeed() {
                   </div>
                 </Link>
                 {p.caption && p.media_type !== "text" && (
-                  <p className="px-4 pb-3 text-sm whitespace-pre-wrap">{p.caption}</p>
+                  <div className="relative px-4 pb-3">
+                    <p
+                      className="text-sm whitespace-pre-wrap select-none"
+                      onPointerDown={() => startCaptionPress(p)}
+                      onPointerUp={cancelCaptionPress}
+                      onPointerLeave={cancelCaptionPress}
+                      onPointerCancel={cancelCaptionPress}
+                      onContextMenu={(e) => {
+                        if (user?.id !== p.user_id) return;
+                        e.preventDefault();
+                        setCaptionMenuFor(p.id);
+                      }}
+                    >
+                      {p.caption}
+                    </p>
+                    {captionMenuFor === p.id && user?.id === p.user_id && (
+                      <button
+                        type="button"
+                        onClick={() => openCaptionEditor(p)}
+                        className="absolute right-4 top-0 rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white shadow-lg"
+                      >
+                        Edit
+                      </button>
+                    )}
+                  </div>
                 )}
                 {p.media_type === "text" && p.caption && (
                   <TextPostCard text={p.caption} style={p.text_style} />
@@ -908,6 +974,38 @@ export function HomeFeed() {
             setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))
           }
         />
+      )}
+
+      {editingCaptionId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4" onClick={() => setEditingCaptionId(null)}>
+          <div className="w-full max-w-sm rounded-2xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="mb-3 text-base font-bold">Edit title</h3>
+            <textarea
+              value={editCaptionValue}
+              onChange={(e) => setEditCaptionValue(e.target.value)}
+              maxLength={500}
+              rows={5}
+              className="w-full resize-none rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-indigo-400"
+              autoFocus
+            />
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setEditingCaptionId(null)}
+                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={saveCaptionEdit}
+                className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showCamera && (
