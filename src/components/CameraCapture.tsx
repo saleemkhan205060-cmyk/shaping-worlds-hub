@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Music, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw } from "lucide-react";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
@@ -13,9 +13,9 @@ const MODE_SECONDS: Record<Mode, number> = {
 type BeautyLevel = 0 | 1 | 2 | 3;
 const BEAUTY_FILTERS: Record<BeautyLevel, string> = {
   0: "",
-  1: "brightness(1.06) contrast(0.98) saturate(1.05) blur(0.4px)",
-  2: "brightness(1.12) contrast(0.96) saturate(1.1) blur(0.8px)",
-  3: "brightness(1.18) contrast(0.94) saturate(1.18) blur(1.2px)",
+  1: "brightness(1.06) contrast(0.98) saturate(1.05)",
+  2: "brightness(1.12) contrast(0.96) saturate(1.1)",
+  3: "brightness(1.18) contrast(0.94) saturate(1.18)",
 };
 
 interface FilterPreset {
@@ -38,6 +38,14 @@ const FILTERS: FilterPreset[] = [
   { id: "pink", name: "Pink", css: "saturate(1.2) hue-rotate(-20deg) brightness(1.05)", swatch: "linear-gradient(135deg,#ffafbd,#ffc3a0)" },
   { id: "neon", name: "Neon", css: "saturate(2) contrast(1.2) hue-rotate(20deg)", swatch: "linear-gradient(135deg,#00f2fe,#4facfe)" },
   { id: "sunset", name: "Sunset", css: "sepia(0.3) saturate(1.4) hue-rotate(-15deg) brightness(1.08)", swatch: "linear-gradient(135deg,#ff6e7f,#bfe9ff)" },
+  { id: "lush", name: "Lush", css: "saturate(1.4) contrast(1.05) hue-rotate(-5deg)", swatch: "linear-gradient(135deg,#0ba360,#3cba92)" },
+  { id: "mint", name: "Mint", css: "saturate(1.15) hue-rotate(40deg) brightness(1.05)", swatch: "linear-gradient(135deg,#a8edea,#fed6e3)" },
+  { id: "berry", name: "Berry", css: "saturate(1.3) hue-rotate(-30deg) contrast(1.05)", swatch: "linear-gradient(135deg,#a18cd1,#fbc2eb)" },
+  { id: "ocean", name: "Ocean", css: "saturate(1.2) hue-rotate(25deg) brightness(0.98) contrast(1.05)", swatch: "linear-gradient(135deg,#2193b0,#6dd5ed)" },
+  { id: "honey", name: "Honey", css: "sepia(0.35) saturate(1.4) brightness(1.06)", swatch: "linear-gradient(135deg,#f7971e,#ffd200)" },
+  { id: "mono", name: "Mono", css: "grayscale(1) brightness(1.05) contrast(1.05)", swatch: "linear-gradient(135deg,#bdc3c7,#2c3e50)" },
+  { id: "polaroid", name: "Polaroid", css: "sepia(0.2) saturate(1.1) brightness(1.08) contrast(0.95)", swatch: "linear-gradient(135deg,#ede574,#e1f5c4)" },
+  { id: "cinema", name: "Cinema", css: "contrast(1.2) saturate(0.9) brightness(0.95) hue-rotate(-5deg)", swatch: "linear-gradient(135deg,#141e30,#243b55)" },
 ];
 
 interface Props {
@@ -52,6 +60,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
+  const pendingFileRef = useRef<File | null>(null);
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   const [mode, setMode] = useState<Mode>("60s");
   const [facing] = useState<"user" | "environment">("environment");
@@ -61,6 +71,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [beauty, setBeauty] = useState<BeautyLevel>(0);
   const [filterId, setFilterId] = useState<string>("normal");
   const [showFilters, setShowFilters] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
 
   const combinedFilter = (() => {
     const f = FILTERS.find((x) => x.id === filterId)?.css ?? "";
@@ -73,7 +85,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     (async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing },
+          video: {
+            facingMode: facing,
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            frameRate: { ideal: 30, max: 60 },
+          },
           audio: true,
         });
         streamRef.current = stream;
@@ -91,6 +108,19 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     };
   }, [facing]);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const setPreviewFile = (f: File, kind: "image" | "video") => {
+    pendingFileRef.current = f;
+    const url = URL.createObjectURL(f);
+    setPreviewUrl(url);
+    setPreviewKind(kind);
+  };
+
   const takePhoto = () => {
     const v = videoRef.current;
     if (!v) return;
@@ -105,7 +135,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       (blob) => {
         if (!blob) return;
         const f = new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
-        onCapture(f);
+        setPreviewFile(f, "image");
       },
       "image/jpeg",
       0.92,
@@ -128,11 +158,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     if (!stream) return;
     chunksRef.current = [];
     let mr: MediaRecorder;
+    const opts = { videoBitsPerSecond: 4_000_000 };
     try {
-      mr = new MediaRecorder(stream, { mimeType: "video/mp4" });
+      mr = new MediaRecorder(stream, { mimeType: "video/mp4", ...opts });
     } catch {
       try {
-        mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus" });
+        mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
       } catch {
         mr = new MediaRecorder(stream);
       }
@@ -146,9 +177,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       const blob = new Blob(chunksRef.current, { type });
       const ext = type.includes("mp4") ? "mp4" : "webm";
       const f = new File([blob], `video-${Date.now()}.${ext}`, { type });
-      onCapture(f);
+      setPreviewFile(f, "video");
     };
-    mr.start();
+    mr.start(250);
     setRecording(true);
     setElapsed(0);
     startTimer();
@@ -176,11 +207,89 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     else startRecording();
   };
 
+  const retake = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    pendingFileRef.current = null;
+    setPreviewUrl(null);
+    setPreviewKind(null);
+    setElapsed(0);
+  };
+
+  const confirmUse = () => {
+    const f = pendingFileRef.current;
+    if (!f) return;
+    onCapture(f);
+  };
+
   const fmt = (s: number) => {
     const m = Math.floor(s / 60);
     const r = s % 60;
     return `${m}:${r.toString().padStart(2, "0")}`;
   };
+
+  // Preview review screen — user explicitly confirms or retakes
+  if (previewUrl && previewKind) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black text-white select-none overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          {previewKind === "video" ? (
+            <video
+              ref={previewVideoRef}
+              src={previewUrl}
+              controls
+              playsInline
+              style={{ filter: combinedFilter }}
+              className="max-h-full max-w-full"
+            />
+          ) : (
+            <img
+              src={previewUrl}
+              alt="preview"
+              style={{ filter: combinedFilter }}
+              className="max-h-full max-w-full object-contain"
+            />
+          )}
+        </div>
+
+        <div className="absolute top-0 inset-x-0 flex items-center justify-between px-4 pt-4 z-10">
+          <button onClick={retake} aria-label="Retake" className="flex items-center gap-2 bg-black/55 rounded-full px-4 py-2">
+            <RotateCcw className="h-5 w-5" />
+            <span className="text-[15px] font-bold">Retake</span>
+          </button>
+          <button
+            onClick={() => setShowFilters((v) => !v)}
+            className="flex items-center gap-2 bg-black/55 rounded-full px-4 py-2"
+          >
+            <Sparkles className="h-5 w-5" />
+            <span className="text-[15px] font-bold">Filters</span>
+            {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className="absolute left-0 right-0 bottom-28 z-10 px-3">
+            <FiltersPanel filterId={filterId} setFilterId={setFilterId} onClose={() => setShowFilters(false)} />
+          </div>
+        )}
+
+        <div className="absolute left-0 right-0 bottom-6 flex items-center justify-center gap-4 px-6 z-10">
+          <button
+            onClick={retake}
+            className="flex-1 max-w-[160px] py-3 rounded-full bg-white/15 border border-white/40 text-[15px] font-bold"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmUse}
+            className="flex-1 max-w-[200px] py-3 rounded-full bg-rose-500 text-[15px] font-extrabold inline-flex items-center justify-center gap-2"
+          >
+            <Check className="h-5 w-5" />
+            Use this
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[100] bg-black text-white select-none overflow-hidden">
@@ -255,35 +364,10 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         </div>
       )}
 
-      {/* Filters panel */}
+      {/* Filters panel — stays open until user closes it */}
       {showFilters && (
         <div className="absolute left-0 right-0 bottom-44 z-10 px-3">
-          <div className="bg-black/55 backdrop-blur-md rounded-2xl px-3 py-3">
-            <div className="flex items-center justify-between mb-2 px-1">
-              <span className="text-[13px] font-bold text-white/90">Filters</span>
-              <span className="text-[11px] text-white/60">{FILTERS.find(f => f.id === filterId)?.name}</span>
-            </div>
-            <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 no-scrollbar">
-              {FILTERS.map((f) => {
-                const active = f.id === filterId;
-                return (
-                  <button
-                    key={f.id}
-                    onClick={() => setFilterId(f.id)}
-                    className="flex flex-col items-center shrink-0"
-                  >
-                    <span
-                      className={`h-14 w-14 rounded-xl border-2 ${active ? "border-rose-500" : "border-white/40"}`}
-                      style={{ backgroundImage: f.swatch }}
-                    />
-                    <span className={`mt-1 text-[11px] font-semibold ${active ? "text-rose-400" : "text-white/85"}`}>
-                      {f.name}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <FiltersPanel filterId={filterId} setFilterId={setFilterId} onClose={() => setShowFilters(false)} />
         </div>
       )}
 
@@ -350,6 +434,62 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             <circle cx="32" cy="32" r="5" fill="#fff" />
           </svg>
         </button>
+      </div>
+    </div>
+  );
+}
+
+function FiltersPanel({
+  filterId,
+  setFilterId,
+  onClose,
+}: {
+  filterId: string;
+  setFilterId: (id: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="bg-black/65 backdrop-blur-md rounded-2xl px-3 py-3">
+      <div className="flex items-center justify-between mb-2 px-1">
+        <span className="text-[13px] font-bold text-white/90">Filters</span>
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] text-white/70">
+            {FILTERS.find((f) => f.id === filterId)?.name}
+          </span>
+          {filterId !== "normal" && (
+            <button
+              onClick={() => setFilterId("normal")}
+              className="text-[11px] font-semibold text-rose-300"
+            >
+              Reset
+            </button>
+          )}
+          <button onClick={onClose} aria-label="Close filters" className="text-white/80">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+      <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 no-scrollbar">
+        {FILTERS.map((f) => {
+          const active = f.id === filterId;
+          return (
+            <button
+              key={f.id}
+              onClick={() => setFilterId(f.id)}
+              className="flex flex-col items-center shrink-0"
+            >
+              <span
+                className={`h-14 w-14 rounded-xl border-2 ${active ? "border-rose-500" : "border-white/40"}`}
+                style={{ backgroundImage: f.swatch }}
+              />
+              <span
+                className={`mt-1 text-[11px] font-semibold ${active ? "text-rose-400" : "text-white/85"}`}
+              >
+                {f.name}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
