@@ -250,6 +250,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     const existing = recorderRef.current;
     if (existing?.state === "paused") {
       try {
+        startCanvasLoop();
         existing.resume();
       } catch {
         return;
@@ -307,6 +308,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     } catch {
       /* noop */
     }
+    stopCanvasLoop();
     setHasClip(true);
     setRecording(false);
   };
