@@ -162,6 +162,36 @@ function UploadPage() {
             className="hidden"
             onChange={(e) => onPick(e.target.files?.[0] ?? null)}
           />
+          <input
+            ref={galleryImgRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={galleryVidRef}
+            type="file"
+            accept="video/*"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={cameraPhotoRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={cameraVideoRef}
+            type="file"
+            accept="video/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
 
           <div>
             <label className="text-sm font-medium text-slate-700">Caption</label>
