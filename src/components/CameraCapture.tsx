@@ -551,31 +551,39 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       <div className="absolute left-0 right-0 bottom-4 flex items-center justify-between px-7 z-10">
         <div className="h-14 w-14" />
 
-        <button
-          onClick={onTapRecord}
-          className="relative h-[110px] w-[110px] rounded-full flex items-center justify-center bg-transparent overflow-visible active:scale-[0.98]"
-          aria-label={recording ? "Pause recording" : hasClip ? "Resume recording" : "Record"}
-        >
+        <div className="relative flex items-center">
+          <button
+            onClick={onTapRecord}
+            className="relative h-[84px] w-[84px] rounded-full flex items-center justify-center bg-transparent overflow-visible active:scale-[0.98]"
+            aria-label={recording ? "Pause recording" : hasClip ? "Resume recording" : "Record"}
+          >
+            {(recording || hasClip) && (
+              <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 84 84" aria-hidden="true">
+                <circle
+                  cx="42"
+                  cy="42"
+                  r="38"
+                  fill="none"
+                  stroke="#ff2b5d"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeDasharray={`${Math.max(progress, recording ? 0.03 : 0.018) * 238.76} 238.76`}
+                />
+              </svg>
+            )}
+            <span
+              className={`relative block bg-[#ff2b5d] shadow-[0_4px_18px_rgba(0,0,0,0.18)] ${
+                recording ? "h-[34px] w-[34px] rounded-[7px]" : "h-[60px] w-[60px] rounded-full"
+              }`}
+            />
+          </button>
           {(recording || hasClip) && (
-            <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 110 110" aria-hidden="true">
-              <circle
-                cx="55"
-                cy="55"
-                r="50"
-                fill="none"
-                stroke="#ff2b5d"
-                strokeWidth="6"
-                strokeLinecap="round"
-                strokeDasharray={`${Math.max(progress, recording ? 0.03 : 0.018) * 314.16} 314.16`}
-              />
-            </svg>
+            <span className="absolute left-full ml-2 top-1/2 -translate-y-1/2 text-[13px] font-bold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] bg-black/45 rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 whitespace-nowrap">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+              {fmt(elapsed)}
+            </span>
           )}
-          <span
-            className={`relative block bg-[#ff2b5d] shadow-[0_4px_18px_rgba(0,0,0,0.18)] ${
-              recording ? "h-[44px] w-[44px] rounded-[8px]" : "h-[78px] w-[78px] rounded-full"
-            }`}
-          />
-        </button>
+        </div>
 
 
         <button
