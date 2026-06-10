@@ -62,6 +62,13 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const timerRef = useRef<number | null>(null);
   const pendingFileRef = useRef<File | null>(null);
   const previewVideoRef = useRef<HTMLVideoElement>(null);
+  const recordCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasStreamRef = useRef<MediaStream | null>(null);
+  const drawFrameRef = useRef<number | null>(null);
+  const filterRef = useRef<string>("none");
+  const activeRecordingMsRef = useRef(0);
+  const segmentStartedAtRef = useRef<number | null>(null);
+  const advanceAfterStopRef = useRef(false);
 
   const [mode, setMode] = useState<Mode>("60s");
   const [facing] = useState<"user" | "environment">("environment");
@@ -74,6 +81,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
   const [hasClip, setHasClip] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const combinedFilter = (() => {
     const f = FILTERS.find((x) => x.id === filterId)?.css ?? "";
@@ -83,18 +91,30 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   })();
 
   useEffect(() => {
+    filterRef.current = combinedFilter;
+  }, [combinedFilter]);
+
+  useEffect(() => {
     (async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: facing,
-            width: { ideal: 1080 },
-            height: { ideal: 1920 },
-            aspectRatio: { ideal: 9 / 16 },
-            frameRate: { ideal: 30, max: 60 },
-          },
-          audio: true,
-        });
+        let stream: MediaStream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: { ideal: facing },
+              width: { ideal: 720 },
+              height: { ideal: 1280 },
+              aspectRatio: { ideal: 9 / 16 },
+              frameRate: { ideal: 30, max: 30 },
+            },
+            audio: { echoCancellation: true, noiseSuppression: true },
+          });
+        } catch {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: facing }, frameRate: { ideal: 30, max: 30 } },
+            audio: true,
+          });
+        }
         streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -105,6 +125,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       }
     })();
     return () => {
+      stopCanvasLoop();
+      canvasStreamRef.current?.getVideoTracks().forEach((t) => t.stop());
       streamRef.current?.getTracks().forEach((t) => t.stop());
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
