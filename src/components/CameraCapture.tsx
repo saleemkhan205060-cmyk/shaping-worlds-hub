@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw } from "lucide-react";
+import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw, ChevronRight } from "lucide-react";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
@@ -73,6 +73,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [showFilters, setShowFilters] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
+  const [hasClip, setHasClip] = useState(false);
 
   const combinedFilter = (() => {
     const f = FILTERS.find((x) => x.id === filterId)?.css ?? "";
@@ -87,8 +88,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: facing,
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
+            width: { ideal: 1080 },
+            height: { ideal: 1920 },
+            aspectRatio: { ideal: 9 / 16 },
             frameRate: { ideal: 30, max: 60 },
           },
           audio: true,
@@ -177,9 +179,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       const blob = new Blob(chunksRef.current, { type });
       const ext = type.includes("mp4") ? "mp4" : "webm";
       const f = new File([blob], `video-${Date.now()}.${ext}`, { type });
-      setPreviewFile(f, "video");
+      pendingFileRef.current = f;
+      setHasClip(true);
     };
     mr.start(250);
+    pendingFileRef.current = null;
+    setHasClip(false);
     setRecording(true);
     setElapsed(0);
     startTimer();
@@ -212,6 +217,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     pendingFileRef.current = null;
     setPreviewUrl(null);
     setPreviewKind(null);
+    setHasClip(false);
     setElapsed(0);
   };
 
@@ -219,6 +225,24 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     const f = pendingFileRef.current;
     if (!f) return;
     onCapture(f);
+  };
+
+  const onNext = () => {
+    if (recording) {
+      // stop and wait for onstop to populate file, then advance
+      const mr = recorderRef.current;
+      if (mr) {
+        const origOnStop = mr.onstop;
+        mr.onstop = (ev) => {
+          if (typeof origOnStop === "function") (origOnStop as (e: Event) => void).call(mr, ev);
+          const f = pendingFileRef.current;
+          if (f) onCapture(f);
+        };
+      }
+      stopRecording();
+      return;
+    }
+    confirmUse();
   };
 
   const fmt = (s: number) => {
@@ -349,6 +373,18 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-rose-500" />
           )}
         </button>
+        {(hasClip || recording) && mode !== "PHOTO" && (
+          <button
+            onClick={onNext}
+            aria-label="Next"
+            className="mt-1 flex flex-col items-center"
+          >
+            <span className="h-11 w-11 rounded-full bg-rose-500 flex items-center justify-center shadow-lg">
+              <ChevronRight className="h-6 w-6 text-white" strokeWidth={3} />
+            </span>
+            <span className="mt-1 text-[11px] font-bold text-white drop-shadow">Next</span>
+          </button>
+        )}
       </div>
 
       {error && (
