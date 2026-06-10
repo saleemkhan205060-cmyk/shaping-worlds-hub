@@ -159,31 +159,19 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Right side icon column */}
-      <div className="absolute right-3 top-20 z-10 flex flex-col items-center gap-5">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-6">
         <button
           onClick={() => setFacing((f) => (f === "user" ? "environment" : "user"))}
-          aria-label="Flip camera"
+          aria-label="Effects"
+          className="relative"
         >
-          <RefreshCw className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <button aria-label="Flash">
-          <Zap className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <div className="w-6 h-px bg-white/70" />
-        <button aria-label="Timer">
-          <Timer className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <button aria-label="Templates">
-          <LayoutPanelTop className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <button aria-label="Effects" className="relative">
-          <UserPlus2 className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
+          <UserPlus2 className="h-8 w-8 text-white drop-shadow" strokeWidth={2} />
           <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 border border-black flex items-center justify-center">
             <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
           </span>
         </button>
         <button aria-label="More">
-          <ChevronDown className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
+          <ChevronDown className="h-8 w-8 text-white drop-shadow" strokeWidth={2.25} />
         </button>
       </div>
 
@@ -200,15 +188,15 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {/* Mode selector */}
-      <div className="absolute left-0 right-0 bottom-36 flex items-center justify-center gap-7 z-10">
+      <div className="absolute left-0 right-0 bottom-32 flex items-center justify-center gap-7 z-10">
         {(Object.keys(MODE_SECONDS) as Mode[]).map((m) => (
           <button
             key={m}
             onClick={() => !recording && setMode(m)}
             className={
               mode === m
-                ? "text-black bg-white px-4 py-1.5 rounded-full text-[17px] font-extrabold"
-                : "text-white text-[17px] font-extrabold drop-shadow"
+                ? "text-black bg-white px-4 py-1.5 rounded-full text-[18px] font-extrabold"
+                : "text-white text-[18px] font-extrabold drop-shadow"
             }
           >
             {m}
@@ -217,38 +205,59 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Record row */}
-      <div className="absolute left-0 right-0 bottom-16 flex items-center justify-between px-6 z-10">
+      <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-5 z-10">
         <button
           onClick={onPickGallery}
-          className="h-14 w-14 rounded-full overflow-hidden bg-gradient-to-br from-sky-300 to-emerald-400 border-2 border-white/40"
           aria-label="Gallery"
+          className="h-14 w-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg"
+          style={{
+            backgroundImage:
+              "linear-gradient(135deg, #6b7c8a 0%, #2f4858 45%, #1f2d3a 100%)",
+          }}
         />
 
         <button
           onClick={onTapRecord}
-          className="h-[88px] w-[88px] rounded-full border-[5px] border-white/80 flex items-center justify-center bg-transparent"
+          className="h-[88px] w-[88px] rounded-full border-[5px] border-white flex items-center justify-center bg-transparent"
           aria-label="Record"
         >
           <span
-            className={`block rounded-full bg-rose-500 ${
-              recording ? "h-8 w-8 rounded-md" : "h-[72px] w-[72px]"
+            className={`block bg-rose-500 ${
+              recording ? "h-8 w-8 rounded-md" : "h-[72px] w-[72px] rounded-full"
             }`}
           />
         </button>
 
         <button
           onClick={onPickGallery}
-          className="h-14 w-14 rounded-lg overflow-hidden bg-gradient-to-br from-amber-300 to-amber-500 border border-white/30"
-          aria-label="Gallery 2"
-        />
-      </div>
-
-      {/* Bottom tabs */}
-      <div className="absolute left-0 right-0 bottom-3 flex items-center justify-around z-10 text-[15px] font-extrabold tracking-wider px-4">
-        <span className="text-white/60">SELF</span>
-        <span className="text-white/60">LIVE</span>
-        <span className="text-white">CAMERA</span>
-        <span className="text-white/60">CREATE</span>
+          aria-label="Photos"
+          className="h-14 w-14 rounded-2xl bg-white shadow-lg flex items-center justify-center overflow-hidden"
+        >
+          <svg viewBox="0 0 64 64" className="h-11 w-11">
+            {[
+              { c: "#FF3B30", a: 0 },
+              { c: "#FF9500", a: 45 },
+              { c: "#FFCC00", a: 90 },
+              { c: "#34C759", a: 135 },
+              { c: "#00C7BE", a: 180 },
+              { c: "#007AFF", a: 225 },
+              { c: "#5856D6", a: 270 },
+              { c: "#AF52DE", a: 315 },
+            ].map((p, i) => (
+              <ellipse
+                key={i}
+                cx="32"
+                cy="18"
+                rx="8"
+                ry="14"
+                fill={p.c}
+                opacity="0.92"
+                transform={`rotate(${p.a} 32 32)`}
+              />
+            ))}
+            <circle cx="32" cy="32" r="5" fill="#fff" />
+          </svg>
+        </button>
       </div>
     </div>
   );
