@@ -105,8 +105,6 @@ export function HomeFeed() {
   const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
   const [editCaptionValue, setEditCaptionValue] = useState("");
 
-  
-
   const fileRef = useRef<HTMLInputElement>(null);
   const captionPressTimer = useRef<number | null>(null);
 
@@ -458,7 +456,7 @@ export function HomeFeed() {
     const newCaption = editCaptionValue.trim();
     const { error } = await supabase
       .from("posts")
-      .update({ caption: newCaption || null } as never)
+      .update({ caption: newCaption || null })
       .eq("id", editingCaptionId)
       .eq("user_id", user.id);
     if (error) {
