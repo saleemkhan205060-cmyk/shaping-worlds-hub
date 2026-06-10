@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
+import { CameraCapture } from "@/components/CameraCapture";
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
@@ -24,6 +25,7 @@ function UploadPage() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showCamera, setShowCamera] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const galleryImgRef = useRef<HTMLInputElement>(null);
   const galleryVidRef = useRef<HTMLInputElement>(null);
@@ -100,6 +102,13 @@ function UploadPage() {
 
   return (
     <Layout>
+      {showCamera && (
+        <CameraCapture
+          onClose={() => setShowCamera(false)}
+          onPickGallery={() => { setShowCamera(false); galleryVidRef.current?.click(); }}
+          onCapture={(f) => { setShowCamera(false); onPick(f); }}
+        />
+      )}
       <div className="max-w-xl mx-auto">
         <h1 className="text-2xl font-extrabold mb-1">Upload</h1>
         <p className="text-sm text-slate-500 mb-5">Share a photo or video with the community.</p>
@@ -117,12 +126,12 @@ function UploadPage() {
                   <span className="text-[11px] mt-0.5 text-slate-500">Pick a video</span>
                 </button>
                 <button
-                  onClick={() => cameraVideoRef.current?.click()}
+                  onClick={() => setShowCamera(true)}
                   className="border-2 border-dashed border-slate-300 rounded-xl py-8 flex flex-col items-center justify-center text-slate-600 hover:border-rose-400 hover:bg-rose-50/30 transition"
                 >
                   <Camera className="h-8 w-8 mb-2 text-rose-500" />
                   <span className="font-semibold text-slate-700 text-sm">Record</span>
-                  <span className="text-[11px] mt-0.5 text-slate-500">Make a video</span>
+                  <span className="text-[11px] mt-0.5 text-slate-500">Open camera</span>
                 </button>
               </div>
               <button
