@@ -166,28 +166,109 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     );
   };
 
+  const stopCanvasLoop = () => {
+    if (drawFrameRef.current) {
+      window.cancelAnimationFrame(drawFrameRef.current);
+      drawFrameRef.current = null;
+    }
+  };
+
+  const startCanvasLoop = () => {
+    stopCanvasLoop();
+    const canvas = recordCanvasRef.current;
+    const video = videoRef.current;
+    if (!canvas || !video) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return;
+
+    const draw = () => {
+      const vw = video.videoWidth || 720;
+      const vh = video.videoHeight || 1280;
+      ctx.save();
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.filter = filterRef.current === "none" ? "none" : filterRef.current;
+      const scale = Math.max(canvas.width / vw, canvas.height / vh);
+      const sw = canvas.width / scale;
+      const sh = canvas.height / scale;
+      const sx = Math.max(0, (vw - sw) / 2);
+      const sy = Math.max(0, (vh - sh) / 2);
+      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      drawFrameRef.current = window.requestAnimationFrame(draw);
+    };
+    draw();
+  };
+
+  const getPortraitRecordingStream = () => {
+    if (canvasStreamRef.current) return canvasStreamRef.current;
+    const source = streamRef.current;
+    if (!source) return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 720;
+    canvas.height = 1280;
+    recordCanvasRef.current = canvas;
+    const stream = canvas.captureStream(30);
+    source.getAudioTracks().forEach((track) => stream.addTrack(track.clone()));
+    canvasStreamRef.current = stream;
+    startCanvasLoop();
+    return stream;
+  };
+
+  const stopRecordingStream = () => {
+    stopCanvasLoop();
+    canvasStreamRef.current?.getTracks().forEach((t) => t.stop());
+    canvasStreamRef.current = null;
+    recordCanvasRef.current = null;
+  };
+
+  const stopTimer = () => {
+    if (segmentStartedAtRef.current !== null) {
+      activeRecordingMsRef.current += performance.now() - segmentStartedAtRef.current;
+      segmentStartedAtRef.current = null;
+    }
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
   const startTimer = () => {
     const max = MODE_SECONDS[mode];
+    segmentStartedAtRef.current = performance.now();
+    if (timerRef.current) window.clearInterval(timerRef.current);
     timerRef.current = window.setInterval(() => {
-      setElapsed((s) => {
-        const next = s + 1;
-        if (next >= max) stopRecording();
-        return next;
-      });
-    }, 1000);
+      const ms = activeRecordingMsRef.current + (segmentStartedAtRef.current ? performance.now() - segmentStartedAtRef.current : 0);
+      const next = Math.floor(ms / 1000);
+      setElapsed(next);
+      setProgress(max ? Math.min(1, ms / (max * 1000)) : 0);
+      if (max && ms >= max * 1000) finalizeRecording(false);
+    }, 200);
   };
 
   const startRecording = () => {
-    const stream = streamRef.current;
+    const existing = recorderRef.current;
+    if (existing?.state === "paused") {
+      try {
+        existing.resume();
+      } catch {
+        return;
+      }
+      setRecording(true);
+      startTimer();
+      return;
+    }
+
+    const stream = getPortraitRecordingStream();
     if (!stream) return;
     chunksRef.current = [];
     let mr: MediaRecorder;
     const opts = { videoBitsPerSecond: 4_000_000 };
     try {
-      mr = new MediaRecorder(stream, { mimeType: "video/mp4", ...opts });
+      mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
     } catch {
       try {
-        mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
+        mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp8,opus", ...opts });
       } catch {
         mr = new MediaRecorder(stream);
       }
@@ -199,29 +280,48 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     mr.onstop = () => {
       const type = mr.mimeType || "video/webm";
       const blob = new Blob(chunksRef.current, { type });
-      const ext = type.includes("mp4") ? "mp4" : "webm";
-      const f = new File([blob], `video-${Date.now()}.${ext}`, { type });
+      const f = new File([blob], `video-${Date.now()}.webm`, { type });
       pendingFileRef.current = f;
       setHasClip(true);
+      stopRecordingStream();
+      if (advanceAfterStopRef.current) {
+        advanceAfterStopRef.current = false;
+        onCapture(f);
+      }
     };
     mr.start(250);
     pendingFileRef.current = null;
     setHasClip(false);
     setRecording(true);
+    activeRecordingMsRef.current = 0;
     setElapsed(0);
+    setProgress(0);
     startTimer();
   };
 
   const stopRecording = () => {
-    if (timerRef.current) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+    stopTimer();
     try {
-      recorderRef.current?.stop();
+      const recorder = recorderRef.current;
+      if (recorder?.state === "recording") recorder.pause();
     } catch {
       /* noop */
     }
+    setHasClip(true);
+    setRecording(false);
+  };
+
+  const finalizeRecording = (advance: boolean) => {
+    stopTimer();
+    advanceAfterStopRef.current = advance;
+    try {
+      const recorder = recorderRef.current;
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+      else if (advance && pendingFileRef.current) onCapture(pendingFileRef.current);
+    } catch {
+      if (advance && pendingFileRef.current) onCapture(pendingFileRef.current);
+    }
+    recorderRef.current = null;
     setRecording(false);
   };
 
