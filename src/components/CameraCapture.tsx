@@ -521,10 +521,13 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {recording && (
-        <div className="absolute top-[54%] left-1/2 -translate-x-1/2 -translate-y-[150px] text-[30px] font-extrabold tabular-nums tracking-[0] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] z-10">
+        <div className="absolute top-16 left-4 text-[15px] font-bold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] z-20 bg-black/45 rounded-full px-3 py-1 inline-flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-rose-500" />
           {fmt(elapsed)}
         </div>
       )}
+
+
 
       {/* Filters panel — stays open until user closes it */}
       {showFilters && (
@@ -556,30 +559,30 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
         <button
           onClick={onTapRecord}
-          className="relative h-[178px] w-[178px] rounded-full flex items-center justify-center bg-white/20 overflow-hidden active:scale-[0.98]"
+          className="relative h-[110px] w-[110px] rounded-full flex items-center justify-center bg-transparent overflow-visible active:scale-[0.98]"
           aria-label={recording ? "Pause recording" : hasClip ? "Resume recording" : "Record"}
         >
           {(recording || hasClip) && (
-            <svg className="absolute inset-0 h-full w-full -rotate-[82deg]" viewBox="0 0 178 178" aria-hidden="true">
-              <circle cx="89" cy="89" r="82" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0" />
+            <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 110 110" aria-hidden="true">
               <circle
-                cx="89"
-                cy="89"
-                r="82"
+                cx="55"
+                cy="55"
+                r="50"
                 fill="none"
                 stroke="#ff2b5d"
-                strokeWidth="12"
+                strokeWidth="6"
                 strokeLinecap="round"
-                strokeDasharray={`${Math.max(progress, recording ? 0.03 : 0.018) * 515.22} 515.22`}
+                strokeDasharray={`${Math.max(progress, recording ? 0.03 : 0.018) * 314.16} 314.16`}
               />
             </svg>
           )}
           <span
             className={`relative block bg-[#ff2b5d] shadow-[0_4px_18px_rgba(0,0,0,0.18)] ${
-              recording ? "h-[80px] w-[80px] rounded-[10px]" : "h-[78px] w-[78px] rounded-full"
+              recording ? "h-[44px] w-[44px] rounded-[8px]" : "h-[78px] w-[78px] rounded-full"
             }`}
           />
         </button>
+
 
         <button
           onClick={onPickGallery}
