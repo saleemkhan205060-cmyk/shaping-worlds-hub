@@ -48,6 +48,13 @@ function UploadPage() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  useEffect(() => {
+    if (!thumbFile) { setThumbPreview(null); return; }
+    const url = URL.createObjectURL(thumbFile);
+    setThumbPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [thumbFile]);
+
   const onPick = (f: File | null) => {
     if (!f) return;
     if (!f.type.startsWith("image/") && !f.type.startsWith("video/")) {
@@ -59,6 +66,13 @@ function UploadPage() {
       return;
     }
     setFile(f);
+  };
+
+  const onPickThumb = (f: File | null) => {
+    if (!f) return;
+    if (!f.type.startsWith("image/")) return toast.error("Thumbnail must be an image");
+    if (f.size > 10 * 1024 * 1024) return toast.error("Thumbnail must be under 10MB");
+    setThumbFile(f);
   };
 
   const handleUpload = async () => {
@@ -76,14 +90,26 @@ function UploadPage() {
       });
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
       const mediaType = file.type.startsWith("video/") ? "video" : "image";
+
+      let thumbnailUrl: string | null = null;
+      if (thumbFile) {
+        const text = thumbFile.name.split(".").pop() || "jpg";
+        const tpath = `${user.id}/thumbs/${Date.now()}.${text}`;
+        await uploadToStorage({ bucket: "media", path: tpath, file: thumbFile });
+        thumbnailUrl = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
+      }
+
       const { error: insErr } = await supabase.from("posts").insert({
         user_id: user.id,
         media_url: pub.publicUrl,
         media_type: mediaType,
+        title: title.trim() || null,
+        thumbnail_url: thumbnailUrl,
+        thumbnail_title: thumbTitle.trim() || null,
         caption: caption.trim() || null,
         category,
         is_private: isPrivate,
-      });
+      } as any);
       if (insErr) throw insErr;
       toast.success("Uploaded!");
       navigate({ to: mediaType === "video" ? "/videos" : "/profile" });
