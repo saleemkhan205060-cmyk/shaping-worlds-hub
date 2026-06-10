@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Play } from "lucide-react";
+import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Play, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 type Post = {
   id: string;
@@ -11,6 +13,7 @@ type Post = {
   media_url: string;
   media_type: "image" | "video";
   caption: string | null;
+  title: string | null;
   category: string | null;
   created_at: string;
 };
