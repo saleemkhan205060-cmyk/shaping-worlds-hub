@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { PostPrivacySettings } from "@/components/PostPrivacySettings";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
+import { CameraCapture } from "@/components/CameraCapture";
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
