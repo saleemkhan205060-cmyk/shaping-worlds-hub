@@ -62,6 +62,13 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const timerRef = useRef<number | null>(null);
   const pendingFileRef = useRef<File | null>(null);
   const previewVideoRef = useRef<HTMLVideoElement>(null);
+  const recordCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasStreamRef = useRef<MediaStream | null>(null);
+  const drawFrameRef = useRef<number | null>(null);
+  const filterRef = useRef<string>("none");
+  const activeRecordingMsRef = useRef(0);
+  const segmentStartedAtRef = useRef<number | null>(null);
+  const advanceAfterStopRef = useRef(false);
 
   const [mode, setMode] = useState<Mode>("60s");
   const [facing] = useState<"user" | "environment">("environment");
@@ -74,6 +81,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
   const [hasClip, setHasClip] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const combinedFilter = (() => {
     const f = FILTERS.find((x) => x.id === filterId)?.css ?? "";
@@ -83,18 +91,30 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   })();
 
   useEffect(() => {
+    filterRef.current = combinedFilter;
+  }, [combinedFilter]);
+
+  useEffect(() => {
     (async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: facing,
-            width: { ideal: 1080 },
-            height: { ideal: 1920 },
-            aspectRatio: { ideal: 9 / 16 },
-            frameRate: { ideal: 30, max: 60 },
-          },
-          audio: true,
-        });
+        let stream: MediaStream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: { ideal: facing },
+              width: { ideal: 720 },
+              height: { ideal: 1280 },
+              aspectRatio: { ideal: 9 / 16 },
+              frameRate: { ideal: 30, max: 30 },
+            },
+            audio: { echoCancellation: true, noiseSuppression: true },
+          });
+        } catch {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: facing }, frameRate: { ideal: 30, max: 30 } },
+            audio: true,
+          });
+        }
         streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -105,6 +125,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       }
     })();
     return () => {
+      stopCanvasLoop();
+      canvasStreamRef.current?.getVideoTracks().forEach((t) => t.stop());
       streamRef.current?.getTracks().forEach((t) => t.stop());
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
@@ -144,28 +166,110 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     );
   };
 
+  const stopCanvasLoop = () => {
+    if (drawFrameRef.current) {
+      window.cancelAnimationFrame(drawFrameRef.current);
+      drawFrameRef.current = null;
+    }
+  };
+
+  const startCanvasLoop = () => {
+    stopCanvasLoop();
+    const canvas = recordCanvasRef.current;
+    const video = videoRef.current;
+    if (!canvas || !video) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return;
+
+    const draw = () => {
+      const vw = video.videoWidth || 720;
+      const vh = video.videoHeight || 1280;
+      ctx.save();
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.filter = filterRef.current === "none" ? "none" : filterRef.current;
+      const scale = Math.max(canvas.width / vw, canvas.height / vh);
+      const sw = canvas.width / scale;
+      const sh = canvas.height / scale;
+      const sx = Math.max(0, (vw - sw) / 2);
+      const sy = Math.max(0, (vh - sh) / 2);
+      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      drawFrameRef.current = window.requestAnimationFrame(draw);
+    };
+    draw();
+  };
+
+  const getPortraitRecordingStream = () => {
+    if (canvasStreamRef.current) return canvasStreamRef.current;
+    const source = streamRef.current;
+    if (!source) return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 720;
+    canvas.height = 1280;
+    recordCanvasRef.current = canvas;
+    const stream = canvas.captureStream(30);
+    source.getAudioTracks().forEach((track) => stream.addTrack(track.clone()));
+    canvasStreamRef.current = stream;
+    startCanvasLoop();
+    return stream;
+  };
+
+  const stopRecordingStream = () => {
+    stopCanvasLoop();
+    canvasStreamRef.current?.getTracks().forEach((t) => t.stop());
+    canvasStreamRef.current = null;
+    recordCanvasRef.current = null;
+  };
+
+  const stopTimer = () => {
+    if (segmentStartedAtRef.current !== null) {
+      activeRecordingMsRef.current += performance.now() - segmentStartedAtRef.current;
+      segmentStartedAtRef.current = null;
+    }
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
   const startTimer = () => {
     const max = MODE_SECONDS[mode];
+    segmentStartedAtRef.current = performance.now();
+    if (timerRef.current) window.clearInterval(timerRef.current);
     timerRef.current = window.setInterval(() => {
-      setElapsed((s) => {
-        const next = s + 1;
-        if (next >= max) stopRecording();
-        return next;
-      });
-    }, 1000);
+      const ms = activeRecordingMsRef.current + (segmentStartedAtRef.current ? performance.now() - segmentStartedAtRef.current : 0);
+      const next = Math.floor(ms / 1000);
+      setElapsed(next);
+      setProgress(max ? Math.min(1, ms / (max * 1000)) : 0);
+      if (max && ms >= max * 1000) finalizeRecording(false);
+    }, 200);
   };
 
   const startRecording = () => {
-    const stream = streamRef.current;
+    const existing = recorderRef.current;
+    if (existing?.state === "paused") {
+      try {
+        startCanvasLoop();
+        existing.resume();
+      } catch {
+        return;
+      }
+      setRecording(true);
+      startTimer();
+      return;
+    }
+
+    const stream = getPortraitRecordingStream();
     if (!stream) return;
     chunksRef.current = [];
     let mr: MediaRecorder;
     const opts = { videoBitsPerSecond: 4_000_000 };
     try {
-      mr = new MediaRecorder(stream, { mimeType: "video/mp4", ...opts });
+      mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
     } catch {
       try {
-        mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
+        mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp8,opus", ...opts });
       } catch {
         mr = new MediaRecorder(stream);
       }
@@ -177,29 +281,49 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     mr.onstop = () => {
       const type = mr.mimeType || "video/webm";
       const blob = new Blob(chunksRef.current, { type });
-      const ext = type.includes("mp4") ? "mp4" : "webm";
-      const f = new File([blob], `video-${Date.now()}.${ext}`, { type });
+      const f = new File([blob], `video-${Date.now()}.webm`, { type });
       pendingFileRef.current = f;
       setHasClip(true);
+      stopRecordingStream();
+      if (advanceAfterStopRef.current) {
+        advanceAfterStopRef.current = false;
+        onCapture(f);
+      }
     };
     mr.start(250);
     pendingFileRef.current = null;
     setHasClip(false);
     setRecording(true);
+    activeRecordingMsRef.current = 0;
     setElapsed(0);
+    setProgress(0);
     startTimer();
   };
 
   const stopRecording = () => {
-    if (timerRef.current) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+    stopTimer();
     try {
-      recorderRef.current?.stop();
+      const recorder = recorderRef.current;
+      if (recorder?.state === "recording") recorder.pause();
     } catch {
       /* noop */
     }
+    stopCanvasLoop();
+    setHasClip(true);
+    setRecording(false);
+  };
+
+  const finalizeRecording = (advance: boolean) => {
+    stopTimer();
+    advanceAfterStopRef.current = advance;
+    try {
+      const recorder = recorderRef.current;
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+      else if (advance && pendingFileRef.current) onCapture(pendingFileRef.current);
+    } catch {
+      if (advance && pendingFileRef.current) onCapture(pendingFileRef.current);
+    }
+    recorderRef.current = null;
     setRecording(false);
   };
 
@@ -214,11 +338,23 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
   const retake = () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
+    try {
+      const recorder = recorderRef.current;
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+    } catch {
+      /* noop */
+    }
+    stopRecordingStream();
+    recorderRef.current = null;
     pendingFileRef.current = null;
     setPreviewUrl(null);
     setPreviewKind(null);
     setHasClip(false);
+    activeRecordingMsRef.current = 0;
+    segmentStartedAtRef.current = null;
     setElapsed(0);
+    setProgress(0);
+    setRecording(false);
   };
 
   const confirmUse = () => {
@@ -228,18 +364,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   };
 
   const onNext = () => {
-    if (recording) {
-      // stop and wait for onstop to populate file, then advance
-      const mr = recorderRef.current;
-      if (mr) {
-        const origOnStop = mr.onstop;
-        mr.onstop = (ev) => {
-          if (typeof origOnStop === "function") (origOnStop as (e: Event) => void).call(mr, ev);
-          const f = pendingFileRef.current;
-          if (f) onCapture(f);
-        };
-      }
-      stopRecording();
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") {
+      finalizeRecording(true);
       return;
     }
     confirmUse();
@@ -394,8 +521,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {recording && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-red-600 text-sm font-bold tabular-nums z-10 flex items-center gap-2">
-          <span className="animate-pulse">●</span>
+        <div className="absolute top-[54%] left-1/2 -translate-x-1/2 -translate-y-[150px] text-[30px] font-extrabold tabular-nums tracking-[0] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] z-10">
           {fmt(elapsed)}
         </div>
       )}
@@ -425,17 +551,32 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Record row */}
-      <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-8 z-10">
+      <div className="absolute left-0 right-0 bottom-4 flex items-center justify-between px-7 z-10">
         <div className="h-14 w-14" />
 
         <button
           onClick={onTapRecord}
-          className="h-[88px] w-[88px] rounded-full border-[5px] border-white flex items-center justify-center bg-transparent"
-          aria-label={recording ? "Stop" : "Record"}
+          className="relative h-[178px] w-[178px] rounded-full flex items-center justify-center bg-white/20 overflow-hidden active:scale-[0.98]"
+          aria-label={recording ? "Pause recording" : hasClip ? "Resume recording" : "Record"}
         >
+          {(recording || hasClip) && (
+            <svg className="absolute inset-0 h-full w-full -rotate-[82deg]" viewBox="0 0 178 178" aria-hidden="true">
+              <circle cx="89" cy="89" r="82" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0" />
+              <circle
+                cx="89"
+                cy="89"
+                r="82"
+                fill="none"
+                stroke="#ff2b5d"
+                strokeWidth="12"
+                strokeLinecap="round"
+                strokeDasharray={`${Math.max(progress, recording ? 0.03 : 0.018) * 515.22} 515.22`}
+              />
+            </svg>
+          )}
           <span
-            className={`block bg-rose-500 ${
-              recording ? "h-8 w-8 rounded-md" : "h-[72px] w-[72px] rounded-full"
+            className={`relative block bg-[#ff2b5d] shadow-[0_4px_18px_rgba(0,0,0,0.18)] ${
+              recording ? "h-[80px] w-[80px] rounded-[10px]" : "h-[78px] w-[78px] rounded-full"
             }`}
           />
         </button>
