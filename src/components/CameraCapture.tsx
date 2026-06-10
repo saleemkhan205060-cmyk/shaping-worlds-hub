@@ -188,15 +188,15 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {/* Mode selector */}
-      <div className="absolute left-0 right-0 bottom-36 flex items-center justify-center gap-7 z-10">
+      <div className="absolute left-0 right-0 bottom-32 flex items-center justify-center gap-7 z-10">
         {(Object.keys(MODE_SECONDS) as Mode[]).map((m) => (
           <button
             key={m}
             onClick={() => !recording && setMode(m)}
             className={
               mode === m
-                ? "text-black bg-white px-4 py-1.5 rounded-full text-[17px] font-extrabold"
-                : "text-white text-[17px] font-extrabold drop-shadow"
+                ? "text-black bg-white px-4 py-1.5 rounded-full text-[18px] font-extrabold"
+                : "text-white text-[18px] font-extrabold drop-shadow"
             }
           >
             {m}
@@ -205,38 +205,59 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Record row */}
-      <div className="absolute left-0 right-0 bottom-16 flex items-center justify-between px-6 z-10">
+      <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-5 z-10">
         <button
           onClick={onPickGallery}
-          className="h-14 w-14 rounded-full overflow-hidden bg-gradient-to-br from-sky-300 to-emerald-400 border-2 border-white/40"
           aria-label="Gallery"
+          className="h-14 w-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg"
+          style={{
+            backgroundImage:
+              "linear-gradient(135deg, #6b7c8a 0%, #2f4858 45%, #1f2d3a 100%)",
+          }}
         />
 
         <button
           onClick={onTapRecord}
-          className="h-[88px] w-[88px] rounded-full border-[5px] border-white/80 flex items-center justify-center bg-transparent"
+          className="h-[88px] w-[88px] rounded-full border-[5px] border-white flex items-center justify-center bg-transparent"
           aria-label="Record"
         >
           <span
-            className={`block rounded-full bg-rose-500 ${
-              recording ? "h-8 w-8 rounded-md" : "h-[72px] w-[72px]"
+            className={`block bg-rose-500 ${
+              recording ? "h-8 w-8 rounded-md" : "h-[72px] w-[72px] rounded-full"
             }`}
           />
         </button>
 
         <button
           onClick={onPickGallery}
-          className="h-14 w-14 rounded-lg overflow-hidden bg-gradient-to-br from-amber-300 to-amber-500 border border-white/30"
-          aria-label="Gallery 2"
-        />
-      </div>
-
-      {/* Bottom tabs */}
-      <div className="absolute left-0 right-0 bottom-3 flex items-center justify-around z-10 text-[15px] font-extrabold tracking-wider px-4">
-        <span className="text-white/60">SELF</span>
-        <span className="text-white/60">LIVE</span>
-        <span className="text-white">CAMERA</span>
-        <span className="text-white/60">CREATE</span>
+          aria-label="Photos"
+          className="h-14 w-14 rounded-2xl bg-white shadow-lg flex items-center justify-center overflow-hidden"
+        >
+          <svg viewBox="0 0 64 64" className="h-11 w-11">
+            {[
+              { c: "#FF3B30", a: 0 },
+              { c: "#FF9500", a: 45 },
+              { c: "#FFCC00", a: 90 },
+              { c: "#34C759", a: 135 },
+              { c: "#00C7BE", a: 180 },
+              { c: "#007AFF", a: 225 },
+              { c: "#5856D6", a: 270 },
+              { c: "#AF52DE", a: 315 },
+            ].map((p, i) => (
+              <ellipse
+                key={i}
+                cx="32"
+                cy="18"
+                rx="8"
+                ry="14"
+                fill={p.c}
+                opacity="0.92"
+                transform={`rotate(${p.a} 32 32)`}
+              />
+            ))}
+            <circle cx="32" cy="32" r="5" fill="#fff" />
+          </svg>
+        </button>
       </div>
     </div>
   );
