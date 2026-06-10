@@ -626,7 +626,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="shrink-0 bg-[#edf0e4] px-3 py-2 pb-2 flex items-end gap-2">
+              <div className="shrink-0 bg-[#edf0e4] px-1.5 py-0.5 pb-0.5 flex items-end gap-2">
                 <input
                   ref={galleryInputRef}
                   type="file"
