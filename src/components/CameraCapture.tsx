@@ -521,11 +521,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {recording && (
-        <div className="absolute top-4 left-4 text-[15px] font-bold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] z-20 bg-black/45 rounded-full px-3 py-1 inline-flex items-center gap-1.5">
+        <div className="absolute top-16 left-4 text-[15px] font-bold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] z-20 bg-black/45 rounded-full px-3 py-1 inline-flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-rose-500" />
           {fmt(elapsed)}
         </div>
       )}
+
 
 
       {/* Filters panel — stays open until user closes it */}
