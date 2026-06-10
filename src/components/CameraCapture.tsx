@@ -217,6 +217,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     pendingFileRef.current = null;
     setPreviewUrl(null);
     setPreviewKind(null);
+    setHasClip(false);
     setElapsed(0);
   };
 
@@ -224,6 +225,24 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     const f = pendingFileRef.current;
     if (!f) return;
     onCapture(f);
+  };
+
+  const onNext = () => {
+    if (recording) {
+      // stop and wait for onstop to populate file, then advance
+      const mr = recorderRef.current;
+      if (mr) {
+        const origOnStop = mr.onstop;
+        mr.onstop = (ev) => {
+          if (typeof origOnStop === "function") (origOnStop as (e: Event) => void).call(mr, ev);
+          const f = pendingFileRef.current;
+          if (f) onCapture(f);
+        };
+      }
+      stopRecording();
+      return;
+    }
+    confirmUse();
   };
 
   const fmt = (s: number) => {
