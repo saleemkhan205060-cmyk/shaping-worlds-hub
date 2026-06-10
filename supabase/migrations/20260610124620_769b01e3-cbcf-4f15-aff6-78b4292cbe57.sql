@@ -1,0 +1,1 @@
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS title text; ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS thumbnail_url text; ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS thumbnail_title text;

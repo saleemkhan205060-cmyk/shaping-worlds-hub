@@ -20,6 +20,10 @@ function UploadPage() {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [thumbTitle, setThumbTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -31,6 +35,7 @@ function UploadPage() {
   const galleryVidRef = useRef<HTMLInputElement>(null);
   const cameraPhotoRef = useRef<HTMLInputElement>(null);
   const cameraVideoRef = useRef<HTMLInputElement>(null);
+  const thumbRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -43,6 +48,13 @@ function UploadPage() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  useEffect(() => {
+    if (!thumbFile) { setThumbPreview(null); return; }
+    const url = URL.createObjectURL(thumbFile);
+    setThumbPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [thumbFile]);
+
   const onPick = (f: File | null) => {
     if (!f) return;
     if (!f.type.startsWith("image/") && !f.type.startsWith("video/")) {
@@ -54,6 +66,13 @@ function UploadPage() {
       return;
     }
     setFile(f);
+  };
+
+  const onPickThumb = (f: File | null) => {
+    if (!f) return;
+    if (!f.type.startsWith("image/")) return toast.error("Thumbnail must be an image");
+    if (f.size > 10 * 1024 * 1024) return toast.error("Thumbnail must be under 10MB");
+    setThumbFile(f);
   };
 
   const handleUpload = async () => {
@@ -71,14 +90,26 @@ function UploadPage() {
       });
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
       const mediaType = file.type.startsWith("video/") ? "video" : "image";
+
+      let thumbnailUrl: string | null = null;
+      if (thumbFile) {
+        const text = thumbFile.name.split(".").pop() || "jpg";
+        const tpath = `${user.id}/thumbs/${Date.now()}.${text}`;
+        await uploadToStorage({ bucket: "media", path: tpath, file: thumbFile });
+        thumbnailUrl = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
+      }
+
       const { error: insErr } = await supabase.from("posts").insert({
         user_id: user.id,
         media_url: pub.publicUrl,
         media_type: mediaType,
+        title: title.trim() || null,
+        thumbnail_url: thumbnailUrl,
+        thumbnail_title: thumbTitle.trim() || null,
         caption: caption.trim() || null,
         category,
         is_private: isPrivate,
-      });
+      } as any);
       if (insErr) throw insErr;
       toast.success("Uploaded!");
       navigate({ to: mediaType === "video" ? "/videos" : "/profile" });
@@ -201,6 +232,59 @@ function UploadPage() {
             className="hidden"
             onChange={(e) => onPick(e.target.files?.[0] ?? null)}
           />
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">Title</label>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              maxLength={120}
+              placeholder="Give your video a title..."
+              className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">Thumbnail</label>
+            <div className="mt-1 flex items-start gap-3">
+              <button
+                type="button"
+                onClick={() => thumbRef.current?.click()}
+                className="relative h-24 w-24 shrink-0 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden hover:border-indigo-400"
+              >
+                {thumbPreview ? (
+                  <img src={thumbPreview} alt="thumb" className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon className="h-6 w-6 text-slate-400" />
+                )}
+              </button>
+              <div className="flex-1 space-y-2">
+                <input
+                  value={thumbTitle}
+                  onChange={(e) => setThumbTitle(e.target.value)}
+                  maxLength={80}
+                  placeholder="Thumbnail title (text on cover)"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
+                />
+                {thumbFile && (
+                  <button
+                    type="button"
+                    onClick={() => setThumbFile(null)}
+                    className="text-xs text-rose-600 font-medium"
+                  >
+                    Remove thumbnail
+                  </button>
+                )}
+              </div>
+            </div>
+            <input
+              ref={thumbRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => onPickThumb(e.target.files?.[0] ?? null)}
+            />
+          </div>
 
           <div>
             <label className="text-sm font-medium text-slate-700">Caption</label>
