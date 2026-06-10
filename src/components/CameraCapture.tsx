@@ -73,6 +73,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [showFilters, setShowFilters] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
+  const [hasClip, setHasClip] = useState(false);
 
   const combinedFilter = (() => {
     const f = FILTERS.find((x) => x.id === filterId)?.css ?? "";
