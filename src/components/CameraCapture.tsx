@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Music, Sparkles, ChevronDown, Pause, Play } from "lucide-react";
+import { X, Music, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
@@ -12,11 +12,33 @@ const MODE_SECONDS: Record<Mode, number> = {
 
 type BeautyLevel = 0 | 1 | 2 | 3;
 const BEAUTY_FILTERS: Record<BeautyLevel, string> = {
-  0: "none",
+  0: "",
   1: "brightness(1.06) contrast(0.98) saturate(1.05) blur(0.4px)",
   2: "brightness(1.12) contrast(0.96) saturate(1.1) blur(0.8px)",
   3: "brightness(1.18) contrast(0.94) saturate(1.18) blur(1.2px)",
 };
+
+interface FilterPreset {
+  id: string;
+  name: string;
+  css: string;
+  swatch: string;
+}
+
+const FILTERS: FilterPreset[] = [
+  { id: "normal", name: "Normal", css: "", swatch: "linear-gradient(135deg,#9ca3af,#e5e7eb)" },
+  { id: "vivid", name: "Vivid", css: "saturate(1.5) contrast(1.1)", swatch: "linear-gradient(135deg,#ff5e62,#ff9966)" },
+  { id: "warm", name: "Warm", css: "sepia(0.25) saturate(1.3) hue-rotate(-10deg) brightness(1.05)", swatch: "linear-gradient(135deg,#f6d365,#fda085)" },
+  { id: "cool", name: "Cool", css: "saturate(1.1) hue-rotate(15deg) brightness(1.02)", swatch: "linear-gradient(135deg,#74ebd5,#9face6)" },
+  { id: "bw", name: "B&W", css: "grayscale(1) contrast(1.15)", swatch: "linear-gradient(135deg,#232526,#a8a8a8)" },
+  { id: "vintage", name: "Vintage", css: "sepia(0.5) contrast(0.95) brightness(1.05) saturate(0.9)", swatch: "linear-gradient(135deg,#c79081,#dfa579)" },
+  { id: "dramatic", name: "Drama", css: "contrast(1.35) saturate(0.85) brightness(0.95)", swatch: "linear-gradient(135deg,#1f1c2c,#928dab)" },
+  { id: "fade", name: "Fade", css: "contrast(0.85) brightness(1.1) saturate(0.8)", swatch: "linear-gradient(135deg,#fceabb,#f8b500)" },
+  { id: "noir", name: "Noir", css: "grayscale(1) contrast(1.4) brightness(0.9)", swatch: "linear-gradient(135deg,#000,#434343)" },
+  { id: "pink", name: "Pink", css: "saturate(1.2) hue-rotate(-20deg) brightness(1.05)", swatch: "linear-gradient(135deg,#ffafbd,#ffc3a0)" },
+  { id: "neon", name: "Neon", css: "saturate(2) contrast(1.2) hue-rotate(20deg)", swatch: "linear-gradient(135deg,#00f2fe,#4facfe)" },
+  { id: "sunset", name: "Sunset", css: "sepia(0.3) saturate(1.4) hue-rotate(-15deg) brightness(1.08)", swatch: "linear-gradient(135deg,#ff6e7f,#bfe9ff)" },
+];
 
 interface Props {
   onCapture: (file: File) => void;
@@ -34,10 +56,18 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [mode, setMode] = useState<Mode>("60s");
   const [facing] = useState<"user" | "environment">("environment");
   const [recording, setRecording] = useState(false);
-  const [paused, setPaused] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [beauty, setBeauty] = useState<BeautyLevel>(0);
+  const [filterId, setFilterId] = useState<string>("normal");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const combinedFilter = (() => {
+    const f = FILTERS.find((x) => x.id === filterId)?.css ?? "";
+    const b = BEAUTY_FILTERS[beauty];
+    const parts = [f, b].filter(Boolean).join(" ");
+    return parts || "none";
+  })();
 
   useEffect(() => {
     (async () => {
@@ -69,7 +99,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     canvas.height = v.videoHeight || 1280;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    if (beauty > 0) ctx.filter = BEAUTY_FILTERS[beauty];
+    if (combinedFilter !== "none") ctx.filter = combinedFilter;
     ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
     canvas.toBlob(
       (blob) => {
@@ -120,7 +150,6 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     };
     mr.start();
     setRecording(true);
-    setPaused(false);
     setElapsed(0);
     startTimer();
   };
@@ -136,32 +165,6 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       /* noop */
     }
     setRecording(false);
-    setPaused(false);
-  };
-
-  const togglePause = () => {
-    const mr = recorderRef.current;
-    if (!mr) return;
-    if (!paused) {
-      try {
-        mr.pause();
-      } catch {
-        /* noop */
-      }
-      if (timerRef.current) {
-        window.clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      setPaused(true);
-    } else {
-      try {
-        mr.resume();
-      } catch {
-        /* noop */
-      }
-      startTimer();
-      setPaused(false);
-    }
   };
 
   const onTapRecord = () => {
@@ -186,7 +189,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           ref={videoRef}
           playsInline
           muted
-          style={{ filter: BEAUTY_FILTERS[beauty] }}
+          style={{ filter: combinedFilter }}
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
@@ -223,8 +226,19 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             </span>
           )}
         </button>
-        <button aria-label="More">
-          <ChevronDown className="h-8 w-8 text-white drop-shadow" strokeWidth={2.25} />
+        <button
+          aria-label="Filters"
+          onClick={() => setShowFilters((v) => !v)}
+          className="relative"
+        >
+          {showFilters ? (
+            <ChevronUp className="h-8 w-8 text-white drop-shadow" strokeWidth={2.25} />
+          ) : (
+            <ChevronDown className="h-8 w-8 text-white drop-shadow" strokeWidth={2.25} />
+          )}
+          {filterId !== "normal" && (
+            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-rose-500" />
+          )}
         </button>
       </div>
 
@@ -236,9 +250,40 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
       {recording && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-red-600 text-sm font-bold tabular-nums z-10 flex items-center gap-2">
-          <span className={paused ? "opacity-50" : "animate-pulse"}>●</span>
+          <span className="animate-pulse">●</span>
           {fmt(elapsed)}
-          {paused && <span className="text-xs font-semibold">PAUSED</span>}
+        </div>
+      )}
+
+      {/* Filters panel */}
+      {showFilters && (
+        <div className="absolute left-0 right-0 bottom-44 z-10 px-3">
+          <div className="bg-black/55 backdrop-blur-md rounded-2xl px-3 py-3">
+            <div className="flex items-center justify-between mb-2 px-1">
+              <span className="text-[13px] font-bold text-white/90">Filters</span>
+              <span className="text-[11px] text-white/60">{FILTERS.find(f => f.id === filterId)?.name}</span>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 no-scrollbar">
+              {FILTERS.map((f) => {
+                const active = f.id === filterId;
+                return (
+                  <button
+                    key={f.id}
+                    onClick={() => setFilterId(f.id)}
+                    className="flex flex-col items-center shrink-0"
+                  >
+                    <span
+                      className={`h-14 w-14 rounded-xl border-2 ${active ? "border-rose-500" : "border-white/40"}`}
+                      style={{ backgroundImage: f.swatch }}
+                    />
+                    <span className={`mt-1 text-[11px] font-semibold ${active ? "text-rose-400" : "text-white/85"}`}>
+                      {f.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
 
@@ -261,27 +306,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
       {/* Record row */}
       <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-8 z-10">
-        {/* Pause/Resume slot (only while recording) */}
-        <div className="h-14 w-14 flex items-center justify-center">
-          {recording && mode !== "PHOTO" ? (
-            <button
-              onClick={togglePause}
-              aria-label={paused ? "Resume" : "Pause"}
-              className="h-12 w-12 rounded-full bg-white/90 text-black flex items-center justify-center shadow-lg"
-            >
-              {paused ? (
-                <Play className="h-6 w-6" fill="currentColor" />
-              ) : (
-                <Pause className="h-6 w-6" fill="currentColor" />
-              )}
-            </button>
-          ) : null}
-        </div>
+        <div className="h-14 w-14" />
 
         <button
           onClick={onTapRecord}
           className="h-[88px] w-[88px] rounded-full border-[5px] border-white flex items-center justify-center bg-transparent"
-          aria-label="Record"
+          aria-label={recording ? "Stop" : "Record"}
         >
           <span
             className={`block bg-rose-500 ${
