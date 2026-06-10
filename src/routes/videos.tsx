@@ -181,6 +181,20 @@ function Videos() {
                   )}
                 </button>
                 <div className="p-3">
+                  {(p.title || (user?.id === p.user_id)) && (
+                    <h3
+                      onContextMenu={(e) => { e.preventDefault(); if (user?.id === p.user_id) { setEditValue(p.title ?? ""); setEditingId(p.id); } }}
+                      onPointerDown={() => startPress(p)}
+                      onPointerUp={cancelPress}
+                      onPointerLeave={cancelPress}
+                      onPointerCancel={cancelPress}
+                      className="text-sm font-semibold text-slate-900 mb-1 line-clamp-2 select-none flex items-center gap-1"
+                      title={user?.id === p.user_id ? "Long-press to edit title" : undefined}
+                    >
+                      <span className="flex-1">{p.title || (user?.id === p.user_id ? <span className="text-slate-400 font-normal italic">Add a title…</span> : "")}</span>
+                      {user?.id === p.user_id && <Pencil className="h-3 w-3 text-slate-400 shrink-0" />}
+                    </h3>
+                  )}
                   {p.caption && <p className="text-sm line-clamp-2 mb-2">{p.caption}</p>}
                   <div className="flex items-center gap-4 text-slate-500 text-sm">
                     <button
