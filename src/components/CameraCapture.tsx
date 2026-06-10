@@ -519,8 +519,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {recording && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-red-600 text-sm font-bold tabular-nums z-10 flex items-center gap-2">
-          <span className="animate-pulse">●</span>
+        <div className="absolute top-[54%] left-1/2 -translate-x-1/2 -translate-y-[150px] text-[30px] font-extrabold tabular-nums tracking-[0] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] z-10">
           {fmt(elapsed)}
         </div>
       )}
@@ -550,17 +549,32 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Record row */}
-      <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-8 z-10">
+      <div className="absolute left-0 right-0 bottom-4 flex items-center justify-between px-7 z-10">
         <div className="h-14 w-14" />
 
         <button
           onClick={onTapRecord}
-          className="h-[88px] w-[88px] rounded-full border-[5px] border-white flex items-center justify-center bg-transparent"
-          aria-label={recording ? "Stop" : "Record"}
+          className="relative h-[178px] w-[178px] rounded-full flex items-center justify-center bg-white/20 overflow-hidden active:scale-[0.98]"
+          aria-label={recording ? "Pause recording" : hasClip ? "Resume recording" : "Record"}
         >
+          {(recording || hasClip) && (
+            <svg className="absolute inset-0 h-full w-full -rotate-[82deg]" viewBox="0 0 178 178" aria-hidden="true">
+              <circle cx="89" cy="89" r="82" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0" />
+              <circle
+                cx="89"
+                cy="89"
+                r="82"
+                fill="none"
+                stroke="#ff2b5d"
+                strokeWidth="12"
+                strokeLinecap="round"
+                strokeDasharray={`${Math.max(progress, recording ? 0.03 : 0.018) * 515.22} 515.22`}
+              />
+            </svg>
+          )}
           <span
-            className={`block bg-rose-500 ${
-              recording ? "h-8 w-8 rounded-md" : "h-[72px] w-[72px] rounded-full"
+            className={`relative block bg-[#ff2b5d] shadow-[0_4px_18px_rgba(0,0,0,0.18)] ${
+              recording ? "h-[80px] w-[80px] rounded-[10px]" : "h-[78px] w-[78px] rounded-full"
             }`}
           />
         </button>
