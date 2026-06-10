@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Play } from "lucide-react";
+import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Play, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 type Post = {
   id: string;
@@ -11,6 +13,7 @@ type Post = {
   media_url: string;
   media_type: "image" | "video";
   caption: string | null;
+  title: string | null;
   category: string | null;
   created_at: string;
 };
@@ -20,11 +23,37 @@ export const Route = createFileRoute("/videos")({ component: Videos });
 const TABS = ["For You", "Trending", "Music", "Food", "Travel"];
 
 function Videos() {
+  const { user } = useAuth();
   const [tab, setTab] = useState("For You");
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [fsIndex, setFsIndex] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const pressTimer = useRef<number | null>(null);
+
+  const startPress = (p: Post) => {
+    if (!user || p.user_id !== user.id) return;
+    if (pressTimer.current) window.clearTimeout(pressTimer.current);
+    pressTimer.current = window.setTimeout(() => {
+      setEditValue(p.title ?? "");
+      setEditingId(p.id);
+    }, 500);
+  };
+  const cancelPress = () => {
+    if (pressTimer.current) { window.clearTimeout(pressTimer.current); pressTimer.current = null; }
+  };
+
+  const saveTitle = async () => {
+    if (!editingId) return;
+    const newTitle = editValue.trim() || null;
+    const { error } = await supabase.from("posts").update({ title: newTitle } as any).eq("id", editingId);
+    if (error) { toast.error("Failed to update"); return; }
+    setPosts((prev) => prev.map((p) => (p.id === editingId ? { ...p, title: newTitle } : p)));
+    setEditingId(null);
+    toast.success("Title updated");
+  };
 
   useEffect(() => {
     supabase
@@ -152,6 +181,20 @@ function Videos() {
                   )}
                 </button>
                 <div className="p-3">
+                  {(p.title || (user?.id === p.user_id)) && (
+                    <h3
+                      onContextMenu={(e) => { e.preventDefault(); if (user?.id === p.user_id) { setEditValue(p.title ?? ""); setEditingId(p.id); } }}
+                      onPointerDown={() => startPress(p)}
+                      onPointerUp={cancelPress}
+                      onPointerLeave={cancelPress}
+                      onPointerCancel={cancelPress}
+                      className="text-sm font-semibold text-slate-900 mb-1 line-clamp-2 select-none flex items-center gap-1"
+                      title={user?.id === p.user_id ? "Long-press to edit title" : undefined}
+                    >
+                      <span className="flex-1">{p.title || (user?.id === p.user_id ? <span className="text-slate-400 font-normal italic">Add a title…</span> : "")}</span>
+                      {user?.id === p.user_id && <Pencil className="h-3 w-3 text-slate-400 shrink-0" />}
+                    </h3>
+                  )}
                   {p.caption && <p className="text-sm line-clamp-2 mb-2">{p.caption}</p>}
                   <div className="flex items-center gap-4 text-slate-500 text-sm">
                     <button
@@ -188,6 +231,26 @@ function Videos() {
           startIndex={fsIndex}
           onClose={() => setFsIndex(null)}
         />
+      )}
+
+      {editingId && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={() => setEditingId(null)}>
+          <div className="bg-white rounded-2xl p-5 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-base font-bold mb-3">Edit title</h3>
+            <input
+              autoFocus
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              maxLength={120}
+              placeholder="Post title"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <button onClick={() => setEditingId(null)} className="px-3 py-1.5 rounded-full text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+              <button onClick={saveTitle} className="px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Save</button>
+            </div>
+          </div>
+        </div>
       )}
     </Layout>
   );
