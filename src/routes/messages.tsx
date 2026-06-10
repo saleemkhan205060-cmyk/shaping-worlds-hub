@@ -412,7 +412,7 @@ function Messages() {
 
   return (
     <Layout hideMobileNav={!!activePeer} fullScreenMobile={!!activePeer}>
-      <div className={`bg-white border-slate-200 overflow-hidden flex flex-col md:flex-row md:border md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${activePeer ? "h-[100svh]" : "h-[calc(100svh-68px-56px)] -mb-24 border"}`}>
+      <div className={`bg-white border-slate-200 overflow-hidden flex flex-col md:flex-row md:border md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${activePeer ? "h-full" : "h-[calc(100dvh-68px-56px)] -mb-24 border"}`}>
         {/* Sidebar */}
         <aside
           className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${

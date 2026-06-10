@@ -137,6 +137,20 @@
     border-color: var(--color-border);
   }
 
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    background-color: var(--color-background);
+    overscroll-behavior: none;
+  }
+
+  html,
+  body {
+    margin: 0;
+    overflow-x: hidden;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
