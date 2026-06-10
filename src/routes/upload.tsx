@@ -25,6 +25,7 @@ function UploadPage() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showCamera, setShowCamera] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const galleryImgRef = useRef<HTMLInputElement>(null);
   const galleryVidRef = useRef<HTMLInputElement>(null);
