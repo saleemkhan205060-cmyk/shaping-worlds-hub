@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
+import { CameraCapture } from "@/components/CameraCapture";
 import { AvatarImg } from "@/components/AvatarImg";
 import { Globe2, Lock } from "lucide-react";
 import { TextPostCard } from "@/components/TextPostCard";
@@ -115,6 +116,7 @@ export function HomeFeed() {
   // Fullscreen player
   const [fsOpen, setFsOpen] = useState(false);
   const [fsIndex, setFsIndex] = useState(0);
+  const [showCamera, setShowCamera] = useState(false);
 
   // Inline video refs for autopause
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
