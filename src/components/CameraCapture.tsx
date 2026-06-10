@@ -373,6 +373,18 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-rose-500" />
           )}
         </button>
+        {(hasClip || recording) && mode !== "PHOTO" && (
+          <button
+            onClick={onNext}
+            aria-label="Next"
+            className="mt-1 flex flex-col items-center"
+          >
+            <span className="h-11 w-11 rounded-full bg-rose-500 flex items-center justify-center shadow-lg">
+              <ChevronRight className="h-6 w-6 text-white" strokeWidth={3} />
+            </span>
+            <span className="mt-1 text-[11px] font-bold text-white drop-shadow">Next</span>
+          </button>
+        )}
       </div>
 
       {error && (
