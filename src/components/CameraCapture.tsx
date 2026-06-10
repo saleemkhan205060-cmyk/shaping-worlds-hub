@@ -159,31 +159,19 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Right side icon column */}
-      <div className="absolute right-3 top-20 z-10 flex flex-col items-center gap-5">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-6">
         <button
           onClick={() => setFacing((f) => (f === "user" ? "environment" : "user"))}
-          aria-label="Flip camera"
+          aria-label="Effects"
+          className="relative"
         >
-          <RefreshCw className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <button aria-label="Flash">
-          <Zap className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <div className="w-6 h-px bg-white/70" />
-        <button aria-label="Timer">
-          <Timer className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <button aria-label="Templates">
-          <LayoutPanelTop className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
-        </button>
-        <button aria-label="Effects" className="relative">
-          <UserPlus2 className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
+          <UserPlus2 className="h-8 w-8 text-white drop-shadow" strokeWidth={2} />
           <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 border border-black flex items-center justify-center">
             <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
           </span>
         </button>
         <button aria-label="More">
-          <ChevronDown className="h-7 w-7 text-white drop-shadow" strokeWidth={2.25} />
+          <ChevronDown className="h-8 w-8 text-white drop-shadow" strokeWidth={2.25} />
         </button>
       </div>
 
