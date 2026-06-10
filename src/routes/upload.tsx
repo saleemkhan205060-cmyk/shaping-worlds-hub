@@ -102,6 +102,13 @@ function UploadPage() {
 
   return (
     <Layout>
+      {showCamera && (
+        <CameraCapture
+          onClose={() => setShowCamera(false)}
+          onPickGallery={() => { setShowCamera(false); galleryVidRef.current?.click(); }}
+          onCapture={(f) => { setShowCamera(false); onPick(f); }}
+        />
+      )}
       <div className="max-w-xl mx-auto">
         <h1 className="text-2xl font-extrabold mb-1">Upload</h1>
         <p className="text-sm text-slate-500 mb-5">Share a photo or video with the community.</p>
