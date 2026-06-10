@@ -336,11 +336,23 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
   const retake = () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
+    try {
+      const recorder = recorderRef.current;
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+    } catch {
+      /* noop */
+    }
+    stopRecordingStream();
+    recorderRef.current = null;
     pendingFileRef.current = null;
     setPreviewUrl(null);
     setPreviewKind(null);
     setHasClip(false);
+    activeRecordingMsRef.current = 0;
+    segmentStartedAtRef.current = null;
     setElapsed(0);
+    setProgress(0);
+    setRecording(false);
   };
 
   const confirmUse = () => {
@@ -350,18 +362,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   };
 
   const onNext = () => {
-    if (recording) {
-      // stop and wait for onstop to populate file, then advance
-      const mr = recorderRef.current;
-      if (mr) {
-        const origOnStop = mr.onstop;
-        mr.onstop = (ev) => {
-          if (typeof origOnStop === "function") (origOnStop as (e: Event) => void).call(mr, ev);
-          const f = pendingFileRef.current;
-          if (f) onCapture(f);
-        };
-      }
-      stopRecording();
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") {
+      finalizeRecording(true);
       return;
     }
     confirmUse();
