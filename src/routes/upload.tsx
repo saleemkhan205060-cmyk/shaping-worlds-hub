@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X } from "lucide-react";
+import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -25,6 +25,10 @@ function UploadPage() {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const galleryImgRef = useRef<HTMLInputElement>(null);
+  const galleryVidRef = useRef<HTMLInputElement>(null);
+  const cameraPhotoRef = useRef<HTMLInputElement>(null);
+  const cameraVideoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -102,14 +106,34 @@ function UploadPage() {
 
         <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
           {!file ? (
-            <button
-              onClick={() => inputRef.current?.click()}
-              className="w-full border-2 border-dashed border-slate-300 rounded-xl py-12 flex flex-col items-center justify-center text-slate-500 hover:border-indigo-400 hover:bg-indigo-50/30 transition"
-            >
-              <UploadCloud className="h-10 w-10 mb-2 text-indigo-500" />
-              <span className="font-semibold text-slate-700">Tap to choose a file</span>
-              <span className="text-xs mt-1">Images or videos · up to 500MB</span>
-            </button>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => galleryVidRef.current?.click()}
+                  className="border-2 border-dashed border-slate-300 rounded-xl py-8 flex flex-col items-center justify-center text-slate-600 hover:border-indigo-400 hover:bg-indigo-50/30 transition"
+                >
+                  <FolderOpen className="h-8 w-8 mb-2 text-indigo-500" />
+                  <span className="font-semibold text-slate-700 text-sm">Gallery</span>
+                  <span className="text-[11px] mt-0.5 text-slate-500">Pick a video</span>
+                </button>
+                <button
+                  onClick={() => cameraVideoRef.current?.click()}
+                  className="border-2 border-dashed border-slate-300 rounded-xl py-8 flex flex-col items-center justify-center text-slate-600 hover:border-rose-400 hover:bg-rose-50/30 transition"
+                >
+                  <Camera className="h-8 w-8 mb-2 text-rose-500" />
+                  <span className="font-semibold text-slate-700 text-sm">Record</span>
+                  <span className="text-[11px] mt-0.5 text-slate-500">Make a video</span>
+                </button>
+              </div>
+              <button
+                onClick={() => galleryImgRef.current?.click()}
+                className="w-full border border-slate-200 rounded-xl py-3 flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-50 transition text-sm font-medium"
+              >
+                <ImageIcon className="h-4 w-4 text-indigo-500" />
+                Or choose a photo
+              </button>
+              <p className="text-[11px] text-center text-slate-400">Images or videos · up to 500MB</p>
+            </div>
           ) : (
             <div className="relative rounded-xl overflow-hidden bg-slate-100">
               {file.type.startsWith("video/") ? (
@@ -135,6 +159,36 @@ function UploadPage() {
             ref={inputRef}
             type="file"
             accept="image/*,video/*"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={galleryImgRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={galleryVidRef}
+            type="file"
+            accept="video/*"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={cameraPhotoRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+          />
+          <input
+            ref={cameraVideoRef}
+            type="file"
+            accept="video/*"
+            capture="environment"
             className="hidden"
             onChange={(e) => onPick(e.target.files?.[0] ?? null)}
           />
