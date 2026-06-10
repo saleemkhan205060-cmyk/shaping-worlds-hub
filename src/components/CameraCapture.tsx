@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Music, RefreshCw, Zap, Timer, LayoutPanelTop, UserPlus2, ChevronDown } from "lucide-react";
+import { X, Music, Sparkles, ChevronDown, Pause, Play } from "lucide-react";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
@@ -8,6 +8,14 @@ const MODE_SECONDS: Record<Mode, number> = {
   "60s": 60,
   "15s": 15,
   PHOTO: 0,
+};
+
+type BeautyLevel = 0 | 1 | 2 | 3;
+const BEAUTY_FILTERS: Record<BeautyLevel, string> = {
+  0: "none",
+  1: "brightness(1.06) contrast(0.98) saturate(1.05) blur(0.4px)",
+  2: "brightness(1.12) contrast(0.96) saturate(1.1) blur(0.8px)",
+  3: "brightness(1.18) contrast(0.94) saturate(1.18) blur(1.2px)",
 };
 
 interface Props {
@@ -24,35 +32,33 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const timerRef = useRef<number | null>(null);
 
   const [mode, setMode] = useState<Mode>("60s");
-  const [facing, setFacing] = useState<"user" | "environment">("environment");
+  const [facing] = useState<"user" | "environment">("environment");
   const [recording, setRecording] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
-
-  const startStream = async (face: "user" | "environment") => {
-    try {
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: face },
-        audio: true,
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => {});
-      }
-    } catch {
-      setError("Camera not available. Please allow camera & microphone access.");
-    }
-  };
+  const [beauty, setBeauty] = useState<BeautyLevel>(0);
 
   useEffect(() => {
-    startStream(facing);
+    (async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facing },
+          audio: true,
+        });
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play().catch(() => {});
+        }
+      } catch {
+        setError("Camera not available. Please allow camera & microphone access.");
+      }
+    })();
     return () => {
       streamRef.current?.getTracks().forEach((t) => t.stop());
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [facing]);
 
   const takePhoto = () => {
@@ -63,12 +69,28 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     canvas.height = v.videoHeight || 1280;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    if (beauty > 0) ctx.filter = BEAUTY_FILTERS[beauty];
     ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const f = new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
-      onCapture(f);
-    }, "image/jpeg", 0.92);
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+        const f = new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
+        onCapture(f);
+      },
+      "image/jpeg",
+      0.92,
+    );
+  };
+
+  const startTimer = () => {
+    const max = MODE_SECONDS[mode];
+    timerRef.current = window.setInterval(() => {
+      setElapsed((s) => {
+        const next = s + 1;
+        if (next >= max) stopRecording();
+        return next;
+      });
+    }, 1000);
   };
 
   const startRecording = () => {
@@ -98,15 +120,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     };
     mr.start();
     setRecording(true);
+    setPaused(false);
     setElapsed(0);
-    const max = MODE_SECONDS[mode];
-    timerRef.current = window.setInterval(() => {
-      setElapsed((s) => {
-        const next = s + 1;
-        if (next >= max) stopRecording();
-        return next;
-      });
-    }, 1000);
+    startTimer();
   };
 
   const stopRecording = () => {
@@ -114,8 +130,38 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       window.clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    recorderRef.current?.stop();
+    try {
+      recorderRef.current?.stop();
+    } catch {
+      /* noop */
+    }
     setRecording(false);
+    setPaused(false);
+  };
+
+  const togglePause = () => {
+    const mr = recorderRef.current;
+    if (!mr) return;
+    if (!paused) {
+      try {
+        mr.pause();
+      } catch {
+        /* noop */
+      }
+      if (timerRef.current) {
+        window.clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setPaused(true);
+    } else {
+      try {
+        mr.resume();
+      } catch {
+        /* noop */
+      }
+      startTimer();
+      setPaused(false);
+    }
   };
 
   const onTapRecord = () => {
@@ -135,11 +181,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-black text-white select-none overflow-hidden">
-      <div className="absolute inset-0 rounded-[28px] overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden">
         <video
           ref={videoRef}
           playsInline
           muted
+          style={{ filter: BEAUTY_FILTERS[beauty] }}
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
@@ -161,14 +208,20 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       {/* Right side icon column */}
       <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-6">
         <button
-          onClick={() => setFacing((f) => (f === "user" ? "environment" : "user"))}
-          aria-label="Effects"
+          onClick={() => setBeauty((b) => (((b + 1) % 4) as BeautyLevel))}
+          aria-label="Beauty filter"
           className="relative"
         >
-          <UserPlus2 className="h-8 w-8 text-white drop-shadow" strokeWidth={2} />
-          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 border border-black flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-          </span>
+          <Sparkles
+            className={`h-8 w-8 drop-shadow ${beauty > 0 ? "text-rose-400" : "text-white"}`}
+            strokeWidth={2}
+            fill={beauty > 0 ? "currentColor" : "none"}
+          />
+          {beauty > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 border border-black flex items-center justify-center text-[10px] font-bold leading-none">
+              {beauty}
+            </span>
+          )}
         </button>
         <button aria-label="More">
           <ChevronDown className="h-8 w-8 text-white drop-shadow" strokeWidth={2.25} />
@@ -182,8 +235,10 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       )}
 
       {recording && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-red-600 text-sm font-bold tabular-nums z-10">
-          ● {fmt(elapsed)}
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-red-600 text-sm font-bold tabular-nums z-10 flex items-center gap-2">
+          <span className={paused ? "opacity-50" : "animate-pulse"}>●</span>
+          {fmt(elapsed)}
+          {paused && <span className="text-xs font-semibold">PAUSED</span>}
         </div>
       )}
 
@@ -205,16 +260,23 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       </div>
 
       {/* Record row */}
-      <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-5 z-10">
-        <button
-          onClick={onPickGallery}
-          aria-label="Gallery"
-          className="h-14 w-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg"
-          style={{
-            backgroundImage:
-              "linear-gradient(135deg, #6b7c8a 0%, #2f4858 45%, #1f2d3a 100%)",
-          }}
-        />
+      <div className="absolute left-0 right-0 bottom-6 flex items-center justify-between px-8 z-10">
+        {/* Pause/Resume slot (only while recording) */}
+        <div className="h-14 w-14 flex items-center justify-center">
+          {recording && mode !== "PHOTO" ? (
+            <button
+              onClick={togglePause}
+              aria-label={paused ? "Resume" : "Pause"}
+              className="h-12 w-12 rounded-full bg-white/90 text-black flex items-center justify-center shadow-lg"
+            >
+              {paused ? (
+                <Play className="h-6 w-6" fill="currentColor" />
+              ) : (
+                <Pause className="h-6 w-6" fill="currentColor" />
+              )}
+            </button>
+          ) : null}
+        </div>
 
         <button
           onClick={onTapRecord}
@@ -230,7 +292,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
         <button
           onClick={onPickGallery}
-          aria-label="Photos"
+          aria-label="Gallery"
           className="h-14 w-14 rounded-2xl bg-white shadow-lg flex items-center justify-center overflow-hidden"
         >
           <svg viewBox="0 0 64 64" className="h-11 w-11">
