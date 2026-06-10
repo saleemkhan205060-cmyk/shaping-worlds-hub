@@ -16,7 +16,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:background">#FFFFFF</item>
         <item name="android:windowBackground">#FFFFFF</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">#FFFFFF</item>
         <item name="android:navigationBarColor">#FFFFFF</item>

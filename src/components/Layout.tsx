@@ -277,7 +277,7 @@ export function Layout({
         </DialogContent>
       </Dialog>
 
-      <main className={fullScreenMobile ? "h-[100dvh] overflow-hidden md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6" : "max-w-6xl mx-auto px-3 sm:px-4 py-6"}>{children}</main>
+      <main className={fullScreenMobile ? "fixed inset-0 z-40 h-[100dvh] overflow-hidden bg-white md:static md:z-auto md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6" : "max-w-6xl mx-auto px-3 sm:px-4 py-6"}>{children}</main>
 
       {!hideMobileNav && (
       <nav

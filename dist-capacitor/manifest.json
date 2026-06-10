@@ -5,9 +5,10 @@
   "id": "/",
   "start_url": "/",
   "scope": "/",
-  "display": "standalone",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
   "background_color": "#ffffff",
-  "theme_color": "#d4af37",
+  "theme_color": "#ffffff",
   "orientation": "any",
   "lang": "en",
   "icons": [
