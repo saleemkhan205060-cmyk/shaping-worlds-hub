@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
+import { CameraCapture } from "@/components/CameraCapture";
 import { AvatarImg } from "@/components/AvatarImg";
 import { Globe2, Lock } from "lucide-react";
 import { TextPostCard } from "@/components/TextPostCard";
@@ -115,6 +116,7 @@ export function HomeFeed() {
   // Fullscreen player
   const [fsOpen, setFsOpen] = useState(false);
   const [fsIndex, setFsIndex] = useState(0);
+  const [showCamera, setShowCamera] = useState(false);
 
   // Inline video refs for autopause
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
@@ -682,10 +684,7 @@ export function HomeFeed() {
                 <ImageIcon className="h-4 w-4" /> Photo
               </button>
               <button
-                onClick={() => {
-                  if (fileRef.current) fileRef.current.accept = "video/*";
-                  fileRef.current?.click();
-                }}
+                onClick={() => setShowCamera(true)}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-rose-700 hover:bg-rose-50 transition"
               >
                 <VideoIcon className="h-4 w-4" /> Video
@@ -908,6 +907,18 @@ export function HomeFeed() {
           onCountChange={(n) =>
             setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))
           }
+        />
+      )}
+
+      {showCamera && (
+        <CameraCapture
+          onClose={() => setShowCamera(false)}
+          onPickGallery={() => {
+            setShowCamera(false);
+            if (fileRef.current) fileRef.current.accept = "video/*";
+            fileRef.current?.click();
+          }}
+          onCapture={(f) => { setShowCamera(false); pickFile(f); }}
         />
       )}
 
