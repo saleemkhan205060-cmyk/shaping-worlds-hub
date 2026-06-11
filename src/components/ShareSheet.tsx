@@ -175,7 +175,6 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             onClick={copyLink}
           />
         </div>
-
       </div>
     </div>
   );
