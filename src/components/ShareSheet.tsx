@@ -12,11 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  isNativeCapacitorApp,
-  shareWithCapacitor,
-  shareWithWebShare,
-} from "@/lib/native-share";
+import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
 
 type ShareSheetProps = {
   open: boolean;
