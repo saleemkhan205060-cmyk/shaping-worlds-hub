@@ -1,3 +1,5 @@
+import { Capacitor } from "@capacitor/core";
+
 export type NativeShareData = {
   title?: string;
   text?: string;
@@ -9,6 +11,12 @@ export type NativeShareResult = "shared" | "cancelled" | "unavailable" | "failed
 
 export function isNativeCapacitorApp() {
   if (typeof window === "undefined") return false;
+  try {
+    if (Capacitor.isNativePlatform()) return true;
+  } catch {
+    // Fall back to the runtime object below for older embedded builds.
+  }
+
   const capacitor = (
     window as typeof window & {
       Capacitor?: {
