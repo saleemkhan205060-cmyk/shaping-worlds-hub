@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
+import { ShareSheet } from "@/components/ShareSheet";
 
 type UploaderProfile = {
   id: string;
@@ -46,6 +47,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
+  const [shareItem, setShareItem] = useState<FsItem | null>(null);
 
   // Social state
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
@@ -255,23 +257,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     }
   };
 
-  const share = (it: FsItem) => {
-    const url = it.media_url || window.location.href;
-    const data = { title: it.caption ?? "Video", text: it.caption ?? "Check this out", url };
-    const nav: any = typeof navigator !== "undefined" ? navigator : null;
-    if (nav?.share) {
-      // Call synchronously to preserve the user-activation context.
-      nav.share(data).catch((err: any) => {
-        if (err?.name === "AbortError") return;
-        nav.clipboard?.writeText(url).then(() => toast.success("Link copied")).catch(() => toast.error("Couldn't share"));
-      });
-      return;
-    }
-    if (nav?.clipboard) {
-      nav.clipboard.writeText(url).then(() => toast.success("Link copied")).catch(() => toast.error("Couldn't share"));
-    } else {
-      toast.error("Sharing not supported");
-    }
+  const openShareSheet = (it: FsItem) => {
+    setMoreOpenFor(null);
+    setShareItem(it);
   };
 
   return (
