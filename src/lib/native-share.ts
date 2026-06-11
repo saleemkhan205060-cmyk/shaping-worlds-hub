@@ -94,7 +94,10 @@ function buildWebShareData(data: NativeShareData): ShareData {
 function getAbsoluteShareUrl(url?: string) {
   if (!url) return typeof window !== "undefined" ? window.location.href : undefined;
   try {
-    const absoluteUrl = new URL(url, typeof window !== "undefined" ? window.location.href : undefined);
+    const absoluteUrl = new URL(
+      url,
+      typeof window !== "undefined" ? window.location.href : undefined,
+    );
     return /^(https?:|file:)$/.test(absoluteUrl.protocol) ? absoluteUrl.href : undefined;
   } catch {
     return undefined;
