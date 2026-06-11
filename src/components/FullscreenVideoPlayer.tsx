@@ -259,6 +259,26 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
   const openShareSheet = (it: FsItem) => {
     setMoreOpenFor(null);
+    const url = it.media_url || window.location.href;
+    const data = {
+      title: it.caption ?? "Post",
+      text: it.caption ?? "Check this out",
+      url,
+    };
+    // Prefer native OS share sheet (shows ALL installed apps, TikTok-style).
+    // Call synchronously to preserve the user-activation gesture.
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      try {
+        navigator.share(data).catch((err) => {
+          if (err?.name === "AbortError") return;
+          // Native share failed — fall back to in-app sheet
+          setShareItem(it);
+        });
+        return;
+      } catch {
+        // ignore and fall through to custom sheet
+      }
+    }
     setShareItem(it);
   };
 
