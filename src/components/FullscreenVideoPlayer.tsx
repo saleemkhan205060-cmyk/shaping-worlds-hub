@@ -255,22 +255,22 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     }
   };
 
-  const share = async (it: FsItem) => {
+  const share = (it: FsItem) => {
     const url = it.media_url || window.location.href;
     const data = { title: it.caption ?? "Video", text: it.caption ?? "Check this out", url };
-    try {
-      if (typeof navigator !== "undefined" && (navigator as any).share) {
-        await (navigator as any).share(data);
-        return;
-      }
-    } catch (err: any) {
-      if (err?.name === "AbortError") return;
+    const nav: any = typeof navigator !== "undefined" ? navigator : null;
+    if (nav?.share) {
+      // Call synchronously to preserve the user-activation context.
+      nav.share(data).catch((err: any) => {
+        if (err?.name === "AbortError") return;
+        nav.clipboard?.writeText(url).then(() => toast.success("Link copied")).catch(() => toast.error("Couldn't share"));
+      });
+      return;
     }
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success("Link copied");
-    } catch {
-      toast.error("Couldn't share");
+    if (nav?.clipboard) {
+      nav.clipboard.writeText(url).then(() => toast.success("Link copied")).catch(() => toast.error("Couldn't share"));
+    } else {
+      toast.error("Sharing not supported");
     }
   };
 
