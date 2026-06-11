@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Copy, Facebook, MessageCircle, Send, Share2, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -98,7 +99,7 @@ function ShareChoice({
   onClick,
 }: {
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   onClick: () => void;
 }) {
   return (
