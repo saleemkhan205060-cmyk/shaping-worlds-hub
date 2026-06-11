@@ -9,12 +9,14 @@ export type NativeShareResult = "shared" | "cancelled" | "unavailable" | "failed
 
 export function isNativeCapacitorApp() {
   if (typeof window === "undefined") return false;
-  const capacitor = (window as typeof window & {
-    Capacitor?: {
-      isNativePlatform?: () => boolean;
-      getPlatform?: () => string;
-    };
-  }).Capacitor;
+  const capacitor = (
+    window as typeof window & {
+      Capacitor?: {
+        isNativePlatform?: () => boolean;
+        getPlatform?: () => string;
+      };
+    }
+  ).Capacitor;
 
   if (capacitor?.isNativePlatform?.()) return true;
   const platform = capacitor?.getPlatform?.();
