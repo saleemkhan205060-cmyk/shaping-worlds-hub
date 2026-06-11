@@ -443,16 +443,16 @@ function ActionBtn({
   return (
     <button
       onClick={onClick}
-      className="flex flex-col items-center gap-1 text-white drop-shadow-lg"
+      className="flex flex-col items-center text-white drop-shadow-lg"
     >
       <span
-        className={`h-11 w-11 rounded-full backdrop-blur-md flex items-center justify-center active:scale-95 transition ${
-          active ? "bg-white/20" : "bg-white/10"
+        className={`flex items-center justify-center active:scale-95 transition ${
+          active ? "text-rose-500" : ""
         }`}
       >
         {icon}
       </span>
-      <span className="text-[11px] font-medium">{label}</span>
+      <span className="text-[11px] font-medium leading-tight mt-0.5">{label}</span>
     </button>
   );
 }
