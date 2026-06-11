@@ -1,6 +1,18 @@
 import type { ReactNode } from "react";
-import { Copy, Facebook, MessageCircle, Send, Share2, X } from "lucide-react";
+import {
+  Copy,
+  Facebook,
+  Linkedin,
+  Mail,
+  MessageCircle,
+  MessagesSquare,
+  Music2,
+  Send,
+  Share2,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
+import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
 
 type ShareSheetProps = {
   open: boolean;
@@ -15,7 +27,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
 
   const encodedUrl = encodeURIComponent(url);
   const encodedText = encodeURIComponent(`${text} ${url}`.trim());
-  const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
+  const canNativeShare = canUseNativeShareSheet();
 
   const openShareUrl = (shareUrl: string) => {
     window.open(shareUrl, "_blank", "noopener,noreferrer");
@@ -32,13 +44,14 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     }
   };
 
-  const moreApps = () => {
-    navigator
-      .share?.({ title, text, url })
-      .then(onClose)
-      .catch((err) => {
-        if (err?.name !== "AbortError") toast.error("Couldn't open share menu");
-      });
+  const moreApps = async () => {
+    const data = { title, text, url, dialogTitle: "Share post" };
+    const result = isNativeCapacitorApp()
+      ? await shareWithCapacitor(data)
+      : await (shareWithWebShare(data) ?? Promise.resolve("unavailable"));
+
+    if (result === "shared") onClose();
+    if (result === "failed" || result === "unavailable") toast.error("Couldn't open share menu");
   };
 
   return (
@@ -59,23 +72,74 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-3 pb-4">
+        <div className="grid grid-cols-4 gap-x-3 gap-y-4 pb-4">
           <ShareChoice
             label="WhatsApp"
             icon={<MessageCircle className="h-5 w-5" />}
+            tone="bg-[#25D366] text-white"
             onClick={() => openShareUrl(`https://wa.me/?text=${encodedText}`)}
           />
           <ShareChoice
             label="Facebook"
             icon={<Facebook className="h-5 w-5" />}
+            tone="bg-[#1877F2] text-white"
             onClick={() => openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`)}
+          />
+          <ShareChoice
+            label="Messenger"
+            icon={<MessagesSquare className="h-5 w-5" />}
+            tone="bg-[#A334FA] text-white"
+            onClick={() => openShareUrl(`fb-messenger://share?link=${encodedUrl}`)}
           />
           <ShareChoice
             label="Telegram"
             icon={<Send className="h-5 w-5" />}
+            tone="bg-[#26A5E4] text-white"
             onClick={() => openShareUrl(`https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(text)}`)}
           />
-          <ShareChoice label="Copy" icon={<Copy className="h-5 w-5" />} onClick={copyLink} />
+          <ShareChoice
+            label="TikTok"
+            icon={<Music2 className="h-5 w-5" />}
+            tone="bg-slate-950 text-white"
+            onClick={moreApps}
+          />
+          <ShareChoice
+            label="X"
+            icon={<span className="text-base font-black leading-none">𝕏</span>}
+            tone="bg-slate-950 text-white"
+            onClick={() => openShareUrl(`https://twitter.com/intent/tweet?text=${encodedText}`)}
+          />
+          <ShareChoice
+            label="LinkedIn"
+            icon={<Linkedin className="h-5 w-5" />}
+            tone="bg-[#0A66C2] text-white"
+            onClick={() => openShareUrl(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`)}
+          />
+          <ShareChoice
+            label="Email"
+            icon={<Mail className="h-5 w-5" />}
+            tone="bg-[#EA4335] text-white"
+            onClick={() => openShareUrl(`mailto:?subject=${encodeURIComponent(title)}&body=${encodedText}`)}
+          />
+          <ShareChoice
+            label="SMS"
+            icon={<MessagesSquare className="h-5 w-5" />}
+            tone="bg-[#34C759] text-white"
+            onClick={() => openShareUrl(`sms:?&body=${encodedText}`)}
+          />
+          <ShareChoice
+            label="Reddit"
+            icon={<span className="text-sm font-black leading-none">r</span>}
+            tone="bg-[#FF4500] text-white"
+            onClick={() => openShareUrl(`https://www.reddit.com/submit?url=${encodedUrl}&title=${encodeURIComponent(title)}`)}
+          />
+          <ShareChoice
+            label="Pinterest"
+            icon={<span className="text-base font-black leading-none">P</span>}
+            tone="bg-[#E60023] text-white"
+            onClick={() => openShareUrl(`https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodeURIComponent(text)}`)}
+          />
+          <ShareChoice label="Copy" icon={<Copy className="h-5 w-5" />} tone="bg-slate-100 text-slate-800" onClick={copyLink} />
         </div>
 
         {canNativeShare && (
@@ -93,18 +157,24 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
   );
 }
 
+function canUseNativeShareSheet() {
+  return isNativeCapacitorApp() || (typeof navigator !== "undefined" && !!navigator.share);
+}
+
 function ShareChoice({
   label,
   icon,
+  tone,
   onClick,
 }: {
   label: string;
   icon: ReactNode;
+  tone: string;
   onClick: () => void;
 }) {
   return (
     <button type="button" onClick={onClick} className="flex min-w-0 flex-col items-center gap-2 text-slate-800">
-      <span className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center active:bg-slate-200">
+      <span className={`h-12 w-12 rounded-full flex items-center justify-center shadow-sm active:scale-95 ${tone}`}>
         {icon}
       </span>
       <span className="w-full truncate text-center text-[11px] font-medium leading-tight">{label}</span>
