@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX } from "lucide-react";
+import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX, MoreVertical } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
