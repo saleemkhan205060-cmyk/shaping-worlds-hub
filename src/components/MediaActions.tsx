@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
-import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
+import { shareWithSystemShare } from "@/lib/native-share";
 
 type Props = {
   postId: string;
@@ -63,7 +63,6 @@ export function MediaActions({
   };
 
   const handleShare = () => {
-    setOpen(false);
     const url = mediaUrl || window.location.href;
     const data = {
       title: caption ?? "Post",
@@ -72,22 +71,15 @@ export function MediaActions({
       dialogTitle: "Share post",
     };
 
-    if (isNativeCapacitorApp()) {
-      shareWithCapacitor(data).then((result) => {
-        if (result === "failed" || result === "unavailable") setShareOpen(true);
-      });
+    const systemShare = shareWithSystemShare(data);
+    setOpen(false);
+    if (!systemShare) {
+      setShareOpen(true);
       return;
     }
-
-    const webShare = shareWithWebShare(data);
-    if (webShare) {
-      webShare.then((result) => {
-        if (result === "failed" || result === "unavailable") setShareOpen(true);
-      });
-      return;
-    }
-
-    setShareOpen(true);
+    systemShare.then((result) => {
+      if (result === "failed" || result === "unavailable") setShareOpen(true);
+    });
   };
 
   const handleReport = async () => {

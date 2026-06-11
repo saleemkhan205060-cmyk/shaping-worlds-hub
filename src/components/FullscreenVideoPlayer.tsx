@@ -17,7 +17,7 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 import { ShareSheet } from "@/components/ShareSheet";
-import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
+import { shareWithSystemShare } from "@/lib/native-share";
 
 type UploaderProfile = {
   id: string;
@@ -268,7 +268,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   };
 
   const openShareSheet = (it: FsItem) => {
-    setMoreOpenFor(null);
     const url = it.media_url || window.location.href;
     const data = {
       title: it.caption ?? "Post",
@@ -277,22 +276,15 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       dialogTitle: "Share post",
     };
 
-    if (isNativeCapacitorApp()) {
-      shareWithCapacitor(data).then((result) => {
-        if (result === "failed" || result === "unavailable") setShareItem(it);
-      });
+    const systemShare = shareWithSystemShare(data);
+    setMoreOpenFor(null);
+    if (!systemShare) {
+      setShareItem(it);
       return;
     }
-
-    const webShare = shareWithWebShare(data);
-    if (webShare) {
-      webShare.then((result) => {
-        if (result === "failed" || result === "unavailable") setShareItem(it);
-      });
-      return;
-    }
-
-    setShareItem(it);
+    systemShare.then((result) => {
+      if (result === "failed" || result === "unavailable") setShareItem(it);
+    });
   };
 
   return (

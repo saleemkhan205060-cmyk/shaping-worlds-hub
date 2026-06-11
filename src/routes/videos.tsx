@@ -15,7 +15,7 @@ import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVide
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
-import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
+import { shareWithSystemShare } from "@/lib/native-share";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 
 type Post = {
@@ -114,22 +114,14 @@ function Videos() {
       dialogTitle: "Share post",
     };
 
-    if (isNativeCapacitorApp()) {
-      shareWithCapacitor(data).then((result) => {
-        if (result === "failed" || result === "unavailable") setSharePost(post);
-      });
+    const systemShare = shareWithSystemShare(data);
+    if (!systemShare) {
+      setSharePost(post);
       return;
     }
-
-    const webShare = shareWithWebShare(data);
-    if (webShare) {
-      webShare.then((result) => {
-        if (result === "failed" || result === "unavailable") setSharePost(post);
-      });
-      return;
-    }
-
-    setSharePost(post);
+    systemShare.then((result) => {
+      if (result === "failed" || result === "unavailable") setSharePost(post);
+    });
   };
 
   return (
