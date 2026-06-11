@@ -255,13 +255,22 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     }
   };
 
-  const share = async (caption: string | null) => {
-    const data = { title: caption ?? "Video", url: window.location.href };
+  const share = async (it: FsItem) => {
+    const url = it.media_url || window.location.href;
+    const data = { title: it.caption ?? "Video", text: it.caption ?? "Check this out", url };
     try {
-      if (navigator.share) await navigator.share(data);
-      else await navigator.clipboard.writeText(data.url);
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        await (navigator as any).share(data);
+        return;
+      }
+    } catch (err: any) {
+      if (err?.name === "AbortError") return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied");
     } catch {
-      // Ignore share cancellations and clipboard permission denials.
+      toast.error("Couldn't share");
     }
   };
 
@@ -394,7 +403,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                       <div className="fixed inset-0 z-10" onClick={() => setMoreOpenFor(null)} />
                       <div className="absolute right-0 mt-1 min-w-[140px] bg-black/80 backdrop-blur-md rounded-xl py-1 z-20 shadow-xl">
                         <button
-                          onClick={() => { setMoreOpenFor(null); share(it.caption); }}
+                          onClick={() => { setMoreOpenFor(null); share(it); }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
                         >
                           <Share2 className="h-5 w-5" /> Share
