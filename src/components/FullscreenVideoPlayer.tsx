@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX, MoreVertical } from "lucide-react";
+import {
+  X,
+  Heart,
+  MessageCircle,
+  Share2,
+  Play,
+  Volume2,
+  VolumeX,
+  MoreVertical,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,6 +17,7 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 import { ShareSheet } from "@/components/ShareSheet";
+import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
 
 type UploaderProfile = {
   id: string;
@@ -264,21 +274,24 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       title: it.caption ?? "Post",
       text: it.caption ?? "Check this out",
       url,
+      dialogTitle: "Share post",
     };
-    // Prefer native OS share sheet (shows ALL installed apps, TikTok-style).
-    // Call synchronously to preserve the user-activation gesture.
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      try {
-        navigator.share(data).catch((err) => {
-          if (err?.name === "AbortError") return;
-          // Native share failed — fall back to in-app sheet
-          setShareItem(it);
-        });
-        return;
-      } catch {
-        // ignore and fall through to custom sheet
-      }
+
+    if (isNativeCapacitorApp()) {
+      shareWithCapacitor(data).then((result) => {
+        if (result === "failed" || result === "unavailable") setShareItem(it);
+      });
+      return;
     }
+
+    const webShare = shareWithWebShare(data);
+    if (webShare) {
+      webShare.then((result) => {
+        if (result === "failed" || result === "unavailable") setShareItem(it);
+      });
+      return;
+    }
+
     setShareItem(it);
   };
 
@@ -418,10 +431,17 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                         </button>
                         {it.media_type === "video" && (
                           <button
-                            onClick={() => { setSoundMuted(!userMutedRef.current); setMoreOpenFor(null); }}
+                            onClick={() => {
+                              setSoundMuted(!userMutedRef.current);
+                              setMoreOpenFor(null);
+                            }}
                             className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
                           >
-                            {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                            {muted ? (
+                              <VolumeX className="h-5 w-5" />
+                            ) : (
+                              <Volume2 className="h-5 w-5" />
+                            )}
                             {muted ? "Unmute" : "Mute"}
                           </button>
                         )}
@@ -467,10 +487,7 @@ function ActionBtn({
   active?: boolean;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center text-white drop-shadow-lg"
-    >
+    <button onClick={onClick} className="flex flex-col items-center text-white drop-shadow-lg">
       <span
         className={`flex items-center justify-center active:scale-95 transition ${
           active ? "text-rose-500" : ""
