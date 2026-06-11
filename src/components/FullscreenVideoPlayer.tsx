@@ -45,6 +45,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
 
   // Social state
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
