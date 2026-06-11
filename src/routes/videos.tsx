@@ -1,13 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Heart, MessageCircle, Share2, CheckCircle2, UploadCloud, Play, Pencil } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  CheckCircle2,
+  UploadCloud,
+  Play,
+  Pencil,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
 import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 
 type Post = {
   id: string;
@@ -45,14 +54,21 @@ function Videos() {
     }, 500);
   };
   const cancelPress = () => {
-    if (pressTimer.current) { window.clearTimeout(pressTimer.current); pressTimer.current = null; }
+    if (pressTimer.current) {
+      window.clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
   };
 
   const saveTitle = async () => {
     if (!editingId) return;
     const newTitle = editValue.trim() || null;
-    const { error } = await supabase.from("posts").update({ title: newTitle } as any).eq("id", editingId);
-    if (error) { toast.error("Failed to update"); return; }
+    const update: TablesUpdate<"posts"> = { title: newTitle };
+    const { error } = await supabase.from("posts").update(update).eq("id", editingId);
+    if (error) {
+      toast.error("Failed to update");
+      return;
+    }
     setPosts((prev) => prev.map((p) => (p.id === editingId ? { ...p, title: newTitle } : p)));
     setEditingId(null);
     toast.success("Title updated");
@@ -91,7 +107,12 @@ function Videos() {
 
   const share = (post: Post) => {
     const title = post.caption ?? post.title ?? "Post";
-    const data = { title, text: `Check out ${title}`, url: post.media_url || window.location.href, dialogTitle: "Share post" };
+    const data = {
+      title,
+      text: `Check out ${title}`,
+      url: post.media_url || window.location.href,
+      dialogTitle: "Share post",
+    };
 
     if (isNativeCapacitorApp()) {
       shareWithCapacitor(data).then((result) => {
