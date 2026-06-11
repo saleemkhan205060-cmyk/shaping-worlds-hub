@@ -363,7 +363,7 @@ function ProductCard({
           </div>
         ) : null}
 
-        {product.url ? (
+        {product.url && /^https?:\/\//i.test(product.url) ? (
           <a
             href={product.url}
             target="_blank"
