@@ -1,4 +1,5 @@
 import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
 
 export type NativeShareData = {
   title?: string;
@@ -35,12 +36,27 @@ export function canUseWebShare() {
   return typeof navigator !== "undefined" && typeof navigator.share === "function";
 }
 
+export function canUseSystemShare() {
+  return isNativeCapacitorApp() || canUseWebShare();
+}
+
+export function shareWithSystemShare(data: NativeShareData): Promise<NativeShareResult> | null {
+  if (isNativeCapacitorApp()) return shareWithCapacitor(data);
+  return shareWithWebShare(data);
+}
+
 export function shareWithWebShare(data: NativeShareData): Promise<NativeShareResult> | null {
   if (!canUseWebShare()) return null;
 
+  const shareData = buildWebShareData(data);
+  const webNavigator = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
+  if (webNavigator.canShare && !webNavigator.canShare(shareData)) {
+    return Promise.resolve("unavailable");
+  }
+
   try {
     return navigator
-      .share({ title: data.title, text: data.text, url: data.url })
+      .share(shareData)
       .then(() => "shared" as const)
       .catch((error) => (isShareCancel(error) ? "cancelled" : "failed"));
   } catch (error) {
@@ -48,20 +64,40 @@ export function shareWithWebShare(data: NativeShareData): Promise<NativeShareRes
   }
 }
 
-export async function shareWithCapacitor(data: NativeShareData): Promise<NativeShareResult> {
-  if (!isNativeCapacitorApp()) return "unavailable";
+export function shareWithCapacitor(data: NativeShareData): Promise<NativeShareResult> {
+  if (!isNativeCapacitorApp()) return Promise.resolve("unavailable");
 
   try {
-    const { Share } = await import("@capacitor/share");
-    await Share.share({
-      title: data.title,
-      text: data.text,
-      url: data.url,
+    return Share.share({
+      title: data.title ?? "Post",
+      text: data.text ?? "Check this out",
+      url: getAbsoluteShareUrl(data.url),
       dialogTitle: data.dialogTitle ?? "Share",
-    });
-    return "shared";
+    })
+      .then(() => "shared" as const)
+      .catch((error) => (isShareCancel(error) ? "cancelled" : "failed"));
   } catch (error) {
-    return isShareCancel(error) ? "cancelled" : "failed";
+    return Promise.resolve(isShareCancel(error) ? "cancelled" : "failed");
+  }
+}
+
+function buildWebShareData(data: NativeShareData): ShareData {
+  const shareData: ShareData = {
+    title: data.title ?? "Post",
+    text: data.text ?? "Check this out",
+  };
+  const url = getAbsoluteShareUrl(data.url);
+  if (url) shareData.url = url;
+  return shareData;
+}
+
+function getAbsoluteShareUrl(url?: string) {
+  if (!url) return typeof window !== "undefined" ? window.location.href : undefined;
+  try {
+    const absoluteUrl = new URL(url, typeof window !== "undefined" ? window.location.href : undefined);
+    return /^(https?:|file:)$/.test(absoluteUrl.protocol) ? absoluteUrl.href : undefined;
+  } catch {
+    return undefined;
   }
 }
 
