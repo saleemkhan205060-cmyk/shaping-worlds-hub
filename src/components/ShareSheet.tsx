@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
+import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
 
 type ShareSheetProps = {
   open: boolean;
@@ -27,7 +27,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
 
   const encodedUrl = encodeURIComponent(url);
   const encodedText = encodeURIComponent(`${text} ${url}`.trim());
-  const canNativeShare = canUseNativeShareSheet();
+  const canNativeShare = canUseSystemShare();
 
   const openShareUrl = (shareUrl: string) => {
     window.open(shareUrl, "_blank", "noopener,noreferrer");
@@ -46,9 +46,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
 
   const moreApps = async () => {
     const data = { title, text, url, dialogTitle: "Share post" };
-    const result = isNativeCapacitorApp()
-      ? await shareWithCapacitor(data)
-      : await (shareWithWebShare(data) ?? Promise.resolve("unavailable"));
+    const result = await (shareWithSystemShare(data) ?? Promise.resolve("unavailable"));
 
     if (result === "shared") onClose();
     if (result === "failed" || result === "unavailable") {
@@ -78,6 +76,14 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
         </div>
 
         <div className="grid grid-cols-4 gap-x-3 gap-y-4 pb-4">
+          {canNativeShare && (
+            <ShareChoice
+              label="More apps"
+              icon={<Share2 className="h-5 w-5" />}
+              tone="bg-slate-900 text-white"
+              onClick={moreApps}
+            />
+          )}
           <ShareChoice
             label="WhatsApp"
             icon={<MessageCircle className="h-5 w-5" />}
@@ -170,23 +176,9 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
           />
         </div>
 
-        {canNativeShare && (
-          <button
-            type="button"
-            onClick={moreApps}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white active:bg-slate-800"
-          >
-            <Share2 className="h-4 w-4" />
-            More apps
-          </button>
-        )}
       </div>
     </div>
   );
-}
-
-function canUseNativeShareSheet() {
-  return isNativeCapacitorApp() || (typeof navigator !== "undefined" && !!navigator.share);
 }
 
 function ShareChoice({
