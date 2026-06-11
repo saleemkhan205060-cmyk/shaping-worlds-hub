@@ -8,6 +8,7 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 import { ShareSheet } from "@/components/ShareSheet";
+import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
 
 type UploaderProfile = {
   id: string;
@@ -264,21 +265,24 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       title: it.caption ?? "Post",
       text: it.caption ?? "Check this out",
       url,
+      dialogTitle: "Share post",
     };
-    // Prefer native OS share sheet (shows ALL installed apps, TikTok-style).
-    // Call synchronously to preserve the user-activation gesture.
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      try {
-        navigator.share(data).catch((err) => {
-          if (err?.name === "AbortError") return;
-          // Native share failed — fall back to in-app sheet
-          setShareItem(it);
-        });
-        return;
-      } catch {
-        // ignore and fall through to custom sheet
-      }
+
+    if (isNativeCapacitorApp()) {
+      shareWithCapacitor(data).then((result) => {
+        if (result === "failed" || result === "unavailable") setShareItem(it);
+      });
+      return;
     }
+
+    const webShare = shareWithWebShare(data);
+    if (webShare) {
+      webShare.then((result) => {
+        if (result === "failed" || result === "unavailable") setShareItem(it);
+      });
+      return;
+    }
+
     setShareItem(it);
   };
 
