@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
+import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
 
 type Props = {
   postId: string;
@@ -66,16 +67,24 @@ export function MediaActions({
       title: caption ?? "Post",
       text: caption ?? "Check this out",
       url,
+      dialogTitle: "Share post",
     };
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      try {
-        navigator.share(data).catch((err) => {
-          if (err?.name === "AbortError") return;
-          setShareOpen(true);
-        });
-        return;
-      } catch {}
+
+    if (isNativeCapacitorApp()) {
+      shareWithCapacitor(data).then((result) => {
+        if (result === "failed" || result === "unavailable") setShareOpen(true);
+      });
+      return;
     }
+
+    const webShare = shareWithWebShare(data);
+    if (webShare) {
+      webShare.then((result) => {
+        if (result === "failed" || result === "unavailable") setShareOpen(true);
+      });
+      return;
+    }
+
     setShareOpen(true);
   };
 
