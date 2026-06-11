@@ -90,9 +90,25 @@ async function getAccessToken(sa: ServiceAccount): Promise<string> {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Authenticate the caller. This function is triggered by a Postgres webhook
+  // that sends `Authorization: Bearer <SERVICE_ROLE_KEY>`. Reject anything else
+  // so the endpoint cannot be abused to spam push notifications.
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  const webhookSecret = Deno.env.get("PUSH_WEBHOOK_SECRET") ?? "";
+  const authHeader = req.headers.get("authorization") ?? "";
+  const providedSecret = req.headers.get("x-webhook-secret") ?? "";
+  const expectedAuth = serviceRoleKey ? `Bearer ${serviceRoleKey}` : "";
+  const authOk =
+    (expectedAuth && authHeader === expectedAuth) ||
+    (webhookSecret && providedSecret === webhookSecret);
+  if (!authOk) {
+    return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+  }
+
   try {
     const { message_id } = (await req.json()) as Payload;
     if (!message_id) return new Response("missing message_id", { status: 400, headers: corsHeaders });
+
 
     const serviceJson = Deno.env.get("FCM_SERVICE_ACCOUNT_JSON");
     const fcmProjectId =
