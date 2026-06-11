@@ -255,13 +255,22 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     }
   };
 
-  const share = async (caption: string | null) => {
-    const data = { title: caption ?? "Video", url: window.location.href };
+  const share = async (it: FsItem) => {
+    const url = it.media_url || window.location.href;
+    const data = { title: it.caption ?? "Video", text: it.caption ?? "Check this out", url };
     try {
-      if (navigator.share) await navigator.share(data);
-      else await navigator.clipboard.writeText(data.url);
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        await (navigator as any).share(data);
+        return;
+      }
+    } catch (err: any) {
+      if (err?.name === "AbortError") return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied");
     } catch {
-      // Ignore share cancellations and clipboard permission denials.
+      toast.error("Couldn't share");
     }
   };
 
