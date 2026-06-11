@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX } from "lucide-react";
+import { X, Heart, MessageCircle, Share2, Play, Volume2, VolumeX, MoreVertical } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -45,6 +45,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
 
   // Social state
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
@@ -338,40 +339,28 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 )}
               </div>
 
-              <div className="absolute right-3 bottom-24 flex flex-col gap-5 z-10">
+              <div className="absolute right-3 bottom-24 flex flex-col gap-3 z-10 items-center">
                 <ActionBtn
                   icon={
-                    <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />
+                    <Heart className={`h-7 w-7 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />
                   }
                   label={likes > 0 ? String(likes) : "Like"}
                   onClick={() => toggleLike(it.id)}
                   active={isLiked}
                 />
                 <ActionBtn
-                  icon={<MessageCircle className="h-6 w-6" />}
+                  icon={<MessageCircle className="h-7 w-7" />}
                   label={comments > 0 ? String(comments) : "Chat"}
                   onClick={() => setCommentsOpenFor(it.id)}
                 />
-                <ActionBtn
-                  icon={<Share2 className="h-6 w-6" />}
-                  label="Share"
-                  onClick={() => share(it.caption)}
-                />
-                {it.media_type === "video" && (
-                  <ActionBtn
-                    icon={muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
-                    label={muted ? "Muted" : "Sound"}
-                    onClick={() => setSoundMuted(!userMutedRef.current)}
-                  />
-                )}
                 {it.user_id && (
                   <Link
                     to="/u/$id"
                     params={{ id: it.user_id }}
-                    className="flex items-center justify-center mt-1"
+                    className="flex items-center justify-center"
                     aria-label="View profile"
                   >
-                    <span className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
+                    <span className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
                       <AvatarImg
                         src={profiles[it.user_id]?.avatar_url}
                         alt={
@@ -390,6 +379,40 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   </Link>
                 )}
               </div>
+
+              {isActive && (
+                <div className="absolute top-4 right-3 z-20">
+                  <button
+                    onClick={() => setMoreOpenFor(moreOpenFor === it.id ? null : it.id)}
+                    className="h-10 w-10 rounded-full flex items-center justify-center text-white drop-shadow-lg active:scale-95"
+                    aria-label="More options"
+                  >
+                    <MoreVertical className="h-6 w-6" />
+                  </button>
+                  {moreOpenFor === it.id && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setMoreOpenFor(null)} />
+                      <div className="absolute right-0 mt-1 min-w-[140px] bg-black/80 backdrop-blur-md rounded-xl py-1 z-20 shadow-xl">
+                        <button
+                          onClick={() => { setMoreOpenFor(null); share(it.caption); }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                        >
+                          <Share2 className="h-5 w-5" /> Share
+                        </button>
+                        {it.media_type === "video" && (
+                          <button
+                            onClick={() => { setSoundMuted(!userMutedRef.current); setMoreOpenFor(null); }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                          >
+                            {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                            {muted ? "Unmute" : "Mute"}
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
@@ -420,16 +443,16 @@ function ActionBtn({
   return (
     <button
       onClick={onClick}
-      className="flex flex-col items-center gap-1 text-white drop-shadow-lg"
+      className="flex flex-col items-center text-white drop-shadow-lg"
     >
       <span
-        className={`h-11 w-11 rounded-full backdrop-blur-md flex items-center justify-center active:scale-95 transition ${
-          active ? "bg-white/20" : "bg-white/10"
+        className={`flex items-center justify-center active:scale-95 transition ${
+          active ? "text-rose-500" : ""
         }`}
       >
         {icon}
       </span>
-      <span className="text-[11px] font-medium">{label}</span>
+      <span className="text-[11px] font-medium leading-tight mt-0.5">{label}</span>
     </button>
   );
 }
