@@ -277,12 +277,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     };
 
     const systemShare = shareWithSystemShare(data);
-    setMoreOpenFor(null);
     if (!systemShare) {
+      setMoreOpenFor(null);
       setShareItem(it);
       return;
     }
     systemShare.then((result) => {
+      setMoreOpenFor(null);
       if (result === "failed" || result === "unavailable") setShareItem(it);
     });
   };

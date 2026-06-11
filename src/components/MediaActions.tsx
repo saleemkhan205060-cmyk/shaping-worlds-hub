@@ -72,12 +72,13 @@ export function MediaActions({
     };
 
     const systemShare = shareWithSystemShare(data);
-    setOpen(false);
     if (!systemShare) {
+      setOpen(false);
       setShareOpen(true);
       return;
     }
     systemShare.then((result) => {
+      setOpen(false);
       if (result === "failed" || result === "unavailable") setShareOpen(true);
     });
   };
