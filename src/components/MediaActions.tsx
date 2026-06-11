@@ -54,7 +54,9 @@ export function MediaActions({
       if (!moved.current) {
         try {
           if ("vibrate" in navigator) navigator.vibrate(15);
-        } catch {}
+        } catch {
+          // Vibration is optional and may be blocked by the browser.
+        }
         setOpen(true);
       }
     }, 450);
@@ -95,9 +97,9 @@ export function MediaActions({
       return;
     }
     const { error } = await supabase
-      .from("post_reports" as any)
+      .from("post_reports")
       .insert({ post_id: postId, reporter_id: user.id });
-    if (error && (error as any).code !== "23505") {
+    if (error && error.code !== "23505") {
       console.error("Report error:", error);
       toast.error("Couldn't submit report. Please try again.");
     } else {
@@ -148,16 +150,8 @@ export function MediaActions({
             className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <Item
-              icon={<Share2 className="h-5 w-5" />}
-              label="Share"
-              onClick={handleShare}
-            />
-            <Item
-              icon={<Flag className="h-5 w-5" />}
-              label="Report"
-              onClick={handleReport}
-            />
+            <Item icon={<Share2 className="h-5 w-5" />} label="Share" onClick={handleShare} />
+            <Item icon={<Flag className="h-5 w-5" />} label="Report" onClick={handleReport} />
             {isOwner && (
               <Item
                 icon={<Trash2 className="h-5 w-5" />}
