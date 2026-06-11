@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVideoPlayer";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { ShareSheet } from "@/components/ShareSheet";
+import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
 
 type Post = {
   id: string;
@@ -31,6 +33,7 @@ function Videos() {
   const [fsIndex, setFsIndex] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+  const [sharePost, setSharePost] = useState<Post | null>(null);
   const pressTimer = useRef<number | null>(null);
 
   const startPress = (p: Post) => {
@@ -86,15 +89,26 @@ function Videos() {
 
   const toggleLike = (key: string) => setLiked((p) => ({ ...p, [key]: !p[key] }));
 
-  const share = async (title: string) => {
-    const data = { title, text: `Check out ${title}`, url: window.location.href };
-    try {
-      if (navigator.share) await navigator.share(data);
-      else {
-        await navigator.clipboard.writeText(data.url);
-        alert("Link copied to clipboard");
-      }
-    } catch {}
+  const share = (post: Post) => {
+    const title = post.caption ?? post.title ?? "Post";
+    const data = { title, text: `Check out ${title}`, url: post.media_url || window.location.href, dialogTitle: "Share post" };
+
+    if (isNativeCapacitorApp()) {
+      shareWithCapacitor(data).then((result) => {
+        if (result === "failed" || result === "unavailable") setSharePost(post);
+      });
+      return;
+    }
+
+    const webShare = shareWithWebShare(data);
+    if (webShare) {
+      webShare.then((result) => {
+        if (result === "failed" || result === "unavailable") setSharePost(post);
+      });
+      return;
+    }
+
+    setSharePost(post);
   };
 
   return (
@@ -217,7 +231,7 @@ function Videos() {
                       <MessageCircle className="h-4 w-4" /> Comment
                     </button>
                     <button
-                      onClick={() => share(p.caption ?? "Post")}
+                      onClick={() => share(p)}
                       className="flex items-center gap-1 hover:text-indigo-600 ml-auto"
                       aria-label="Share"
                     >
@@ -261,6 +275,15 @@ function Videos() {
             </div>
           </div>
         </div>
+      )}
+      {sharePost && (
+        <ShareSheet
+          open={!!sharePost}
+          onClose={() => setSharePost(null)}
+          title={sharePost.caption ?? sharePost.title ?? "Post"}
+          text={sharePost.caption ?? sharePost.title ?? "Check this out"}
+          url={sharePost.media_url || window.location.href}
+        />
       )}
     </Layout>
   );
