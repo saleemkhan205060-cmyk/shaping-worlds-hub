@@ -61,6 +61,21 @@ export function MediaActions({
 
   const handleShare = () => {
     setOpen(false);
+    const url = mediaUrl || window.location.href;
+    const data = {
+      title: caption ?? "Post",
+      text: caption ?? "Check this out",
+      url,
+    };
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      try {
+        navigator.share(data).catch((err) => {
+          if (err?.name === "AbortError") return;
+          setShareOpen(true);
+        });
+        return;
+      } catch {}
+    }
     setShareOpen(true);
   };
 
