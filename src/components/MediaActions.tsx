@@ -3,6 +3,7 @@ import { Share2, Flag, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { ShareSheet } from "@/components/ShareSheet";
 
 type Props = {
   postId: string;
@@ -32,6 +33,7 @@ export function MediaActions({
 }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const timer = useRef<number | null>(null);
   const moved = useRef(false);
 
@@ -57,21 +59,9 @@ export function MediaActions({
     }, 450);
   };
 
-  const handleShare = async () => {
+  const handleShare = () => {
     setOpen(false);
-    try {
-      if ((navigator as any).share) {
-        await (navigator as any).share({
-          title: caption ?? "Post",
-          url: mediaUrl,
-        });
-      } else {
-        await navigator.clipboard.writeText(mediaUrl);
-        toast.success("Link copied");
-      }
-    } catch {
-      /* user cancelled */
-    }
+    setShareOpen(true);
   };
 
   const handleReport = async () => {
@@ -161,6 +151,13 @@ export function MediaActions({
           </div>
         </div>
       )}
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        title={caption ?? "Post"}
+        text={caption ?? "Check this out"}
+        url={mediaUrl || window.location.href}
+      />
     </>
   );
 }

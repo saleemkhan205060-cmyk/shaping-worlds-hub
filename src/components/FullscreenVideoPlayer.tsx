@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
+import { ShareSheet } from "@/components/ShareSheet";
 
 type UploaderProfile = {
   id: string;
@@ -46,6 +47,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
+  const [shareItem, setShareItem] = useState<FsItem | null>(null);
 
   // Social state
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
@@ -255,23 +257,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     }
   };
 
-  const share = (it: FsItem) => {
-    const url = it.media_url || window.location.href;
-    const data = { title: it.caption ?? "Video", text: it.caption ?? "Check this out", url };
-    const nav: any = typeof navigator !== "undefined" ? navigator : null;
-    if (nav?.share) {
-      // Call synchronously to preserve the user-activation context.
-      nav.share(data).catch((err: any) => {
-        if (err?.name === "AbortError") return;
-        nav.clipboard?.writeText(url).then(() => toast.success("Link copied")).catch(() => toast.error("Couldn't share"));
-      });
-      return;
-    }
-    if (nav?.clipboard) {
-      nav.clipboard.writeText(url).then(() => toast.success("Link copied")).catch(() => toast.error("Couldn't share"));
-    } else {
-      toast.error("Sharing not supported");
-    }
+  const openShareSheet = (it: FsItem) => {
+    setMoreOpenFor(null);
+    setShareItem(it);
   };
 
   return (
@@ -403,7 +391,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                       <div className="fixed inset-0 z-10" onClick={() => setMoreOpenFor(null)} />
                       <div className="absolute right-0 mt-1 min-w-[140px] bg-black/80 backdrop-blur-md rounded-xl py-1 z-20 shadow-xl">
                         <button
-                          onClick={() => { share(it); setMoreOpenFor(null); }}
+                          onClick={() => openShareSheet(it)}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
                         >
                           <Share2 className="h-5 w-5" /> Share
@@ -432,6 +420,15 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           postId={commentsOpenFor}
           onClose={() => setCommentsOpenFor(null)}
           onCountChange={(n) => setCommentCounts((c) => ({ ...c, [commentsOpenFor!]: n }))}
+        />
+      )}
+      {shareItem && (
+        <ShareSheet
+          open={!!shareItem}
+          onClose={() => setShareItem(null)}
+          title={shareItem.caption ?? "Post"}
+          text={shareItem.caption ?? "Check this out"}
+          url={shareItem.media_url || window.location.href}
         />
       )}
     </div>
