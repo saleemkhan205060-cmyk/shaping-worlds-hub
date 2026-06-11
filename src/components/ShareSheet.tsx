@@ -12,7 +12,11 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { isNativeCapacitorApp, shareWithCapacitor, shareWithWebShare } from "@/lib/native-share";
+import {
+  isNativeCapacitorApp,
+  shareWithCapacitor,
+  shareWithWebShare,
+} from "@/lib/native-share";
 
 type ShareSheetProps = {
   open: boolean;
@@ -51,11 +55,16 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
       : await (shareWithWebShare(data) ?? Promise.resolve("unavailable"));
 
     if (result === "shared") onClose();
-    if (result === "failed" || result === "unavailable") toast.error("Couldn't open share menu");
+    if (result === "failed" || result === "unavailable") {
+      toast.error("Couldn't open share menu");
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-[360] bg-black/55 flex items-end justify-center" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[360] bg-black/55 flex items-end justify-center"
+      onClick={onClose}
+    >
       <div
         className="w-full max-w-sm rounded-t-2xl bg-white p-4 shadow-2xl animate-in slide-in-from-bottom duration-200"
         onClick={(e) => e.stopPropagation()}
@@ -83,7 +92,9 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             label="Facebook"
             icon={<Facebook className="h-5 w-5" />}
             tone="bg-[#1877F2] text-white"
-            onClick={() => openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`)}
+            onClick={() =>
+              openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`)
+            }
           />
           <ShareChoice
             label="Messenger"
@@ -95,7 +106,11 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             label="Telegram"
             icon={<Send className="h-5 w-5" />}
             tone="bg-[#26A5E4] text-white"
-            onClick={() => openShareUrl(`https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(text)}`)}
+            onClick={() =>
+              openShareUrl(
+                `https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(text)}`,
+              )
+            }
           />
           <ShareChoice
             label="TikTok"
@@ -113,13 +128,17 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             label="LinkedIn"
             icon={<Linkedin className="h-5 w-5" />}
             tone="bg-[#0A66C2] text-white"
-            onClick={() => openShareUrl(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`)}
+            onClick={() =>
+              openShareUrl(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`)
+            }
           />
           <ShareChoice
             label="Email"
             icon={<Mail className="h-5 w-5" />}
             tone="bg-[#EA4335] text-white"
-            onClick={() => openShareUrl(`mailto:?subject=${encodeURIComponent(title)}&body=${encodedText}`)}
+            onClick={() =>
+              openShareUrl(`mailto:?subject=${encodeURIComponent(title)}&body=${encodedText}`)
+            }
           />
           <ShareChoice
             label="SMS"
@@ -131,15 +150,28 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             label="Reddit"
             icon={<span className="text-sm font-black leading-none">r</span>}
             tone="bg-[#FF4500] text-white"
-            onClick={() => openShareUrl(`https://www.reddit.com/submit?url=${encodedUrl}&title=${encodeURIComponent(title)}`)}
+            onClick={() =>
+              openShareUrl(
+                `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodeURIComponent(title)}`,
+              )
+            }
           />
           <ShareChoice
             label="Pinterest"
             icon={<span className="text-base font-black leading-none">P</span>}
             tone="bg-[#E60023] text-white"
-            onClick={() => openShareUrl(`https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodeURIComponent(text)}`)}
+            onClick={() =>
+              openShareUrl(
+                `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodeURIComponent(text)}`,
+              )
+            }
           />
-          <ShareChoice label="Copy" icon={<Copy className="h-5 w-5" />} tone="bg-slate-100 text-slate-800" onClick={copyLink} />
+          <ShareChoice
+            label="Copy"
+            icon={<Copy className="h-5 w-5" />}
+            tone="bg-slate-100 text-slate-800"
+            onClick={copyLink}
+          />
         </div>
 
         {canNativeShare && (
@@ -173,11 +205,19 @@ function ShareChoice({
   onClick: () => void;
 }) {
   return (
-    <button type="button" onClick={onClick} className="flex min-w-0 flex-col items-center gap-2 text-slate-800">
-      <span className={`h-12 w-12 rounded-full flex items-center justify-center shadow-sm active:scale-95 ${tone}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex min-w-0 flex-col items-center gap-2 text-slate-800"
+    >
+      <span
+        className={`h-12 w-12 rounded-full flex items-center justify-center shadow-sm active:scale-95 ${tone}`}
+      >
         {icon}
       </span>
-      <span className="w-full truncate text-center text-[11px] font-medium leading-tight">{label}</span>
+      <span className="w-full truncate text-center text-[11px] font-medium leading-tight">
+        {label}
+      </span>
     </button>
   );
 }
