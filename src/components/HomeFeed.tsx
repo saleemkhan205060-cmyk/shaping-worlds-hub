@@ -909,17 +909,6 @@ export function HomeFeed() {
                         className="w-full max-h-[520px] cursor-pointer"
                         onClick={() => openFullscreen(p.id)}
                       />
-                      <button
-                        type="button"
-                        onClick={() => openFullscreen(p.id)}
-                        className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center"
-                        aria-label="Open fullscreen"
-                      >
-                        <Maximize2 className="h-4 w-4" />
-                      </button>
-                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded">
-                        <Play className="h-3 w-3 fill-white" /> Video
-                      </span>
                     </div>
                   </MediaActions>
                 )}
