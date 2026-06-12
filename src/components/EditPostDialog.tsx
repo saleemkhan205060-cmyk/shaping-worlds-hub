@@ -97,7 +97,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   const handleSave = async () => {
     if (!isOwner || !post) return;
     setSaving(true);
-    const updates: Record<string, string | null> = {
+    const updates: TablesUpdate<"posts"> = {
       caption: caption.trim() || null,
       title: title.trim() || null,
     };
