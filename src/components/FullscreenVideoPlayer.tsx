@@ -580,6 +580,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           }}
         />
       )}
+      {editFor && (
+        <EditPostDialog
+          postId={editFor.id}
+          open={!!editFor}
+          onClose={() => setEditFor(null)}
+        />
+      )}
     </div>
   );
 }
