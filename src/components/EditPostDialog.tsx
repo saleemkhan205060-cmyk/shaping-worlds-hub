@@ -21,6 +21,7 @@ type PostRow = {
   id: string;
   user_id: string;
   media_type: "image" | "video" | "text";
+  media_url: string | null;
   caption: string | null;
   title: string | null;
   thumbnail_url: string | null;
