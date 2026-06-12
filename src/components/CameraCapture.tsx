@@ -219,8 +219,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     const source = streamRef.current;
     if (!source) return null;
     const canvas = document.createElement("canvas");
-    canvas.width = 720;
-    canvas.height = 1280;
+    canvas.width = 1080;
+    canvas.height = 1920;
     recordCanvasRef.current = canvas;
     const stream = canvas.captureStream(30);
     source.getAudioTracks().forEach((track) => stream.addTrack(track.clone()));
