@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
