@@ -1,10 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Upload, Film } from "lucide-react";
+import { Upload, Film } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
+import { TextPostCard } from "@/components/TextPostCard";
+import {
+  BG_PRESETS,
+  FONT_PRESETS,
+  COLOR_PRESETS,
+  SIZE_PRESETS,
+  DEFAULT_TEXT_STYLE,
+  resolveStyle,
+  type TextStyle,
+} from "@/components/TextPostStyles";
 
 type Props = {
   postId: string;
@@ -14,6 +24,7 @@ type Props = {
     caption?: string | null;
     title?: string | null;
     thumbnail_url?: string | null;
+    text_style?: unknown;
   }) => void;
 };
 
@@ -25,7 +36,10 @@ type PostRow = {
   caption: string | null;
   title: string | null;
   thumbnail_url: string | null;
+  text_style: unknown;
 };
+
+const MAX_TEXT_LEN = 280;
 
 export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   const { user } = useAuth();
@@ -36,6 +50,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   const [caption, setCaption] = useState("");
   const [title, setTitle] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [style, setStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
   const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -45,7 +60,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     setLoading(true);
     supabase
       .from("posts")
-      .select("id,user_id,media_type,media_url,caption,title,thumbnail_url")
+      .select("id,user_id,media_type,media_url,caption,title,thumbnail_url,text_style")
       .eq("id", postId)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -60,6 +75,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
         setCaption(row.caption ?? "");
         setTitle(row.title ?? "");
         setThumbnailUrl(row.thumbnail_url ?? null);
+        setStyle(resolveStyle(row.text_style));
         setLoading(false);
       });
     return () => {
@@ -70,8 +86,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   if (!open) return null;
 
   const isOwner = !!user && !!post && user.id === post.user_id;
-
-  const handlePickThumbnail = () => fileRef.current?.click();
+  const isText = post?.media_type === "text";
 
   const uploadThumbFile = async (file: File) => {
     if (!user) return;
@@ -112,6 +127,9 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     if (post.media_type === "video") {
       updates.thumbnail_url = thumbnailUrl;
     }
+    if (isText) {
+      updates.text_style = style as never;
+    }
     const { error } = await supabase.from("posts").update(updates).eq("id", postId);
     setSaving(false);
     if (error) {
@@ -119,127 +137,239 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
       return;
     }
     toast.success("Post updated");
-    onSaved?.(updates);
+    onSaved?.({ ...updates, text_style: isText ? style : undefined });
     onClose();
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[400] bg-black/60 flex items-end sm:items-center justify-center"
-      onClick={onClose}
-    >
-      <div
-        className="w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl max-h-[90vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
-          <h3 className="text-base font-semibold text-slate-900">Edit post</h3>
-          <button onClick={onClose} className="text-slate-500 active:scale-95">
-            <X className="h-5 w-5" />
-          </button>
+    <div className="fixed inset-0 z-[400] bg-white flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-5 pb-3 bg-white">
+        <button
+          onClick={onClose}
+          className="text-xl font-semibold text-slate-900 active:opacity-60"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={saving || uploading || !isOwner || loading}
+          className="text-xl font-semibold text-slate-900 active:opacity-60 disabled:opacity-40"
+        >
+          {saving ? "Saving…" : "Save"}
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center text-sm text-slate-500">
+          Loading…
         </div>
-
-        {loading ? (
-          <div className="p-8 text-center text-sm text-slate-500">Loading…</div>
-        ) : !isOwner ? (
-          <div className="p-8 text-center text-sm text-rose-600">
-            You can only edit your own posts.
-          </div>
-        ) : (
-          <div className="p-5 space-y-4 overflow-y-auto">
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Title</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Add a title"
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Caption</label>
-              <textarea
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                rows={4}
-                placeholder="Write a caption"
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-              />
-            </div>
-
-            {post?.media_type === "video" && (
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Thumbnail
-                </label>
-                <div className="flex items-center gap-3">
-                  <div className="h-20 w-20 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center border border-slate-200">
-                    {thumbnailUrl ? (
-                      <img src={thumbnailUrl} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <span className="text-[10px] text-slate-400">No image</span>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    {post?.media_url && (
-                      <button
-                        onClick={() => setPickerOpen(true)}
-                        disabled={uploading}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-emerald-600 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
-                      >
-                        <Film className="h-4 w-4" />
-                        Pick from video
-                      </button>
-                    )}
-                    <button
-                      onClick={handlePickThumbnail}
-                      disabled={uploading}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
-                    >
-                      <Upload className="h-4 w-4" />
-                      {uploading ? "Uploading…" : "Upload image"}
-                    </button>
-                    {thumbnailUrl && (
-                      <button
-                        onClick={() => setThumbnailUrl(null)}
-                        className="text-xs text-rose-600 font-semibold text-left"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleThumbnailChange}
+      ) : !isOwner ? (
+        <div className="flex-1 flex items-center justify-center text-sm text-rose-600">
+          You can only edit your own posts.
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto">
+          {isText ? (
+            <>
+              {/* Preview */}
+              <div className="px-4 pt-2">
+                <div className="rounded-2xl overflow-hidden">
+                  <TextPostCard
+                    text={caption || "Write something beautiful…"}
+                    style={style}
                   />
                 </div>
+                <textarea
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value.slice(0, MAX_TEXT_LEN))}
+                  rows={2}
+                  maxLength={MAX_TEXT_LEN}
+                  placeholder="What's on your mind?"
+                  className="mt-3 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                />
+                <div className="text-right text-[11px] text-slate-500 mt-1">
+                  {caption.length}/{MAX_TEXT_LEN}
+                </div>
               </div>
-            )}
-          </div>
-        )}
 
-        {isOwner && !loading && (
-          <div className="px-5 py-3 border-t border-slate-100 flex gap-2">
-            <button
-              onClick={onClose}
-              className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-slate-700 bg-slate-100 active:bg-slate-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={saving || uploading}
-              className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-emerald-600 active:bg-emerald-700 disabled:opacity-50"
-            >
-              {saving ? "Saving…" : "Save"}
-            </button>
-          </div>
-        )}
-      </div>
+              {/* Controls */}
+              <div className="px-5 pb-8 space-y-5">
+                <Section label="Background">
+                  <div className="flex gap-3 overflow-x-auto pb-1">
+                    {BG_PRESETS.map((b) => (
+                      <button
+                        key={b.id}
+                        onClick={() => setStyle((s) => ({ ...s, bgId: b.id }))}
+                        className={`shrink-0 h-11 w-11 rounded-full border-2 ${b.className} ${
+                          style.bgId === b.id
+                            ? "border-indigo-600 ring-2 ring-indigo-200"
+                            : "border-white shadow"
+                        }`}
+                        aria-label={b.label}
+                      />
+                    ))}
+                  </div>
+                </Section>
+
+                <Section label="Text color">
+                  <div className="flex gap-3 overflow-x-auto pb-1">
+                    {COLOR_PRESETS.map((c) => (
+                      <button
+                        key={c.id}
+                        onClick={() => setStyle((s) => ({ ...s, colorId: c.id }))}
+                        className={`shrink-0 h-10 w-10 rounded-full border-2 ${c.swatch} ${
+                          style.colorId === c.id
+                            ? "border-indigo-600 ring-2 ring-indigo-200"
+                            : "border-slate-200"
+                        }`}
+                        aria-label={c.label}
+                      />
+                    ))}
+                  </div>
+                </Section>
+
+                <Section label="Font">
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {FONT_PRESETS.map((f) => (
+                      <button
+                        key={f.id}
+                        onClick={() => setStyle((s) => ({ ...s, fontId: f.id }))}
+                        className={`shrink-0 px-4 py-2 rounded-full text-sm border ${f.className} ${
+                          style.fontId === f.id
+                            ? "bg-indigo-600 text-white border-indigo-600"
+                            : "bg-white text-slate-700 border-slate-200"
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section label="Size">
+                  <div className="flex gap-2">
+                    {SIZE_PRESETS.map((z) => (
+                      <button
+                        key={z.id}
+                        onClick={() => setStyle((s) => ({ ...s, sizeId: z.id }))}
+                        className={`h-10 w-10 rounded-full text-sm font-semibold border ${
+                          style.sizeId === z.id
+                            ? "bg-indigo-600 text-white border-indigo-600"
+                            : "bg-white text-slate-700 border-slate-200"
+                        }`}
+                      >
+                        {z.label}
+                      </button>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section label="Align">
+                  <div className="flex gap-2">
+                    {(["left", "center", "right"] as const).map((a) => (
+                      <button
+                        key={a}
+                        onClick={() => setStyle((s) => ({ ...s, align: a }))}
+                        className={`flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize ${
+                          style.align === a
+                            ? "bg-indigo-600 text-white border-indigo-600"
+                            : "bg-white text-slate-700 border-slate-200"
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                </Section>
+              </div>
+            </>
+          ) : (
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Add a title"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Caption
+                </label>
+                <textarea
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  rows={4}
+                  placeholder="Write a caption"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                />
+              </div>
+
+              {post?.media_type === "video" && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">
+                    Thumbnail
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <div className="h-20 w-20 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center border border-slate-200">
+                      {thumbnailUrl ? (
+                        <img
+                          src={thumbnailUrl}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-[10px] text-slate-400">No image</span>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      {post?.media_url && (
+                        <button
+                          onClick={() => setPickerOpen(true)}
+                          disabled={uploading}
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-emerald-600 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
+                        >
+                          <Film className="h-4 w-4" />
+                          Pick from video
+                        </button>
+                      )}
+                      <button
+                        onClick={() => fileRef.current?.click()}
+                        disabled={uploading}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
+                      >
+                        <Upload className="h-4 w-4" />
+                        {uploading ? "Uploading…" : "Upload image"}
+                      </button>
+                      {thumbnailUrl && (
+                        <button
+                          onClick={() => setThumbnailUrl(null)}
+                          className="text-xs text-rose-600 font-semibold text-left"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleThumbnailChange}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {post?.media_url && post.media_type === "video" && (
         <VideoThumbnailPicker
@@ -251,6 +381,17 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
           }}
         />
       )}
+    </div>
+  );
+}
+
+function Section({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+        {label}
+      </p>
+      {children}
     </div>
   );
 }
