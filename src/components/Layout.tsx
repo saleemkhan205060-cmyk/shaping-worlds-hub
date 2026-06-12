@@ -300,15 +300,15 @@ export function Layout({
                   if (isHome) {
                     e.preventDefault();
                     setHomeReloading(true);
-                    window.scrollTo({ top: 0, behavior: "auto" });
                     try {
                       if (path !== "/") {
                         await navigate({ to: "/" });
                       }
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      window.dispatchEvent(new CustomEvent("home:refresh"));
                       await router.invalidate();
                     } finally {
-                      window.scrollTo({ top: 0, behavior: "auto" });
-                      setHomeReloading(false);
+                      setTimeout(() => setHomeReloading(false), 600);
                     }
                   }
                 }}
