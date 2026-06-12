@@ -79,6 +79,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [filterId, setFilterId] = useState<string>("normal");
   const [showFilters, setShowFilters] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [camTick, setCamTick] = useState(0);
   const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
   const [hasClip, setHasClip] = useState(false);
   const [progress, setProgress] = useState(0);
