@@ -470,6 +470,17 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                             {muted ? "Unmute" : "Mute"}
                           </button>
                         )}
+                        {it.media_type === "video" && user?.id && user.id === it.user_id && (
+                          <button
+                            onClick={() => {
+                              setMoreOpenFor(null);
+                              setThumbPickFor(it);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                          >
+                            <Film className="h-5 w-5" /> Choose thumbnail
+                          </button>
+                        )}
                       </div>
                     </>
                   )}
@@ -494,6 +505,18 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           title={shareItem.caption ?? "Post"}
           text={shareItem.caption ?? "Check this out"}
           url={shareItem.media_url || window.location.href}
+        />
+      )}
+      {thumbPickFor && (
+        <VideoThumbnailPicker
+          videoSrc={thumbPickFor.media_url}
+          open={!!thumbPickFor}
+          onClose={() => setThumbPickFor(null)}
+          onPick={(file, previewUrl) => {
+            const item = thumbPickFor;
+            setThumbPickFor(null);
+            void saveThumbnail(item, file, previewUrl);
+          }}
         />
       )}
     </div>
