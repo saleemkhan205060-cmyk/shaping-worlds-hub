@@ -904,6 +904,7 @@ export function HomeFeed() {
                           videoRefs.current[p.id] = el;
                         }}
                         src={p.media_url}
+                        poster={p.thumbnail_url ?? undefined}
                         playsInline
                         muted
                         loop
