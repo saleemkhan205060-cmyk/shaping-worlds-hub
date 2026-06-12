@@ -273,12 +273,17 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   };
 
   const getPortraitRecordingStream = () => {
-    if (canvasStreamRef.current) return canvasStreamRef.current;
     const source = streamRef.current;
     if (!source) return null;
+    // No filter → record the native camera stream directly (much smoother, no canvas overhead)
+    if (filterRef.current === "none") {
+      stopRecordingStream();
+      return source;
+    }
+    if (canvasStreamRef.current) return canvasStreamRef.current;
     const canvas = document.createElement("canvas");
-    canvas.width = 1080;
-    canvas.height = 1920;
+    canvas.width = 720;
+    canvas.height = 1280;
     recordCanvasRef.current = canvas;
     const stream = canvas.captureStream(30);
     source.getAudioTracks().forEach((track) => stream.addTrack(track.clone()));
