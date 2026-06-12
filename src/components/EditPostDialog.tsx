@@ -240,6 +240,17 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
           </div>
         )}
       </div>
+
+      {post?.media_url && post.media_type === "video" && (
+        <VideoThumbnailPicker
+          videoSrc={post.media_url}
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          onPick={(file) => {
+            void uploadThumbFile(file);
+          }}
+        />
+      )}
     </div>
   );
 }
