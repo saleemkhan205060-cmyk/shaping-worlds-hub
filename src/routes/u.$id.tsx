@@ -67,7 +67,7 @@ function UserProfile() {
       supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
       supabase
         .from("posts")
-        .select("id, user_id, media_url, media_type, caption, created_at")
+        .select("id, user_id, media_url, media_type, caption, created_at, thumbnail_url")
         .eq("user_id", id)
         .order("created_at", { ascending: false }),
     ]).then(([{ data: prof }, { data: pp }]) => {
