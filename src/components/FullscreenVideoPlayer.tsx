@@ -471,17 +471,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 )}
               </div>
 
-              {isActive && it.media_type === "video" && user?.id && user.id === it.user_id && (
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
-                  <button
-                    onClick={() => setThumbPickFor(it)}
-                    className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/55 backdrop-blur-md text-white text-[13px] font-semibold active:scale-95 shadow-lg"
-                  >
-                    <Film className="h-4 w-4" />
-                    Choose thumbnail
-                  </button>
-                </div>
-              )}
 
               {isActive && (
                 <div className="absolute top-4 right-3 z-20">
