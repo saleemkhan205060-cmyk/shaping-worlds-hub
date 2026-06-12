@@ -48,11 +48,7 @@ function UploadPage() {
     if (!file) { setPreview(null); return; }
     const url = URL.createObjectURL(file);
     setPreview(url);
-    // Auto-open the cover picker for videos so users can pick a thumbnail
-    // from the video itself, just like TikTok / Instagram.
-    if (file.type.startsWith("video/")) {
-      setFramePickerOpen(true);
-    }
+    // Don't auto-open the cover picker; user opens it from the ⋮ menu.
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
