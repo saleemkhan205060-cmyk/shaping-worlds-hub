@@ -43,6 +43,7 @@ type Post = {
   category: string | null;
   created_at: string;
   text_style?: unknown;
+  thumbnail_url?: string | null;
 };
 
 
