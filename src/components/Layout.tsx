@@ -300,13 +300,28 @@ export function Layout({
                   if (isHome) {
                     e.preventDefault();
                     setHomeReloading(true);
+                    const scrollTop = () => {
+                      try {
+                        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                        document.documentElement.scrollTop = 0;
+                        document.body.scrollTop = 0;
+                        document
+                          .querySelectorAll<HTMLElement>("main, [data-scroll-root]")
+                          .forEach((el) => {
+                            el.scrollTop = 0;
+                          });
+                      } catch {}
+                    };
                     try {
                       if (path !== "/") {
                         await navigate({ to: "/" });
                       }
-                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      scrollTop();
                       window.dispatchEvent(new CustomEvent("home:refresh"));
                       await router.invalidate();
+                      scrollTop();
+                      requestAnimationFrame(scrollTop);
+                      setTimeout(scrollTop, 100);
                     } finally {
                       setTimeout(() => setHomeReloading(false), 600);
                     }
