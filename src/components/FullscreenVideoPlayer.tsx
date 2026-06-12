@@ -66,6 +66,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
   const [shareItem, setShareItem] = useState<FsItem | null>(null);
   const [thumbPickFor, setThumbPickFor] = useState<FsItem | null>(null);
+  const [editFor, setEditFor] = useState<FsItem | null>(null);
 
   const saveThumbnail = useCallback(
     async (item: FsItem, file: File, previewUrl: string) => {
