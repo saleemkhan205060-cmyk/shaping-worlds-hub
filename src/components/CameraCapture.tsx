@@ -103,6 +103,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     const restart = () => {
       if (!cancelled) setCamTick((t) => t + 1);
     };
+    let watchdog: number | null = null;
     (async () => {
       try {
         let stream: MediaStream;
@@ -110,9 +111,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           stream = await navigator.mediaDevices.getUserMedia({
             video: {
               facingMode: { ideal: facing },
-              width: { ideal: 1920 },
-              height: { ideal: 1080 },
-              frameRate: { ideal: 30, max: 60 },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              frameRate: { ideal: 30 },
             },
             audio: { echoCancellation: true, noiseSuppression: true },
           });
@@ -130,12 +131,48 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         // If the OS/browser kills the track, automatically restart the camera
         stream.getVideoTracks().forEach((track) => {
           track.onended = restart;
+          track.onmute = () => {
+            // Some devices temporarily mute; if it stays muted, restart
+            window.setTimeout(() => {
+              if (!cancelled && track.muted && track.readyState === "live") restart();
+            }, 2000);
+          };
         });
         const v = videoRef.current;
         if (v) {
           v.srcObject = stream;
-          await v.play().catch(() => {});
+          const tryPlay = () => v.play().catch(() => {});
+          if (v.readyState >= 1) tryPlay();
+          else v.onloadedmetadata = tryPlay;
+          v.oncanplay = tryPlay;
         }
+        // Watchdog: if the preview picture stops advancing, restart the camera
+        let lastTime = -1;
+        let stalledChecks = 0;
+        watchdog = window.setInterval(() => {
+          if (cancelled || document.visibilityState !== "visible") return;
+          const vid = videoRef.current;
+          const track = streamRef.current?.getVideoTracks()[0];
+          if (!vid || !track) return;
+          if (track.readyState === "ended") {
+            restart();
+            return;
+          }
+          if (vid.paused && streamRef.current) {
+            vid.play().catch(() => {});
+            return;
+          }
+          if (vid.currentTime === lastTime) {
+            stalledChecks += 1;
+            if (stalledChecks >= 2) {
+              stalledChecks = 0;
+              restart();
+            }
+          } else {
+            stalledChecks = 0;
+          }
+          lastTime = vid.currentTime;
+        }, 2500);
       } catch {
         if (!cancelled) setError("Camera not available. Please allow camera & microphone access.");
       }
