@@ -278,14 +278,14 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     if (!stream) return;
     chunksRef.current = [];
     let mr: MediaRecorder;
-    const opts = { videoBitsPerSecond: 4_000_000 };
+    const opts = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
     try {
       mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
     } catch {
       try {
         mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp8,opus", ...opts });
       } catch {
-        mr = new MediaRecorder(stream);
+        mr = new MediaRecorder(stream, opts);
       }
     }
     recorderRef.current = mr;
