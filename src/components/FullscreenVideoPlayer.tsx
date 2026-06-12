@@ -324,6 +324,37 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     });
   };
 
+  const reportItem = async (it: FsItem) => {
+    setMoreOpenFor(null);
+    if (!user) {
+      toast.error("Please sign in to report");
+      return;
+    }
+    const { error } = await supabase
+      .from("post_reports")
+      .insert({ post_id: it.id, reporter_id: user.id });
+    if (error && error.code !== "23505") {
+      console.error("Report error:", error);
+      toast.error("Couldn't submit report. Please try again.");
+    } else {
+      toast.success("Thanks — we'll review this post");
+    }
+  };
+
+  const deleteItem = async (it: FsItem) => {
+    setMoreOpenFor(null);
+    if (!user || user.id !== it.user_id) return;
+    if (!confirm("Delete this post? This cannot be undone.")) return;
+    const { error } = await supabase.from("posts").delete().eq("id", it.id);
+    if (error) {
+      console.error("Delete error:", error);
+      toast.error("Couldn't delete. Please try again.");
+    } else {
+      toast.success("Post deleted");
+      onClose();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] bg-black">
       <div
