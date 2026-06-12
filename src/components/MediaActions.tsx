@@ -36,6 +36,7 @@ export function MediaActions({
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const timer = useRef<number | null>(null);
   const moved = useRef(false);
 
