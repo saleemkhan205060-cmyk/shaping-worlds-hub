@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film } from "lucide-react";
+import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -32,6 +32,7 @@ function UploadPage() {
   const [progress, setProgress] = useState(0);
   const [showCamera, setShowCamera] = useState(true);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
+  const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const galleryImgRef = useRef<HTMLInputElement>(null);
   const galleryVidRef = useRef<HTMLInputElement>(null);
@@ -195,6 +196,15 @@ function UploadPage() {
               >
                 <X className="h-4 w-4" />
               </button>
+              {file.type.startsWith("video/") && (
+                <button
+                  onClick={() => setVideoMenuOpen(true)}
+                  className="absolute top-2 right-12 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+                  aria-label="More options"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </button>
+              )}
               <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
                 {file.type.startsWith("video/") ? <VideoIcon className="h-3 w-3" /> : <ImageIcon className="h-3 w-3" />}
                 {(file.size / (1024 * 1024)).toFixed(1)} MB
@@ -374,6 +384,39 @@ function UploadPage() {
           onClose={() => setFramePickerOpen(false)}
           onPick={(f) => setThumbFile(f)}
         />
+      )}
+
+      {videoMenuOpen && (
+        <div
+          className="fixed inset-0 z-[300] bg-black/60 flex items-end sm:items-center justify-center"
+          onClick={() => setVideoMenuOpen(false)}
+        >
+          <div
+            className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => { setVideoMenuOpen(false); setFramePickerOpen(true); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Film className="h-5 w-5" />
+              Choose thumbnail from video
+            </button>
+            <button
+              onClick={() => { setVideoMenuOpen(false); thumbRef.current?.click(); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Upload className="h-5 w-5" />
+              Upload thumbnail image
+            </button>
+            <button
+              onClick={() => setVideoMenuOpen(false)}
+              className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
     </Layout>
   );
