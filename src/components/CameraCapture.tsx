@@ -131,12 +131,6 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         // If the OS/browser kills the track, automatically restart the camera
         stream.getVideoTracks().forEach((track) => {
           track.onended = restart;
-          track.onmute = () => {
-            // Some devices temporarily mute; if it stays muted, restart
-            window.setTimeout(() => {
-              if (!cancelled && track.muted && track.readyState === "live") restart();
-            }, 2000);
-          };
         });
         const v = videoRef.current;
         if (v) {
@@ -146,9 +140,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           else v.onloadedmetadata = tryPlay;
           v.oncanplay = tryPlay;
         }
-        // Watchdog: if the preview picture stops advancing, restart the camera
-        let lastTime = -1;
-        let stalledChecks = 0;
+        // Gentle watchdog: only nudge playback, never tear down a live stream
         watchdog = window.setInterval(() => {
           if (cancelled || document.visibilityState !== "visible") return;
           const vid = videoRef.current;
@@ -158,21 +150,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             restart();
             return;
           }
-          if (vid.paused && streamRef.current) {
-            vid.play().catch(() => {});
-            return;
-          }
-          if (vid.currentTime === lastTime) {
-            stalledChecks += 1;
-            if (stalledChecks >= 2) {
-              stalledChecks = 0;
-              restart();
-            }
-          } else {
-            stalledChecks = 0;
-          }
-          lastTime = vid.currentTime;
-        }, 2500);
+          if (vid.paused) vid.play().catch(() => {});
+        }, 3000);
       } catch {
         if (!cancelled) setError("Camera not available. Please allow camera & microphone access.");
       }
