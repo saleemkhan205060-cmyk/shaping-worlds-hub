@@ -638,17 +638,14 @@ export function HomeFeed() {
               {file.type.startsWith("video/") && (
                 <button
                   onClick={() => setVideoMenuOpen(true)}
-                  className="absolute top-2 right-11 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
-                  aria-label="More options"
+                  className="absolute bottom-2 left-2 h-8 px-3 rounded-full bg-black/70 text-white text-[11px] font-semibold flex items-center gap-1.5 active:scale-95"
+                  aria-label="Choose thumbnail"
                 >
-                  <MoreVertical className="h-3.5 w-3.5" />
+                  {thumbPreview ? (
+                    <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
+                  ) : null}
+                  <span>{thumbPreview ? "Thumbnail set" : "Choose thumbnail"}</span>
                 </button>
-              )}
-              {thumbPreview && file.type.startsWith("video/") && (
-                <div className="absolute bottom-2 left-2 flex items-center gap-2 bg-black/60 text-white text-[11px] px-2 py-1 rounded">
-                  <img src={thumbPreview} alt="thumb" className="h-6 w-6 rounded object-cover" />
-                  <span>Thumbnail set</span>
-                </div>
               )}
               <input
                 ref={thumbRef}
