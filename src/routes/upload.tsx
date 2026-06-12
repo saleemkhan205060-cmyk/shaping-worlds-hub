@@ -199,16 +199,23 @@ function UploadPage() {
               {file.type.startsWith("video/") && (
                 <button
                   onClick={() => setVideoMenuOpen(true)}
-                  className="absolute top-2 right-12 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
-                  aria-label="More options"
+                  className="absolute bottom-2 left-2 h-8 px-3 rounded-full bg-black/70 text-white text-xs font-semibold flex items-center gap-1.5 active:scale-95"
+                  aria-label="Choose thumbnail"
                 >
-                  <MoreVertical className="h-4 w-4" />
+                  {thumbPreview ? (
+                    <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
+                  ) : (
+                    <Film className="h-3.5 w-3.5" />
+                  )}
+                  <span>{thumbPreview ? "Thumbnail set" : "Choose thumbnail"}</span>
                 </button>
               )}
-              <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                {file.type.startsWith("video/") ? <VideoIcon className="h-3 w-3" /> : <ImageIcon className="h-3 w-3" />}
-                {(file.size / (1024 * 1024)).toFixed(1)} MB
-              </div>
+              {!file.type.startsWith("video/") && (
+                <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                  <ImageIcon className="h-3 w-3" />
+                  {(file.size / (1024 * 1024)).toFixed(1)} MB
+                </div>
+              )}
             </div>
           )}
 
