@@ -396,6 +396,7 @@ export function HomeFeed() {
     media_type: p.media_type as "image" | "video",
     caption: p.caption,
     created_at: p.created_at,
+    thumbnail_url: p.thumbnail_url ?? null,
   }));
 
   const toggleLike = async (postId: string) => {
