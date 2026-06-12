@@ -517,6 +517,31 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                             <Film className="h-5 w-5" /> Choose thumbnail
                           </button>
                         )}
+                        {user?.id && user.id === it.user_id && (
+                          <button
+                            onClick={() => {
+                              setMoreOpenFor(null);
+                              setEditFor(it);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                          >
+                            <Pencil className="h-5 w-5" /> Edit
+                          </button>
+                        )}
+                        <button
+                          onClick={() => reportItem(it)}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                        >
+                          <Flag className="h-5 w-5" /> Report
+                        </button>
+                        {user?.id && user.id === it.user_id && (
+                          <button
+                            onClick={() => deleteItem(it)}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-rose-400 text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                          >
+                            <Trash2 className="h-5 w-5" /> Delete
+                          </button>
+                        )}
                       </div>
                     </>
                   )}
