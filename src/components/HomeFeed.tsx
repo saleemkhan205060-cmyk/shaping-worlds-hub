@@ -11,7 +11,11 @@ import {
   Loader2,
   Play,
   Maximize2,
+  MoreVertical,
+  Film,
+  Upload,
 } from "lucide-react";
+import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
@@ -107,6 +111,11 @@ export function HomeFeed() {
   const [editCaptionValue, setEditCaptionValue] = useState("");
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const thumbRef = useRef<HTMLInputElement>(null);
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [videoMenuOpen, setVideoMenuOpen] = useState(false);
+  const [framePickerOpen, setFramePickerOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
 
@@ -218,8 +227,19 @@ export function HomeFeed() {
     }
     const url = URL.createObjectURL(file);
     setPreview(url);
+    if (file.type.startsWith("video/")) {
+      setFramePickerOpen(true);
+    }
     return () => URL.revokeObjectURL(url);
   }, [file]);
+
+  useEffect(() => {
+    if (!thumbFile) { setThumbPreview(null); return; }
+    const url = URL.createObjectURL(thumbFile);
+    setThumbPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [thumbFile]);
+
 
   // IntersectionObserver: auto play/pause inline videos
   useEffect(() => {
@@ -293,6 +313,15 @@ export function HomeFeed() {
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         const media_url = pub.publicUrl;
         const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+
+        let thumbnail_url: string | null = null;
+        if (thumbFile) {
+          const text2 = thumbFile.name.split(".").pop() || "jpg";
+          const tpath = `${user.id}/thumbs/${Date.now()}.${text2}`;
+          await uploadToStorage({ bucket: "media", path: tpath, file: thumbFile });
+          thumbnail_url = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
+        }
+
         const { error: insErr } = await supabase.from("posts").insert({
           user_id: user.id,
           media_url,
@@ -300,11 +329,13 @@ export function HomeFeed() {
           caption: text || null,
           category: "For You",
           is_private: isPrivate,
-        });
+          thumbnail_url,
+        } as any);
         if (insErr) throw insErr;
       }
       setCaption("");
       setFile(null);
+      setThumbFile(null);
       setIsPrivate(false);
       setTextStyle(DEFAULT_TEXT_STYLE);
 
@@ -604,6 +635,32 @@ export function HomeFeed() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
+              {file.type.startsWith("video/") && (
+                <button
+                  onClick={() => setVideoMenuOpen(true)}
+                  className="absolute top-2 right-11 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+                  aria-label="More options"
+                >
+                  <MoreVertical className="h-3.5 w-3.5" />
+                </button>
+              )}
+              {thumbPreview && file.type.startsWith("video/") && (
+                <div className="absolute bottom-2 left-2 flex items-center gap-2 bg-black/60 text-white text-[11px] px-2 py-1 rounded">
+                  <img src={thumbPreview} alt="thumb" className="h-6 w-6 rounded object-cover" />
+                  <span>Thumbnail set</span>
+                </div>
+              )}
+              <input
+                ref={thumbRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) setThumbFile(f);
+                  e.currentTarget.value = "";
+                }}
+              />
               {posting && file && (
                 <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 space-y-1">
                   <div className="flex items-center justify-between text-[11px] text-white">
@@ -1010,6 +1067,57 @@ export function HomeFeed() {
           }}
           onCapture={(f) => { setShowCamera(false); pickFile(f); }}
         />
+      )}
+
+      {file?.type.startsWith("video/") && preview && (
+        <VideoThumbnailPicker
+          videoSrc={preview}
+          open={framePickerOpen}
+          onClose={() => setFramePickerOpen(false)}
+          onPick={(f) => setThumbFile(f)}
+        />
+      )}
+
+      {videoMenuOpen && (
+        <div
+          className="fixed inset-0 z-[300] bg-black/60 flex items-end sm:items-center justify-center"
+          onClick={() => setVideoMenuOpen(false)}
+        >
+          <div
+            className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => { setVideoMenuOpen(false); setFramePickerOpen(true); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Film className="h-5 w-5" />
+              Choose thumbnail from video
+            </button>
+            <button
+              onClick={() => { setVideoMenuOpen(false); thumbRef.current?.click(); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Upload className="h-5 w-5" />
+              Upload thumbnail image
+            </button>
+            {thumbFile && (
+              <button
+                onClick={() => { setVideoMenuOpen(false); setThumbFile(null); }}
+                className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-rose-600 border-b border-slate-100 active:bg-slate-100"
+              >
+                <X className="h-5 w-5" />
+                Remove thumbnail
+              </button>
+            )}
+            <button
+              onClick={() => setVideoMenuOpen(false)}
+              className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
 
     </section>
