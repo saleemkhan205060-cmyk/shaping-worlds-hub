@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Upload } from "lucide-react";
+import { X, Upload, Film } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 
 type Props = {
   postId: string;
@@ -20,6 +21,7 @@ type PostRow = {
   id: string;
   user_id: string;
   media_type: "image" | "video" | "text";
+  media_url: string | null;
   caption: string | null;
   title: string | null;
   thumbnail_url: string | null;
@@ -34,6 +36,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   const [caption, setCaption] = useState("");
   const [title, setTitle] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     setLoading(true);
     supabase
       .from("posts")
-      .select("id,user_id,media_type,caption,title,thumbnail_url")
+      .select("id,user_id,media_type,media_url,caption,title,thumbnail_url")
       .eq("id", postId)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -70,16 +73,10 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
 
   const handlePickThumbnail = () => fileRef.current?.click();
 
-  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file || !user) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please pick an image");
-      return;
-    }
+  const uploadThumbFile = async (file: File) => {
+    if (!user) return;
     setUploading(true);
-    const ext = file.name.split(".").pop() || "jpg";
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
     const path = `${user.id}/thumbnails/${postId}-${Date.now()}.${ext}`;
     const { error } = await supabase.storage
       .from("media")
@@ -92,6 +89,17 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     const { data } = supabase.storage.from("media").getPublicUrl(path);
     setThumbnailUrl(data.publicUrl);
     setUploading(false);
+  };
+
+  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please pick an image");
+      return;
+    }
+    await uploadThumbFile(file);
   };
 
   const handleSave = async () => {
@@ -174,13 +182,23 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
+                    {post?.media_url && (
+                      <button
+                        onClick={() => setPickerOpen(true)}
+                        disabled={uploading}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-emerald-600 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
+                      >
+                        <Film className="h-4 w-4" />
+                        Pick from video
+                      </button>
+                    )}
                     <button
                       onClick={handlePickThumbnail}
                       disabled={uploading}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
                     >
                       <Upload className="h-4 w-4" />
-                      {uploading ? "Uploading…" : "Change"}
+                      {uploading ? "Uploading…" : "Upload image"}
                     </button>
                     {thumbnailUrl && (
                       <button
@@ -222,6 +240,17 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
           </div>
         )}
       </div>
+
+      {post?.media_url && post.media_type === "video" && (
+        <VideoThumbnailPicker
+          videoSrc={post.media_url}
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          onPick={(file) => {
+            void uploadThumbFile(file);
+          }}
+        />
+      )}
     </div>
   );
 }
