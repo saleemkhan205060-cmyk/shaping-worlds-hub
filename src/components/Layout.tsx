@@ -289,26 +289,35 @@ export function Layout({
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = path === item.to;
+            const isHome = item.to === "/";
+            const showSpinner = isHome && homeReloading;
             return (
               <Link
                 key={item.to}
                 to={item.to}
                 onClick={(e) => {
-                  if (item.to === "/") {
+                  if (isHome) {
                     e.preventDefault();
-                    if (path === "/") {
-                      window.scrollTo({ top: 0, behavior: "auto" });
-                      window.location.reload();
-                    } else {
-                      window.location.href = "/";
-                    }
+                    setHomeReloading(true);
+                    setTimeout(() => {
+                      if (path === "/") {
+                        window.scrollTo({ top: 0, behavior: "auto" });
+                        window.location.reload();
+                      } else {
+                        window.location.href = "/";
+                      }
+                    }, 150);
                   }
                 }}
                 className={`flex flex-col items-center justify-center py-2.5 text-[11px] font-medium transition ${
                   active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
                 }`}
               >
-                <Icon className="h-5 w-5 mb-1" />
+                {showSpinner ? (
+                  <Loader2 className="h-5 w-5 mb-1 animate-spin" />
+                ) : (
+                  <Icon className="h-5 w-5 mb-1" />
+                )}
                 {t(item.labelKey)}
               </Link>
             );
