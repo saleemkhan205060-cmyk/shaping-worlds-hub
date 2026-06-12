@@ -1,9 +1,10 @@
 import { ReactNode, useRef, useState } from "react";
-import { Share2, Flag, Trash2 } from "lucide-react";
+import { Share2, Flag, Trash2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
+import { EditPostDialog } from "@/components/EditPostDialog";
 import { shareWithSystemShare } from "@/lib/native-share";
 
 type Props = {
@@ -35,6 +36,7 @@ export function MediaActions({
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const timer = useRef<number | null>(null);
   const moved = useRef(false);
 
@@ -144,6 +146,16 @@ export function MediaActions({
             onClick={(e) => e.stopPropagation()}
           >
             <Item icon={<Share2 className="h-5 w-5" />} label="Share" onClick={handleShare} />
+            {isOwner && (
+              <Item
+                icon={<Pencil className="h-5 w-5" />}
+                label="Edit"
+                onClick={() => {
+                  setOpen(false);
+                  setEditOpen(true);
+                }}
+              />
+            )}
             <Item icon={<Flag className="h-5 w-5" />} label="Report" onClick={handleReport} />
             {isOwner && (
               <Item
@@ -168,6 +180,11 @@ export function MediaActions({
         title={caption ?? "Post"}
         text={caption ?? "Check this out"}
         url={mediaUrl || window.location.href}
+      />
+      <EditPostDialog
+        postId={postId}
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
       />
     </>
   );
