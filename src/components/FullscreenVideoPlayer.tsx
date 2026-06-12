@@ -321,6 +321,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                       videoRefs.current[it.id] = el;
                     }}
                     src={it.media_url}
+                    poster={it.thumbnail_url ?? undefined}
                     className="h-full w-full object-cover"
                     loop
                     playsInline
