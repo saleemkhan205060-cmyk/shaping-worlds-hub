@@ -182,13 +182,23 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
+                    {post?.media_url && (
+                      <button
+                        onClick={() => setPickerOpen(true)}
+                        disabled={uploading}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-emerald-600 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
+                      >
+                        <Film className="h-4 w-4" />
+                        Pick from video
+                      </button>
+                    )}
                     <button
                       onClick={handlePickThumbnail}
                       disabled={uploading}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
                     >
                       <Upload className="h-4 w-4" />
-                      {uploading ? "Uploading…" : "Change"}
+                      {uploading ? "Uploading…" : "Upload image"}
                     </button>
                     {thumbnailUrl && (
                       <button
