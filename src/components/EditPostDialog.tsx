@@ -73,16 +73,10 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
 
   const handlePickThumbnail = () => fileRef.current?.click();
 
-  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file || !user) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please pick an image");
-      return;
-    }
+  const uploadThumbFile = async (file: File) => {
+    if (!user) return;
     setUploading(true);
-    const ext = file.name.split(".").pop() || "jpg";
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
     const path = `${user.id}/thumbnails/${postId}-${Date.now()}.${ext}`;
     const { error } = await supabase.storage
       .from("media")
@@ -95,6 +89,17 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     const { data } = supabase.storage.from("media").getPublicUrl(path);
     setThumbnailUrl(data.publicUrl);
     setUploading(false);
+  };
+
+  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please pick an image");
+      return;
+    }
+    await uploadThumbFile(file);
   };
 
   const handleSave = async () => {
