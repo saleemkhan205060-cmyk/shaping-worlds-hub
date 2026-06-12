@@ -471,6 +471,18 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 )}
               </div>
 
+              {isActive && it.media_type === "video" && user?.id && user.id === it.user_id && (
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
+                  <button
+                    onClick={() => setThumbPickFor(it)}
+                    className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/55 backdrop-blur-md text-white text-[13px] font-semibold active:scale-95 shadow-lg"
+                  >
+                    <Film className="h-4 w-4" />
+                    Choose thumbnail
+                  </button>
+                </div>
+              )}
+
               {isActive && (
                 <div className="absolute top-4 right-3 z-20">
                   <button
@@ -504,17 +516,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                               <Volume2 className="h-5 w-5" />
                             )}
                             {muted ? "Unmute" : "Mute"}
-                          </button>
-                        )}
-                        {it.media_type === "video" && user?.id && user.id === it.user_id && (
-                          <button
-                            onClick={() => {
-                              setMoreOpenFor(null);
-                              setThumbPickFor(it);
-                            }}
-                            className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
-                          >
-                            <Film className="h-5 w-5" /> Choose thumbnail
                           </button>
                         )}
                         {user?.id && user.id === it.user_id && (
