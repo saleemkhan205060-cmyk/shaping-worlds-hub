@@ -268,6 +268,16 @@ function UploadPage() {
                   placeholder="Thumbnail title (text on cover)"
                   className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
                 />
+                {file?.type.startsWith("video/") && preview && (
+                  <button
+                    type="button"
+                    onClick={() => setFramePickerOpen(true)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-indigo-600 px-2.5 py-1.5 rounded-md w-fit active:scale-95"
+                  >
+                    <Film className="h-3.5 w-3.5" />
+                    Pick from video
+                  </button>
+                )}
                 {thumbFile && (
                   <button
                     type="button"
