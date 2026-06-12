@@ -9,7 +9,11 @@ import {
   VolumeX,
   MoreVertical,
   Film,
+  Pencil,
+  Flag,
+  Trash2,
 } from "lucide-react";
+import { EditPostDialog } from "@/components/EditPostDialog";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,6 +66,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
   const [shareItem, setShareItem] = useState<FsItem | null>(null);
   const [thumbPickFor, setThumbPickFor] = useState<FsItem | null>(null);
+  const [editFor, setEditFor] = useState<FsItem | null>(null);
 
   const saveThumbnail = useCallback(
     async (item: FsItem, file: File, previewUrl: string) => {
@@ -319,6 +324,37 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     });
   };
 
+  const reportItem = async (it: FsItem) => {
+    setMoreOpenFor(null);
+    if (!user) {
+      toast.error("Please sign in to report");
+      return;
+    }
+    const { error } = await supabase
+      .from("post_reports")
+      .insert({ post_id: it.id, reporter_id: user.id });
+    if (error && error.code !== "23505") {
+      console.error("Report error:", error);
+      toast.error("Couldn't submit report. Please try again.");
+    } else {
+      toast.success("Thanks — we'll review this post");
+    }
+  };
+
+  const deleteItem = async (it: FsItem) => {
+    setMoreOpenFor(null);
+    if (!user || user.id !== it.user_id) return;
+    if (!confirm("Delete this post? This cannot be undone.")) return;
+    const { error } = await supabase.from("posts").delete().eq("id", it.id);
+    if (error) {
+      console.error("Delete error:", error);
+      toast.error("Couldn't delete. Please try again.");
+    } else {
+      toast.success("Post deleted");
+      onClose();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] bg-black">
       <div
@@ -481,6 +517,31 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                             <Film className="h-5 w-5" /> Choose thumbnail
                           </button>
                         )}
+                        {user?.id && user.id === it.user_id && (
+                          <button
+                            onClick={() => {
+                              setMoreOpenFor(null);
+                              setEditFor(it);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                          >
+                            <Pencil className="h-5 w-5" /> Edit
+                          </button>
+                        )}
+                        <button
+                          onClick={() => reportItem(it)}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                        >
+                          <Flag className="h-5 w-5" /> Report
+                        </button>
+                        {user?.id && user.id === it.user_id && (
+                          <button
+                            onClick={() => deleteItem(it)}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-rose-400 text-sm font-medium hover:bg-white/10 active:bg-white/15"
+                          >
+                            <Trash2 className="h-5 w-5" /> Delete
+                          </button>
+                        )}
                       </div>
                     </>
                   )}
@@ -517,6 +578,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
             setThumbPickFor(null);
             void saveThumbnail(item, file, previewUrl);
           }}
+        />
+      )}
+      {editFor && (
+        <EditPostDialog
+          postId={editFor.id}
+          open={!!editFor}
+          onClose={() => setEditFor(null)}
         />
       )}
     </div>
