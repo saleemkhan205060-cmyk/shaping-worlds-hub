@@ -271,6 +271,7 @@ function UserProfile() {
                     <>
                       <video
                         src={p.media_url}
+                        poster={p.thumbnail_url ?? undefined}
                         className="w-full h-full object-cover"
                         muted
                         playsInline
