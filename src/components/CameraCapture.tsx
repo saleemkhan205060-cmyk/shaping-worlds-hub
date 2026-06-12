@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw, ChevronRight } from "lucide-react";
+import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw, ChevronRight, SwitchCamera } from "lucide-react";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
@@ -71,7 +71,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const advanceAfterStopRef = useRef(false);
 
   const [mode, setMode] = useState<Mode>("60s");
-  const [facing] = useState<"user" | "environment">("environment");
+  const [facing, setFacing] = useState<"user" | "environment">("user");
   const [recording, setRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -549,7 +549,14 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
       {/* Record row */}
       <div className="absolute left-0 right-0 bottom-4 flex items-center justify-between px-7 z-10">
-        <div className="h-14 w-14" />
+        <button
+          onClick={() => !recording && setFacing((f) => (f === "user" ? "environment" : "user"))}
+          aria-label="Flip camera"
+          disabled={recording}
+          className="h-12 w-12 rounded-full border-2 border-white/90 bg-black/40 flex items-center justify-center active:scale-95 disabled:opacity-40"
+        >
+          <SwitchCamera className="h-5 w-5 text-white" strokeWidth={2.25} />
+        </button>
 
         <div className="relative flex items-center">
           {(recording || hasClip) && (
