@@ -95,6 +95,10 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   }, [combinedFilter]);
 
   useEffect(() => {
+    let cancelled = false;
+    // Stop any previous stream before requesting a new one (e.g. on facing flip)
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
     (async () => {
       try {
         let stream: MediaStream;
@@ -102,18 +106,26 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           stream = await navigator.mediaDevices.getUserMedia({
             video: {
               facingMode: { ideal: facing },
-              width: { ideal: 720 },
-              height: { ideal: 1280 },
-              aspectRatio: { ideal: 9 / 16 },
-              frameRate: { ideal: 30, max: 30 },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+              frameRate: { ideal: 30, max: 60 },
             },
-            audio: { echoCancellation: true, noiseSuppression: true },
+            audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 48000 },
           });
         } catch {
           stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: facing }, frameRate: { ideal: 30, max: 30 } },
+            video: {
+              facingMode: { ideal: facing },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              frameRate: { ideal: 30 },
+            },
             audio: true,
           });
+        }
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
         }
         streamRef.current = stream;
         if (videoRef.current) {
@@ -121,13 +133,15 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           await videoRef.current.play().catch(() => {});
         }
       } catch {
-        setError("Camera not available. Please allow camera & microphone access.");
+        if (!cancelled) setError("Camera not available. Please allow camera & microphone access.");
       }
     })();
     return () => {
+      cancelled = true;
       stopCanvasLoop();
       canvasStreamRef.current?.getVideoTracks().forEach((t) => t.stop());
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
   }, [facing]);
