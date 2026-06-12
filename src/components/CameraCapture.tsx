@@ -106,11 +106,12 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     let watchdog: number | null = null;
     (async () => {
       try {
-        let stream: MediaStream;
+        let stream: MediaStream | null = null;
+        // Try strict facing first so flipping to back camera actually picks the rear lens
         try {
           stream = await navigator.mediaDevices.getUserMedia({
             video: {
-              facingMode: { ideal: facing },
+              facingMode: { exact: facing },
               width: { ideal: 1280 },
               height: { ideal: 720 },
               frameRate: { ideal: 30 },
@@ -118,11 +119,24 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             audio: { echoCancellation: true, noiseSuppression: true },
           });
         } catch {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: facing } },
-            audio: true,
-          });
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: {
+                facingMode: { ideal: facing },
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                frameRate: { ideal: 30 },
+              },
+              audio: { echoCancellation: true, noiseSuppression: true },
+            });
+          } catch {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: { ideal: facing } },
+              audio: true,
+            });
+          }
         }
+
         if (cancelled) {
           stream.getTracks().forEach((t) => t.stop());
           return;
