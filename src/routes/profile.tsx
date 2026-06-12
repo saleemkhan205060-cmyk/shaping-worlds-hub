@@ -669,6 +669,7 @@ function Profile() {
                           media_type: x.media_type,
                           caption: x.caption,
                           created_at: x.created_at,
+                          thumbnail_url: x.thumbnail_url,
                         })),
                         index: idx,
                       })}
@@ -676,7 +677,7 @@ function Profile() {
                       aria-label={p.media_type === "video" ? "Play video" : "Open photo"}
                     >
                       {p.media_type === "video" ? (
-                        <video src={p.media_url} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
+                        <video src={p.media_url} poster={p.thumbnail_url ?? undefined} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
                       ) : (
                         <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
                       )}
