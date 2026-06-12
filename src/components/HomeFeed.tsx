@@ -11,7 +11,11 @@ import {
   Loader2,
   Play,
   Maximize2,
+  MoreVertical,
+  Film,
+  Upload,
 } from "lucide-react";
+import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
