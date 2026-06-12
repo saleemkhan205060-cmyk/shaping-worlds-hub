@@ -79,6 +79,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const [filterId, setFilterId] = useState<string>("normal");
   const [showFilters, setShowFilters] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [camTick, setCamTick] = useState(0);
   const [previewKind, setPreviewKind] = useState<"image" | "video" | null>(null);
   const [hasClip, setHasClip] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -99,6 +100,9 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     // Stop any previous stream before requesting a new one (e.g. on facing flip)
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
+    const restart = () => {
+      if (!cancelled) setCamTick((t) => t + 1);
+    };
     (async () => {
       try {
         let stream: MediaStream;
@@ -110,16 +114,11 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
               height: { ideal: 1080 },
               frameRate: { ideal: 30, max: 60 },
             },
-            audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 48000 },
+            audio: { echoCancellation: true, noiseSuppression: true },
           });
         } catch {
           stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              facingMode: { ideal: facing },
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-              frameRate: { ideal: 30 },
-            },
+            video: { facingMode: { ideal: facing } },
             audio: true,
           });
         }
@@ -128,23 +127,50 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           return;
         }
         streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play().catch(() => {});
+        // If the OS/browser kills the track, automatically restart the camera
+        stream.getVideoTracks().forEach((track) => {
+          track.onended = restart;
+        });
+        const v = videoRef.current;
+        if (v) {
+          v.srcObject = stream;
+          await v.play().catch(() => {});
         }
       } catch {
         if (!cancelled) setError("Camera not available. Please allow camera & microphone access.");
       }
     })();
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      const track = streamRef.current?.getVideoTracks()[0];
+      if (!track || track.readyState === "ended") restart();
+      else videoRef.current?.play().catch(() => {});
+    };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
       stopCanvasLoop();
       canvasStreamRef.current?.getVideoTracks().forEach((t) => t.stop());
-      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current?.getTracks().forEach((t) => {
+        t.onended = null;
+        t.stop();
+      });
       streamRef.current = null;
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
-  }, [facing]);
+  }, [facing, camTick]);
+
+  // If the preview video element ever pauses on its own, resume it
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const onPause = () => {
+      if (streamRef.current && !previewUrl) v.play().catch(() => {});
+    };
+    v.addEventListener("pause", onPause);
+    return () => v.removeEventListener("pause", onPause);
+  }, [previewUrl]);
 
   useEffect(() => {
     return () => {
@@ -461,6 +487,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       <div className="absolute inset-0 overflow-hidden">
         <video
           ref={videoRef}
+          autoPlay
           playsInline
           muted
           style={{ filter: combinedFilter }}
