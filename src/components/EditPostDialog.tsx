@@ -45,7 +45,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     setLoading(true);
     supabase
       .from("posts")
-      .select("id,user_id,media_type,caption,title,thumbnail_url")
+      .select("id,user_id,media_type,media_url,caption,title,thumbnail_url")
       .eq("id", postId)
       .maybeSingle()
       .then(({ data, error }) => {
