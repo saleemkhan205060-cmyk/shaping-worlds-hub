@@ -201,6 +201,7 @@ function Videos() {
                   {p.media_type === "video" ? (
                     <video
                       src={p.media_url}
+                      poster={p.thumbnail_url ?? undefined}
                       muted
                       playsInline
                       preload="metadata"
