@@ -296,18 +296,20 @@ export function Layout({
               <Link
                 key={item.to}
                 to={item.to}
-                onClick={(e) => {
+                onClick={async (e) => {
                   if (isHome) {
                     e.preventDefault();
                     setHomeReloading(true);
-                    setTimeout(() => {
-                      if (path === "/") {
-                        window.scrollTo({ top: 0, behavior: "auto" });
-                        window.location.reload();
-                      } else {
-                        window.location.href = "/";
+                    window.scrollTo({ top: 0, behavior: "auto" });
+                    try {
+                      if (path !== "/") {
+                        await navigate({ to: "/" });
                       }
-                    }, 150);
+                      await router.invalidate();
+                    } finally {
+                      window.scrollTo({ top: 0, behavior: "auto" });
+                      setHomeReloading(false);
+                    }
                   }
                 }}
                 className={`flex flex-col items-center justify-center py-2.5 text-[11px] font-medium transition ${
