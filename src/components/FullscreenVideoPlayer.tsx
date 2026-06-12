@@ -9,7 +9,11 @@ import {
   VolumeX,
   MoreVertical,
   Film,
+  Pencil,
+  Flag,
+  Trash2,
 } from "lucide-react";
+import { EditPostDialog } from "@/components/EditPostDialog";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
