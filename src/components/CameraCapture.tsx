@@ -186,11 +186,13 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     document.addEventListener("visibilitychange", onVisible);
     return () => {
       cancelled = true;
+      if (watchdog) window.clearInterval(watchdog);
       document.removeEventListener("visibilitychange", onVisible);
       stopCanvasLoop();
       canvasStreamRef.current?.getVideoTracks().forEach((t) => t.stop());
       streamRef.current?.getTracks().forEach((t) => {
         t.onended = null;
+        t.onmute = null;
         t.stop();
       });
       streamRef.current = null;
