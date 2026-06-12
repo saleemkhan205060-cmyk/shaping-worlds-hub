@@ -17,6 +17,7 @@ type Post = {
   media_type: "image" | "video" | "text";
   caption: string | null;
   created_at: string;
+  thumbnail_url: string | null;
 };
 
 type ProfileRow = {
