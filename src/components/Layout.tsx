@@ -292,6 +292,12 @@ export function Layout({
               <Link
                 key={item.to}
                 to={item.to}
+                onClick={(e) => {
+                  if (path === item.to) {
+                    e.preventDefault();
+                    window.location.reload();
+                  }
+                }}
                 className={`flex flex-col items-center justify-center py-2.5 text-[11px] font-medium transition ${
                   active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
                 }`}
