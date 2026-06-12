@@ -1069,6 +1069,57 @@ export function HomeFeed() {
         />
       )}
 
+      {file?.type.startsWith("video/") && preview && (
+        <VideoThumbnailPicker
+          videoSrc={preview}
+          open={framePickerOpen}
+          onClose={() => setFramePickerOpen(false)}
+          onPick={(f) => setThumbFile(f)}
+        />
+      )}
+
+      {videoMenuOpen && (
+        <div
+          className="fixed inset-0 z-[300] bg-black/60 flex items-end sm:items-center justify-center"
+          onClick={() => setVideoMenuOpen(false)}
+        >
+          <div
+            className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => { setVideoMenuOpen(false); setFramePickerOpen(true); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Film className="h-5 w-5" />
+              Choose thumbnail from video
+            </button>
+            <button
+              onClick={() => { setVideoMenuOpen(false); thumbRef.current?.click(); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Upload className="h-5 w-5" />
+              Upload thumbnail image
+            </button>
+            {thumbFile && (
+              <button
+                onClick={() => { setVideoMenuOpen(false); setThumbFile(null); }}
+                className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-rose-600 border-b border-slate-100 active:bg-slate-100"
+              >
+                <X className="h-5 w-5" />
+                Remove thumbnail
+              </button>
+            )}
+            <button
+              onClick={() => setVideoMenuOpen(false)}
+              className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }
