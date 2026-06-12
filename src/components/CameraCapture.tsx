@@ -95,6 +95,10 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   }, [combinedFilter]);
 
   useEffect(() => {
+    let cancelled = false;
+    // Stop any previous stream before requesting a new one (e.g. on facing flip)
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
     (async () => {
       try {
         let stream: MediaStream;
@@ -102,18 +106,26 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           stream = await navigator.mediaDevices.getUserMedia({
             video: {
               facingMode: { ideal: facing },
-              width: { ideal: 720 },
-              height: { ideal: 1280 },
-              aspectRatio: { ideal: 9 / 16 },
-              frameRate: { ideal: 30, max: 30 },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+              frameRate: { ideal: 30, max: 60 },
             },
-            audio: { echoCancellation: true, noiseSuppression: true },
+            audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 48000 },
           });
         } catch {
           stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: facing }, frameRate: { ideal: 30, max: 30 } },
+            video: {
+              facingMode: { ideal: facing },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              frameRate: { ideal: 30 },
+            },
             audio: true,
           });
+        }
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
         }
         streamRef.current = stream;
         if (videoRef.current) {
@@ -121,13 +133,15 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           await videoRef.current.play().catch(() => {});
         }
       } catch {
-        setError("Camera not available. Please allow camera & microphone access.");
+        if (!cancelled) setError("Camera not available. Please allow camera & microphone access.");
       }
     })();
     return () => {
+      cancelled = true;
       stopCanvasLoop();
       canvasStreamRef.current?.getVideoTracks().forEach((t) => t.stop());
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
   }, [facing]);
@@ -205,8 +219,8 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     const source = streamRef.current;
     if (!source) return null;
     const canvas = document.createElement("canvas");
-    canvas.width = 720;
-    canvas.height = 1280;
+    canvas.width = 1080;
+    canvas.height = 1920;
     recordCanvasRef.current = canvas;
     const stream = canvas.captureStream(30);
     source.getAudioTracks().forEach((track) => stream.addTrack(track.clone()));
@@ -264,14 +278,14 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
     if (!stream) return;
     chunksRef.current = [];
     let mr: MediaRecorder;
-    const opts = { videoBitsPerSecond: 4_000_000 };
+    const opts = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
     try {
       mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9,opus", ...opts });
     } catch {
       try {
         mr = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp8,opus", ...opts });
       } catch {
-        mr = new MediaRecorder(stream);
+        mr = new MediaRecorder(stream, opts);
       }
     }
     recorderRef.current = mr;
