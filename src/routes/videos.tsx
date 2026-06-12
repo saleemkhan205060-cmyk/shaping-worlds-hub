@@ -100,6 +100,7 @@ function Videos() {
         media_type: p.media_type,
         caption: p.caption,
         created_at: p.created_at,
+        thumbnail_url: p.thumbnail_url,
       })),
     [filteredPosts],
   );
