@@ -71,7 +71,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
   const advanceAfterStopRef = useRef(false);
 
   const [mode, setMode] = useState<Mode>("60s");
-  const [facing] = useState<"user" | "environment">("environment");
+  const [facing, setFacing] = useState<"user" | "environment">("user");
   const [recording, setRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
