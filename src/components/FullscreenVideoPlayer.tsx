@@ -8,7 +8,9 @@ import {
   Volume2,
   VolumeX,
   MoreVertical,
+  Film,
 } from "lucide-react";
+import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -59,6 +61,34 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [showControls, setShowControls] = useState(false);
   const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
   const [shareItem, setShareItem] = useState<FsItem | null>(null);
+  const [thumbPickFor, setThumbPickFor] = useState<FsItem | null>(null);
+
+  const saveThumbnail = useCallback(
+    async (item: FsItem, file: File, previewUrl: string) => {
+      if (!user) return;
+      try {
+        const path = `${user.id}/thumbs/${Date.now()}.jpg`;
+        const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
+          contentType: "image/jpeg",
+        });
+        if (upErr) throw upErr;
+        const url = supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
+        const { error: updErr } = await supabase
+          .from("posts")
+          .update({ thumbnail_url: url } as any)
+          .eq("id", item.id);
+        if (updErr) throw updErr;
+        item.thumbnail_url = url;
+        toast.success("Thumbnail updated!");
+      } catch (e) {
+        console.error(e);
+        toast.error("Failed to save thumbnail");
+      } finally {
+        URL.revokeObjectURL(previewUrl);
+      }
+    },
+    [user],
+  );
 
   // Social state
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
