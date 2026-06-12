@@ -51,6 +51,7 @@ export function Layout({
   const { user } = useAuth();
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
+  const [homeReloading, setHomeReloading] = useState(false);
 
   const refreshUnreadMsgs = useCallback(async () => {
     if (!user) return setUnreadMsgs(0);
