@@ -290,7 +290,7 @@ function Profile() {
     });
     supabase
       .from("posts")
-      .select("id, media_url, media_type, caption, created_at, is_private")
+      .select("id, media_url, media_type, caption, created_at, is_private, thumbnail_url")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => setPosts((data as Post[]) ?? []));
