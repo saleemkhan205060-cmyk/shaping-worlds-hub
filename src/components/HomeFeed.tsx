@@ -111,6 +111,11 @@ export function HomeFeed() {
   const [editCaptionValue, setEditCaptionValue] = useState("");
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const thumbRef = useRef<HTMLInputElement>(null);
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [videoMenuOpen, setVideoMenuOpen] = useState(false);
+  const [framePickerOpen, setFramePickerOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
 
