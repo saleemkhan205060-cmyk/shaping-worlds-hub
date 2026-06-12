@@ -134,7 +134,8 @@ export function HomeFeed() {
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
   // Load posts
-  useEffect(() => {
+  const loadPosts = useRef(() => {
+    setLoading(true);
     supabase
       .from("posts")
       .select("*")
@@ -144,7 +145,18 @@ export function HomeFeed() {
         setPosts(((data ?? []) as Post[]));
         setLoading(false);
       });
-  }, []);
+  }).current;
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
+
+  // Listen for global "home:refresh" event (e.g. from bottom nav Home button)
+  useEffect(() => {
+    const handler = () => loadPosts();
+    window.addEventListener("home:refresh", handler);
+    return () => window.removeEventListener("home:refresh", handler);
+  }, [loadPosts]);
 
   // Load profiles
   useEffect(() => {
