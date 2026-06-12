@@ -23,6 +23,7 @@ type Post = {
   caption: string | null;
   created_at: string;
   is_private: boolean;
+  thumbnail_url: string | null;
 };
 
 const TABS = ["Posts", "Videos"] as const;
