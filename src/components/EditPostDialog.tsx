@@ -128,7 +128,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
       updates.thumbnail_url = thumbnailUrl;
     }
     if (isText) {
-      updates.text_style = style as unknown as Record<string, unknown>;
+      updates.text_style = style as never;
     }
     const { error } = await supabase.from("posts").update(updates).eq("id", postId);
     setSaving(false);
