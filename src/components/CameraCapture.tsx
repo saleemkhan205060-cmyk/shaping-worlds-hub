@@ -487,6 +487,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       <div className="absolute inset-0 overflow-hidden">
         <video
           ref={videoRef}
+          autoPlay
           playsInline
           muted
           style={{ filter: combinedFilter }}
