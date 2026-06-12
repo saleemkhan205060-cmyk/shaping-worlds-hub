@@ -230,8 +230,6 @@ export function HomeFeed() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // (intentionally not auto-opening thumbnail picker — user opens via ⋮ menu)
-  void framePickerOpen;
 
   useEffect(() => {
     if (!thumbFile) { setThumbPreview(null); return; }
