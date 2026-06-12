@@ -196,6 +196,15 @@ function UploadPage() {
               >
                 <X className="h-4 w-4" />
               </button>
+              {file.type.startsWith("video/") && (
+                <button
+                  onClick={() => setVideoMenuOpen(true)}
+                  className="absolute top-2 right-12 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+                  aria-label="More options"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </button>
+              )}
               <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
                 {file.type.startsWith("video/") ? <VideoIcon className="h-3 w-3" /> : <ImageIcon className="h-3 w-3" />}
                 {(file.size / (1024 * 1024)).toFixed(1)} MB
