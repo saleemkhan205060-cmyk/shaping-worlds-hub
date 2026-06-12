@@ -48,6 +48,7 @@ export function Layout({
 }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
+  const router = useRouter();
   const { user } = useAuth();
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
