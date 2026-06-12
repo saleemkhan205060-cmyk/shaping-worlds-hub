@@ -227,11 +227,11 @@ export function HomeFeed() {
     }
     const url = URL.createObjectURL(file);
     setPreview(url);
-    if (file.type.startsWith("video/")) {
-      setFramePickerOpen(true);
-    }
     return () => URL.revokeObjectURL(url);
   }, [file]);
+
+  // (intentionally not auto-opening thumbnail picker — user opens via ⋮ menu)
+  void framePickerOpen;
 
   useEffect(() => {
     if (!thumbFile) { setThumbPreview(null); return; }
