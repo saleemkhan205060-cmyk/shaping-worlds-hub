@@ -36,6 +36,7 @@ export type FsItem = {
   media_type: "image" | "video";
   caption: string | null;
   created_at: string;
+  thumbnail_url?: string | null;
 };
 
 type Props = {
