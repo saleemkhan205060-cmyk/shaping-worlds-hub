@@ -361,6 +361,15 @@ function UploadPage() {
 
         </div>
       </div>
+
+      {file?.type.startsWith("video/") && preview && (
+        <VideoThumbnailPicker
+          videoSrc={preview}
+          open={framePickerOpen}
+          onClose={() => setFramePickerOpen(false)}
+          onPick={(f) => setThumbFile(f)}
+        />
+      )}
     </Layout>
   );
 }
