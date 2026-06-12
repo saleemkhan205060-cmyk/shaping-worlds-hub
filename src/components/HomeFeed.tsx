@@ -313,6 +313,15 @@ export function HomeFeed() {
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         const media_url = pub.publicUrl;
         const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+
+        let thumbnail_url: string | null = null;
+        if (thumbFile) {
+          const text2 = thumbFile.name.split(".").pop() || "jpg";
+          const tpath = `${user.id}/thumbs/${Date.now()}.${text2}`;
+          await uploadToStorage({ bucket: "media", path: tpath, file: thumbFile });
+          thumbnail_url = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
+        }
+
         const { error: insErr } = await supabase.from("posts").insert({
           user_id: user.id,
           media_url,
@@ -320,11 +329,13 @@ export function HomeFeed() {
           caption: text || null,
           category: "For You",
           is_private: isPrivate,
-        });
+          thumbnail_url,
+        } as any);
         if (insErr) throw insErr;
       }
       setCaption("");
       setFile(null);
+      setThumbFile(null);
       setIsPrivate(false);
       setTextStyle(DEFAULT_TEXT_STYLE);
 
