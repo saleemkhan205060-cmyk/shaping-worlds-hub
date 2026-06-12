@@ -146,6 +146,16 @@ export function MediaActions({
             onClick={(e) => e.stopPropagation()}
           >
             <Item icon={<Share2 className="h-5 w-5" />} label="Share" onClick={handleShare} />
+            {isOwner && (
+              <Item
+                icon={<Pencil className="h-5 w-5" />}
+                label="Edit"
+                onClick={() => {
+                  setOpen(false);
+                  setEditOpen(true);
+                }}
+              />
+            )}
             <Item icon={<Flag className="h-5 w-5" />} label="Report" onClick={handleReport} />
             {isOwner && (
               <Item
@@ -170,6 +180,11 @@ export function MediaActions({
         title={caption ?? "Post"}
         text={caption ?? "Check this out"}
         url={mediaUrl || window.location.href}
+      />
+      <EditPostDialog
+        postId={postId}
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
       />
     </>
   );
