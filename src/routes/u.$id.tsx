@@ -17,6 +17,7 @@ type Post = {
   media_type: "image" | "video" | "text";
   caption: string | null;
   created_at: string;
+  thumbnail_url: string | null;
 };
 
 type ProfileRow = {
@@ -66,7 +67,7 @@ function UserProfile() {
       supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
       supabase
         .from("posts")
-        .select("id, user_id, media_url, media_type, caption, created_at")
+        .select("id, user_id, media_url, media_type, caption, created_at, thumbnail_url")
         .eq("user_id", id)
         .order("created_at", { ascending: false }),
     ]).then(([{ data: prof }, { data: pp }]) => {
@@ -150,6 +151,7 @@ function UserProfile() {
       media_type: p.media_type as "image" | "video",
       caption: p.caption,
       created_at: p.created_at,
+      thumbnail_url: p.thumbnail_url,
     }));
 
   const openAt = (postId: string) => {
@@ -269,6 +271,7 @@ function UserProfile() {
                     <>
                       <video
                         src={p.media_url}
+                        poster={p.thumbnail_url ?? undefined}
                         className="w-full h-full object-cover"
                         muted
                         playsInline

@@ -27,6 +27,7 @@ type Post = {
   title: string | null;
   category: string | null;
   created_at: string;
+  thumbnail_url: string | null;
 };
 
 export const Route = createFileRoute("/videos")({ component: Videos });
@@ -99,6 +100,7 @@ function Videos() {
         media_type: p.media_type,
         caption: p.caption,
         created_at: p.created_at,
+        thumbnail_url: p.thumbnail_url,
       })),
     [filteredPosts],
   );
@@ -199,6 +201,7 @@ function Videos() {
                   {p.media_type === "video" ? (
                     <video
                       src={p.media_url}
+                      poster={p.thumbnail_url ?? undefined}
                       muted
                       playsInline
                       preload="metadata"

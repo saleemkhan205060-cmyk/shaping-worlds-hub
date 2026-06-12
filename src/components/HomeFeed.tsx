@@ -43,6 +43,7 @@ type Post = {
   category: string | null;
   created_at: string;
   text_style?: unknown;
+  thumbnail_url?: string | null;
 };
 
 
@@ -395,6 +396,7 @@ export function HomeFeed() {
     media_type: p.media_type as "image" | "video",
     caption: p.caption,
     created_at: p.created_at,
+    thumbnail_url: p.thumbnail_url ?? null,
   }));
 
   const toggleLike = async (postId: string) => {
@@ -902,6 +904,7 @@ export function HomeFeed() {
                           videoRefs.current[p.id] = el;
                         }}
                         src={p.media_url}
+                        poster={p.thumbnail_url ?? undefined}
                         playsInline
                         muted
                         loop

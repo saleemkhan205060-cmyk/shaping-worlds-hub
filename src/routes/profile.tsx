@@ -23,6 +23,7 @@ type Post = {
   caption: string | null;
   created_at: string;
   is_private: boolean;
+  thumbnail_url: string | null;
 };
 
 const TABS = ["Posts", "Videos"] as const;
@@ -289,7 +290,7 @@ function Profile() {
     });
     supabase
       .from("posts")
-      .select("id, media_url, media_type, caption, created_at, is_private")
+      .select("id, media_url, media_type, caption, created_at, is_private, thumbnail_url")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => setPosts((data as Post[]) ?? []));
@@ -668,6 +669,7 @@ function Profile() {
                           media_type: x.media_type,
                           caption: x.caption,
                           created_at: x.created_at,
+                          thumbnail_url: x.thumbnail_url,
                         })),
                         index: idx,
                       })}
@@ -675,7 +677,7 @@ function Profile() {
                       aria-label={p.media_type === "video" ? "Play video" : "Open photo"}
                     >
                       {p.media_type === "video" ? (
-                        <video src={p.media_url} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
+                        <video src={p.media_url} poster={p.thumbnail_url ?? undefined} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
                       ) : (
                         <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
                       )}

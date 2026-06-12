@@ -36,6 +36,7 @@ export type FsItem = {
   media_type: "image" | "video";
   caption: string | null;
   created_at: string;
+  thumbnail_url?: string | null;
 };
 
 type Props = {
@@ -320,6 +321,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                       videoRefs.current[it.id] = el;
                     }}
                     src={it.media_url}
+                    poster={it.thumbnail_url ?? undefined}
                     className="h-full w-full object-cover"
                     loop
                     playsInline
