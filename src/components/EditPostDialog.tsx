@@ -36,6 +36,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   const [caption, setCaption] = useState("");
   const [title, setTitle] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
