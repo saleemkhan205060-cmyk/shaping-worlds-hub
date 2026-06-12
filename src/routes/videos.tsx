@@ -27,6 +27,7 @@ type Post = {
   title: string | null;
   category: string | null;
   created_at: string;
+  thumbnail_url: string | null;
 };
 
 export const Route = createFileRoute("/videos")({ component: Videos });
