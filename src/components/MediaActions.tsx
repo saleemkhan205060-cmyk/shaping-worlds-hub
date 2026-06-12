@@ -1,9 +1,10 @@
 import { ReactNode, useRef, useState } from "react";
-import { Share2, Flag, Trash2 } from "lucide-react";
+import { Share2, Flag, Trash2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
+import { EditPostDialog } from "@/components/EditPostDialog";
 import { shareWithSystemShare } from "@/lib/native-share";
 
 type Props = {
