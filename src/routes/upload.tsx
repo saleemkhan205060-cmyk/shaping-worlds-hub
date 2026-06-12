@@ -181,7 +181,14 @@ function UploadPage() {
           ) : (
             <div className="relative rounded-xl overflow-hidden bg-slate-100">
               {file.type.startsWith("video/") ? (
-                <video src={preview ?? undefined} controls className="w-full max-h-80 object-contain bg-black" />
+                <video
+                  src={preview ?? undefined}
+                  controls
+                  controlsList="nodownload noplaybackrate noremoteplayback"
+                  disablePictureInPicture
+                  onContextMenu={(e) => e.preventDefault()}
+                  className="w-full max-h-80 object-contain bg-black"
+                />
               ) : (
                 <img src={preview ?? undefined} alt="preview" className="w-full max-h-80 object-contain" />
               )}
@@ -195,16 +202,17 @@ function UploadPage() {
               {file.type.startsWith("video/") && (
                 <button
                   onClick={() => setVideoMenuOpen(true)}
-                  className="absolute bottom-2 left-2 h-8 px-3 rounded-full bg-black/70 text-white text-xs font-semibold flex items-center gap-1.5 active:scale-95"
-                  aria-label="Choose thumbnail"
+                  className="absolute top-2 right-12 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+                  aria-label="More options"
                 >
-                  {thumbPreview ? (
-                    <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
-                  ) : (
-                    <Film className="h-3.5 w-3.5" />
-                  )}
-                  <span>{thumbPreview ? "Thumbnail set" : "Choose thumbnail"}</span>
+                  <MoreVertical className="h-4 w-4" />
                 </button>
+              )}
+              {thumbPreview && file.type.startsWith("video/") && (
+                <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                  <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
+                  <span>Thumbnail set</span>
+                </div>
               )}
               {!file.type.startsWith("video/") && (
                 <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
