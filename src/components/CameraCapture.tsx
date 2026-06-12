@@ -549,7 +549,14 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
       {/* Record row */}
       <div className="absolute left-0 right-0 bottom-4 flex items-center justify-between px-7 z-10">
-        <div className="h-14 w-14" />
+        <button
+          onClick={() => !recording && setFacing((f) => (f === "user" ? "environment" : "user"))}
+          aria-label="Flip camera"
+          disabled={recording}
+          className="h-12 w-12 rounded-full border-2 border-white/90 bg-black/40 flex items-center justify-center active:scale-95 disabled:opacity-40"
+        >
+          <SwitchCamera className="h-5 w-5 text-white" strokeWidth={2.25} />
+        </button>
 
         <div className="relative flex items-center">
           {(recording || hasClip) && (
