@@ -227,8 +227,19 @@ export function HomeFeed() {
     }
     const url = URL.createObjectURL(file);
     setPreview(url);
+    if (file.type.startsWith("video/")) {
+      setFramePickerOpen(true);
+    }
     return () => URL.revokeObjectURL(url);
   }, [file]);
+
+  useEffect(() => {
+    if (!thumbFile) { setThumbPreview(null); return; }
+    const url = URL.createObjectURL(thumbFile);
+    setThumbPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [thumbFile]);
+
 
   // IntersectionObserver: auto play/pause inline videos
   useEffect(() => {
