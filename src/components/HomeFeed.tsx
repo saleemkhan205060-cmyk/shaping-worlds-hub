@@ -1113,6 +1113,10 @@ export function HomeFeed() {
 
       {fullscreenPreviewOpen && file && isVideoFile(file) && preview && (
         <div className="fixed inset-0 z-[250] bg-black flex items-center justify-center">
+          <style>{`
+            .no-fs-video::-webkit-media-controls-fullscreen-button { display: none !important; }
+            .no-fs-video::-webkit-media-controls-fullscreen-container { display: none !important; }
+          `}</style>
           <video
             src={preview}
             controls
@@ -1120,7 +1124,7 @@ export function HomeFeed() {
             controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
             disablePictureInPicture
             onContextMenu={(e) => e.preventDefault()}
-            className="w-full h-full object-contain bg-black"
+            className="w-full h-full object-contain bg-black no-fs-video"
           />
           <button
             onClick={() => setFullscreenPreviewOpen(false)}
