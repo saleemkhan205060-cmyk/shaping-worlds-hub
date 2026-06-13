@@ -391,8 +391,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                       <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
                       <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
                     </div>
+                {editTab === "crop" && (
+                  <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 pointer-events-none">
+                    <Play className="h-5 w-5 text-white fill-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]" />
+                    <span className="text-white text-base font-semibold tabular-nums drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+                      {fmt(current)} / {fmt(duration)}
+                    </span>
                   </div>
                 )}
+              </div>
+            )}
               </div>
             )}
             {overlayText && (
