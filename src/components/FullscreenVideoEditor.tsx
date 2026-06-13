@@ -268,17 +268,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             <div className="relative w-full max-w-md mx-auto" style={aspectStyle}>
               {src && (
                 <video
+                  ref={editPreviewRef}
                   src={src}
                   className="w-full h-full object-contain bg-black rounded-md"
                   style={{ filter: videoFilter }}
                   muted
                   playsInline
+                  onClick={togglePlay}
                   onLoadedMetadata={(e) => {
-                    const v = e.currentTarget;
-                    v.currentTime = current;
+                    e.currentTarget.currentTime = current;
                   }}
                 />
               )}
+
               {overlayText && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-4">
                   <span
