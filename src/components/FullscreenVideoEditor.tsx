@@ -676,39 +676,46 @@ function TrimStrip({
   const curPct = duration ? Math.max(startPct, Math.min(endPct, (current / duration) * 100)) : 0;
 
   return (
-    <div className="relative h-14 select-none">
-      {/* White pill container with thumbnails — playhead inside it */}
-      <div
-        ref={stripRef}
-        className="absolute inset-0 bg-white rounded-2xl p-1 flex touch-none overflow-hidden"
-        onPointerDown={startDrag("seek")}
-      >
-        {Array.from({ length: FRAMES }).map((_, i) => (
-          <div key={i} className="flex-1 h-full overflow-hidden first:rounded-l-xl last:rounded-r-xl bg-slate-300">
-            {thumbs[i] && <img src={thumbs[i]} alt="" className="w-full h-full object-cover" draggable={false} />}
-          </div>
-        ))}
-        {/* Playhead */}
+    <div className="relative h-16 select-none px-1">
+      {/* White rounded container */}
+      <div className="absolute inset-x-0 inset-y-0 bg-white rounded-[14px] shadow-md flex items-center px-7">
+        {/* Thumbnails row */}
         <div
-          className="absolute top-1 bottom-1 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.5)] pointer-events-none"
-          style={{ left: `${curPct}%` }}
-        />
+          ref={stripRef}
+          className="relative flex-1 h-[52px] flex gap-[2px] touch-none overflow-hidden rounded-[4px]"
+          onPointerDown={startDrag("seek")}
+        >
+          {Array.from({ length: FRAMES }).map((_, i) => (
+            <div key={i} className="flex-1 h-full overflow-hidden bg-slate-300">
+              {thumbs[i] && <img src={thumbs[i]} alt="" className="w-full h-full object-cover" draggable={false} />}
+            </div>
+          ))}
+          {/* Playhead */}
+          <div
+            className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.5)] pointer-events-none"
+            style={{ left: `${curPct}%` }}
+          />
+        </div>
       </div>
-      {/* Left handle grip (on white pill edge) */}
+      {/* Left handle — capsule on left edge of white container */}
       <div
         onPointerDown={startDrag("start")}
-        className="absolute top-0 bottom-0 w-5 flex items-center justify-center cursor-ew-resize z-20 touch-none"
-        style={{ left: `calc(${startPct}% - 10px)` }}
+        className="absolute top-1/2 -translate-y-1/2 h-[52px] w-6 flex items-center justify-center cursor-ew-resize z-20 touch-none"
+        style={{ left: 2 }}
       >
-        <div className="h-6 w-1 bg-slate-500 rounded-full" />
+        <div className="h-full w-full rounded-[10px] bg-white flex items-center justify-center">
+          <div className="h-5 w-[3px] bg-slate-400 rounded-full" />
+        </div>
       </div>
-      {/* Right handle grip */}
+      {/* Right handle */}
       <div
         onPointerDown={startDrag("end")}
-        className="absolute top-0 bottom-0 w-5 flex items-center justify-center cursor-ew-resize z-20 touch-none"
-        style={{ left: `calc(${endPct}% - 10px)` }}
+        className="absolute top-1/2 -translate-y-1/2 h-[52px] w-6 flex items-center justify-center cursor-ew-resize z-20 touch-none"
+        style={{ right: 2 }}
       >
-        <div className="h-6 w-1 bg-slate-500 rounded-full" />
+        <div className="h-full w-full rounded-[10px] bg-white flex items-center justify-center">
+          <div className="h-5 w-[3px] bg-slate-400 rounded-full" />
+        </div>
       </div>
     </div>
   );
