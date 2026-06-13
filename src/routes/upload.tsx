@@ -440,6 +440,14 @@ function UploadPage() {
           </div>
         </div>
       )}
+
+      {editorFile && (
+        <FullscreenVideoEditor
+          file={editorFile}
+          onClose={() => setEditorFile(null)}
+          onConfirm={() => { const f = editorFile; setEditorFile(null); onPick(f); }}
+        />
+      )}
     </Layout>
   );
 }
