@@ -414,7 +414,7 @@ function UploadPage() {
             src={preview}
             controls
             playsInline
-            controlsList="nodownload noplaybackrate noremoteplayback"
+            controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
             disablePictureInPicture
             onContextMenu={(e) => e.preventDefault()}
             className="w-full h-full object-contain bg-black"
@@ -432,6 +432,13 @@ function UploadPage() {
             aria-label="More options"
           >
             <MoreVertical className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => setFullscreenPreviewOpen(false)}
+            className="absolute bottom-6 right-6 h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg active:scale-95"
+            aria-label="Go to upload"
+          >
+            <Upload className="h-4 w-4" />
           </button>
         </div>
       )}
