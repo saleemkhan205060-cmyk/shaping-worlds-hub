@@ -36,6 +36,7 @@ import {
 } from "@/components/TextPostStyles";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
+import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 
 
 type Post = {
@@ -67,6 +68,8 @@ type Comment = {
 };
 
 const MAX_BYTES = 500 * 1024 * 1024;
+const isVideoFile = (f: File) => f.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi|3gp)$/i.test(f.name);
+const isImageFile = (f: File) => f.type.startsWith("image/") || /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f.name);
 
 type SearchTab = "all" | "videos" | "photos" | "users" | "marriage" | "market";
 const TABS: { id: SearchTab; label: string }[] = [
@@ -116,6 +119,7 @@ export function HomeFeed() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
+  const [editorFile, setEditorFile] = useState<File | null>(null);
   const captionPressTimer = useRef<number | null>(null);
 
 
@@ -275,7 +279,7 @@ export function HomeFeed() {
 
   const pickFile = (f: File | null) => {
     if (!f) return;
-    if (!f.type.startsWith("image/") && !f.type.startsWith("video/")) {
+    if (!isImageFile(f) && !isVideoFile(f)) {
       toast.error("Only images and videos are allowed");
       return;
     }
@@ -322,7 +326,7 @@ export function HomeFeed() {
         });
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         const media_url = pub.publicUrl;
-        const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+        const media_type: "image" | "video" = isVideoFile(file) ? "video" : "image";
 
         let thumbnail_url: string | null = null;
         if (thumbFile) {
@@ -633,7 +637,7 @@ export function HomeFeed() {
           />
           {preview && file && (
             <div className="relative mt-2 rounded-xl overflow-hidden bg-slate-100">
-              {file.type.startsWith("video/") ? (
+              {isVideoFile(file) ? (
                 <video
                   src={preview}
                   controls
@@ -652,7 +656,7 @@ export function HomeFeed() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
-              {file.type.startsWith("video/") && (
+              {isVideoFile(file) && (
                 <button
                   onClick={() => setVideoMenuOpen(true)}
                   className="absolute top-2 right-11 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
@@ -661,7 +665,7 @@ export function HomeFeed() {
                   <MoreVertical className="h-3.5 w-3.5" />
                 </button>
               )}
-              {thumbPreview && file.type.startsWith("video/") && (
+              {thumbPreview && isVideoFile(file) && (
                 <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/60 text-white text-[11px] px-2 py-1 rounded">
                   <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
                   <span>Thumbnail set</span>
@@ -811,7 +815,17 @@ export function HomeFeed() {
                 ref={fileRef}
                 type="file"
                 className="hidden"
-                onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => {
+                  const f = e.target.files?.[0] ?? null;
+                  e.currentTarget.value = "";
+                  if (!f) return;
+                  if (isVideoFile(f)) {
+                    if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
+                    setEditorFile(f);
+                    return;
+                  }
+                  pickFile(f);
+                }}
               />
             </div>
             <div className="flex items-center gap-2 relative">
@@ -1086,7 +1100,15 @@ export function HomeFeed() {
         />
       )}
 
-      {file?.type.startsWith("video/") && preview && (
+      {editorFile && (
+        <FullscreenVideoEditor
+          file={editorFile}
+          onClose={() => setEditorFile(null)}
+          onConfirm={() => { const f = editorFile; setEditorFile(null); pickFile(f); }}
+        />
+      )}
+
+      {file && isVideoFile(file) && preview && (
         <VideoThumbnailPicker
           videoSrc={preview}
           open={framePickerOpen}
