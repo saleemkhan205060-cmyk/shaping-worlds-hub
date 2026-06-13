@@ -16,6 +16,8 @@ export const Route = createFileRoute("/upload")({ component: UploadPage });
 
 const CATEGORIES = ["For You", "Trending", "Music", "Food", "Travel"];
 const MAX_BYTES = 500 * 1024 * 1024; // 500MB
+const isVideoFile = (f: File) => f.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi|3gp)$/i.test(f.name);
+const isImageFile = (f: File) => f.type.startsWith("image/") || /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f.name);
 
 function UploadPage() {
   const { user, loading } = useAuth();
@@ -63,7 +65,7 @@ function UploadPage() {
 
   const onPick = (f: File | null) => {
     if (!f) return;
-    if (!f.type.startsWith("image/") && !f.type.startsWith("video/")) {
+    if (!isImageFile(f) && !isVideoFile(f)) {
       toast.error("Only images and videos are allowed");
       return;
     }
@@ -95,7 +97,7 @@ function UploadPage() {
         onProgress: (pct) => setProgress(pct),
       });
       const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      const mediaType = file.type.startsWith("video/") ? "video" : "image";
+      const mediaType = isVideoFile(file) ? "video" : "image";
 
       let thumbnailUrl: string | null = null;
       if (thumbFile) {
