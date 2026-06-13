@@ -327,7 +327,41 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             />
           </div>
 
-          {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
+          {/* Active tab panel */}
+          {editTab === "crop" && (
+            <div className="px-3 pb-2 shrink-0">
+              <div className="flex gap-2 overflow-x-auto scrollbar-none">
+                {[
+                  { id: "free", label: "Custom" },
+                  { id: "9:16", label: "9:16" },
+                  { id: "2:3", label: "2:3" },
+                  { id: "3:4", label: "3:4" },
+                  { id: "1:1", label: "Square" },
+                ].map((a) => {
+                  const active = aspect === a.id;
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => setAspect(a.id)}
+                      className={`shrink-0 w-[68px] h-[68px] rounded-2xl flex flex-col items-center justify-center gap-1 transition active:scale-95 ${active ? "bg-slate-800 ring-2 ring-sky-300" : "bg-slate-800/80"}`}
+                    >
+                      <div
+                        className="bg-slate-300 rounded-[3px]"
+                        style={
+                          a.id === "free" ? { width: 22, height: 16 }
+                          : a.id === "9:16" ? { width: 14, height: 22 }
+                          : a.id === "2:3" ? { width: 16, height: 22 }
+                          : a.id === "3:4" ? { width: 18, height: 22 }
+                          : { width: 20, height: 20 }
+                        }
+                      />
+                      <span className="text-[11px] font-medium text-white">{a.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {editTab !== "crop" && (
           <div className="px-3 pb-2 shrink-0">
             {editTab === "adjust" && (
@@ -417,6 +451,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
           </div>
           )}
+
 
           {/* Bottom tabs — Google Photos style */}
           <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
