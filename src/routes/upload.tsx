@@ -10,6 +10,7 @@ import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
 import { CameraCapture } from "@/components/CameraCapture";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
+import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
