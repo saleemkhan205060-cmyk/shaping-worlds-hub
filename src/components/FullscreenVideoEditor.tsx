@@ -158,9 +158,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   };
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
-  const cropClipStyle = editTab === "crop"
-    ? { clipPath: `inset(${cropRect.y}% ${100 - cropRect.x - cropRect.width}% ${100 - cropRect.y - cropRect.height}% ${cropRect.x}%)` }
-    : {};
+  const cropClipStyle = {};
 
   const fitRectToAspect = (ratio: number | null) => {
     if (!ratio) {
