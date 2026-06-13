@@ -265,18 +265,29 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
-            {src && (
-              <video
-                ref={editPreviewRef}
-                src={src}
-                className={aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain"}
-                style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
-                muted
-                playsInline
-                onClick={togglePlay}
-                onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
-              />
-            )}
+            <div className="relative inline-flex items-center justify-center max-h-full max-w-full">
+              {src && (
+                <video
+                  ref={editPreviewRef}
+                  src={src}
+                  className={aspect === "free" ? "max-h-[60vh] max-w-[80vw] object-contain" : "max-h-[60vh] max-w-[80vw] object-contain"}
+                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
+                  muted
+                  playsInline
+                  onClick={togglePlay}
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
+                />
+              )}
+              {/* Corner brackets — only in Crop tab */}
+              {editTab === "crop" && (
+                <>
+                  <span className="pointer-events-none absolute -top-2 -left-2 h-6 w-6 border-t-[3px] border-l-[3px] border-white rounded-tl-md" />
+                  <span className="pointer-events-none absolute -top-2 -right-2 h-6 w-6 border-t-[3px] border-r-[3px] border-white rounded-tr-md" />
+                  <span className="pointer-events-none absolute -bottom-2 -left-2 h-6 w-6 border-b-[3px] border-l-[3px] border-white rounded-bl-md" />
+                  <span className="pointer-events-none absolute -bottom-2 -right-2 h-6 w-6 border-b-[3px] border-r-[3px] border-white rounded-br-md" />
+                </>
+              )}
+            </div>
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
                 <span
@@ -288,6 +299,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
           </div>
+
 
           {/* Play + time pill (tight, directly below video) */}
           <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
