@@ -470,6 +470,7 @@ export function HomeFeed() {
       return;
     }
     const isLiked = !!likedByMe[postId];
+    if (!isLiked) playLikeSound();
     // optimistic
     setLikedByMe((m) => ({ ...m, [postId]: !isLiked }));
     setLikeCounts((c) => ({ ...c, [postId]: Math.max(0, (c[postId] ?? 0) + (isLiked ? -1 : 1)) }));
