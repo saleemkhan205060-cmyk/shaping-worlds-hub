@@ -369,7 +369,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
             {src && (
-              <div ref={cropAreaRef} className="relative max-h-full max-w-full touch-none">
+              <div ref={cropAreaRef} className="relative inline-flex max-h-full max-w-full touch-none items-center justify-center">
                 <video
                   ref={editPreviewRef}
                   src={src}
