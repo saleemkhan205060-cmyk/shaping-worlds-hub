@@ -36,6 +36,7 @@ import {
 } from "@/components/TextPostStyles";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
+import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 
 
 type Post = {
@@ -67,6 +68,8 @@ type Comment = {
 };
 
 const MAX_BYTES = 500 * 1024 * 1024;
+const isVideoFile = (f: File) => f.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi|3gp)$/i.test(f.name);
+const isImageFile = (f: File) => f.type.startsWith("image/") || /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f.name);
 
 type SearchTab = "all" | "videos" | "photos" | "users" | "marriage" | "market";
 const TABS: { id: SearchTab; label: string }[] = [
@@ -116,6 +119,7 @@ export function HomeFeed() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
+  const [editorFile, setEditorFile] = useState<File | null>(null);
   const captionPressTimer = useRef<number | null>(null);
 
 
@@ -275,7 +279,7 @@ export function HomeFeed() {
 
   const pickFile = (f: File | null) => {
     if (!f) return;
-    if (!f.type.startsWith("image/") && !f.type.startsWith("video/")) {
+    if (!isImageFile(f) && !isVideoFile(f)) {
       toast.error("Only images and videos are allowed");
       return;
     }
@@ -322,7 +326,7 @@ export function HomeFeed() {
         });
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         const media_url = pub.publicUrl;
-        const media_type: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+        const media_type: "image" | "video" = isVideoFile(file) ? "video" : "image";
 
         let thumbnail_url: string | null = null;
         if (thumbFile) {
