@@ -39,7 +39,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [sheet, setSheet] = useState<null | "filter" | "sound" | "trim" | "edit">(null);
+  const [sheet, setSheet] = useState<null | "filter" | "sound" | "trim" | "edit">("edit");
   const [editTab, setEditTab] = useState<EditTab>("crop");
   const [filter, setFilter] = useState<string>("none");
   const [aspect, setAspect] = useState<string>("free");
@@ -256,11 +256,11 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="flex items-center justify-between px-3 py-2 shrink-0">
-            <button onClick={() => setSheet(null)} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
+            <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={() => setSheet(null)} className="text-white text-xs font-bold px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">Done</button>
+            <button onClick={onConfirm} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
           </div>
 
           {/* Preview — fills remaining space, no extra gap */}
@@ -327,9 +327,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             />
           </div>
 
-          {/* Active tab panel — compact */}
-          <div className="px-3 pb-1.5 shrink-0">
-            {editTab === "crop" && null}
+          {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
+          {editTab !== "crop" && (
+          <div className="px-3 pb-2 shrink-0">
             {editTab === "adjust" && (
               <div className="space-y-1.5 text-white text-xs">
                 <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
@@ -416,9 +416,10 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
           </div>
+          )}
 
-          {/* Bottom tabs — Google Photos style: scrollable rounded squares */}
-          <div className="flex gap-2 overflow-x-auto px-3 pb-4 pt-1 bg-black shrink-0 scrollbar-none">
+          {/* Bottom tabs — Google Photos style */}
+          <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
             <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
             <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
@@ -571,10 +572,10 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 w-[72px] h-[72px] flex flex-col items-center justify-center gap-1.5 rounded-2xl transition active:scale-95 ${active ? "bg-white/15 text-white ring-1 ring-white/40" : "bg-white/5 text-white/85 hover:bg-white/10"}`}
+      className={`shrink-0 w-[44px] h-[58px] flex flex-col items-center justify-center gap-1 rounded-xl transition active:scale-95 ${active ? "text-white" : "text-white/70"}`}
     >
       {icon}
-      <span className="text-[11px] font-semibold">{label}</span>
+      <span className="text-[9px] font-medium leading-none">{label}</span>
     </button>
   );
 }
