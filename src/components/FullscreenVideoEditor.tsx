@@ -158,7 +158,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   };
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
-  const cropClipStyle = {};
+  const cropClipStyle = editTab === "crop"
+    ? { clipPath: `inset(${cropRect.y}% ${100 - cropRect.x - cropRect.width}% ${100 - cropRect.y - cropRect.height}% ${cropRect.x}%)` }
+    : {};
 
   const fitRectToAspect = (ratio: number | null) => {
     if (!ratio) {
@@ -354,7 +356,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
       {/* EDIT — fullscreen editor (Google Photos style, tight spacing) */}
       {sheet === "edit" && (
-        <div className="fixed inset-0 z-[420] bg-black flex flex-col" style={{ height: '100dvh' }} onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="flex items-center justify-between px-3 py-2 shrink-0">
             <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
@@ -365,7 +367,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           </div>
 
           {/* Preview — fills remaining space, no extra gap */}
-          <div className="flex-1 min-h-0 max-h-[50vh] flex items-center justify-center relative">
+          <div className="flex-1 min-h-0 flex items-center justify-center relative">
             {src && (
               <div ref={cropAreaRef} className="relative inline-flex max-h-full max-w-full touch-none items-center justify-center">
                 <video
@@ -381,7 +383,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 {editTab === "crop" && (
                   <div className="absolute inset-0 pointer-events-none">
                     <div
-                      className="absolute pointer-events-none"
+                      className="absolute border border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] pointer-events-none"
                       style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
                     >
                       <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
@@ -452,27 +454,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           <div className="px-3 pb-2 shrink-0">
             {editTab === "crop" && (
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                {ASPECTS.map((a) => {
-                  const r = getAspectNumber(a.id);
-                  const innerW = r ? (r >= 1 ? 16 : 16 * r) : 12;
-                  const innerH = r ? (r >= 1 ? 16 / r : 16) : 12;
-                  const isActive = aspect === a.id;
-                  return (
-                    <button
-                      key={a.id}
-                      onClick={() => selectAspect(a.id)}
-                      className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${isActive ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
-                    >
-                      <div className="h-5 w-5 rounded-[3px] bg-white/15 flex items-center justify-center">
-                        <span
-                          className={`rounded-[1px] ${isActive ? "bg-sky-200" : "bg-white/70"}`}
-                          style={{ width: `${innerW}px`, height: `${innerH}px` }}
-                        />
-                      </div>
-                      <span className="text-[11px] font-medium text-white">{a.label}</span>
-                    </button>
-                  );
-                })}
+                {ASPECTS.map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => selectAspect(a.id)}
+                    className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
+                  >
+                    <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
+                    <span className="text-[11px] font-medium text-white">{a.label}</span>
+                  </button>
+                ))}
               </div>
             )}
             {editTab === "adjust" && (
@@ -564,7 +555,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           )}
 
           {/* Bottom tabs — Google Photos style */}
-          <div className="flex justify-between gap-1 overflow-x-auto px-2 pt-1 bg-black shrink-0 scrollbar-none" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}>
+          <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
             <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
             <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
@@ -727,16 +718,16 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
 
 function CropHandle({ corner, onPointerDown }: { corner: "tl" | "tr" | "bl" | "br"; onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void }) {
   const position = {
-    tl: "-top-[6px] -left-[6px] border-t-[5px] border-l-[5px] rounded-tl-2xl cursor-nwse-resize",
-    tr: "-top-[6px] -right-[6px] border-t-[5px] border-r-[5px] rounded-tr-2xl cursor-nesw-resize",
-    bl: "-bottom-[6px] -left-[6px] border-b-[5px] border-l-[5px] rounded-bl-2xl cursor-nesw-resize",
-    br: "-bottom-[6px] -right-[6px] border-b-[5px] border-r-[5px] rounded-br-2xl cursor-nwse-resize",
+    tl: "-top-4 -left-4 border-t-[3px] border-l-[3px] rounded-tl-xl cursor-nwse-resize",
+    tr: "-top-4 -right-4 border-t-[3px] border-r-[3px] rounded-tr-xl cursor-nesw-resize",
+    bl: "-bottom-4 -left-4 border-b-[3px] border-l-[3px] rounded-bl-xl cursor-nesw-resize",
+    br: "-bottom-4 -right-4 border-b-[3px] border-r-[3px] rounded-br-xl cursor-nwse-resize",
   }[corner];
 
   return (
     <div
       onPointerDown={onPointerDown}
-      className={`absolute z-30 h-9 w-9 pointer-events-auto touch-none border-white ${position}`}
+      className={`absolute z-30 h-12 w-12 pointer-events-auto touch-none border-white ${position}`}
     />
   );
 }
