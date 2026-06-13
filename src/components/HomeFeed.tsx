@@ -120,6 +120,7 @@ export function HomeFeed() {
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
+  const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
 
@@ -288,6 +289,7 @@ export function HomeFeed() {
       return;
     }
     setFile(f);
+    setFullscreenPreviewOpen(isVideoFile(f));
   };
 
   const submit = async () => {
@@ -349,6 +351,7 @@ export function HomeFeed() {
       }
       setCaption("");
       setFile(null);
+      setFullscreenPreviewOpen(false);
       setThumbFile(null);
       setIsPrivate(false);
       setTextStyle(DEFAULT_TEXT_STYLE);
@@ -650,7 +653,7 @@ export function HomeFeed() {
                 <img src={preview} alt="preview" className="w-full max-h-72 object-contain" />
               )}
               <button
-                onClick={() => setFile(null)}
+                onClick={() => { setFile(null); setFullscreenPreviewOpen(false); }}
                 className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center"
                 aria-label="Remove"
               >
@@ -821,7 +824,7 @@ export function HomeFeed() {
                   if (!f) return;
                   if (isVideoFile(f)) {
                     if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
-                    setEditorFile(f);
+                    pickFile(f);
                     return;
                   }
                   pickFile(f);
