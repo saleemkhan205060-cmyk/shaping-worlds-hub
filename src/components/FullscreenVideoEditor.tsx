@@ -327,7 +327,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               }}
             />
           </div>
-          )}
 
 
           {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
