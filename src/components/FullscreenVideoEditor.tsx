@@ -329,19 +329,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Active tab panel — compact */}
           <div className="px-3 pb-1.5 shrink-0">
-            {editTab === "crop" && (
-              <div className="flex gap-2 overflow-x-auto">
-                {ASPECTS.map((a) => (
-                  <button
-                    key={a.id}
-                    onClick={() => setAspect(a.id)}
-                    className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition active:scale-95 ${aspect === a.id ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}
-                  >
-                    {a.label}
-                  </button>
-                ))}
-              </div>
-            )}
+            {editTab === "crop" && null}
             {editTab === "adjust" && (
               <div className="space-y-1.5 text-white text-xs">
                 <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
