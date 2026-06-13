@@ -264,13 +264,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           </div>
 
           {/* Preview */}
-          <div className="flex-1 flex items-center justify-center px-4">
-            <div className="relative w-full max-w-md mx-auto" style={aspectStyle}>
+          <div className="flex-1 flex items-center justify-center px-4 min-h-0">
+            <div
+              className="relative w-full max-w-md mx-auto h-full flex items-center justify-center"
+              style={aspect === "free" ? undefined : aspectStyle}
+            >
               {src && (
                 <video
                   ref={editPreviewRef}
                   src={src}
-                  className="w-full h-full object-contain bg-black rounded-md"
+                  className={aspect === "free" ? "max-h-full max-w-full object-contain bg-black rounded-md" : "w-full h-full object-contain bg-black rounded-md"}
                   style={{ filter: videoFilter }}
                   muted
                   playsInline
