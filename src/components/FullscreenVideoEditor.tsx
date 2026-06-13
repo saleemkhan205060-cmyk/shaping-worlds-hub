@@ -88,11 +88,13 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     const v = videoRef.current;
     if (!v) return;
     if (v.paused) {
-      v.play();
+      v.play().catch(() => {});
+      editPreviewRef.current?.play().catch(() => {});
       musicRef.current?.play().catch(() => {});
       setPlaying(true);
     } else {
       v.pause();
+      editPreviewRef.current?.pause();
       musicRef.current?.pause();
       setPlaying(false);
     }
@@ -102,13 +104,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     const v = videoRef.current;
     if (!v) return;
     setCurrent(v.currentTime);
+    const ep = editPreviewRef.current;
+    if (ep && Math.abs(ep.currentTime - v.currentTime) > 0.25) {
+      ep.currentTime = v.currentTime;
+    }
     if (trimEnd > 0 && v.currentTime >= trimEnd) {
       v.pause();
       v.currentTime = trimStart;
-      musicRef.current && (musicRef.current.currentTime = 0);
+      if (ep) ep.currentTime = trimStart;
+      if (musicRef.current) musicRef.current.currentTime = 0;
       setPlaying(false);
     }
   };
+
 
   const onLoaded = () => {
     const v = videoRef.current;
