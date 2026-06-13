@@ -397,7 +397,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <div className="flex gap-2 overflow-x-auto">
                 {[0.5, 0.75, 1, 1.25, 1.5, 2].map((s) => (
                   <button key={s} onClick={() => setSpeed(s)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold ${speed === s ? "bg-white text-black" : "bg-white/10 text-white"}`}>
+                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition active:scale-95 ${speed === s ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}>
                     {s}x
                   </button>
                 ))}
