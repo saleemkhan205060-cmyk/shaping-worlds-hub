@@ -146,7 +146,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   };
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
-  const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
+  const aspectStyle = aspect === "custom" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
