@@ -370,16 +370,18 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
             {src && (
-              <video
-                ref={editPreviewRef}
-                src={src}
-                className={aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain"}
-                style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
-                muted
-                playsInline
-                onClick={togglePlay}
-                onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
-              />
+              <div ref={cropAreaRef} className="relative max-h-full max-w-full touch-none">
+                <video
+                  ref={editPreviewRef}
+                  src={src}
+                  className="block max-h-full max-w-full object-contain"
+                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle), ...cropClipStyle }}
+                  muted
+                  playsInline
+                  onClick={togglePlay}
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
+                />
+              </div>
             )}
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
@@ -393,12 +395,22 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
 
             {/* Crop corner brackets overlay */}
-            {editTab === "crop" && (
-              <div className="absolute inset-4 pointer-events-none">
-                <div className="absolute top-0 left-0 w-7 h-7 border-t-[3px] border-l-[3px] border-white rounded-tl-xl" />
-                <div className="absolute top-0 right-0 w-7 h-7 border-t-[3px] border-r-[3px] border-white rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-7 h-7 border-b-[3px] border-l-[3px] border-white rounded-bl-xl" />
-                <div className="absolute bottom-0 right-0 w-7 h-7 border-b-[3px] border-r-[3px] border-white rounded-br-xl" />
+            {editTab === "crop" && src && cropAreaRef.current && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div
+                  className="relative max-h-full max-w-full"
+                  style={{ width: `${cropAreaRef.current.clientWidth}px`, height: `${cropAreaRef.current.clientHeight}px` }}
+                >
+                  <div className="absolute inset-0 bg-black/45" />
+                  <div
+                    className="absolute shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] border border-white/80"
+                    style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
+                  />
+                  <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
+                  <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
+                  <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
+                  <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
+                </div>
               </div>
             )}
           </div>
