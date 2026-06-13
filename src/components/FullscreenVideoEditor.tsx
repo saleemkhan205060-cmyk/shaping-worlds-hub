@@ -687,44 +687,40 @@ function TrimStrip({
   const curPct = duration ? Math.max(startPct, Math.min(endPct, (current / duration) * 100)) : 0;
 
   return (
-    <div ref={stripRef} className="relative h-14 select-none touch-none" onPointerDown={startDrag("seek")}>
-      {/* Thumbnails row */}
-      <div className="absolute inset-0 flex rounded-md overflow-hidden bg-slate-800">
+    <div className="relative h-14 select-none">
+      {/* White pill container with thumbnails — playhead inside it */}
+      <div
+        ref={stripRef}
+        className="absolute inset-0 bg-white rounded-2xl p-1 flex touch-none overflow-hidden"
+        onPointerDown={startDrag("seek")}
+      >
         {Array.from({ length: FRAMES }).map((_, i) => (
-          <div key={i} className="flex-1 h-full bg-slate-700 overflow-hidden">
+          <div key={i} className="flex-1 h-full overflow-hidden first:rounded-l-xl last:rounded-r-xl bg-slate-300">
             {thumbs[i] && <img src={thumbs[i]} alt="" className="w-full h-full object-cover" draggable={false} />}
           </div>
         ))}
+        {/* Playhead */}
+        <div
+          className="absolute top-1 bottom-1 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.5)] pointer-events-none"
+          style={{ left: `${curPct}%` }}
+        />
       </div>
-      {/* Dim outside trim */}
-      <div className="absolute inset-y-0 left-0 bg-black/60" style={{ width: `${startPct}%` }} />
-      <div className="absolute inset-y-0 right-0 bg-black/60" style={{ width: `${100 - endPct}%` }} />
-      {/* Trim window border */}
-      <div
-        className="absolute inset-y-0 border-y-2 border-white pointer-events-none"
-        style={{ left: `${startPct}%`, right: `${100 - endPct}%` }}
-      />
-      {/* Left handle */}
+      {/* Left handle grip (on white pill edge) */}
       <div
         onPointerDown={startDrag("start")}
-        className="absolute top-0 bottom-0 w-4 -ml-2 bg-white rounded-l-md flex items-center justify-center cursor-ew-resize z-10 shadow"
-        style={{ left: `${startPct}%` }}
+        className="absolute top-0 bottom-0 w-5 flex items-center justify-center cursor-ew-resize z-20 touch-none"
+        style={{ left: `calc(${startPct}% - 10px)` }}
       >
-        <div className="h-5 w-0.5 bg-slate-500 rounded-full" />
+        <div className="h-6 w-1 bg-slate-500 rounded-full" />
       </div>
-      {/* Right handle */}
+      {/* Right handle grip */}
       <div
         onPointerDown={startDrag("end")}
-        className="absolute top-0 bottom-0 w-4 -mr-2 bg-white rounded-r-md flex items-center justify-center cursor-ew-resize z-10 shadow"
-        style={{ right: `${100 - endPct}%` }}
+        className="absolute top-0 bottom-0 w-5 flex items-center justify-center cursor-ew-resize z-20 touch-none"
+        style={{ left: `calc(${endPct}% - 10px)` }}
       >
-        <div className="h-5 w-0.5 bg-slate-500 rounded-full" />
+        <div className="h-6 w-1 bg-slate-500 rounded-full" />
       </div>
-      {/* Playhead */}
-      <div
-        className="absolute top-[-3px] bottom-[-3px] w-0.5 bg-rose-500 pointer-events-none z-20"
-        style={{ left: `${curPct}%` }}
-      />
     </div>
   );
 }
