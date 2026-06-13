@@ -300,26 +300,31 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             </div>
           </div>
 
-          {/* Frame strip with handles */}
+          {/* Trim strip with draggable handles (Google Photos style) */}
           <div className="px-3 pb-1.5 shrink-0">
-            <div className="relative bg-white rounded-2xl p-1 overflow-hidden">
-              <div className="flex gap-0.5 h-12">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="flex-1 bg-slate-200 rounded-sm overflow-hidden">
-                    {src && <video src={src} className="w-full h-full object-cover" muted preload="metadata" />}
-                  </div>
-                ))}
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                step={0.01}
-                value={current}
-                onChange={onSeek}
-                className="absolute inset-0 w-full opacity-0 cursor-pointer"
-              />
-            </div>
+            <TrimStrip
+              src={src}
+              duration={duration}
+              current={current}
+              trimStart={trimStart}
+              trimEnd={trimEnd || duration}
+              onTrimStart={(t) => {
+                setTrimStart(t);
+                if (videoRef.current) videoRef.current.currentTime = t;
+                if (editPreviewRef.current) editPreviewRef.current.currentTime = t;
+              }}
+              onTrimEnd={(t) => {
+                setTrimEnd(t);
+                if (videoRef.current && videoRef.current.currentTime > t) {
+                  videoRef.current.currentTime = t;
+                }
+              }}
+              onSeek={(t) => {
+                if (videoRef.current) videoRef.current.currentTime = t;
+                if (editPreviewRef.current) editPreviewRef.current.currentTime = t;
+                setCurrent(t);
+              }}
+            />
           </div>
 
           {/* Active tab panel — compact */}
@@ -595,6 +600,131 @@ function AdjustRow({ label, value, min, max, onChange }: { label: string; value:
         <span className="tabular-nums opacity-80">{value.toFixed(2)}</span>
       </div>
       <input type="range" min={min} max={max} step={0.01} value={value} onChange={(e) => onChange(Number(e.target.value))} className="w-full accent-white" />
+    </div>
+  );
+}
+
+function TrimStrip({
+  src, duration, current, trimStart, trimEnd, onTrimStart, onTrimEnd, onSeek,
+}: {
+  src: string;
+  duration: number;
+  current: number;
+  trimStart: number;
+  trimEnd: number;
+  onTrimStart: (t: number) => void;
+  onTrimEnd: (t: number) => void;
+  onSeek: (t: number) => void;
+}) {
+  const stripRef = useRef<HTMLDivElement>(null);
+  const [thumbs, setThumbs] = useState<string[]>([]);
+  const FRAMES = 6;
+
+  useEffect(() => {
+    if (!src || !duration) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const v = document.createElement("video");
+        v.src = src; v.muted = true; v.playsInline = true; v.preload = "auto";
+        await new Promise<void>((res, rej) => {
+          v.onloadedmetadata = () => res();
+          v.onerror = () => rej(new Error("load"));
+        });
+        const c = document.createElement("canvas");
+        const scale = Math.min(1, 120 / (v.videoHeight || 120));
+        c.width = Math.max(1, Math.round((v.videoWidth || 120) * scale));
+        c.height = Math.max(1, Math.round((v.videoHeight || 120) * scale));
+        const ctx = c.getContext("2d");
+        if (!ctx) return;
+        const urls: string[] = [];
+        for (let i = 0; i < FRAMES; i++) {
+          if (cancelled) return;
+          const t = duration * (i / (FRAMES - 1 || 1));
+          await new Promise<void>((res) => {
+            v.onseeked = () => res();
+            try { v.currentTime = Math.min(t, Math.max(duration - 0.05, 0)); } catch { res(); }
+          });
+          ctx.drawImage(v, 0, 0, c.width, c.height);
+          urls.push(c.toDataURL("image/jpeg", 0.6));
+          if (!cancelled) setThumbs([...urls]);
+        }
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [src, duration]);
+
+  const pctFromClientX = (x: number) => {
+    const el = stripRef.current; if (!el) return 0;
+    const r = el.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (x - r.left) / r.width));
+  };
+
+  const startDrag = (kind: "start" | "end" | "seek") => (e: React.PointerEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    const move = (ev: PointerEvent) => {
+      const t = pctFromClientX(ev.clientX) * duration;
+      if (kind === "start") onTrimStart(Math.min(t, trimEnd - 0.5));
+      else if (kind === "end") onTrimEnd(Math.max(t, trimStart + 0.5));
+      else onSeek(Math.max(trimStart, Math.min(trimEnd, t)));
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    // initial
+    const t = pctFromClientX(e.clientX) * duration;
+    if (kind === "start") onTrimStart(Math.min(t, trimEnd - 0.5));
+    else if (kind === "end") onTrimEnd(Math.max(t, trimStart + 0.5));
+    else onSeek(Math.max(trimStart, Math.min(trimEnd, t)));
+  };
+
+  const startPct = duration ? (trimStart / duration) * 100 : 0;
+  const endPct = duration ? (trimEnd / duration) * 100 : 100;
+  const curPct = duration ? Math.max(startPct, Math.min(endPct, (current / duration) * 100)) : 0;
+
+  return (
+    <div ref={stripRef} className="relative h-14 select-none touch-none" onPointerDown={startDrag("seek")}>
+      {/* Thumbnails row */}
+      <div className="absolute inset-0 flex rounded-md overflow-hidden bg-slate-800">
+        {Array.from({ length: FRAMES }).map((_, i) => (
+          <div key={i} className="flex-1 h-full bg-slate-700 overflow-hidden">
+            {thumbs[i] && <img src={thumbs[i]} alt="" className="w-full h-full object-cover" draggable={false} />}
+          </div>
+        ))}
+      </div>
+      {/* Dim outside trim */}
+      <div className="absolute inset-y-0 left-0 bg-black/60" style={{ width: `${startPct}%` }} />
+      <div className="absolute inset-y-0 right-0 bg-black/60" style={{ width: `${100 - endPct}%` }} />
+      {/* Trim window border */}
+      <div
+        className="absolute inset-y-0 border-y-2 border-white pointer-events-none"
+        style={{ left: `${startPct}%`, right: `${100 - endPct}%` }}
+      />
+      {/* Left handle */}
+      <div
+        onPointerDown={startDrag("start")}
+        className="absolute top-0 bottom-0 w-4 -ml-2 bg-white rounded-l-md flex items-center justify-center cursor-ew-resize z-10 shadow"
+        style={{ left: `${startPct}%` }}
+      >
+        <div className="h-5 w-0.5 bg-slate-500 rounded-full" />
+      </div>
+      {/* Right handle */}
+      <div
+        onPointerDown={startDrag("end")}
+        className="absolute top-0 bottom-0 w-4 -mr-2 bg-white rounded-r-md flex items-center justify-center cursor-ew-resize z-10 shadow"
+        style={{ right: `${100 - endPct}%` }}
+      >
+        <div className="h-5 w-0.5 bg-slate-500 rounded-full" />
+      </div>
+      {/* Playhead */}
+      <div
+        className="absolute top-[-3px] bottom-[-3px] w-0.5 bg-rose-500 pointer-events-none z-20"
+        style={{ left: `${curPct}%` }}
+      />
     </div>
   );
 }
