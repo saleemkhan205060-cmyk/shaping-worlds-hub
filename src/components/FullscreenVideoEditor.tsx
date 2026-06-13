@@ -725,6 +725,22 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
   );
 }
 
+function CropHandle({ corner, onPointerDown }: { corner: "tl" | "tr" | "bl" | "br"; onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void }) {
+  const position = {
+    tl: "-top-4 -left-4 border-t-[3px] border-l-[3px] rounded-tl-xl cursor-nwse-resize",
+    tr: "-top-4 -right-4 border-t-[3px] border-r-[3px] rounded-tr-xl cursor-nesw-resize",
+    bl: "-bottom-4 -left-4 border-b-[3px] border-l-[3px] rounded-bl-xl cursor-nesw-resize",
+    br: "-bottom-4 -right-4 border-b-[3px] border-r-[3px] rounded-br-xl cursor-nwse-resize",
+  }[corner];
+
+  return (
+    <div
+      onPointerDown={onPointerDown}
+      className={`absolute z-30 h-12 w-12 pointer-events-auto touch-none border-white ${position}`}
+    />
+  );
+}
+
 
 function AdjustRow({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
   return (
