@@ -574,15 +574,54 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           )}
 
           {/* Bottom tabs — Google Photos style */}
-          <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
-            <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
-            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
-            <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
-            <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
-            <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
-            <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
-            <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
-          </div>
+          {/* Bottom action bar — Crop tab shows X / pill / Check (matches screenshot) */}
+          {editTab === "crop" ? (
+            <div className="flex items-center justify-between px-6 pb-4 pt-2 bg-black shrink-0">
+              <button
+                onClick={onClose}
+                className="h-12 w-12 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95 transition"
+                aria-label="Cancel"
+              >
+                <X className="h-6 w-6" />
+              </button>
+              <div className="flex items-center gap-1 rounded-full bg-white/10 px-1.5 py-1.5">
+                <button
+                  onClick={() => {}}
+                  className="h-10 w-12 rounded-full bg-violet-500 text-white flex items-center justify-center active:scale-95 transition"
+                  aria-label="Crop"
+                >
+                  <Crop className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setCropRect({ x: 8, y: 8, width: 84, height: 84 });
+                    setAspect("free");
+                  }}
+                  className="h-10 w-12 rounded-full text-white/90 flex items-center justify-center active:scale-95 transition"
+                  aria-label="Reset"
+                >
+                  <RotateCcw className="h-5 w-5" />
+                </button>
+              </div>
+              <button
+                onClick={onConfirm}
+                className="h-12 w-12 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95 transition"
+                aria-label="Done"
+              >
+                <Check className="h-6 w-6" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
+              <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
+              <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
+              <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
+              <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
+              <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
+              <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
+              <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
+            </div>
+          )}
         </div>
       )}
 
