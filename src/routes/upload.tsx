@@ -244,7 +244,16 @@ function UploadPage() {
             type="file"
             accept="video/*"
             className="hidden"
-            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+            onChange={(e) => {
+              const f = e.target.files?.[0] ?? null;
+              if (!f) return;
+              if (f.type.startsWith("video/")) {
+                if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
+                setEditorFile(f);
+              } else {
+                onPick(f);
+              }
+            }}
           />
           <input
             ref={cameraPhotoRef}
