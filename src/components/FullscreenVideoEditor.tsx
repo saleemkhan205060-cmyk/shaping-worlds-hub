@@ -381,7 +381,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 {editTab === "crop" && (
                   <div className="absolute inset-0 pointer-events-none">
                     <div
-                      className="absolute border border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] pointer-events-none"
+                      className="absolute pointer-events-none"
                       style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
                     >
                       <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
