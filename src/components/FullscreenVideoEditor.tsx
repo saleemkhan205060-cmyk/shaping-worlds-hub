@@ -300,9 +300,10 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             </div>
           </div>
 
-          {/* Trim strip with draggable handles (Google Photos style) — hidden in Crop tab */}
-          {editTab !== "crop" && (
+          {/* Trim strip with draggable handles (Google Photos style) — shown only in Adjust tab */}
+          {editTab === "adjust" && (
           <div className="px-3 pb-1.5 shrink-0">
+
             <TrimStrip
               src={src}
               duration={duration}
