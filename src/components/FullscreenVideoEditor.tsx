@@ -300,26 +300,31 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             </div>
           </div>
 
-          {/* Frame strip with handles */}
+          {/* Trim strip with draggable handles (Google Photos style) */}
           <div className="px-3 pb-1.5 shrink-0">
-            <div className="relative bg-white rounded-2xl p-1 overflow-hidden">
-              <div className="flex gap-0.5 h-12">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="flex-1 bg-slate-200 rounded-sm overflow-hidden">
-                    {src && <video src={src} className="w-full h-full object-cover" muted preload="metadata" />}
-                  </div>
-                ))}
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                step={0.01}
-                value={current}
-                onChange={onSeek}
-                className="absolute inset-0 w-full opacity-0 cursor-pointer"
-              />
-            </div>
+            <TrimStrip
+              src={src}
+              duration={duration}
+              current={current}
+              trimStart={trimStart}
+              trimEnd={trimEnd || duration}
+              onTrimStart={(t) => {
+                setTrimStart(t);
+                if (videoRef.current) videoRef.current.currentTime = t;
+                if (editPreviewRef.current) editPreviewRef.current.currentTime = t;
+              }}
+              onTrimEnd={(t) => {
+                setTrimEnd(t);
+                if (videoRef.current && videoRef.current.currentTime > t) {
+                  videoRef.current.currentTime = t;
+                }
+              }}
+              onSeek={(t) => {
+                if (videoRef.current) videoRef.current.currentTime = t;
+                if (editPreviewRef.current) editPreviewRef.current.currentTime = t;
+                setCurrent(t);
+              }}
+            />
           </div>
 
           {/* Active tab panel — compact */}
