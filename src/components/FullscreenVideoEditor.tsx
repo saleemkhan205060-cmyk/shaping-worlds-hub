@@ -297,14 +297,15 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           {/* Time + frame strip */}
           <div className="px-4">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <button onClick={togglePlay} className="text-white">
-                {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 fill-white" />}
+              <button onClick={togglePlay} className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center active:scale-95 transition shadow-lg" aria-label={playing ? "Pause" : "Play"}>
+                {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 fill-black ml-0.5" />}
               </button>
-              <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium tabular-nums">
+              <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium tabular-nums border border-white/10">
                 <Camera className="h-4 w-4" />
                 {fmt(current)} / {fmt(duration)}
               </div>
             </div>
+
 
             {/* Frame strip with handles (visual) */}
             <div className="relative bg-white rounded-2xl p-1.5 mb-4 overflow-hidden">
