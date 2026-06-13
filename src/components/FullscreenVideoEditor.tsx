@@ -583,10 +583,10 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-2 rounded-xl transition active:scale-95 ${active ? "bg-gradient-to-b from-indigo-500/30 to-fuchsia-500/20 text-white ring-1 ring-white/30" : "text-white/70 hover:text-white"}`}
+      className={`shrink-0 w-[72px] h-[72px] flex flex-col items-center justify-center gap-1.5 rounded-2xl transition active:scale-95 ${active ? "bg-white/15 text-white ring-1 ring-white/40" : "bg-white/5 text-white/85 hover:bg-white/10"}`}
     >
       {icon}
-      <span className="text-[10px] font-semibold">{label}</span>
+      <span className="text-[11px] font-semibold">{label}</span>
     </button>
   );
 }
