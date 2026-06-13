@@ -37,6 +37,23 @@ import {
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
+import likeSoundAsset from "@/assets/like.mp3.asset.json";
+
+let likeAudio: HTMLAudioElement | null = null;
+const playLikeSound = () => {
+  if (typeof window === "undefined") return;
+  try {
+    if (!likeAudio) {
+      likeAudio = new Audio(likeSoundAsset.url);
+      likeAudio.preload = "auto";
+      likeAudio.volume = 0.9;
+    }
+    likeAudio.currentTime = 0;
+    void likeAudio.play().catch(() => {});
+  } catch {
+    /* ignore */
+  }
+};
 
 
 type Post = {
@@ -453,6 +470,7 @@ export function HomeFeed() {
       return;
     }
     const isLiked = !!likedByMe[postId];
+    if (!isLiked) playLikeSound();
     // optimistic
     setLikedByMe((m) => ({ ...m, [postId]: !isLiked }));
     setLikeCounts((c) => ({ ...c, [postId]: Math.max(0, (c[postId] ?? 0) + (isLiked ? -1 : 1)) }));
