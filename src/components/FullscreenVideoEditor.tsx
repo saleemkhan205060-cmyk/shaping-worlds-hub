@@ -340,8 +340,34 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             />
           </div>
 
+          {/* Crop aspect-ratio chips — only in Crop tab */}
+          {editTab === "crop" && (
+            <div className="flex gap-2 overflow-x-auto px-3 pb-2 pt-1 shrink-0 scrollbar-none">
+              {ASPECTS.map((a) => {
+                const active = aspect === a.id;
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => setAspect(a.id)}
+                    className={`shrink-0 w-[68px] h-[68px] rounded-2xl flex flex-col items-center justify-center gap-1.5 transition active:scale-95 ${active ? "bg-slate-800 ring-2 ring-sky-300" : "bg-slate-900/70"}`}
+                  >
+                    <span
+                      className="block bg-slate-300 rounded-[3px]"
+                      style={{
+                        width: a.id === "1:1" ? 22 : a.id === "9:16" ? 14 : a.id === "2:3" ? 16 : a.id === "3:4" ? 18 : 22,
+                        height: a.id === "1:1" ? 22 : a.id === "9:16" ? 24 : a.id === "2:3" ? 24 : a.id === "3:4" ? 24 : 16,
+                      }}
+                    />
+                    <span className="text-[11px] font-medium text-white leading-none">{a.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
           {editTab !== "crop" && (
+
           <div className="px-3 pb-2 shrink-0">
             {editTab === "adjust" && (
               <div className="space-y-1.5 text-white text-xs">
