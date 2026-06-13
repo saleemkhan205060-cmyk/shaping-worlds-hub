@@ -452,16 +452,27 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           <div className="px-3 pb-2 shrink-0">
             {editTab === "crop" && (
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                {ASPECTS.map((a) => (
-                  <button
-                    key={a.id}
-                    onClick={() => selectAspect(a.id)}
-                    className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
-                  >
-                    <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
-                    <span className="text-[11px] font-medium text-white">{a.label}</span>
-                  </button>
-                ))}
+                {ASPECTS.map((a) => {
+                  const r = getAspectNumber(a.id);
+                  const innerW = r ? (r >= 1 ? 16 : 16 * r) : 12;
+                  const innerH = r ? (r >= 1 ? 16 / r : 16) : 12;
+                  const isActive = aspect === a.id;
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => selectAspect(a.id)}
+                      className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${isActive ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
+                    >
+                      <div className="h-5 w-5 rounded-[3px] bg-white/15 flex items-center justify-center">
+                        <span
+                          className={`rounded-[1px] ${isActive ? "bg-sky-200" : "bg-white/70"}`}
+                          style={{ width: `${innerW}px`, height: `${innerH}px` }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-medium text-white">{a.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             )}
             {editTab === "adjust" && (
