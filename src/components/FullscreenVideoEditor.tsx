@@ -27,10 +27,20 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type CropRect = { x: number; y: number; width: number; height: number };
+
+const MIN_CROP_SIZE = 18;
+
+const getAspectNumber = (id: string) => {
+  if (id === "free") return null;
+  const [w, h] = id.split(":").map(Number);
+  return w && h ? w / h : null;
+};
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const editPreviewRef = useRef<HTMLVideoElement>(null);
+  const cropAreaRef = useRef<HTMLDivElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
   const musicInputRef = useRef<HTMLInputElement>(null);
   const [src, setSrc] = useState<string>("");
@@ -57,6 +67,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [overlayText, setOverlayText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textSize, setTextSize] = useState(28);
+  const [cropRect, setCropRect] = useState<CropRect>({ x: 8, y: 8, width: 84, height: 84 });
 
 
   useEffect(() => {
@@ -148,6 +159,98 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
+  const cropClipStyle = editTab === "crop"
+    ? { clipPath: `inset(${cropRect.y}% ${100 - cropRect.x - cropRect.width}% ${100 - cropRect.y - cropRect.height}% ${cropRect.x}%)` }
+    : {};
+
+  const fitRectToAspect = (ratio: number | null) => {
+    if (!ratio) {
+      setCropRect({ x: 8, y: 8, width: 84, height: 84 });
+      return;
+    }
+
+    const el = cropAreaRef.current;
+    const boxRatio = el ? el.clientWidth / Math.max(el.clientHeight, 1) : 1;
+    let width = 84;
+    let height = width * (boxRatio / ratio);
+
+    if (height > 84) {
+      height = 84;
+      width = height * (ratio / boxRatio);
+    }
+
+    setCropRect({
+      x: (100 - width) / 2,
+      y: (100 - height) / 2,
+      width,
+      height,
+    });
+  };
+
+  const selectAspect = (id: string) => {
+    setAspect(id);
+    fitRectToAspect(getAspectNumber(id));
+  };
+
+  const startCropDrag = (corner: "tl" | "tr" | "bl" | "br") => (e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const el = cropAreaRef.current;
+    if (!el) return;
+
+    (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+    const bounds = el.getBoundingClientRect();
+    const start = cropRect;
+    const startX = ((e.clientX - bounds.left) / bounds.width) * 100;
+    const startY = ((e.clientY - bounds.top) / bounds.height) * 100;
+    const lockedRatio = getAspectNumber(aspect);
+    const boxRatio = bounds.width / Math.max(bounds.height, 1);
+
+    const clampRect = (next: CropRect) => {
+      const width = Math.max(MIN_CROP_SIZE, Math.min(100, next.width));
+      const height = Math.max(MIN_CROP_SIZE, Math.min(100, next.height));
+      return {
+        x: Math.max(0, Math.min(100 - width, next.x)),
+        y: Math.max(0, Math.min(100 - height, next.y)),
+        width,
+        height,
+      };
+    };
+
+    const move = (ev: PointerEvent) => {
+      const pointerX = ((ev.clientX - bounds.left) / bounds.width) * 100;
+      const pointerY = ((ev.clientY - bounds.top) / bounds.height) * 100;
+      const dx = pointerX - startX;
+      const dy = pointerY - startY;
+      let next: CropRect;
+
+      if (corner === "tl") next = { x: start.x + dx, y: start.y + dy, width: start.width - dx, height: start.height - dy };
+      else if (corner === "tr") next = { x: start.x, y: start.y + dy, width: start.width + dx, height: start.height - dy };
+      else if (corner === "bl") next = { x: start.x + dx, y: start.y, width: start.width - dx, height: start.height + dy };
+      else next = { x: start.x, y: start.y, width: start.width + dx, height: start.height + dy };
+
+      if (lockedRatio) {
+        const fixedHeight = next.width * (boxRatio / lockedRatio);
+        const fixedWidth = next.height * (lockedRatio / boxRatio);
+        if (Math.abs(dx) > Math.abs(dy)) next.height = fixedHeight;
+        else next.width = fixedWidth;
+        if (corner.includes("t")) next.y = start.y + start.height - next.height;
+        if (corner.includes("l")) next.x = start.x + start.width - next.width;
+      }
+
+      setCropRect(clampRect(next));
+    };
+
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  };
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
