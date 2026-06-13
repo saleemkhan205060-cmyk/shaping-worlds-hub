@@ -586,13 +586,14 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-2 rounded-xl ${active ? "bg-white/15 text-white" : "text-white/70"}`}
+      className={`flex flex-col items-center gap-1 py-2 rounded-xl transition active:scale-95 ${active ? "bg-gradient-to-b from-indigo-500/30 to-fuchsia-500/20 text-white ring-1 ring-white/30" : "text-white/70 hover:text-white"}`}
     >
       {icon}
-      <span className="text-[10px] font-medium">{label}</span>
+      <span className="text-[10px] font-semibold">{label}</span>
     </button>
   );
 }
+
 
 function AdjustRow({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
   return (
