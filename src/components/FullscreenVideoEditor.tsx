@@ -826,3 +826,15 @@ function TrimStrip({
     </div>
   );
 }
+
+function CornerBrackets() {
+  const base = "absolute h-6 w-6 border-white";
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      <div className={`${base} top-0 left-0 border-t-[3px] border-l-[3px] rounded-tl-xl`} />
+      <div className={`${base} top-0 right-0 border-t-[3px] border-r-[3px] rounded-tr-xl`} />
+      <div className={`${base} bottom-0 left-0 border-b-[3px] border-l-[3px] rounded-bl-xl`} />
+      <div className={`${base} bottom-0 right-0 border-b-[3px] border-r-[3px] rounded-br-xl`} />
+    </div>
+  );
+}
