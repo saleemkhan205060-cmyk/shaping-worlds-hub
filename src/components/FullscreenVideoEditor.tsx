@@ -181,39 +181,42 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         <div className="absolute top-3 right-3 z-10 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={onClose}
-            className="h-10 w-10 rounded-full bg-black/40 text-white flex items-center justify-center"
+            className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
           <button
             onClick={() => setMenuOpen(true)}
-            className="h-10 w-10 rounded-full bg-black/40 text-white flex items-center justify-center"
+            className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
             aria-label="More options"
           >
             <MoreVertical className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Center play button */}
-        {!playing && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="h-20 w-20 rounded-full border-2 border-white/90 flex items-center justify-center">
-              <Play className="h-9 w-9 text-white fill-white ml-1" />
-            </div>
-          </div>
-        )}
+        {/* Center play/pause button (real, tappable) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <button
+            onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+            className={`pointer-events-auto h-20 w-20 rounded-full border-2 border-white/90 bg-black/30 backdrop-blur flex items-center justify-center active:scale-95 transition ${playing ? "opacity-0" : "opacity-100"}`}
+            aria-label={playing ? "Pause" : "Play"}
+          >
+            {playing ? <Pause className="h-9 w-9 text-white fill-white" /> : <Play className="h-9 w-9 text-white fill-white ml-1" />}
+          </button>
+        </div>
 
         {/* Bottom-right upload */}
-        <div className="absolute bottom-16 right-4 z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute bottom-20 right-4 z-10" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={onConfirm}
-            className="h-14 w-14 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-lg active:scale-95"
+            className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
             aria-label="Upload"
           >
             <Upload className="h-6 w-6" />
           </button>
         </div>
+
 
         {/* Bottom time + progress */}
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-6 bg-gradient-to-t from-black/60 to-transparent" onClick={(e) => e.stopPropagation()}>
