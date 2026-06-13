@@ -27,10 +27,20 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type CropRect = { x: number; y: number; width: number; height: number };
+
+const MIN_CROP_SIZE = 18;
+
+const getAspectNumber = (id: string) => {
+  if (id === "free") return null;
+  const [w, h] = id.split(":").map(Number);
+  return w && h ? w / h : null;
+};
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const editPreviewRef = useRef<HTMLVideoElement>(null);
+  const cropAreaRef = useRef<HTMLDivElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
   const musicInputRef = useRef<HTMLInputElement>(null);
   const [src, setSrc] = useState<string>("");
@@ -57,6 +67,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [overlayText, setOverlayText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textSize, setTextSize] = useState(28);
+  const [cropRect, setCropRect] = useState<CropRect>({ x: 8, y: 8, width: 84, height: 84 });
 
 
   useEffect(() => {
@@ -147,7 +158,98 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   };
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
-  const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
+  const cropClipStyle = editTab === "crop"
+    ? { clipPath: `inset(${cropRect.y}% ${100 - cropRect.x - cropRect.width}% ${100 - cropRect.y - cropRect.height}% ${cropRect.x}%)` }
+    : {};
+
+  const fitRectToAspect = (ratio: number | null) => {
+    if (!ratio) {
+      setCropRect({ x: 8, y: 8, width: 84, height: 84 });
+      return;
+    }
+
+    const el = cropAreaRef.current;
+    const boxRatio = el ? el.clientWidth / Math.max(el.clientHeight, 1) : 1;
+    let width = 84;
+    let height = width * (boxRatio / ratio);
+
+    if (height > 84) {
+      height = 84;
+      width = height * (ratio / boxRatio);
+    }
+
+    setCropRect({
+      x: (100 - width) / 2,
+      y: (100 - height) / 2,
+      width,
+      height,
+    });
+  };
+
+  const selectAspect = (id: string) => {
+    setAspect(id);
+    fitRectToAspect(getAspectNumber(id));
+  };
+
+  const startCropDrag = (corner: "tl" | "tr" | "bl" | "br") => (e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const el = cropAreaRef.current;
+    if (!el) return;
+
+    (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+    const bounds = el.getBoundingClientRect();
+    const start = cropRect;
+    const startX = ((e.clientX - bounds.left) / bounds.width) * 100;
+    const startY = ((e.clientY - bounds.top) / bounds.height) * 100;
+    const lockedRatio = getAspectNumber(aspect);
+    const boxRatio = bounds.width / Math.max(bounds.height, 1);
+
+    const clampRect = (next: CropRect) => {
+      const width = Math.max(MIN_CROP_SIZE, Math.min(100, next.width));
+      const height = Math.max(MIN_CROP_SIZE, Math.min(100, next.height));
+      return {
+        x: Math.max(0, Math.min(100 - width, next.x)),
+        y: Math.max(0, Math.min(100 - height, next.y)),
+        width,
+        height,
+      };
+    };
+
+    const move = (ev: PointerEvent) => {
+      const pointerX = ((ev.clientX - bounds.left) / bounds.width) * 100;
+      const pointerY = ((ev.clientY - bounds.top) / bounds.height) * 100;
+      const dx = pointerX - startX;
+      const dy = pointerY - startY;
+      let next: CropRect;
+
+      if (corner === "tl") next = { x: start.x + dx, y: start.y + dy, width: start.width - dx, height: start.height - dy };
+      else if (corner === "tr") next = { x: start.x, y: start.y + dy, width: start.width + dx, height: start.height - dy };
+      else if (corner === "bl") next = { x: start.x + dx, y: start.y, width: start.width - dx, height: start.height + dy };
+      else next = { x: start.x, y: start.y, width: start.width + dx, height: start.height + dy };
+
+      if (lockedRatio) {
+        const fixedHeight = next.width * (boxRatio / lockedRatio);
+        const fixedWidth = next.height * (lockedRatio / boxRatio);
+        if (Math.abs(dx) > Math.abs(dy)) next.height = fixedHeight;
+        else next.width = fixedWidth;
+        if (corner.includes("t")) next.y = start.y + start.height - next.height;
+        if (corner.includes("l")) next.x = start.x + start.width - next.width;
+      }
+
+      setCropRect(clampRect(next));
+    };
+
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  };
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
@@ -267,16 +369,31 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
             {src && (
-              <video
-                ref={editPreviewRef}
-                src={src}
-                className={aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain"}
-                style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
-                muted
-                playsInline
-                onClick={togglePlay}
-                onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
-              />
+              <div ref={cropAreaRef} className="relative inline-flex max-h-full max-w-full touch-none items-center justify-center">
+                <video
+                  ref={editPreviewRef}
+                  src={src}
+                  className="block max-h-full max-w-full object-contain"
+                  style={{ filter: videoFilter, ...cropClipStyle }}
+                  muted
+                  playsInline
+                  onClick={togglePlay}
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
+                />
+                {editTab === "crop" && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div
+                      className="absolute border border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] pointer-events-none"
+                      style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
+                    >
+                      <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
+                      <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
+                      <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
+                      <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
@@ -286,16 +403,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 >
                   {overlayText}
                 </span>
-              </div>
-            )}
-
-            {/* Crop corner brackets overlay */}
-            {editTab === "crop" && (
-              <div className="absolute inset-4 pointer-events-none">
-                <div className="absolute top-0 left-0 w-7 h-7 border-t-[3px] border-l-[3px] border-white rounded-tl-xl" />
-                <div className="absolute top-0 right-0 w-7 h-7 border-t-[3px] border-r-[3px] border-white rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-7 h-7 border-b-[3px] border-l-[3px] border-white rounded-bl-xl" />
-                <div className="absolute bottom-0 right-0 w-7 h-7 border-b-[3px] border-r-[3px] border-white rounded-br-xl" />
               </div>
             )}
           </div>
@@ -343,14 +450,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
 
           {/* Active tab panel — compact */}
-          {(editTab !== "crop" || true) && (
+          {editTab && (
           <div className="px-3 pb-2 shrink-0">
             {editTab === "crop" && (
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                 {ASPECTS.map((a) => (
                   <button
                     key={a.id}
-                    onClick={() => setAspect(a.id)}
+                    onClick={() => selectAspect(a.id)}
                     className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
                   >
                     <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
@@ -606,6 +713,22 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
       {icon}
       <span className="text-[9px] font-medium leading-none">{label}</span>
     </button>
+  );
+}
+
+function CropHandle({ corner, onPointerDown }: { corner: "tl" | "tr" | "bl" | "br"; onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void }) {
+  const position = {
+    tl: "-top-4 -left-4 border-t-[3px] border-l-[3px] rounded-tl-xl cursor-nwse-resize",
+    tr: "-top-4 -right-4 border-t-[3px] border-r-[3px] rounded-tr-xl cursor-nesw-resize",
+    bl: "-bottom-4 -left-4 border-b-[3px] border-l-[3px] rounded-bl-xl cursor-nesw-resize",
+    br: "-bottom-4 -right-4 border-b-[3px] border-r-[3px] rounded-br-xl cursor-nwse-resize",
+  }[corner];
+
+  return (
+    <div
+      onPointerDown={onPointerDown}
+      className={`absolute z-30 h-12 w-12 pointer-events-auto touch-none border-white ${position}`}
+    />
   );
 }
 
