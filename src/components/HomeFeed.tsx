@@ -1100,7 +1100,15 @@ export function HomeFeed() {
         />
       )}
 
-      {file?.type.startsWith("video/") && preview && (
+      {editorFile && (
+        <FullscreenVideoEditor
+          file={editorFile}
+          onClose={() => setEditorFile(null)}
+          onConfirm={() => { const f = editorFile; setEditorFile(null); pickFile(f); }}
+        />
+      )}
+
+      {file && isVideoFile(file) && preview && (
         <VideoThumbnailPicker
           videoSrc={preview}
           open={framePickerOpen}
