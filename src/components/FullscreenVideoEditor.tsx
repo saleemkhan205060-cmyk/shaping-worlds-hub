@@ -716,16 +716,16 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
 
 function CropHandle({ corner, onPointerDown }: { corner: "tl" | "tr" | "bl" | "br"; onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void }) {
   const position = {
-    tl: "-top-4 -left-4 border-t-[3px] border-l-[3px] rounded-tl-xl cursor-nwse-resize",
-    tr: "-top-4 -right-4 border-t-[3px] border-r-[3px] rounded-tr-xl cursor-nesw-resize",
-    bl: "-bottom-4 -left-4 border-b-[3px] border-l-[3px] rounded-bl-xl cursor-nesw-resize",
-    br: "-bottom-4 -right-4 border-b-[3px] border-r-[3px] rounded-br-xl cursor-nwse-resize",
+    tl: "-top-[6px] -left-[6px] border-t-[5px] border-l-[5px] rounded-tl-2xl cursor-nwse-resize",
+    tr: "-top-[6px] -right-[6px] border-t-[5px] border-r-[5px] rounded-tr-2xl cursor-nesw-resize",
+    bl: "-bottom-[6px] -left-[6px] border-b-[5px] border-l-[5px] rounded-bl-2xl cursor-nesw-resize",
+    br: "-bottom-[6px] -right-[6px] border-b-[5px] border-r-[5px] rounded-br-2xl cursor-nwse-resize",
   }[corner];
 
   return (
     <div
       onPointerDown={onPointerDown}
-      className={`absolute z-30 h-12 w-12 pointer-events-auto touch-none border-white ${position}`}
+      className={`absolute z-30 h-9 w-9 pointer-events-auto touch-none border-white ${position}`}
     />
   );
 }
