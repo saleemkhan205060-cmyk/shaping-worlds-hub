@@ -249,13 +249,8 @@ function UploadPage() {
             onChange={(e) => {
               const f = e.target.files?.[0] ?? null;
               if (!f) return;
-                e.currentTarget.value = "";
-                if (isVideoFile(f)) {
-                if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
-                setEditorFile(f);
-              } else {
-                onPick(f);
-              }
+              e.currentTarget.value = "";
+              onPick(f);
             }}
           />
           <input
@@ -421,6 +416,13 @@ function UploadPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <button
+              onClick={() => { setVideoMenuOpen(false); if (file) setEditorFile(file); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Film className="h-5 w-5" />
+              Edit
+            </button>
+            <button
               onClick={() => { setVideoMenuOpen(false); setFramePickerOpen(true); }}
               className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
             >
@@ -448,7 +450,7 @@ function UploadPage() {
         <FullscreenVideoEditor
           file={editorFile}
           onClose={() => setEditorFile(null)}
-          onConfirm={() => { const f = editorFile; setEditorFile(null); onPick(f); }}
+          onConfirm={() => setEditorFile(null)}
         />
       )}
     </Layout>
