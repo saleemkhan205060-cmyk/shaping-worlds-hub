@@ -120,6 +120,7 @@ export function HomeFeed() {
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
+  const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
 
@@ -288,6 +289,7 @@ export function HomeFeed() {
       return;
     }
     setFile(f);
+    setFullscreenPreviewOpen(isVideoFile(f));
   };
 
   const submit = async () => {
@@ -349,6 +351,7 @@ export function HomeFeed() {
       }
       setCaption("");
       setFile(null);
+      setFullscreenPreviewOpen(false);
       setThumbFile(null);
       setIsPrivate(false);
       setTextStyle(DEFAULT_TEXT_STYLE);
@@ -650,7 +653,7 @@ export function HomeFeed() {
                 <img src={preview} alt="preview" className="w-full max-h-72 object-contain" />
               )}
               <button
-                onClick={() => setFile(null)}
+                onClick={() => { setFile(null); setFullscreenPreviewOpen(false); }}
                 className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center"
                 aria-label="Remove"
               >
@@ -821,7 +824,7 @@ export function HomeFeed() {
                   if (!f) return;
                   if (isVideoFile(f)) {
                     if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
-                    setEditorFile(f);
+                    pickFile(f);
                     return;
                   }
                   pickFile(f);
@@ -1108,6 +1111,34 @@ export function HomeFeed() {
         />
       )}
 
+      {fullscreenPreviewOpen && file && isVideoFile(file) && preview && (
+        <div className="fixed inset-0 z-[250] bg-black flex items-center justify-center">
+          <video
+            src={preview}
+            controls
+            playsInline
+            controlsList="nodownload noplaybackrate noremoteplayback"
+            disablePictureInPicture
+            onContextMenu={(e) => e.preventDefault()}
+            className="w-full h-full object-contain bg-black"
+          />
+          <button
+            onClick={() => setFullscreenPreviewOpen(false)}
+            className="absolute top-4 left-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => setVideoMenuOpen(true)}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+            aria-label="More options"
+          >
+            <MoreVertical className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+
       {file && isVideoFile(file) && preview && (
         <VideoThumbnailPicker
           videoSrc={preview}
@@ -1126,6 +1157,13 @@ export function HomeFeed() {
             className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
+            <button
+              onClick={() => { setVideoMenuOpen(false); if (file) setEditorFile(file); }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
+            >
+              <Film className="h-5 w-5" />
+              Edit
+            </button>
             <button
               onClick={() => { setVideoMenuOpen(false); setFramePickerOpen(true); }}
               className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
