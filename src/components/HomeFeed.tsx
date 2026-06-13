@@ -1131,7 +1131,7 @@ export function HomeFeed() {
           </button>
           <button
             onClick={() => setVideoMenuOpen(true)}
-            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+            className="absolute top-4 right-4 h-10 w-10 rounded-full text-white flex items-center justify-center active:scale-95 drop-shadow-lg"
             aria-label="More options"
           >
             <MoreVertical className="h-5 w-5" />
@@ -1139,7 +1139,7 @@ export function HomeFeed() {
           <button
             onClick={submit}
             disabled={posting}
-            className="absolute top-4 right-16 h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg active:scale-95 disabled:opacity-60"
+            className="absolute top-16 right-4 h-10 w-10 rounded-full text-white flex items-center justify-center active:scale-95 disabled:opacity-60 drop-shadow-lg"
             aria-label="Upload video"
           >
             {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
