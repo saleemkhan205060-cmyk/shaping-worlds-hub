@@ -29,6 +29,7 @@ type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "te
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const editPreviewRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
   const musicInputRef = useRef<HTMLInputElement>(null);
   const [src, setSrc] = useState<string>("");
@@ -55,6 +56,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [overlayText, setOverlayText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textSize, setTextSize] = useState(28);
+
 
   useEffect(() => {
     const url = URL.createObjectURL(file);
@@ -86,11 +88,13 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     const v = videoRef.current;
     if (!v) return;
     if (v.paused) {
-      v.play();
+      v.play().catch(() => {});
+      editPreviewRef.current?.play().catch(() => {});
       musicRef.current?.play().catch(() => {});
       setPlaying(true);
     } else {
       v.pause();
+      editPreviewRef.current?.pause();
       musicRef.current?.pause();
       setPlaying(false);
     }
@@ -100,13 +104,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     const v = videoRef.current;
     if (!v) return;
     setCurrent(v.currentTime);
+    const ep = editPreviewRef.current;
+    if (ep && Math.abs(ep.currentTime - v.currentTime) > 0.25) {
+      ep.currentTime = v.currentTime;
+    }
     if (trimEnd > 0 && v.currentTime >= trimEnd) {
       v.pause();
       v.currentTime = trimStart;
-      musicRef.current && (musicRef.current.currentTime = 0);
+      if (ep) ep.currentTime = trimStart;
+      if (musicRef.current) musicRef.current.currentTime = 0;
       setPlaying(false);
     }
   };
+
 
   const onLoaded = () => {
     const v = videoRef.current;
@@ -171,39 +181,42 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         <div className="absolute top-3 right-3 z-10 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={onClose}
-            className="h-10 w-10 rounded-full bg-black/40 text-white flex items-center justify-center"
+            className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
           <button
             onClick={() => setMenuOpen(true)}
-            className="h-10 w-10 rounded-full bg-black/40 text-white flex items-center justify-center"
+            className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
             aria-label="More options"
           >
             <MoreVertical className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Center play button */}
-        {!playing && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="h-20 w-20 rounded-full border-2 border-white/90 flex items-center justify-center">
-              <Play className="h-9 w-9 text-white fill-white ml-1" />
-            </div>
-          </div>
-        )}
+        {/* Center play/pause button (real, tappable) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <button
+            onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+            className={`pointer-events-auto h-20 w-20 rounded-full border-2 border-white/90 bg-black/30 backdrop-blur flex items-center justify-center active:scale-95 transition ${playing ? "opacity-0" : "opacity-100"}`}
+            aria-label={playing ? "Pause" : "Play"}
+          >
+            {playing ? <Pause className="h-9 w-9 text-white fill-white" /> : <Play className="h-9 w-9 text-white fill-white ml-1" />}
+          </button>
+        </div>
 
         {/* Bottom-right upload */}
-        <div className="absolute bottom-16 right-4 z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute bottom-20 right-4 z-10" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={onConfirm}
-            className="h-14 w-14 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-lg active:scale-95"
+            className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
             aria-label="Upload"
           >
             <Upload className="h-6 w-6" />
           </button>
         </div>
+
 
         {/* Bottom time + progress */}
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-6 bg-gradient-to-t from-black/60 to-transparent" onClick={(e) => e.stopPropagation()}>
@@ -247,7 +260,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={() => setSheet(null)} className="text-white text-sm font-semibold px-3 py-1.5 rounded-full bg-white/10">Done</button>
+            <button onClick={() => setSheet(null)} className="text-white text-sm font-bold px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">Done</button>
           </div>
 
           {/* Preview */}
@@ -255,17 +268,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             <div className="relative w-full max-w-md mx-auto" style={aspectStyle}>
               {src && (
                 <video
+                  ref={editPreviewRef}
                   src={src}
                   className="w-full h-full object-contain bg-black rounded-md"
                   style={{ filter: videoFilter }}
                   muted
                   playsInline
+                  onClick={togglePlay}
                   onLoadedMetadata={(e) => {
-                    const v = e.currentTarget;
-                    v.currentTime = current;
+                    e.currentTarget.currentTime = current;
                   }}
                 />
               )}
+
               {overlayText && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-4">
                   <span
@@ -282,14 +297,15 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           {/* Time + frame strip */}
           <div className="px-4">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <button onClick={togglePlay} className="text-white">
-                {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 fill-white" />}
+              <button onClick={togglePlay} className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center active:scale-95 transition shadow-lg" aria-label={playing ? "Pause" : "Play"}>
+                {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 fill-black ml-0.5" />}
               </button>
-              <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium tabular-nums">
+              <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium tabular-nums border border-white/10">
                 <Camera className="h-4 w-4" />
                 {fmt(current)} / {fmt(duration)}
               </div>
             </div>
+
 
             {/* Frame strip with handles (visual) */}
             <div className="relative bg-white rounded-2xl p-1.5 mb-4 overflow-hidden">
@@ -322,7 +338,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   <button
                     key={a.id}
                     onClick={() => setAspect(a.id)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold ${aspect === a.id ? "bg-white text-black" : "bg-white/10 text-white"}`}
+                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition active:scale-95 ${aspect === a.id ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}
                   >
                     {a.label}
                   </button>
@@ -381,7 +397,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <div className="flex gap-2 overflow-x-auto">
                 {[0.5, 0.75, 1, 1.25, 1.5, 2].map((s) => (
                   <button key={s} onClick={() => setSpeed(s)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold ${speed === s ? "bg-white text-black" : "bg-white/10 text-white"}`}>
+                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition active:scale-95 ${speed === s ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}>
                     {s}x
                   </button>
                 ))}
@@ -390,7 +406,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             {editTab === "music" && (
               <div className="text-white text-xs space-y-2">
                 <button onClick={() => musicInputRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white text-black font-semibold">
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-bold shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">
                   <Music className="h-4 w-4" /> {musicSrc ? "Change music" : "Pick from gallery"}
                 </button>
                 {musicName && <p className="opacity-80 truncate">Selected: {musicName}</p>}
@@ -570,13 +586,14 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-2 rounded-xl ${active ? "bg-white/15 text-white" : "text-white/70"}`}
+      className={`flex flex-col items-center gap-1 py-2 rounded-xl transition active:scale-95 ${active ? "bg-gradient-to-b from-indigo-500/30 to-fuchsia-500/20 text-white ring-1 ring-white/30" : "text-white/70 hover:text-white"}`}
     >
       {icon}
-      <span className="text-[10px] font-medium">{label}</span>
+      <span className="text-[10px] font-semibold">{label}</span>
     </button>
   );
 }
+
 
 function AdjustRow({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
   return (
