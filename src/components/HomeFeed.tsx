@@ -1111,6 +1111,34 @@ export function HomeFeed() {
         />
       )}
 
+      {fullscreenPreviewOpen && file && isVideoFile(file) && preview && (
+        <div className="fixed inset-0 z-[250] bg-black flex items-center justify-center">
+          <video
+            src={preview}
+            controls
+            playsInline
+            controlsList="nodownload noplaybackrate noremoteplayback"
+            disablePictureInPicture
+            onContextMenu={(e) => e.preventDefault()}
+            className="w-full h-full object-contain bg-black"
+          />
+          <button
+            onClick={() => setFullscreenPreviewOpen(false)}
+            className="absolute top-4 left-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => setVideoMenuOpen(true)}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
+            aria-label="More options"
+          >
+            <MoreVertical className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+
       {file && isVideoFile(file) && preview && (
         <VideoThumbnailPicker
           videoSrc={preview}
