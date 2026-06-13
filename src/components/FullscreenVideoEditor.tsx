@@ -375,12 +375,25 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   ref={editPreviewRef}
                   src={src}
                   className="block max-h-full max-w-full object-contain"
-                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle), ...cropClipStyle }}
+                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
                   muted
                   playsInline
                   onClick={togglePlay}
                   onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
                 />
+                {editTab === "crop" && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div
+                      className="absolute border border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] pointer-events-none"
+                      style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
+                    >
+                      <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
+                      <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
+                      <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
+                      <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             {overlayText && (
@@ -391,27 +404,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 >
                   {overlayText}
                 </span>
-              </div>
-            )}
-
-            {/* Crop corner brackets overlay */}
-            {editTab === "crop" && src && cropAreaRef.current && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div
-                  className="relative max-h-full max-w-full"
-                  style={{ width: `${cropAreaRef.current.clientWidth}px`, height: `${cropAreaRef.current.clientHeight}px` }}
-                >
-                  <div className="absolute inset-0 bg-black/45" />
-                  <div
-                    className="absolute border border-white/80 pointer-events-none"
-                    style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
-                  >
-                    <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
-                    <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
-                    <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
-                    <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
-                  </div>
-                </div>
               </div>
             )}
           </div>
