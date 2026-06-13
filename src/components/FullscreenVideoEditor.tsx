@@ -18,13 +18,12 @@ const FILTERS: { id: string; label: string; css: string }[] = [
 ];
 
 const ASPECTS: { id: string; label: string; ratio: string }[] = [
-  { id: "free", label: "Custom", ratio: "auto" },
+  { id: "free", label: "Free", ratio: "auto" },
+  { id: "1:1", label: "1:1", ratio: "1 / 1" },
+  { id: "4:5", label: "4:5", ratio: "4 / 5" },
   { id: "9:16", label: "9:16", ratio: "9 / 16" },
-  { id: "2:3", label: "2:3", ratio: "2 / 3" },
-  { id: "3:4", label: "3:4", ratio: "3 / 4" },
-  { id: "1:1", label: "Square", ratio: "1 / 1" },
+  { id: "16:9", label: "16:9", ratio: "16 / 9" },
 ];
-
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
 
@@ -266,29 +265,18 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
-            <div className="relative inline-flex items-center justify-center max-h-full max-w-full">
-              {src && (
-                <video
-                  ref={editPreviewRef}
-                  src={src}
-                  className={aspect === "free" ? "max-h-[60vh] max-w-[80vw] object-contain" : "max-h-[60vh] max-w-[80vw] object-contain"}
-                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
-                  muted
-                  playsInline
-                  onClick={togglePlay}
-                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
-                />
-              )}
-              {/* Corner brackets — only in Crop tab */}
-              {editTab === "crop" && (
-                <>
-                  <span className="pointer-events-none absolute -top-2 -left-2 h-6 w-6 border-t-[3px] border-l-[3px] border-white rounded-tl-md" />
-                  <span className="pointer-events-none absolute -top-2 -right-2 h-6 w-6 border-t-[3px] border-r-[3px] border-white rounded-tr-md" />
-                  <span className="pointer-events-none absolute -bottom-2 -left-2 h-6 w-6 border-b-[3px] border-l-[3px] border-white rounded-bl-md" />
-                  <span className="pointer-events-none absolute -bottom-2 -right-2 h-6 w-6 border-b-[3px] border-r-[3px] border-white rounded-br-md" />
-                </>
-              )}
-            </div>
+            {src && (
+              <video
+                ref={editPreviewRef}
+                src={src}
+                className={aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain"}
+                style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
+                muted
+                playsInline
+                onClick={togglePlay}
+                onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
+              />
+            )}
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
                 <span
@@ -300,7 +288,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
           </div>
-
 
           {/* Play + time pill (tight, directly below video) */}
           <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
@@ -340,34 +327,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             />
           </div>
 
-          {/* Crop aspect-ratio chips — only in Crop tab */}
-          {editTab === "crop" && (
-            <div className="flex gap-2 overflow-x-auto px-3 pb-2 pt-1 shrink-0 scrollbar-none">
-              {ASPECTS.map((a) => {
-                const active = aspect === a.id;
-                return (
-                  <button
-                    key={a.id}
-                    onClick={() => setAspect(a.id)}
-                    className={`shrink-0 w-[68px] h-[68px] rounded-2xl flex flex-col items-center justify-center gap-1.5 transition active:scale-95 ${active ? "bg-slate-800 ring-2 ring-sky-300" : "bg-slate-900/70"}`}
-                  >
-                    <span
-                      className="block bg-slate-300 rounded-[3px]"
-                      style={{
-                        width: a.id === "1:1" ? 22 : a.id === "9:16" ? 14 : a.id === "2:3" ? 16 : a.id === "3:4" ? 18 : 22,
-                        height: a.id === "1:1" ? 22 : a.id === "9:16" ? 24 : a.id === "2:3" ? 24 : a.id === "3:4" ? 24 : 16,
-                      }}
-                    />
-                    <span className="text-[11px] font-medium text-white leading-none">{a.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
           {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
           {editTab !== "crop" && (
-
           <div className="px-3 pb-2 shrink-0">
             {editTab === "adjust" && (
               <div className="space-y-1.5 text-white text-xs">
