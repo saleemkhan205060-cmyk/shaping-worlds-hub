@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera } from "lucide-react";
+import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, RotateCcw, Check } from "lucide-react";
 
 type Props = {
   file: File;
@@ -18,11 +18,11 @@ const FILTERS: { id: string; label: string; css: string }[] = [
 ];
 
 const ASPECTS: { id: string; label: string; ratio: string }[] = [
-  { id: "free", label: "Free", ratio: "auto" },
-  { id: "1:1", label: "1:1", ratio: "1 / 1" },
-  { id: "4:5", label: "4:5", ratio: "4 / 5" },
+  { id: "free", label: "Custom", ratio: "auto" },
   { id: "9:16", label: "9:16", ratio: "9 / 16" },
-  { id: "16:9", label: "16:9", ratio: "16 / 9" },
+  { id: "2:3", label: "2:3", ratio: "2 / 3" },
+  { id: "3:4", label: "3:4", ratio: "3 / 4" },
+  { id: "1:1", label: "Square", ratio: "1 / 1" },
 ];
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
@@ -42,7 +42,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [sheet, setSheet] = useState<null | "filter" | "sound" | "trim" | "edit">("edit");
   const [editTab, setEditTab] = useState<EditTab>("crop");
   const [filter, setFilter] = useState<string>("none");
-  const [aspect, setAspect] = useState<string>("free");
+  const [aspect, setAspect] = useState<string>("9:16");
+  const [rotation, setRotation] = useState<number>(0);
   const [brightness, setBrightness] = useState(1);
   const [contrast, setContrast] = useState(1);
   const [saturation, setSaturation] = useState(1);
@@ -264,19 +265,33 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           </div>
 
           {/* Preview — fills remaining space, no extra gap */}
-          <div className="flex-1 min-h-0 flex items-center justify-center relative">
-            {src && (
-              <video
-                ref={editPreviewRef}
-                src={src}
-                className={aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain"}
-                style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
-                muted
-                playsInline
-                onClick={togglePlay}
-                onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
-              />
-            )}
+          <div className="flex-1 min-h-0 flex items-center justify-center relative px-6">
+            <div className="relative" style={editTab === "crop" && aspect !== "free" ? { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio, height: "100%", maxHeight: "100%" } : { width: "100%", height: "100%" }}>
+              {src && (
+                <video
+                  ref={editPreviewRef}
+                  src={src}
+                  className={editTab === "crop" ? "absolute inset-0 w-full h-full object-cover rounded-md" : (aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain")}
+                  style={{ filter: videoFilter, transform: `rotate(${rotation}deg)`, ...(editTab !== "crop" && aspect !== "free" ? aspectStyle : {}) }}
+                  muted
+                  playsInline
+                  onClick={togglePlay}
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
+                />
+              )}
+              {/* Crop corner brackets + center play+time, only on Crop tab */}
+              {editTab === "crop" && (
+                <>
+                  <CornerBrackets />
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 pointer-events-none">
+                    <Play className="h-5 w-5 text-white fill-white drop-shadow" />
+                    <span className="text-white text-sm font-semibold tabular-nums drop-shadow">
+                      {fmt(current)} / {fmt(duration)}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
                 <span
@@ -289,7 +304,33 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
           </div>
 
-          {/* Play + time pill (tight, directly below video) */}
+          {/* Crop: simple progress line below preview */}
+          {editTab === "crop" && (
+            <div className="px-6 pt-4 pb-2 shrink-0">
+              <div className="relative h-1 rounded-full bg-white/30">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-white"
+                  style={{ width: `${duration ? (current / duration) * 100 : 0}%` }}
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.01}
+                  value={current}
+                  onChange={onSeek}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-[3px] rounded-full bg-white shadow"
+                  style={{ left: `${duration ? (current / duration) * 100 : 0}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Play + time pill — hidden in crop tab (time shown over preview) */}
+          {editTab !== "crop" && (
           <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
             <button onClick={togglePlay} className="text-white active:scale-95 transition" aria-label={playing ? "Pause" : "Play"}>
               {playing ? <Pause className="h-6 w-6 fill-white" /> : <Play className="h-6 w-6 fill-white" />}
@@ -299,6 +340,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               {fmt(current)} / {fmt(duration)}
             </div>
           </div>
+          )}
 
           {/* Trim strip with draggable handles (Google Photos style) — shown only in Adjust tab */}
           {editTab === "adjust" && (
@@ -330,6 +372,27 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           </div>
           )}
 
+
+          {/* Crop aspect chips */}
+          {editTab === "crop" && (
+            <div className="px-3 pb-2 pt-1 shrink-0">
+              <div className="flex gap-2 overflow-x-auto scrollbar-none">
+                {ASPECTS.map((a) => {
+                  const active = aspect === a.id;
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => setAspect(a.id)}
+                      className={`shrink-0 flex flex-col items-center justify-center gap-1 w-[72px] h-[64px] rounded-2xl border ${active ? "border-sky-300 bg-white/5" : "border-transparent bg-white/5"}`}
+                    >
+                      <div className={`h-5 w-5 rounded-[3px] ${active ? "bg-sky-200" : "bg-white/60"}`} style={a.id === "9:16" ? { width: 12, height: 18 } : a.id === "2:3" ? { width: 12, height: 18 } : a.id === "3:4" ? { width: 14, height: 18 } : a.id === "1:1" ? { width: 16, height: 16 } : { width: 18, height: 14 }} />
+                      <span className="text-[11px] font-semibold text-white">{a.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
           {editTab !== "crop" && (
@@ -422,16 +485,50 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           </div>
           )}
 
-          {/* Bottom tabs — Google Photos style */}
+          {/* Crop bottom action pill (Google Photos style) */}
+          {editTab === "crop" && (
+            <div className="flex items-center justify-center gap-3 px-4 pb-4 pt-2 shrink-0">
+              <button
+                onClick={() => { setAspect("9:16"); setRotation(0); setEditTab("adjust"); }}
+                className="h-12 w-14 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95"
+                aria-label="Cancel"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div className="flex items-center bg-white/10 rounded-full p-1">
+                <button className="h-10 w-12 rounded-full bg-purple-500/80 text-white flex items-center justify-center" aria-label="Crop">
+                  <Crop className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setRotation((r) => (r - 90) % 360)}
+                  className="h-10 w-12 rounded-full text-white flex items-center justify-center active:scale-95"
+                  aria-label="Rotate"
+                >
+                  <RotateCcw className="h-5 w-5" />
+                </button>
+              </div>
+              <button
+                onClick={() => setEditTab("adjust")}
+                className="h-12 w-14 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95"
+                aria-label="Apply"
+              >
+                <Check className="h-5 w-5" />
+              </button>
+            </div>
+          )}
+
+          {/* Bottom tabs — Google Photos style (hidden in Crop) */}
+          {editTab !== "crop" && (
           <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
             <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
-            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
+            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={false} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
             <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
             <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
             <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
             <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
           </div>
+          )}
         </div>
       )}
 
@@ -726,6 +823,18 @@ function TrimStrip({
           <div className="h-4 w-[3px] bg-slate-500 rounded-full" />
         </div>
       </div>
+    </div>
+  );
+}
+
+function CornerBrackets() {
+  const base = "absolute h-6 w-6 border-white";
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      <div className={`${base} top-0 left-0 border-t-[3px] border-l-[3px] rounded-tl-xl`} />
+      <div className={`${base} top-0 right-0 border-t-[3px] border-r-[3px] rounded-tr-xl`} />
+      <div className={`${base} bottom-0 left-0 border-b-[3px] border-l-[3px] rounded-bl-xl`} />
+      <div className={`${base} bottom-0 right-0 border-b-[3px] border-r-[3px] rounded-br-xl`} />
     </div>
   );
 }
