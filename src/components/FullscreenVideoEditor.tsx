@@ -403,13 +403,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 >
                   <div className="absolute inset-0 bg-black/45" />
                   <div
-                    className="absolute shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] border border-white/80"
+                    className="absolute border border-white/80 pointer-events-none"
                     style={{ left: `${cropRect.x}%`, top: `${cropRect.y}%`, width: `${cropRect.width}%`, height: `${cropRect.height}%` }}
-                  />
-                  <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
-                  <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
-                  <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
-                  <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
+                  >
+                    <CropHandle corner="tl" onPointerDown={startCropDrag("tl")} />
+                    <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
+                    <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
+                    <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
+                  </div>
                 </div>
               </div>
             )}
