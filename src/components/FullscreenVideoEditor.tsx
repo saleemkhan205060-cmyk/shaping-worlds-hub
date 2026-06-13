@@ -338,7 +338,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   <button
                     key={a.id}
                     onClick={() => setAspect(a.id)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold ${aspect === a.id ? "bg-white text-black" : "bg-white/10 text-white"}`}
+                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition active:scale-95 ${aspect === a.id ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}
                   >
                     {a.label}
                   </button>
