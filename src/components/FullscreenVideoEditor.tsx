@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera } from "lucide-react";
+import { MoreVertical, Upload, Play, Pause, X, Check, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, RotateCcw } from "lucide-react";
 
 type Props = {
   file: File;
@@ -355,7 +355,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       {/* EDIT — fullscreen editor (Google Photos style, tight spacing) */}
       {sheet === "edit" && (
         <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
-          {/* Header */}
+          {/* Header — hidden in Crop tab to match screenshot */}
+          {editTab !== "crop" && (
           <div className="flex items-center justify-between px-3 py-2 shrink-0">
             <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
               <X className="h-5 w-5" />
@@ -363,6 +364,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             <span className="text-white text-sm font-semibold">Edit</span>
             <button onClick={onConfirm} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
           </div>
+          )}
 
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
@@ -388,6 +390,12 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                       <CropHandle corner="tr" onPointerDown={startCropDrag("tr")} />
                       <CropHandle corner="bl" onPointerDown={startCropDrag("bl")} />
                       <CropHandle corner="br" onPointerDown={startCropDrag("br")} />
+                      <div className="absolute inset-x-0 bottom-2 flex items-center justify-center gap-2 pointer-events-none">
+                        <Play className="h-5 w-5 text-white fill-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]" />
+                        <span className="text-white text-sm font-semibold tabular-nums drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]">
+                          {fmt(current)} / {fmt(duration)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -405,7 +413,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
           </div>
 
-          {/* Play + time pill (tight, directly below video) */}
+          {/* Play + time pill (tight, directly below video) — hidden in Crop */}
+          {editTab !== "crop" && (
           <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
             <button onClick={togglePlay} className="text-white active:scale-95 transition" aria-label={playing ? "Pause" : "Play"}>
               {playing ? <Pause className="h-6 w-6 fill-white" /> : <Play className="h-6 w-6 fill-white" />}
@@ -415,9 +424,10 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               {fmt(current)} / {fmt(duration)}
             </div>
           </div>
+          )}
 
-          {/* Trim strip with draggable handles (Google Photos style) — shown only in Adjust tab */}
-          {editTab === "adjust" && (
+          {/* Trim strip — shown in Adjust AND Crop tabs */}
+          {(editTab === "adjust" || editTab === "crop") && (
           <div className="px-3 pb-1.5 shrink-0">
 
             <TrimStrip
@@ -564,15 +574,54 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           )}
 
           {/* Bottom tabs — Google Photos style */}
-          <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
-            <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
-            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
-            <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
-            <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
-            <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
-            <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
-            <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
-          </div>
+          {/* Bottom action bar — Crop tab shows X / pill / Check (matches screenshot) */}
+          {editTab === "crop" ? (
+            <div className="flex items-center justify-between px-6 pb-4 pt-2 bg-black shrink-0">
+              <button
+                onClick={onClose}
+                className="h-12 w-12 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95 transition"
+                aria-label="Cancel"
+              >
+                <X className="h-6 w-6" />
+              </button>
+              <div className="flex items-center gap-1 rounded-full bg-white/10 px-1.5 py-1.5">
+                <button
+                  onClick={() => {}}
+                  className="h-10 w-12 rounded-full bg-violet-500 text-white flex items-center justify-center active:scale-95 transition"
+                  aria-label="Crop"
+                >
+                  <Crop className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setCropRect({ x: 8, y: 8, width: 84, height: 84 });
+                    setAspect("free");
+                  }}
+                  className="h-10 w-12 rounded-full text-white/90 flex items-center justify-center active:scale-95 transition"
+                  aria-label="Reset"
+                >
+                  <RotateCcw className="h-5 w-5" />
+                </button>
+              </div>
+              <button
+                onClick={onConfirm}
+                className="h-12 w-12 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95 transition"
+                aria-label="Done"
+              >
+                <Check className="h-6 w-6" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
+              <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
+              <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={false} onClick={() => setEditTab("crop")} />
+              <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
+              <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
+              <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
+              <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
+              <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
+            </div>
+          )}
         </div>
       )}
 
