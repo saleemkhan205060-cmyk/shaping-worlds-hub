@@ -521,7 +521,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           {editTab !== "crop" && (
           <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
             <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
-            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
+            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={false} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
             <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
             <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
