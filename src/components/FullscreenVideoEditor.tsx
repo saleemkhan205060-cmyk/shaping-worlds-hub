@@ -355,7 +355,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       {/* EDIT — fullscreen editor (Google Photos style, tight spacing) */}
       {sheet === "edit" && (
         <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
-          {/* Header */}
+          {/* Header — hidden in Crop tab to match screenshot */}
+          {editTab !== "crop" && (
           <div className="flex items-center justify-between px-3 py-2 shrink-0">
             <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
               <X className="h-5 w-5" />
@@ -363,6 +364,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             <span className="text-white text-sm font-semibold">Edit</span>
             <button onClick={onConfirm} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
           </div>
+          )}
 
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
