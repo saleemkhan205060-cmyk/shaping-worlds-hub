@@ -637,7 +637,7 @@ export function HomeFeed() {
           />
           {preview && file && (
             <div className="relative mt-2 rounded-xl overflow-hidden bg-slate-100">
-              {file.type.startsWith("video/") ? (
+              {isVideoFile(file) ? (
                 <video
                   src={preview}
                   controls
@@ -656,7 +656,7 @@ export function HomeFeed() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
-              {file.type.startsWith("video/") && (
+              {isVideoFile(file) && (
                 <button
                   onClick={() => setVideoMenuOpen(true)}
                   className="absolute top-2 right-11 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
@@ -665,7 +665,7 @@ export function HomeFeed() {
                   <MoreVertical className="h-3.5 w-3.5" />
                 </button>
               )}
-              {thumbPreview && file.type.startsWith("video/") && (
+              {thumbPreview && isVideoFile(file) && (
                 <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/60 text-white text-[11px] px-2 py-1 rounded">
                   <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
                   <span>Thumbnail set</span>
@@ -815,7 +815,17 @@ export function HomeFeed() {
                 ref={fileRef}
                 type="file"
                 className="hidden"
-                onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => {
+                  const f = e.target.files?.[0] ?? null;
+                  e.currentTarget.value = "";
+                  if (!f) return;
+                  if (isVideoFile(f)) {
+                    if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
+                    setEditorFile(f);
+                    return;
+                  }
+                  pickFile(f);
+                }}
               />
             </div>
             <div className="flex items-center gap-2 relative">
