@@ -406,7 +406,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             {editTab === "music" && (
               <div className="text-white text-xs space-y-2">
                 <button onClick={() => musicInputRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white text-black font-semibold">
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-bold shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">
                   <Music className="h-4 w-4" /> {musicSrc ? "Change music" : "Pick from gallery"}
                 </button>
                 {musicName && <p className="opacity-80 truncate">Selected: {musicName}</p>}
