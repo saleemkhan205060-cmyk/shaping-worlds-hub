@@ -158,7 +158,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   };
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
-  const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
   const cropClipStyle = editTab === "crop"
     ? { clipPath: `inset(${cropRect.y}% ${100 - cropRect.x - cropRect.width}% ${100 - cropRect.y - cropRect.height}% ${cropRect.x}%)` }
     : {};
@@ -375,7 +374,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   ref={editPreviewRef}
                   src={src}
                   className="block max-h-full max-w-full object-contain"
-                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle), ...cropClipStyle }}
+                  style={{ filter: videoFilter, ...cropClipStyle }}
                   muted
                   playsInline
                   onClick={togglePlay}
