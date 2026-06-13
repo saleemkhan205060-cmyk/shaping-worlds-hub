@@ -29,6 +29,7 @@ type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "te
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const editPreviewRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
   const musicInputRef = useRef<HTMLInputElement>(null);
   const [src, setSrc] = useState<string>("");
@@ -55,6 +56,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [overlayText, setOverlayText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textSize, setTextSize] = useState(28);
+
 
   useEffect(() => {
     const url = URL.createObjectURL(file);
