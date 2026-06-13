@@ -375,7 +375,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   ref={editPreviewRef}
                   src={src}
                   className="block max-h-full max-w-full object-contain"
-                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
+                  style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle), ...cropClipStyle }}
                   muted
                   playsInline
                   onClick={togglePlay}
@@ -451,14 +451,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
 
           {/* Active tab panel — compact */}
-          {(editTab !== "crop" || true) && (
+          {editTab && (
           <div className="px-3 pb-2 shrink-0">
             {editTab === "crop" && (
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                 {ASPECTS.map((a) => (
                   <button
                     key={a.id}
-                    onClick={() => setAspect(a.id)}
+                    onClick={() => selectAspect(a.id)}
                     className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
                   >
                     <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
