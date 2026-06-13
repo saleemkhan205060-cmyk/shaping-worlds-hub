@@ -251,73 +251,62 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         </div>
       )}
 
-      {/* EDIT — fullscreen editor (matches screenshot) */}
+      {/* EDIT — fullscreen editor (Google Photos style, tight spacing) */}
       {sheet === "edit" && (
         <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3">
-            <button onClick={() => setSheet(null)} className="h-10 w-10 rounded-full bg-white/10 text-white flex items-center justify-center">
+          <div className="flex items-center justify-between px-3 py-2 shrink-0">
+            <button onClick={() => setSheet(null)} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={() => setSheet(null)} className="text-white text-sm font-bold px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">Done</button>
+            <button onClick={() => setSheet(null)} className="text-white text-xs font-bold px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">Done</button>
           </div>
 
-          {/* Preview */}
-          <div className="flex-1 flex items-center justify-center px-4 min-h-0">
-            <div
-              className="relative w-full max-w-md mx-auto h-full flex items-center justify-center"
-              style={aspect === "free" ? undefined : aspectStyle}
-            >
-              {src && (
-                <video
-                  ref={editPreviewRef}
-                  src={src}
-                  className={aspect === "free" ? "max-h-full max-w-full object-contain bg-black rounded-md" : "w-full h-full object-contain bg-black rounded-md"}
-                  style={{ filter: videoFilter }}
-                  muted
-                  playsInline
-                  onClick={togglePlay}
-                  onLoadedMetadata={(e) => {
-                    e.currentTarget.currentTime = current;
-                  }}
-                />
-              )}
-
-              {overlayText && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-4">
-                  <span
-                    className="font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
-                    style={{ color: textColor, fontSize: `${Math.max(14, textSize * 0.7)}px` }}
-                  >
-                    {overlayText}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Time + frame strip */}
-          <div className="px-4">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <button onClick={togglePlay} className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center active:scale-95 transition shadow-lg" aria-label={playing ? "Pause" : "Play"}>
-                {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 fill-black ml-0.5" />}
-              </button>
-              <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium tabular-nums border border-white/10">
-                <Camera className="h-4 w-4" />
-                {fmt(current)} / {fmt(duration)}
+          {/* Preview — fills remaining space, no extra gap */}
+          <div className="flex-1 min-h-0 flex items-center justify-center relative">
+            {src && (
+              <video
+                ref={editPreviewRef}
+                src={src}
+                className={aspect === "free" ? "max-h-full max-w-full object-contain" : "w-full h-full object-contain"}
+                style={{ filter: videoFilter, ...(aspect === "free" ? {} : aspectStyle) }}
+                muted
+                playsInline
+                onClick={togglePlay}
+                onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
+              />
+            )}
+            {overlayText && (
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
+                <span
+                  className="font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
+                  style={{ color: textColor, fontSize: `${Math.max(14, textSize * 0.7)}px` }}
+                >
+                  {overlayText}
+                </span>
               </div>
+            )}
+          </div>
+
+          {/* Play + time pill (tight, directly below video) */}
+          <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
+            <button onClick={togglePlay} className="text-white active:scale-95 transition" aria-label={playing ? "Pause" : "Play"}>
+              {playing ? <Pause className="h-6 w-6 fill-white" /> : <Play className="h-6 w-6 fill-white" />}
+            </button>
+            <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1 text-sm font-medium tabular-nums">
+              <Camera className="h-4 w-4" />
+              {fmt(current)} / {fmt(duration)}
             </div>
+          </div>
 
-
-            {/* Frame strip with handles (visual) */}
-            <div className="relative bg-white rounded-2xl p-1.5 mb-4 overflow-hidden">
-              <div className="flex gap-0.5 h-14">
+          {/* Frame strip with handles */}
+          <div className="px-3 pb-1.5 shrink-0">
+            <div className="relative bg-white rounded-2xl p-1 overflow-hidden">
+              <div className="flex gap-0.5 h-12">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="flex-1 bg-slate-200 rounded-sm overflow-hidden">
-                    {src && (
-                      <video src={src} className="w-full h-full object-cover" muted preload="metadata" />
-                    )}
+                    {src && <video src={src} className="w-full h-full object-cover" muted preload="metadata" />}
                   </div>
                 ))}
               </div>
@@ -333,15 +322,15 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             </div>
           </div>
 
-          {/* Active tab panel */}
-          <div className="px-4 pb-3 min-h-[88px]">
+          {/* Active tab panel — compact */}
+          <div className="px-3 pb-1.5 shrink-0">
             {editTab === "crop" && (
               <div className="flex gap-2 overflow-x-auto">
                 {ASPECTS.map((a) => (
                   <button
                     key={a.id}
                     onClick={() => setAspect(a.id)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition active:scale-95 ${aspect === a.id ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}
+                    className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition active:scale-95 ${aspect === a.id ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}
                   >
                     {a.label}
                   </button>
@@ -349,7 +338,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
             {editTab === "adjust" && (
-              <div className="space-y-2 text-white text-xs">
+              <div className="space-y-1.5 text-white text-xs">
                 <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
                 <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
                 <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
@@ -371,7 +360,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
             {editTab === "audio" && (
-              <div className="space-y-3 text-white text-xs">
+              <div className="space-y-2 text-white text-xs">
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span>Original sound</span>
@@ -400,7 +389,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <div className="flex gap-2 overflow-x-auto">
                 {[0.5, 0.75, 1, 1.25, 1.5, 2].map((s) => (
                   <button key={s} onClick={() => setSpeed(s)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition active:scale-95 ${speed === s ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}>
+                    className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition active:scale-95 ${speed === s ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30" : "bg-white/10 text-white border border-white/15"}`}>
                     {s}x
                   </button>
                 ))}
@@ -435,8 +424,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
           </div>
 
-          {/* Bottom tabs */}
-          <div className="grid grid-cols-7 gap-1 px-2 pb-4 pt-2 bg-black">
+          {/* Bottom tabs — Google style rounded squares */}
+          <div className="grid grid-cols-7 gap-1 px-2 pb-3 pt-1 bg-black shrink-0">
             <EditTabBtn icon={<Crop className="h-5 w-5" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<SlidersHorizontal className="h-5 w-5" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
             <EditTabBtn icon={<Sparkles className="h-5 w-5" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
