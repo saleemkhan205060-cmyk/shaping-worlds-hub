@@ -676,45 +676,50 @@ function TrimStrip({
   const curPct = duration ? Math.max(startPct, Math.min(endPct, (current / duration) * 100)) : 0;
 
   return (
-    <div className="relative h-16 select-none px-1">
-      {/* White rounded container */}
-      <div className="absolute inset-x-0 inset-y-0 bg-white rounded-[14px] shadow-md flex items-center px-7">
-        {/* Thumbnails row */}
+    <div className="relative h-12 select-none px-1">
+      {/* Thumbnails strip */}
+      <div
+        ref={stripRef}
+        className="absolute inset-x-1 inset-y-0 flex gap-[2px] touch-none overflow-hidden rounded-full bg-slate-800"
+        onPointerDown={startDrag("seek")}
+      >
+        {Array.from({ length: FRAMES }).map((_, i) => (
+          <div key={i} className="flex-1 h-full overflow-hidden bg-slate-300">
+            {thumbs[i] && <img src={thumbs[i]} alt="" className="w-full h-full object-cover" draggable={false} />}
+          </div>
+        ))}
+        {/* Dim outside trim region */}
+        <div className="absolute inset-y-0 left-0 bg-black/55 pointer-events-none" style={{ width: `${startPct}%` }} />
+        <div className="absolute inset-y-0 right-0 bg-black/55 pointer-events-none" style={{ width: `${100 - endPct}%` }} />
+        {/* Trim border */}
         <div
-          ref={stripRef}
-          className="relative flex-1 h-[52px] flex gap-[2px] touch-none overflow-hidden rounded-[4px]"
-          onPointerDown={startDrag("seek")}
-        >
-          {Array.from({ length: FRAMES }).map((_, i) => (
-            <div key={i} className="flex-1 h-full overflow-hidden bg-slate-300">
-              {thumbs[i] && <img src={thumbs[i]} alt="" className="w-full h-full object-cover" draggable={false} />}
-            </div>
-          ))}
-          {/* Playhead */}
-          <div
-            className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.5)] pointer-events-none"
-            style={{ left: `${curPct}%` }}
-          />
-        </div>
+          className="absolute inset-y-0 border-y-2 border-white pointer-events-none"
+          style={{ left: `${startPct}%`, right: `${100 - endPct}%` }}
+        />
+        {/* Playhead */}
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.5)] pointer-events-none"
+          style={{ left: `${curPct}%` }}
+        />
       </div>
-      {/* Left handle — capsule on left edge of white container */}
+      {/* Left handle — follows trimStart */}
       <div
         onPointerDown={startDrag("start")}
-        className="absolute top-1/2 -translate-y-1/2 h-[52px] w-6 flex items-center justify-center cursor-ew-resize z-20 touch-none"
-        style={{ left: 2 }}
+        className="absolute top-0 bottom-0 w-7 flex items-center justify-center cursor-ew-resize z-20 touch-none"
+        style={{ left: `calc(${startPct}% - 10px + 4px)` }}
       >
-        <div className="h-full w-full rounded-[10px] bg-white flex items-center justify-center">
-          <div className="h-5 w-[3px] bg-slate-400 rounded-full" />
+        <div className="h-full w-5 rounded-l-full bg-white flex items-center justify-center shadow">
+          <div className="h-4 w-[3px] bg-slate-500 rounded-full" />
         </div>
       </div>
-      {/* Right handle */}
+      {/* Right handle — follows trimEnd */}
       <div
         onPointerDown={startDrag("end")}
-        className="absolute top-1/2 -translate-y-1/2 h-[52px] w-6 flex items-center justify-center cursor-ew-resize z-20 touch-none"
-        style={{ right: 2 }}
+        className="absolute top-0 bottom-0 w-7 flex items-center justify-center cursor-ew-resize z-20 touch-none"
+        style={{ right: `calc(${100 - endPct}% - 10px + 4px)` }}
       >
-        <div className="h-full w-full rounded-[10px] bg-white flex items-center justify-center">
-          <div className="h-5 w-[3px] bg-slate-400 rounded-full" />
+        <div className="h-full w-5 rounded-r-full bg-white flex items-center justify-center shadow">
+          <div className="h-4 w-[3px] bg-slate-500 rounded-full" />
         </div>
       </div>
     </div>
