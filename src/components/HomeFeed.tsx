@@ -1139,7 +1139,7 @@ export function HomeFeed() {
           <button
             onClick={submit}
             disabled={posting}
-            className="absolute bottom-6 right-6 h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg active:scale-95 disabled:opacity-60"
+            className="absolute top-4 right-16 h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg active:scale-95 disabled:opacity-60"
             aria-label="Upload video"
           >
             {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
