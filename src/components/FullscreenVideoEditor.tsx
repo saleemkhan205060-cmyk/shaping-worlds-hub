@@ -18,10 +18,11 @@ const FILTERS: { id: string; label: string; css: string }[] = [
 ];
 
 const ASPECTS: { id: string; label: string; ratio: string }[] = [
-  { id: "free", label: "Free", ratio: "auto" },
-  { id: "1:1", label: "1:1", ratio: "1 / 1" },
-  { id: "4:5", label: "4:5", ratio: "4 / 5" },
+  { id: "free", label: "Custom", ratio: "auto" },
   { id: "9:16", label: "9:16", ratio: "9 / 16" },
+  { id: "2:3", label: "2:3", ratio: "2 / 3" },
+  { id: "3:4", label: "3:4", ratio: "3 / 4" },
+  { id: "1:1", label: "Square", ratio: "1 / 1" },
   { id: "16:9", label: "16:9", ratio: "16 / 9" },
 ];
 
@@ -287,6 +288,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 </span>
               </div>
             )}
+
+            {/* Crop corner brackets overlay */}
+            {editTab === "crop" && (
+              <div className="absolute inset-4 pointer-events-none">
+                <div className="absolute top-0 left-0 w-7 h-7 border-t-[3px] border-l-[3px] border-white rounded-tl-xl" />
+                <div className="absolute top-0 right-0 w-7 h-7 border-t-[3px] border-r-[3px] border-white rounded-tr-xl" />
+                <div className="absolute bottom-0 left-0 w-7 h-7 border-b-[3px] border-l-[3px] border-white rounded-bl-xl" />
+                <div className="absolute bottom-0 right-0 w-7 h-7 border-b-[3px] border-r-[3px] border-white rounded-br-xl" />
+              </div>
+            )}
           </div>
 
           {/* Play + time pill (tight, directly below video) */}
@@ -331,9 +342,23 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           )}
 
 
-          {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
-          {editTab !== "crop" && (
+          {/* Active tab panel — compact */}
+          {(editTab !== "crop" || true) && (
           <div className="px-3 pb-2 shrink-0">
+            {editTab === "crop" && (
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                {ASPECTS.map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => setAspect(a.id)}
+                    className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
+                  >
+                    <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
+                    <span className="text-[11px] font-medium text-white">{a.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             {editTab === "adjust" && (
               <div className="space-y-1.5 text-white text-xs">
                 <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
