@@ -342,9 +342,23 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           )}
 
 
-          {/* Active tab panel — compact; hidden for Crop so the bar sits directly above tabs */}
-          {editTab !== "crop" && (
+          {/* Active tab panel — compact */}
+          {(editTab !== "crop" || true) && (
           <div className="px-3 pb-2 shrink-0">
+            {editTab === "crop" && (
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                {ASPECTS.map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => setAspect(a.id)}
+                    className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
+                  >
+                    <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
+                    <span className="text-[11px] font-medium text-white">{a.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             {editTab === "adjust" && (
               <div className="space-y-1.5 text-white text-xs">
                 <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
