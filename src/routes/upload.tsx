@@ -184,7 +184,7 @@ function UploadPage() {
             </div>
           ) : (
             <div className="relative rounded-xl overflow-hidden bg-slate-100">
-              {file.type.startsWith("video/") ? (
+              {isVideoFile(file) ? (
                 <video
                   src={preview ?? undefined}
                   controls
@@ -203,7 +203,7 @@ function UploadPage() {
               >
                 <X className="h-4 w-4" />
               </button>
-              {file.type.startsWith("video/") && (
+              {isVideoFile(file) && (
                 <button
                   onClick={() => setVideoMenuOpen(true)}
                   className="absolute top-2 right-12 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
@@ -212,13 +212,13 @@ function UploadPage() {
                   <MoreVertical className="h-4 w-4" />
                 </button>
               )}
-              {thumbPreview && file.type.startsWith("video/") && (
+              {thumbPreview && isVideoFile(file) && (
                 <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/60 text-white text-xs px-2 py-1 rounded">
                   <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
                   <span>Thumbnail set</span>
                 </div>
               )}
-              {!file.type.startsWith("video/") && (
+              {!isVideoFile(file) && (
                 <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
                   <ImageIcon className="h-3 w-3" />
                   {(file.size / (1024 * 1024)).toFixed(1)} MB
@@ -249,8 +249,8 @@ function UploadPage() {
             onChange={(e) => {
               const f = e.target.files?.[0] ?? null;
               if (!f) return;
-              const isVideo = f.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi|3gp)$/i.test(f.name);
-              if (isVideo) {
+                e.currentTarget.value = "";
+                if (isVideoFile(f)) {
                 if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
                 setEditorFile(f);
               } else {
@@ -308,7 +308,7 @@ function UploadPage() {
                   placeholder="Thumbnail title (text on cover)"
                   className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
                 />
-                {file?.type.startsWith("video/") && preview && (
+                {file && isVideoFile(file) && preview && (
                   <button
                     type="button"
                     onClick={() => setFramePickerOpen(true)}
@@ -402,7 +402,7 @@ function UploadPage() {
         </div>
       </div>
 
-      {file?.type.startsWith("video/") && preview && (
+      {file && isVideoFile(file) && preview && (
         <VideoThumbnailPicker
           videoSrc={preview}
           open={framePickerOpen}
