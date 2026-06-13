@@ -450,7 +450,7 @@ function UploadPage() {
         <FullscreenVideoEditor
           file={editorFile}
           onClose={() => setEditorFile(null)}
-          onConfirm={() => { const f = editorFile; setEditorFile(null); onPick(f); }}
+          onConfirm={() => setEditorFile(null)}
         />
       )}
     </Layout>
