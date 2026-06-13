@@ -247,7 +247,8 @@ function UploadPage() {
             onChange={(e) => {
               const f = e.target.files?.[0] ?? null;
               if (!f) return;
-              if (f.type.startsWith("video/")) {
+              const isVideo = f.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi|3gp)$/i.test(f.name);
+              if (isVideo) {
                 if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
                 setEditorFile(f);
               } else {
