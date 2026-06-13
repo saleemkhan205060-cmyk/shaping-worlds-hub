@@ -74,6 +74,7 @@ function UploadPage() {
       return;
     }
     setFile(f);
+    if (isVideoFile(f)) setEditorFile(f);
   };
 
   const onPickThumb = (f: File | null) => {
