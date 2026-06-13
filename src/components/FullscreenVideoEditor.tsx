@@ -260,7 +260,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={() => setSheet(null)} className="text-white text-sm font-semibold px-3 py-1.5 rounded-full bg-white/10">Done</button>
+            <button onClick={() => setSheet(null)} className="text-white text-sm font-bold px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">Done</button>
           </div>
 
           {/* Preview */}
