@@ -74,7 +74,7 @@ function UploadPage() {
       return;
     }
     setFile(f);
-    if (isVideoFile(f)) setEditorFile(f);
+    if (isVideoFile(f)) setFullscreenPreviewOpen(true);
   };
 
   const onPickThumb = (f: File | null) => {
