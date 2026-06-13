@@ -429,15 +429,15 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
           </div>
 
-          {/* Bottom tabs — Google style rounded squares */}
-          <div className="grid grid-cols-7 gap-1 px-2 pb-3 pt-1 bg-black shrink-0">
-            <EditTabBtn icon={<Crop className="h-5 w-5" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
-            <EditTabBtn icon={<SlidersHorizontal className="h-5 w-5" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
-            <EditTabBtn icon={<Sparkles className="h-5 w-5" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
-            <EditTabBtn icon={<Volume2 className="h-5 w-5" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
-            <EditTabBtn icon={<Gauge className="h-5 w-5" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
-            <EditTabBtn icon={<Music className="h-5 w-5" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
-            <EditTabBtn icon={<Type className="h-5 w-5" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
+          {/* Bottom tabs — Google Photos style: scrollable rounded squares */}
+          <div className="flex gap-2 overflow-x-auto px-3 pb-4 pt-1 bg-black shrink-0 scrollbar-none">
+            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
+            <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
+            <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
+            <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
+            <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
+            <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
+            <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
           </div>
         </div>
       )}
@@ -583,10 +583,10 @@ function EditTabBtn({ icon, label, active, onClick }: { icon: React.ReactNode; l
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-2 rounded-xl transition active:scale-95 ${active ? "bg-gradient-to-b from-indigo-500/30 to-fuchsia-500/20 text-white ring-1 ring-white/30" : "text-white/70 hover:text-white"}`}
+      className={`shrink-0 w-[72px] h-[72px] flex flex-col items-center justify-center gap-1.5 rounded-2xl transition active:scale-95 ${active ? "bg-white/15 text-white ring-1 ring-white/40" : "bg-white/5 text-white/85 hover:bg-white/10"}`}
     >
       {icon}
-      <span className="text-[10px] font-semibold">{label}</span>
+      <span className="text-[11px] font-semibold">{label}</span>
     </button>
   );
 }
