@@ -354,7 +354,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
       {/* EDIT — fullscreen editor (Google Photos style, tight spacing) */}
       {sheet === "edit" && (
-        <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[420] bg-black flex flex-col" style={{ height: '100dvh' }} onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="flex items-center justify-between px-3 py-2 shrink-0">
             <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
