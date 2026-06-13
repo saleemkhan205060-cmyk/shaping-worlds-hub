@@ -413,7 +413,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
           </div>
 
-          {/* Play + time pill (tight, directly below video) */}
+          {/* Play + time pill (tight, directly below video) — hidden in Crop */}
+          {editTab !== "crop" && (
           <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
             <button onClick={togglePlay} className="text-white active:scale-95 transition" aria-label={playing ? "Pause" : "Play"}>
               {playing ? <Pause className="h-6 w-6 fill-white" /> : <Play className="h-6 w-6 fill-white" />}
@@ -423,9 +424,10 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               {fmt(current)} / {fmt(duration)}
             </div>
           </div>
+          )}
 
-          {/* Trim strip with draggable handles (Google Photos style) — shown only in Adjust tab */}
-          {editTab === "adjust" && (
+          {/* Trim strip — shown in Adjust AND Crop tabs */}
+          {(editTab === "adjust" || editTab === "crop") && (
           <div className="px-3 pb-1.5 shrink-0">
 
             <TrimStrip
