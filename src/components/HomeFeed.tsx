@@ -128,6 +128,7 @@ export function HomeFeed() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
   const [captionMenuFor, setCaptionMenuFor] = useState<string | null>(null);
+  const [privacyMenuFor, setPrivacyMenuFor] = useState<string | null>(null);
   const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
   const [editCaptionValue, setEditCaptionValue] = useState("");
 
