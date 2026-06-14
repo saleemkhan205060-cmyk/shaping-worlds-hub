@@ -166,14 +166,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     setMusicName(f.name);
   };
 
-  // Google Photos–style brightness: gamma curve + subtle shadow lift, instead of a flat
-  // multiplicative brightness() which blows out highlights. Keeps highlights protected
-  // while lifting midtones/shadows for a cleaner, more professional look.
-  const brightnessGamma = 1 / Math.pow(Math.max(0.01, brightness), 1.35);
-  const brightnessLift = (brightness - 1) * 0.06; // tiny shadow lift
-  const brightnessSlope = 1 + (brightness - 1) * 0.15; // soft highlight roll-off
-  const presetCss = FILTERS.find((f) => f.id === filter)?.css ?? "";
-  const videoFilter = `${presetCss} url(#vfx-brightness-curve) contrast(${contrast}) saturate(${saturation})`.trim();
+  // Google Photos–style brightness: combine a gentle brightness() with a compensating
+  // contrast curve so highlights don't blow out and shadows lift cleanly.
+  // b > 1  -> brighten + slightly reduce contrast to protect highlights
+  // b < 1  -> darken   + slightly increase contrast to keep punch in shadows
+  const bDelta = brightness - 1;
+  const effBrightness = 1 + bDelta * 0.85;
+  const compContrast = contrast * (1 - bDelta * 0.18);
+  const presetCss = FILTERS.find((f) => f.id === filter)?.css;
+  const presetPart = presetCss && presetCss !== "none" ? presetCss + " " : "";
+  const videoFilter = `${presetPart}brightness(${effBrightness}) contrast(${compContrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
 
   const handleDone = async () => {
