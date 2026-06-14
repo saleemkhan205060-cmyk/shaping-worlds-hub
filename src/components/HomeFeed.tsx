@@ -138,6 +138,7 @@ export function HomeFeed() {
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
+  const [uploadPrivacyOpen, setUploadPrivacyOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
 
@@ -309,11 +310,12 @@ export function HomeFeed() {
     setFullscreenPreviewOpen(isVideoFile(f));
   };
 
-  const submit = async () => {
+  const submit = async (privacyOverride?: boolean) => {
     if (!user) {
       toast.error("Please sign in to post");
       return;
     }
+    const shouldBePrivate = privacyOverride ?? isPrivate;
     const text = caption.trim();
     if (!file && !text) {
       toast.error("Write something or attach media");
@@ -328,7 +330,7 @@ export function HomeFeed() {
           media_type: "text",
           caption: text,
           category: "For You",
-          is_private: isPrivate,
+          is_private: shouldBePrivate,
           text_style: textStyle as unknown as Record<string, unknown>,
         } as never);
         if (insErr) throw insErr;
@@ -361,7 +363,7 @@ export function HomeFeed() {
           media_type,
           caption: text || null,
           category: "For You",
-          is_private: isPrivate,
+          is_private: shouldBePrivate,
           thumbnail_url,
         } as any);
         if (insErr) throw insErr;
@@ -369,6 +371,7 @@ export function HomeFeed() {
       setCaption("");
       setFile(null);
       setFullscreenPreviewOpen(false);
+      setUploadPrivacyOpen(false);
       setThumbFile(null);
       setIsPrivate(false);
       setTextStyle(DEFAULT_TEXT_STYLE);
