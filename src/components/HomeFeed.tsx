@@ -999,8 +999,9 @@ export function HomeFeed() {
                                 </>
                               )}
                             </div>
-
+                          ) : (
                             <button
+
                               type="button"
                               onClick={(e) => {
                                 e.preventDefault();
