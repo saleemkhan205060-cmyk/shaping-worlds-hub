@@ -626,7 +626,8 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
 
     const mimeType = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"]
       .find((type) => MediaRecorder.isTypeSupported(type));
-    const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+    const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
+    const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
     const chunks: BlobPart[] = [];
     recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
 
