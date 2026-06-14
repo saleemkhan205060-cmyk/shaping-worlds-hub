@@ -184,7 +184,7 @@ function UploadPage() {
               <p className="text-[11px] text-center text-slate-400">Images or videos · up to 500MB</p>
             </div>
           ) : (
-            <div className="relative rounded-xl overflow-hidden bg-slate-100">
+            <div className="relative rounded-xl overflow-hidden bg-black min-h-[240px] flex items-center justify-center">
               {isVideoFile(file) ? (
                 <video
                   key={preview ?? "v"}
@@ -192,12 +192,16 @@ function UploadPage() {
                   controls
                   playsInline
                   muted
-                  preload="metadata"
+                  autoPlay
+                  loop
+                  preload="auto"
                   controlsList="nodownload noplaybackrate noremoteplayback"
                   disablePictureInPicture
                   onContextMenu={(e) => e.preventDefault()}
+                  onLoadedData={(e) => { e.currentTarget.play().catch(() => {}); }}
                   className="w-full max-h-80 object-contain bg-black"
                 />
+
               ) : (
                 <img src={preview ?? undefined} alt="preview" className="w-full max-h-80 object-contain" />
               )}
