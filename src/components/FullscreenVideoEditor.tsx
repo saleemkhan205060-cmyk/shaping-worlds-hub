@@ -198,6 +198,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
+      {/* SVG filter defs for high-quality brightness (gamma curve) */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <defs>
+          <filter id="vfx-brightness-curve" colorInterpolationFilters="sRGB">
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude={brightnessSlope} exponent={brightnessGamma} offset={brightnessLift} />
+              <feFuncG type="gamma" amplitude={brightnessSlope} exponent={brightnessGamma} offset={brightnessLift} />
+              <feFuncB type="gamma" amplitude={brightnessSlope} exponent={brightnessGamma} offset={brightnessLift} />
+            </feComponentTransfer>
+          </filter>
+        </defs>
+      </svg>
+
       {/* Video */}
       <div className="relative flex-1 overflow-hidden" onClick={togglePlay}>
         {src && (
