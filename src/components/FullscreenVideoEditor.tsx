@@ -645,8 +645,9 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
     const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
     originalStream?.getAudioTracks().forEach((track) => stream.addTrack(track));
 
-    const mimeType = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"]
-      .find((type) => MediaRecorder.isTypeSupported(type));
+    const playbackProbe = document.createElement("video");
+    const mimeType = ["video/mp4", "video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm"]
+      .find((type) => MediaRecorder.isTypeSupported(type) && playbackProbe.canPlayType(type));
     const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
     const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
     const chunks: BlobPart[] = [];
@@ -670,7 +671,10 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
     await new Promise<void>((resolve) => { video.onended = () => resolve(); });
     recorder.stop();
     const blob = await done;
-    return new File([blob], file.name.replace(/\.[^.]+$/, "") + "-cropped.webm", { type: blob.type || "video/webm" });
+    if (!blob.size) throw new Error("Cropped video is empty");
+    const outputType = (recorder.mimeType || blob.type || mimeType || "video/webm").split(";")[0];
+    const outputExt = outputType.includes("mp4") ? "mp4" : "webm";
+    return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}-cropped.${outputExt}`, { type: outputType });
   } finally {
     video.pause();
     URL.revokeObjectURL(url);
