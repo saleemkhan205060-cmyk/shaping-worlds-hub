@@ -403,42 +403,31 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
             {editTab === "adjust" && (
-              <div className="space-y-2 text-white">
-                <button
-                  onClick={() => setAdjustSub("brightness")}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${adjustSub === "brightness" ? "bg-white/15" : "bg-white/[0.06]"}`}
-                >
-                  <Sun className="h-5 w-5" />
-                  <span>Brightness</span>
-                </button>
+              <div className="space-y-3 text-white">
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {([
+                    { id: "brightness", label: "Brightness", icon: <Sun className="h-4 w-4" /> },
+                    { id: "contrast", label: "Contrast", icon: <SlidersHorizontal className="h-4 w-4" /> },
+                    { id: "saturation", label: "Saturation", icon: <Sparkles className="h-4 w-4" /> },
+                  ] as const).map((a) => (
+                    <button
+                      key={a.id}
+                      onClick={() => setAdjustSub(a.id)}
+                      className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition ${adjustSub === a.id ? "bg-white text-black" : "bg-white/[0.08] text-white"}`}
+                    >
+                      {a.icon}
+                      <span>{a.label}</span>
+                    </button>
+                  ))}
+                </div>
                 {adjustSub === "brightness" && (
-                  <div className="px-2">
-                    <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
-                  </div>
+                  <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
                 )}
-                <button
-                  onClick={() => setAdjustSub("contrast")}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${adjustSub === "contrast" ? "bg-white/15" : "bg-white/[0.06]"}`}
-                >
-                  <SlidersHorizontal className="h-5 w-5" />
-                  <span>Contrast</span>
-                </button>
                 {adjustSub === "contrast" && (
-                  <div className="px-2">
-                    <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
-                  </div>
+                  <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
                 )}
-                <button
-                  onClick={() => setAdjustSub("saturation")}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${adjustSub === "saturation" ? "bg-white/15" : "bg-white/[0.06]"}`}
-                >
-                  <Sparkles className="h-5 w-5" />
-                  <span>Saturation</span>
-                </button>
                 {adjustSub === "saturation" && (
-                  <div className="px-2">
-                    <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
-                  </div>
+                  <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
                 )}
               </div>
             )}
