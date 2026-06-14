@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun } from "lucide-react";
+import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2 } from "lucide-react";
 
 type Props = {
   file: File;
@@ -26,7 +26,7 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
   { id: "16:9", label: "16:9", ratio: "16 / 9" },
 ];
 
-type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type EditTab = "auto" | "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
 type AdjustSub = "brightness" | "contrast" | "saturation" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
 
@@ -402,6 +402,17 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 ))}
               </div>
             )}
+            {editTab === "auto" && (
+              <div className="text-white">
+                <button
+                  onClick={() => { setBrightness(1.08); setContrast(1.12); setSaturation(1.15); }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white/[0.08] hover:bg-white/20 transition active:scale-95"
+                >
+                  <Wand2 className="h-5 w-5" />
+                  <span className="text-sm font-medium">Auto Enhance</span>
+                </button>
+              </div>
+            )}
             {editTab === "adjust" && (
               <div className="space-y-3 text-white">
                 <div className="flex gap-2 overflow-x-auto pb-1">
@@ -514,6 +525,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Bottom tabs — Google Photos style */}
           <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
+            <EditTabBtn icon={<Wand2 className="h-6 w-6" />} label="Auto" active={editTab === "auto"} onClick={() => setEditTab("auto")} />
             <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
             <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
