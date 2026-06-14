@@ -21,6 +21,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
+import { ShareSheet } from "@/components/ShareSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { CameraCapture } from "@/components/CameraCapture";
 import { AvatarImg } from "@/components/AvatarImg";
@@ -151,6 +152,8 @@ export function HomeFeed() {
   const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [sharePost, setSharePost] = useState<Post | null>(null);
 
   // Fullscreen player
   const [fsOpen, setFsOpen] = useState(false);
@@ -1123,21 +1126,8 @@ export function HomeFeed() {
                   </button>
                   <button
                     onClick={() => {
-                      const data = {
-                        title: p.caption ?? "Post",
-                        text: p.caption ?? "Check this out",
-                        url: p.media_url || `${window.location.origin}/u/${p.user_id}`,
-                      };
-                      const result = shareWithSystemShare(data);
-                      if (!result) {
-                        navigator.clipboard.writeText(data.url).then(() => toast.success("Link copied!")).catch(() => toast.error("Couldn't copy link"));
-                      } else {
-                        result.then((r) => {
-                          if (r === "failed" || r === "unavailable") {
-                            navigator.clipboard.writeText(data.url).then(() => toast.success("Link copied!")).catch(() => toast.error("Couldn't copy link"));
-                          }
-                        });
-                      }
+                      setSharePost(p);
+                      setShareOpen(true);
                     }}
                     className="flex items-center hover:text-indigo-600"
                     aria-label="Share"
@@ -1350,6 +1340,16 @@ export function HomeFeed() {
             </button>
           </div>
         </div>
+      )}
+
+      {shareOpen && sharePost && (
+        <ShareSheet
+          open={shareOpen}
+          onClose={() => { setShareOpen(false); setSharePost(null); }}
+          title={sharePost.caption ?? "Post"}
+          text={sharePost.caption ?? "Check this out"}
+          url={sharePost.media_url || `${window.location.origin}/u/${sharePost.user_id}`}
+        />
       )}
 
     </section>
