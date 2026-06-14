@@ -805,6 +805,20 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 const EXPORT_FPS = 30;
 const MAX_EXPORT_EDGE = 1280;
 
+function hasVisualAdjustments(adjustments: VisualAdjustments) {
+  return adjustments.filter !== "none"
+    || Math.abs(adjustments.brightness - 1) > 0.005
+    || Math.abs(adjustments.contrast - 1) > 0.005
+    || Math.abs(adjustments.saturation - 1) > 0.005
+    || Math.abs(adjustments.highlights) > 0.005
+    || Math.abs(adjustments.shadows) > 0.005
+    || Math.abs(adjustments.whitePoint) > 0.005
+    || Math.abs(adjustments.blackPoint) > 0.005
+    || Math.abs(adjustments.warmth) > 0.005
+    || Math.abs(adjustments.tint) > 0.005
+    || adjustments.vignette > 0.005;
+}
+
 async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0, adjustments: VisualAdjustments = DEFAULT_VISUAL_ADJUSTMENTS): Promise<File> {
   if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
 
