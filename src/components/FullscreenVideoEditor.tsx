@@ -27,7 +27,7 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "auto" | "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
-type AdjustSub = "brightness" | "contrast" | "saturation" | null;
+type AdjustSub = "brightness" | "contrast" | "saturation" | "highlights" | "shadows" | "whitePoint" | "blackPoint" | "warmth" | "tint" | "vignette" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
 
 const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
