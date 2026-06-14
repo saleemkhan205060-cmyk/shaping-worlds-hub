@@ -942,38 +942,40 @@ export function HomeFeed() {
                       <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
+                        {(p.media_type === "image" || p.media_type === "video") && (
+                          user?.id === p.user_id ? (
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const next = !p.is_private;
+                                setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: next } : x));
+                                const { error } = await supabase.from("posts").update({ is_private: next } as any).eq("id", p.id);
+                                if (error) {
+                                  setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: !next } : x));
+                                  toast.error("Couldn't update privacy");
+                                } else {
+                                  toast.success(next ? "Set to Private" : "Set to Public");
+                                }
+                              }}
+                              className={`inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}
+                              aria-label="Toggle privacy"
+                            >
+                              {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
+                            </button>
+                          ) : (
+                            <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}>
+                              {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
+                            </span>
+                          )
+                        )}
+                      </div>
                       <p className="text-xs text-slate-500">
                         {new Date(p.created_at).toLocaleString()}
                       </p>
                     </div>
                   </Link>
-                  {(p.media_type === "image" || p.media_type === "video") && (
-                    user?.id === p.user_id ? (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          const next = !p.is_private;
-                          setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: next } : x));
-                          const { error } = await supabase.from("posts").update({ is_private: next } as any).eq("id", p.id);
-                          if (error) {
-                            setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: !next } : x));
-                            toast.error("Couldn't update privacy");
-                          } else {
-                            toast.success(next ? "Set to Private" : "Set to Public");
-                          }
-                        }}
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition active:scale-95 ${p.is_private ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"}`}
-                        aria-label="Toggle privacy"
-                      >
-                        {p.is_private ? <><Lock className="h-3 w-3" /> Private</> : <><Globe2 className="h-3 w-3" /> Public</>}
-                      </button>
-                    ) : (
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.is_private ? "bg-slate-900 text-white" : "bg-indigo-100 text-indigo-700"}`}>
-                        {p.is_private ? <><Lock className="h-3 w-3" /> Private</> : <><Globe2 className="h-3 w-3" /> Public</>}
-                      </span>
-                    )
-                  )}
                 </div>
                 {p.caption && p.media_type !== "text" && (
                   <div className="relative px-4 pb-3">
