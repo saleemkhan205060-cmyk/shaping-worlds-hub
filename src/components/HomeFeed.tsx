@@ -965,9 +965,18 @@ export function HomeFeed() {
                               {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
                             </button>
                           ) : (
-                            <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toast.info(p.is_private ? "Yeh post Private hai" : "Yeh post Public hai");
+                              }}
+                              className={`inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}
+                            >
                               {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
-                            </span>
+                            </button>
+
                           )
                         )}
                       </div>
