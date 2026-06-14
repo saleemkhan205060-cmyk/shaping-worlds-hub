@@ -37,6 +37,7 @@ function UploadPage() {
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
+  const [uploadPrivacyOpen, setUploadPrivacyOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const galleryImgRef = useRef<HTMLInputElement>(null);
   const galleryVidRef = useRef<HTMLInputElement>(null);
