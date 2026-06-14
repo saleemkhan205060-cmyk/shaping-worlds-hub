@@ -40,15 +40,20 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
   const [sendingTo, setSendingTo] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState("");
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
   const filteredFriends = friends.filter((f) => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return true;
-    const name = (f.display_name || f.username || "").toLowerCase();
-    return name.includes(q);
+    if (!normalizedSearch) return true;
+    const name = (f.display_name || "").toLowerCase();
+    const user = (f.username || "").toLowerCase();
+    return name.includes(normalizedSearch) || user.includes(normalizedSearch);
   });
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setSearchQuery("");
+      setSentTo({});
+      return;
+    }
     let cancelled = false;
     (async () => {
       setLoadingFriends(true);
@@ -170,13 +175,17 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
 
           {/* Search bar */}
           <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search"
-              className="w-full h-9 pl-8 pr-8 rounded-full bg-slate-100 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
+              placeholder="Search friends..."
+              autoFocus
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
+              className="w-full h-10 pl-9 pr-9 rounded-full bg-slate-100 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
             />
             {searchQuery && (
               <button
