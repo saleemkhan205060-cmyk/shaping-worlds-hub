@@ -835,6 +835,133 @@ async function createTrimmedVideoFile(file: File, trimStart = 0, trimEnd = 0): P
   }
 }
 
+async function recordCapturedVideo(file: File, video: HTMLVideoElement, startAt: number, endAt: number, suffix: string): Promise<File> {
+  await seekVideo(video, startAt);
+  const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
+  const stream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
+  if (!stream || !stream.getVideoTracks().length) throw new Error("Video capture unavailable");
+  const { blob, mimeType } = await recordStreamSegment(stream, video, endAt);
+  return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
+}
+
+async function recordCanvasVideo(
+  file: File,
+  video: HTMLVideoElement,
+  crop: CropRect,
+  startAt: number,
+  endAt: number,
+  suffix: string,
+  preferAudio: boolean,
+): Promise<File> {
+  const sourceW = video.videoWidth || 1;
+  const sourceH = video.videoHeight || 1;
+  const sx = Math.max(0, Math.round((crop.x / 100) * sourceW));
+  const sy = Math.max(0, Math.round((crop.y / 100) * sourceH));
+  const sw = Math.max(2, Math.min(sourceW - sx, Math.round((crop.w / 100) * sourceW)));
+  const sh = Math.max(2, Math.min(sourceH - sy, Math.round((crop.h / 100) * sourceH)));
+  const scale = Math.min(1, MAX_EXPORT_EDGE / Math.max(sw, sh));
+  const canvas = document.createElement("canvas");
+  canvas.width = makeEven(Math.max(2, Math.round(sw * scale)));
+  canvas.height = makeEven(Math.max(2, Math.round(sh * scale)));
+  const ctx = canvas.getContext("2d", { alpha: false });
+  if (!ctx) throw new Error("Canvas unavailable");
+
+  const drawFrame = () => ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  const attempts = preferAudio ? [true, false] : [false];
+  let lastError: unknown;
+
+  for (const withAudio of attempts) {
+    try {
+      await seekVideo(video, startAt);
+      drawFrame();
+      const canvasStream = canvas.captureStream(EXPORT_FPS);
+      const canvasTrack = canvasStream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
+      canvasTrack?.requestFrame?.();
+
+      if (withAudio) {
+        const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
+        const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
+        originalStream?.getAudioTracks().forEach((track) => canvasStream.addTrack(track));
+      }
+
+      let stopped = false;
+      const drawLoop = () => {
+        if (stopped || video.ended || video.paused) return;
+        if (video.currentTime >= endAt) return;
+        drawFrame();
+        canvasTrack?.requestFrame?.();
+        requestAnimationFrame(drawLoop);
+      };
+
+      const recording = recordStreamSegment(canvasStream, video, endAt, () => {
+        stopped = true;
+      });
+      drawLoop();
+      const { blob, mimeType } = await recording;
+      return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
+    } catch (error) {
+      lastError = error;
+      video.pause();
+      console.warn(`Canvas export ${withAudio ? "with audio" : "without audio"} failed`, error);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Recording failed");
+}
+
+async function recordStreamSegment(
+  stream: MediaStream,
+  video: HTMLVideoElement,
+  endAt: number,
+  onStop?: () => void,
+): Promise<{ blob: Blob; mimeType: string }> {
+  const mimeType = getRecorderMimeType();
+  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 4_000_000, audioBitsPerSecond: 96_000 };
+  const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
+  const chunks: BlobPart[] = [];
+  recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+
+  let stopped = false;
+  const stopOnce = () => {
+    if (stopped) return;
+    stopped = true;
+    onStop?.();
+    if (recorder.state !== "inactive") recorder.stop();
+  };
+
+  const done = new Promise<Blob>((resolve, reject) => {
+    let settled = false;
+    recorder.onerror = (event) => {
+      if (settled) return;
+      settled = true;
+      const err = (event as Event & { error?: DOMException }).error;
+      reject(new Error(err?.message || err?.name || "Recording failed"));
+    };
+    recorder.onstop = () => {
+      if (settled) return;
+      settled = true;
+      resolve(new Blob(chunks, { type: recorder.mimeType || mimeType || "video/webm" }));
+    };
+  });
+
+  recorder.start(250);
+  await video.play();
+  await new Promise<void>((resolve) => {
+    video.onended = () => resolve();
+    const tick = () => {
+      if (stopped) { resolve(); return; }
+      if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  stopOnce();
+  const blob = await done;
+  stream.getTracks().forEach((track) => track.stop());
+  if (!blob.size) throw new Error("Output video is empty");
+  return { blob, mimeType: recorder.mimeType || mimeType || blob.type };
+}
+
 function waitForVideoReady(video: HTMLVideoElement) {
   return new Promise<void>((resolve, reject) => {
     if (video.readyState >= 2 && video.videoWidth) { resolve(); return; }
