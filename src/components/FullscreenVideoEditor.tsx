@@ -764,7 +764,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               />
             </div>
             <p className="text-[11px] text-slate-500">
-              Playback preview only — original file is uploaded at full quality.
+              Trim is applied when you tap Done.
             </p>
           </div>
         </BottomSheet>
@@ -772,6 +772,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     </div>
   );
 }
+
+const EXPORT_FPS = 30;
+const MAX_EXPORT_EDGE = 1280;
 
 async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0): Promise<File> {
   if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
@@ -782,77 +785,18 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
   video.muted = true;
   video.playsInline = true;
   video.preload = "auto";
-  video.crossOrigin = "anonymous";
+  attachHiddenVideo(video);
 
   try {
     await waitForVideoReady(video);
-
-    const sourceW = video.videoWidth || 1;
-    const sourceH = video.videoHeight || 1;
-    const sx = Math.round((crop.x / 100) * sourceW);
-    const sy = Math.round((crop.y / 100) * sourceH);
-    const sw = Math.max(2, Math.round((crop.w / 100) * sourceW));
-    const sh = Math.max(2, Math.round((crop.h / 100) * sourceH));
-    const canvas = document.createElement("canvas");
-    canvas.width = sw;
-    canvas.height = sh;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    if (!ctx) throw new Error("Canvas unavailable");
-
     const totalDur = video.duration || 0;
-    const startAt = Math.max(0, Math.min(trimStart || 0, totalDur));
+    const startAt = Math.max(0, Math.min(trimStart || 0, Math.max(totalDur - 0.05, 0)));
     const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
 
-    const stream = canvas.captureStream(30);
-    const canvasTrack = stream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
-    const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
-    const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
-    originalStream?.getAudioTracks().forEach((track) => stream.addTrack(track));
-
-    const mimeType = getRecorderMimeType();
-    const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
-    const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
-    const chunks: BlobPart[] = [];
-    recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
-
-    let stopped = false;
-    const stopOnce = () => { if (!stopped && recorder.state !== "inactive") { stopped = true; recorder.stop(); } };
-
-    const done = new Promise<Blob>((resolve, reject) => {
-      recorder.onerror = () => reject(new Error("Recording failed"));
-      recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
-    });
-
-    const draw = () => {
-      if (stopped || video.ended || video.paused) return;
-      if (video.currentTime >= endAt) { video.pause(); stopOnce(); return; }
-      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-      canvasTrack?.requestFrame?.();
-      requestAnimationFrame(draw);
-    };
-
-    await seekVideo(video, startAt);
-    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    canvasTrack?.requestFrame?.();
-
-    recorder.start(100);
-    await video.play();
-    draw();
-    await new Promise<void>((resolve) => {
-      video.onended = () => resolve();
-      const tick = () => {
-        if (stopped) { resolve(); return; }
-        if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
-        requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    });
-    stopOnce();
-    const blob = await done;
-    if (!blob.size) throw new Error("Output video is empty");
-    return fileFromRecordedBlob(file, blob, recorder.mimeType || mimeType || blob.type, "edited");
+    return await recordCanvasVideo(file, video, crop, startAt, endAt, "edited", true);
   } finally {
     video.pause();
+    video.remove();
     URL.revokeObjectURL(url);
   }
 }
@@ -866,34 +810,154 @@ async function createTrimmedVideoFile(file: File, trimStart = 0, trimEnd = 0): P
   video.muted = true;
   video.playsInline = true;
   video.preload = "auto";
+  attachHiddenVideo(video);
 
   try {
     await waitForVideoReady(video);
     const totalDur = video.duration || 0;
-    const startAt = Math.max(0, Math.min(trimStart || 0, totalDur));
+    const startAt = Math.max(0, Math.min(trimStart || 0, Math.max(totalDur - 0.05, 0)));
     const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
-    await seekVideo(video, startAt);
+    const errors: unknown[] = [];
 
-    const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
-    const stream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
-    if (!stream || !stream.getVideoTracks().length) throw new Error("Video capture unavailable");
+    try {
+      return await recordCapturedVideo(file, video, startAt, endAt, "trimmed");
+    } catch (error) {
+      errors.push(error);
+      console.warn("Direct trim recording failed; retrying with safe canvas export", error);
+    }
 
-    const mimeType = getRecorderMimeType();
-    const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
-    const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
-    const chunks: BlobPart[] = [];
-    recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+    try {
+      return await recordCanvasVideo(file, video, FULL_CROP, startAt, endAt, "trimmed", false);
+    } catch (error) {
+      errors.push(error);
+      throw errors[errors.length - 1] ?? error;
+    }
+  } finally {
+    video.pause();
+    video.remove();
+    URL.revokeObjectURL(url);
+  }
+}
 
-    let stopped = false;
-    const stopOnce = () => { if (!stopped && recorder.state !== "inactive") { stopped = true; recorder.stop(); } };
-    const done = new Promise<Blob>((resolve, reject) => {
-      recorder.onerror = () => reject(new Error("Recording failed"));
-      recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
-    });
+async function recordCapturedVideo(file: File, video: HTMLVideoElement, startAt: number, endAt: number, suffix: string): Promise<File> {
+  await seekVideo(video, startAt);
+  const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
+  const stream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
+  if (!stream || !stream.getVideoTracks().length) throw new Error("Video capture unavailable");
+  const { blob, mimeType } = await recordStreamSegment(stream, video, endAt);
+  return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
+}
 
-    recorder.start(100);
+async function recordCanvasVideo(
+  file: File,
+  video: HTMLVideoElement,
+  crop: CropRect,
+  startAt: number,
+  endAt: number,
+  suffix: string,
+  preferAudio: boolean,
+): Promise<File> {
+  const sourceW = video.videoWidth || 1;
+  const sourceH = video.videoHeight || 1;
+  const sx = Math.max(0, Math.round((crop.x / 100) * sourceW));
+  const sy = Math.max(0, Math.round((crop.y / 100) * sourceH));
+  const sw = Math.max(2, Math.min(sourceW - sx, Math.round((crop.w / 100) * sourceW)));
+  const sh = Math.max(2, Math.min(sourceH - sy, Math.round((crop.h / 100) * sourceH)));
+  const scale = Math.min(1, MAX_EXPORT_EDGE / Math.max(sw, sh));
+  const canvas = document.createElement("canvas");
+  canvas.width = makeEven(Math.max(2, Math.round(sw * scale)));
+  canvas.height = makeEven(Math.max(2, Math.round(sh * scale)));
+  const ctx = canvas.getContext("2d", { alpha: false });
+  if (!ctx) throw new Error("Canvas unavailable");
+
+  const drawFrame = () => ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  const attempts = preferAudio ? [true, false] : [false];
+  let lastError: unknown;
+
+  for (const withAudio of attempts) {
+    try {
+      await seekVideo(video, startAt);
+      drawFrame();
+      const canvasStream = canvas.captureStream(EXPORT_FPS);
+      const canvasTrack = canvasStream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
+      canvasTrack?.requestFrame?.();
+
+      if (withAudio) {
+        const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
+        const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
+        originalStream?.getAudioTracks().forEach((track) => canvasStream.addTrack(track));
+      }
+
+      let stopped = false;
+      const drawLoop = () => {
+        if (stopped || video.ended || video.paused) return;
+        if (video.currentTime >= endAt) return;
+        drawFrame();
+        canvasTrack?.requestFrame?.();
+        requestAnimationFrame(drawLoop);
+      };
+
+      const recording = recordStreamSegment(canvasStream, video, endAt, () => {
+        stopped = true;
+      }, () => {
+        drawLoop();
+      });
+      const { blob, mimeType } = await recording;
+      return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
+    } catch (error) {
+      lastError = error;
+      video.pause();
+      console.warn(`Canvas export ${withAudio ? "with audio" : "without audio"} failed`, error);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Recording failed");
+}
+
+async function recordStreamSegment(
+  stream: MediaStream,
+  video: HTMLVideoElement,
+  endAt: number,
+  onStop?: () => void,
+  onStarted?: () => void,
+): Promise<{ blob: Blob; mimeType: string }> {
+  const mimeType = getRecorderMimeType();
+  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 4_000_000, audioBitsPerSecond: 96_000 };
+  const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
+  const chunks: BlobPart[] = [];
+  recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+
+  let stopped = false;
+  const stopOnce = () => {
+    if (stopped) return;
+    stopped = true;
+    onStop?.();
+    if (recorder.state !== "inactive") recorder.stop();
+  };
+
+  const done = new Promise<Blob>((resolve, reject) => {
+    let settled = false;
+    recorder.onerror = (event) => {
+      if (settled) return;
+      settled = true;
+      stopped = true;
+      onStop?.();
+      video.pause();
+      const err = (event as Event & { error?: DOMException }).error;
+      reject(new Error(err?.message || err?.name || "Recording failed"));
+    };
+    recorder.onstop = () => {
+      if (settled) return;
+      settled = true;
+      resolve(new Blob(chunks, { type: recorder.mimeType || mimeType || "video/webm" }));
+    };
+  });
+
+  try {
+    recorder.start(250);
     await video.play();
-    await new Promise<void>((resolve) => {
+    onStarted?.();
+    const playbackDone = new Promise<void>((resolve) => {
       video.onended = () => resolve();
       const tick = () => {
         if (stopped) { resolve(); return; }
@@ -902,13 +966,13 @@ async function createTrimmedVideoFile(file: File, trimStart = 0, trimEnd = 0): P
       };
       requestAnimationFrame(tick);
     });
+    await Promise.race([playbackDone, done.then(() => undefined)]);
     stopOnce();
     const blob = await done;
     if (!blob.size) throw new Error("Output video is empty");
-    return fileFromRecordedBlob(file, blob, recorder.mimeType || mimeType || blob.type, "trimmed");
+    return { blob, mimeType: recorder.mimeType || mimeType || blob.type };
   } finally {
-    video.pause();
-    URL.revokeObjectURL(url);
+    stream.getTracks().forEach((track) => track.stop());
   }
 }
 
@@ -928,6 +992,22 @@ function waitForVideoReady(video: HTMLVideoElement) {
   });
 }
 
+function attachHiddenVideo(video: HTMLVideoElement) {
+  video.style.position = "fixed";
+  video.style.left = "-9999px";
+  video.style.top = "0";
+  video.style.width = "1px";
+  video.style.height = "1px";
+  video.style.opacity = "0";
+  video.style.pointerEvents = "none";
+  document.body.appendChild(video);
+}
+
+function makeEven(value: number) {
+  const rounded = Math.max(2, Math.round(value));
+  return rounded % 2 === 0 ? rounded : rounded - 1;
+}
+
 function seekVideo(video: HTMLVideoElement, time: number) {
   return new Promise<void>((resolve) => {
     const target = Math.max(0, time);
@@ -939,7 +1019,7 @@ function seekVideo(video: HTMLVideoElement, time: number) {
 }
 
 function getRecorderMimeType() {
-  return ["video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+  return ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm", "video/mp4"]
     .find((type) => MediaRecorder.isTypeSupported(type));
 }
 
