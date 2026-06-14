@@ -176,13 +176,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   // Google Photos–style brightness: combine a gentle brightness() with a compensating
   // contrast curve so highlights don't blow out and shadows lift cleanly.
-  // b > 1  -> brighten + slightly reduce contrast to protect highlights
-  // b < 1  -> darken   + slightly increase contrast to keep punch in shadows
-  const bDelta = brightness - 1;
-  const effBrightness = 1 + bDelta * 0.85;
-  const compContrast = contrast * (1 - bDelta * 0.18);
-  // Google Photos–style brightness: combine a gentle brightness() with a compensating
-  // contrast curve so highlights don't blow out and shadows lift cleanly.
   const bDelta = brightness - 1;
   const effBrightness = 1 + bDelta * 0.85;
   const compContrast = contrast * (1 - bDelta * 0.18);
