@@ -383,6 +383,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
               />
             )}
+            {vignetteStyle && <div className="absolute inset-0 pointer-events-none" style={vignetteStyle} />}
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
                 <span
