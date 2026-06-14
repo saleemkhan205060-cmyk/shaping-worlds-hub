@@ -368,6 +368,27 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       {/* EDIT — fullscreen editor (Google Photos style, tight spacing) */}
       {sheet === "edit" && (
         <div className="fixed inset-0 z-[420] bg-black flex flex-col" onClick={(e) => e.stopPropagation()}>
+          {/* Top processing banner — appears when Done is pressed */}
+          {savingCrop && (() => {
+            const estTotal = Math.max(6, Math.ceil((duration || 8) * 1.2));
+            const remaining = Math.max(0, estTotal - savingElapsed);
+            const pct = Math.min(99, Math.round((savingElapsed / estTotal) * 100));
+            return (
+              <div className="absolute top-0 left-0 right-0 z-[430] bg-gradient-to-b from-black/90 to-black/60 px-4 pt-3 pb-2">
+                <div className="flex items-center justify-between text-white text-xs font-semibold mb-2 tabular-nums">
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-rose-400 animate-pulse" />
+                    Preparing video…
+                  </span>
+                  <span>~{fmt(remaining)} left</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-white/15 overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 transition-all" style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Header */}
           <div className="flex items-center justify-between px-3 py-2 shrink-0">
             <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
@@ -375,14 +396,12 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
             {savingCrop ? (
-              <div className="text-white text-xs font-bold px-4 py-1.5 rounded-full bg-white/15 tabular-nums inline-flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-rose-400 animate-pulse" />
-                Processing {fmt(savingElapsed)}
-              </div>
+              <div className="h-7 w-[72px]" aria-hidden />
             ) : (
               <button onClick={handleDone} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
             )}
           </div>
+
 
 
           {/* Preview — fills remaining space, no extra gap */}
