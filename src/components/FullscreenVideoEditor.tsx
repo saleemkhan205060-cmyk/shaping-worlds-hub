@@ -166,7 +166,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     setMusicName(f.name);
   };
 
-  const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
+  // Google Photos–style brightness: gamma curve + subtle shadow lift, instead of a flat
+  // multiplicative brightness() which blows out highlights. Keeps highlights protected
+  // while lifting midtones/shadows for a cleaner, more professional look.
+  const brightnessGamma = 1 / Math.pow(Math.max(0.01, brightness), 1.35);
+  const brightnessLift = (brightness - 1) * 0.06; // tiny shadow lift
+  const brightnessSlope = 1 + (brightness - 1) * 0.15; // soft highlight roll-off
+  const presetCss = FILTERS.find((f) => f.id === filter)?.css ?? "";
+  const videoFilter = `${presetCss} url(#vfx-brightness-curve) contrast(${contrast}) saturate(${saturation})`.trim();
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
 
   const handleDone = async () => {
