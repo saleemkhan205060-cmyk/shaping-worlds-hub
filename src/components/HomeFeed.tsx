@@ -8,7 +8,6 @@ import {
   Search,
   Heart,
   MessageCircle,
-  Share2,
   Loader2,
   Play,
   Maximize2,
@@ -39,6 +38,8 @@ import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import likeSoundAsset from "@/assets/like.mp3.asset.json";
+import shareIconAsset from "@/assets/share-icon.png.asset.json";
+import { shareWithSystemShare } from "@/lib/native-share";
 
 let likeAudio: HTMLAudioElement | null = null;
 const playLikeSound = () => {
@@ -1121,10 +1122,27 @@ export function HomeFeed() {
                     <MessageCircle className="h-4 w-4" />
                   </button>
                   <button
+                    onClick={() => {
+                      const data = {
+                        title: p.caption ?? "Post",
+                        text: p.caption ?? "Check this out",
+                        url: p.media_url || `${window.location.origin}/u/${p.user_id}`,
+                      };
+                      const result = shareWithSystemShare(data);
+                      if (!result) {
+                        navigator.clipboard.writeText(data.url).then(() => toast.success("Link copied!")).catch(() => toast.error("Couldn't copy link"));
+                      } else {
+                        result.then((r) => {
+                          if (r === "failed" || r === "unavailable") {
+                            navigator.clipboard.writeText(data.url).then(() => toast.success("Link copied!")).catch(() => toast.error("Couldn't copy link"));
+                          }
+                        });
+                      }
+                    }}
                     className="flex items-center hover:text-indigo-600"
                     aria-label="Share"
                   >
-                    <Share2 className="h-4 w-4" />
+                    <img src={shareIconAsset.url} alt="Share" className="h-4 w-4 object-contain" />
                   </button>
                   {hasMedia && (
                     <button
