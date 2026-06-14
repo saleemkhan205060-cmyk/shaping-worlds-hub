@@ -932,21 +932,49 @@ export function HomeFeed() {
             const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <Link
-                  to="/u/$id"
-                  params={{ id: p.user_id }}
-                  className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition"
-                >
-                  <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
-                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
-                    <p className="text-xs text-slate-500">
-                      {new Date(p.created_at).toLocaleString()}
-                    </p>
-                  </div>
-                </Link>
+                <div className="flex items-center gap-2 px-4 py-3">
+                  <Link
+                    to="/u/$id"
+                    params={{ id: p.user_id }}
+                    className="flex items-center gap-3 flex-1 min-w-0 hover:bg-slate-50 transition rounded-lg -mx-1 px-1 py-1"
+                  >
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
+                      <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
+                      <p className="text-xs text-slate-500">
+                        {new Date(p.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </Link>
+                  {(p.media_type === "image" || p.media_type === "video") && (
+                    user?.id === p.user_id ? (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const next = !p.is_private;
+                          setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: next } : x));
+                          const { error } = await supabase.from("posts").update({ is_private: next } as any).eq("id", p.id);
+                          if (error) {
+                            setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: !next } : x));
+                            toast.error("Couldn't update privacy");
+                          } else {
+                            toast.success(next ? "Set to Private" : "Set to Public");
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition active:scale-95 ${p.is_private ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"}`}
+                        aria-label="Toggle privacy"
+                      >
+                        {p.is_private ? <><Lock className="h-3 w-3" /> Private</> : <><Globe2 className="h-3 w-3" /> Public</>}
+                      </button>
+                    ) : (
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.is_private ? "bg-slate-900 text-white" : "bg-indigo-100 text-indigo-700"}`}>
+                        {p.is_private ? <><Lock className="h-3 w-3" /> Private</> : <><Globe2 className="h-3 w-3" /> Public</>}
+                      </span>
+                    )
+                  )}
+                </div>
                 {p.caption && p.media_type !== "text" && (
                   <div className="relative px-4 pb-3">
                     <p
@@ -1025,9 +1053,7 @@ export function HomeFeed() {
                         className="w-full max-h-[520px] cursor-pointer"
                         onClick={() => openFullscreen(p.id)}
                       />
-                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 text-white text-[11px] font-semibold px-2 py-0.5 backdrop-blur-sm">
-                        {p.is_private ? <><Lock className="h-3 w-3" /> Private</> : <><Globe2 className="h-3 w-3" /> Public</>}
-                      </span>
+
                     </div>
                   </MediaActions>
                 )}
