@@ -771,7 +771,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   );
 }
 
-async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File> {
+async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0): Promise<File> {
   if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
 
   const url = URL.createObjectURL(file);
@@ -800,6 +800,10 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) throw new Error("Canvas unavailable");
 
+    const totalDur = video.duration || 0;
+    const startAt = Math.max(0, Math.min(trimStart || 0, totalDur));
+    const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
+
     const stream = canvas.captureStream(30);
     const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
     const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
@@ -813,28 +817,48 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
     const chunks: BlobPart[] = [];
     recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
 
+    let stopped = false;
+    const stopOnce = () => { if (!stopped && recorder.state !== "inactive") { stopped = true; recorder.stop(); } };
+
     const done = new Promise<Blob>((resolve, reject) => {
       recorder.onerror = () => reject(new Error("Recording failed"));
       recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
     });
 
     const draw = () => {
-      if (video.ended || video.paused) return;
+      if (stopped || video.ended || video.paused) return;
+      if (video.currentTime >= endAt) { video.pause(); stopOnce(); return; }
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
       requestAnimationFrame(draw);
     };
 
-    video.currentTime = 0;
+    if (startAt > 0) {
+      await new Promise<void>((resolve) => {
+        const onSeeked = () => { video.removeEventListener("seeked", onSeeked); resolve(); };
+        video.addEventListener("seeked", onSeeked);
+        video.currentTime = startAt;
+      });
+    } else {
+      video.currentTime = 0;
+    }
     recorder.start(250);
     await video.play();
     draw();
-    await new Promise<void>((resolve) => { video.onended = () => resolve(); });
-    recorder.stop();
+    await new Promise<void>((resolve) => {
+      video.onended = () => resolve();
+      const tick = () => {
+        if (stopped) { resolve(); return; }
+        if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    stopOnce();
     const blob = await done;
-    if (!blob.size) throw new Error("Cropped video is empty");
+    if (!blob.size) throw new Error("Output video is empty");
     const outputType = (recorder.mimeType || blob.type || mimeType || "video/webm").split(";")[0];
     const outputExt = outputType.includes("mp4") ? "mp4" : "webm";
-    return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}-cropped.${outputExt}`, { type: outputType });
+    return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}-edited.${outputExt}`, { type: outputType });
   } finally {
     video.pause();
     URL.revokeObjectURL(url);
