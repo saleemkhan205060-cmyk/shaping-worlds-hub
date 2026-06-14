@@ -473,11 +473,18 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
             {editTab === "adjust" && (
               <div className="space-y-3 text-white">
-                <div className="flex gap-2 overflow-x-auto pb-1">
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                   {([
                     { id: "brightness", label: "Brightness", icon: <Sun className="h-4 w-4" /> },
-                    { id: "contrast", label: "Contrast", icon: <SlidersHorizontal className="h-4 w-4" /> },
-                    { id: "saturation", label: "Saturation", icon: <Sparkles className="h-4 w-4" /> },
+                    { id: "contrast", label: "Contrast", icon: <Contrast className="h-4 w-4" /> },
+                    { id: "highlights", label: "Highlights", icon: <Sunrise className="h-4 w-4" /> },
+                    { id: "shadows", label: "Shadows", icon: <Moon className="h-4 w-4" /> },
+                    { id: "whitePoint", label: "White point", icon: <Sunset className="h-4 w-4" /> },
+                    { id: "blackPoint", label: "Black point", icon: <CircleDot className="h-4 w-4" /> },
+                    { id: "saturation", label: "Saturation", icon: <Droplet className="h-4 w-4" /> },
+                    { id: "warmth", label: "Warmth", icon: <Thermometer className="h-4 w-4" /> },
+                    { id: "tint", label: "Tint", icon: <Palette className="h-4 w-4" /> },
+                    { id: "vignette", label: "Vignette", icon: <SlidersHorizontal className="h-4 w-4" /> },
                   ] as const).map((a) => (
                     <button
                       key={a.id}
@@ -497,6 +504,27 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 )}
                 {adjustSub === "saturation" && (
                   <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
+                )}
+                {adjustSub === "highlights" && (
+                  <AdjustRow label="Highlights" value={highlights} min={-1} max={1} onChange={setHighlights} />
+                )}
+                {adjustSub === "shadows" && (
+                  <AdjustRow label="Shadows" value={shadows} min={-1} max={1} onChange={setShadows} />
+                )}
+                {adjustSub === "whitePoint" && (
+                  <AdjustRow label="White point" value={whitePoint} min={-1} max={1} onChange={setWhitePoint} />
+                )}
+                {adjustSub === "blackPoint" && (
+                  <AdjustRow label="Black point" value={blackPoint} min={-1} max={1} onChange={setBlackPoint} />
+                )}
+                {adjustSub === "warmth" && (
+                  <AdjustRow label="Warmth" value={warmth} min={-1} max={1} onChange={setWarmth} />
+                )}
+                {adjustSub === "tint" && (
+                  <AdjustRow label="Tint" value={tint} min={-1} max={1} onChange={setTint} />
+                )}
+                {adjustSub === "vignette" && (
+                  <AdjustRow label="Vignette" value={vignette} min={0} max={1} onChange={setVignette} />
                 )}
               </div>
             )}
