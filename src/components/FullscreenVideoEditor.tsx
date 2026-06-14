@@ -231,19 +231,20 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const handleDone = async () => {
     if (savingCrop) return;
     const cropChanged = Math.abs(crop.x) > 0.05 || Math.abs(crop.y) > 0.05 || Math.abs(crop.w - 100) > 0.05 || Math.abs(crop.h - 100) > 0.05;
+    const effectiveEnd = trimEnd > 0 ? trimEnd : duration;
+    const trimChanged = duration > 0 && (trimStart > 0.05 || effectiveEnd < duration - 0.05);
     setSavingCrop(true);
     try {
-      if (!cropChanged) {
-        // Brief processing indicator so the user sees progress even without a crop change
+      if (!cropChanged && !trimChanged) {
         await new Promise((r) => setTimeout(r, Math.max(1200, Math.min(4000, Math.ceil((duration || 4) * 300)))));
         onConfirm(file);
         return;
       }
-      const croppedFile = await createCroppedVideoFile(file, crop);
-      onConfirm(croppedFile);
+      const outFile = await createCroppedVideoFile(file, crop, trimStart, effectiveEnd);
+      onConfirm(outFile);
     } catch (error) {
-      console.error("Video crop failed", error);
-      window.alert("Crop save failed. Please try again.");
+      console.error("Video export failed", error);
+      window.alert("Save failed. Please try again.");
     } finally {
       setSavingCrop(false);
     }
