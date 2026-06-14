@@ -1112,7 +1112,6 @@ export function HomeFeed() {
                     aria-label={isLiked ? "Unlike" : "Like"}
                   >
                     <Heart className={`h-4 w-4 ${isLiked ? "fill-rose-500" : ""}`} />
-                    <span>{likes > 0 ? likes : "Like"}</span>
                   </button>
                   <button
                     onClick={() => setCommentsOpenFor(p.id)}
@@ -1120,15 +1119,20 @@ export function HomeFeed() {
                     aria-label="Open comments"
                   >
                     <MessageCircle className="h-4 w-4" />
-                    <span>{comments > 0 ? comments : "Comment"}</span>
+                  </button>
+                  <button
+                    className="flex items-center hover:text-indigo-600"
+                    aria-label="Share"
+                  >
+                    <Share2 className="h-4 w-4" />
                   </button>
                   {hasMedia && (
                     <button
                       onClick={() => openFullscreen(p.id)}
-                      className="ml-auto flex items-center gap-1 hover:text-indigo-600"
+                      className="ml-auto flex items-center hover:text-indigo-600"
                       aria-label="Open fullscreen"
                     >
-                      <Maximize2 className="h-4 w-4" /> Fullscreen
+                      <Maximize2 className="h-4 w-4" />
                     </button>
                   )}
                 </div>
