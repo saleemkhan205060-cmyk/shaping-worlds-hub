@@ -634,7 +634,7 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
     recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
 
     const done = new Promise<Blob>((resolve, reject) => {
-      recorder.onerror = () => reject(recorder.error ?? new Error("Recording failed"));
+      recorder.onerror = () => reject(new Error("Recording failed"));
       recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
     });
 
@@ -845,10 +845,8 @@ function TrimStrip({
 
 // Crop overlay aligned to the video's actual rendered rectangle (object-contain aware).
 // Does NOT mutate video size/position/zoom — only renders interactive handles on top.
-function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+function CropOverlay({ videoRef, crop, onCropChange }: { videoRef: React.RefObject<HTMLVideoElement | null>; crop: CropRect; onCropChange: (crop: CropRect) => void }) {
   const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
-  // crop rect in % of the displayed video rect
-  const [crop, setCrop] = useState({ x: 0, y: 0, w: 100, h: 100 });
 
   // Track the video's actual rendered rect within its container
   useEffect(() => {
@@ -922,7 +920,7 @@ function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement 
         if (kind.includes("t")) { const ny = Math.max(0, Math.min(start.y + start.h - MIN, start.y + dy)); h = start.h + (start.y - ny); y = ny; }
         if (kind.includes("b")) { h = Math.max(MIN, Math.min(100 - start.y, start.h + dy)); }
       }
-      setCrop({ x, y, w, h });
+      onCropChange({ x, y, w, h });
     };
     const up = () => {
       window.removeEventListener("pointermove", move);
