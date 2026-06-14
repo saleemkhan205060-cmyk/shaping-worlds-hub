@@ -940,6 +940,9 @@ async function recordStreamSegment(
     recorder.onerror = (event) => {
       if (settled) return;
       settled = true;
+      stopped = true;
+      onStop?.();
+      video.pause();
       const err = (event as Event & { error?: DOMException }).error;
       reject(new Error(err?.message || err?.name || "Recording failed"));
     };
@@ -954,7 +957,7 @@ async function recordStreamSegment(
     recorder.start(250);
     await video.play();
     onStarted?.();
-    await new Promise<void>((resolve) => {
+    const playbackDone = new Promise<void>((resolve) => {
       video.onended = () => resolve();
       const tick = () => {
         if (stopped) { resolve(); return; }
@@ -963,6 +966,7 @@ async function recordStreamSegment(
       };
       requestAnimationFrame(tick);
     });
+    await Promise.race([playbackDone, done.then(() => undefined)]);
     stopOnce();
     const blob = await done;
     if (!blob.size) throw new Error("Output video is empty");
