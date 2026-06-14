@@ -38,6 +38,14 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [sentTo, setSentTo] = useState<Record<string, boolean>>({});
   const [sendingTo, setSendingTo] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredFriends = friends.filter((f) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    const name = (f.display_name || f.username || "").toLowerCase();
+    return name.includes(q);
+  });
 
   useEffect(() => {
     if (!open) return;
