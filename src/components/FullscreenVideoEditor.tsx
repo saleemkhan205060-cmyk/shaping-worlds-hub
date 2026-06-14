@@ -52,6 +52,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [brightness, setBrightness] = useState(1);
   const [contrast, setContrast] = useState(1);
   const [saturation, setSaturation] = useState(1);
+  // Pro-grade tonal & color params (all centered at 0, range -1..1, except vignette 0..1)
+  const [highlights, setHighlights] = useState(0);
+  const [shadows, setShadows] = useState(0);
+  const [whitePoint, setWhitePoint] = useState(0);
+  const [blackPoint, setBlackPoint] = useState(0);
+  const [warmth, setWarmth] = useState(0);
+  const [tint, setTint] = useState(0);
+  const [vignette, setVignette] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [origVol, setOrigVol] = useState(1);
   const [musicVol, setMusicVol] = useState(0.8);
