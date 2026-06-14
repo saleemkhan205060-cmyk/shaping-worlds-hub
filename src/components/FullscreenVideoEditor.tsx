@@ -452,7 +452,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   ))}
                 </div>
                 {adjustSub === "brightness" && (
-                  <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
+                  <AdjustRow label="Brightness" value={brightness} min={0.3} max={1.8} onChange={setBrightness} />
                 )}
                 {adjustSub === "contrast" && (
                   <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
