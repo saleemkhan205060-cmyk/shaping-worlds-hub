@@ -27,6 +27,9 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type CropRect = { x: number; y: number; w: number; h: number };
+
+const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -57,6 +60,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [overlayText, setOverlayText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textSize, setTextSize] = useState(28);
+  const [crop, setCrop] = useState<CropRect>(FULL_CROP);
+  const [savingCrop, setSavingCrop] = useState(false);
 
 
   useEffect(() => {
@@ -148,6 +153,26 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
+
+  const handleDone = async () => {
+    if (savingCrop) return;
+    const cropChanged = Math.abs(crop.x) > 0.05 || Math.abs(crop.y) > 0.05 || Math.abs(crop.w - 100) > 0.05 || Math.abs(crop.h - 100) > 0.05;
+    if (!cropChanged) {
+      onConfirm(file);
+      return;
+    }
+
+    setSavingCrop(true);
+    try {
+      const croppedFile = await createCroppedVideoFile(file, crop);
+      onConfirm(croppedFile);
+    } catch (error) {
+      console.error("Video crop failed", error);
+      window.alert("Crop save failed. Please try again.");
+    } finally {
+      setSavingCrop(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
@@ -261,7 +286,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={onConfirm} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
+            <button onClick={handleDone} disabled={savingCrop} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition disabled:opacity-60">{savingCrop ? "Saving..." : "Done"}</button>
           </div>
 
           {/* Preview — fills remaining space, no extra gap */}
@@ -291,7 +316,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
             {/* Crop overlay — aligned to video's actual rendered edges, draggable */}
             {editTab === "crop" && (
-              <CropOverlay videoRef={editPreviewRef} />
+              <CropOverlay videoRef={editPreviewRef} crop={crop} onCropChange={setCrop} />
             )}
           </div>
 
