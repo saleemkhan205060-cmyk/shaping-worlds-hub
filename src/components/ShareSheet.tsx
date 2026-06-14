@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Copy,
   Facebook,
@@ -10,9 +10,12 @@ import {
   Send,
   Share2,
   X,
+  Check,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
+import { supabase } from "@/integrations/supabase/client";
 
 type ShareSheetProps = {
   open: boolean;
@@ -22,7 +25,55 @@ type ShareSheetProps = {
   url: string;
 };
 
+type Friend = {
+  id: string;
+  display_name: string | null;
+  username: string | null;
+  avatar_url: string | null;
+};
+
 export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps) {
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
+  const [sentTo, setSentTo] = useState<Record<string, boolean>>({});
+  const [sendingTo, setSendingTo] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    (async () => {
+      setLoadingFriends(true);
+      try {
+        const { data: auth } = await supabase.auth.getUser();
+        const uid = auth.user?.id;
+        if (!uid) {
+          if (!cancelled) setFriends([]);
+          return;
+        }
+        const { data: following } = await supabase
+          .from("follows")
+          .select("following_id")
+          .eq("follower_id", uid)
+          .limit(50);
+        const ids = (following ?? []).map((f) => f.following_id);
+        if (ids.length === 0) {
+          if (!cancelled) setFriends([]);
+          return;
+        }
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, display_name, username, avatar_url")
+          .in("id", ids);
+        if (!cancelled) setFriends((profs as Friend[]) ?? []);
+      } finally {
+        if (!cancelled) setLoadingFriends(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
+
   if (!open) return null;
 
   const encodedUrl = encodeURIComponent(url);
@@ -54,13 +105,40 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     }
   };
 
+  const sendToFriend = async (friend: Friend) => {
+    if (sendingTo[friend.id] || sentTo[friend.id]) return;
+    setSendingTo((s) => ({ ...s, [friend.id]: true }));
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) {
+        toast.error("Please sign in to share");
+        return;
+      }
+      const content = `${text ? text + "\n" : ""}${url}`.slice(0, 2000);
+      const { error } = await supabase.from("messages").insert({
+        sender_id: uid,
+        recipient_id: friend.id,
+        content,
+      });
+      if (error) {
+        toast.error("Couldn't send");
+        return;
+      }
+      setSentTo((s) => ({ ...s, [friend.id]: true }));
+      toast.success(`Sent to ${friend.display_name || friend.username || "friend"}`);
+    } finally {
+      setSendingTo((s) => ({ ...s, [friend.id]: false }));
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-[360] bg-black/55 flex items-end justify-center"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-t-2xl bg-white p-4 shadow-2xl animate-in slide-in-from-bottom duration-200"
+        className="w-full max-w-sm rounded-t-2xl bg-white p-4 shadow-2xl animate-in slide-in-from-bottom duration-200 max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pb-3">
@@ -75,7 +153,66 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-x-3 gap-y-4 pb-4">
+        {/* Friends row (in-app sharing) */}
+        <div className="pb-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 pb-2">
+            Send to
+          </p>
+          {loadingFriends ? (
+            <div className="flex items-center gap-2 text-xs text-slate-500 py-3">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading friends…
+            </div>
+          ) : friends.length === 0 ? (
+            <p className="text-xs text-slate-500 py-2">
+              Follow people to send them posts directly.
+            </p>
+          ) : (
+            <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+              {friends.map((friend) => {
+                const name = friend.display_name || friend.username || "User";
+                const initial = name.trim().charAt(0).toUpperCase();
+                const isSent = !!sentTo[friend.id];
+                const isSending = !!sendingTo[friend.id];
+                return (
+                  <button
+                    key={friend.id}
+                    type="button"
+                    onClick={() => sendToFriend(friend)}
+                    className="flex shrink-0 w-16 flex-col items-center gap-1.5 text-slate-800"
+                  >
+                    <span className="relative h-14 w-14 rounded-full overflow-hidden bg-slate-200 flex items-center justify-center text-slate-600 font-semibold shadow-sm active:scale-95">
+                      {friend.avatar_url ? (
+                        <img
+                          src={friend.avatar_url}
+                          alt={name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span>{initial}</span>
+                      )}
+                      {(isSending || isSent) && (
+                        <span className="absolute inset-0 bg-black/40 flex items-center justify-center text-white">
+                          {isSending ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          ) : (
+                            <Check className="h-5 w-5" />
+                          )}
+                        </span>
+                      )}
+                    </span>
+                    <span className="w-full truncate text-center text-[11px] font-medium leading-tight">
+                      {isSent ? "Sent" : name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <div className="h-px bg-slate-100 my-1" />
+
+        <div className="grid grid-cols-4 gap-x-3 gap-y-4 pt-3 pb-4">
           {canNativeShare && (
             <ShareChoice
               label="More apps"
