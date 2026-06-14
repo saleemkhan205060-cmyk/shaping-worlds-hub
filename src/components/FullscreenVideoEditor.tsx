@@ -62,6 +62,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [textSize, setTextSize] = useState(28);
   const [crop, setCrop] = useState<CropRect>(FULL_CROP);
   const [savingCrop, setSavingCrop] = useState(false);
+  const [savingElapsed, setSavingElapsed] = useState(0);
+
+  useEffect(() => {
+    if (!savingCrop) { setSavingElapsed(0); return; }
+    const start = Date.now();
+    setSavingElapsed(0);
+    const id = window.setInterval(() => {
+      setSavingElapsed(Math.floor((Date.now() - start) / 1000));
+    }, 250);
+    return () => window.clearInterval(id);
+  }, [savingCrop]);
+
+
 
 
   useEffect(() => {
