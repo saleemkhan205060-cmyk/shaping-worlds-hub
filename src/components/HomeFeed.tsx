@@ -1161,14 +1161,36 @@ export function HomeFeed() {
           >
             <MoreVertical className="h-5 w-5" />
           </button>
-          <button
-            onClick={submit}
-            disabled={posting}
-            className="absolute top-16 right-4 h-10 w-10 rounded-full text-white flex items-center justify-center active:scale-95 disabled:opacity-60 drop-shadow-lg"
-            aria-label="Upload video"
-          >
-            {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-          </button>
+          <div className="absolute top-16 right-4 flex flex-col items-end gap-2">
+            <button
+              onClick={() => setUploadPrivacyOpen((v) => !v)}
+              disabled={posting}
+              className="h-10 w-10 rounded-full text-white flex items-center justify-center active:scale-95 disabled:opacity-60 drop-shadow-lg"
+              aria-label="Upload video"
+            >
+              {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            </button>
+            {uploadPrivacyOpen && (
+              <div className="w-36 rounded-xl bg-white p-1 shadow-xl">
+                <button
+                  type="button"
+                  onClick={() => { setIsPrivate(false); submit(false); }}
+                  disabled={posting}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 active:bg-slate-100 disabled:opacity-50"
+                >
+                  <Globe2 className="h-4 w-4" /> Public
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setIsPrivate(true); submit(true); }}
+                  disabled={posting}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 active:bg-slate-100 disabled:opacity-50"
+                >
+                  <Lock className="h-4 w-4" /> Private
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
