@@ -1125,7 +1125,7 @@ export function HomeFeed() {
         <FullscreenVideoEditor
           file={editorFile}
           onClose={() => setEditorFile(null)}
-          onConfirm={() => { const f = editorFile; setEditorFile(null); pickFile(f); }}
+          onConfirm={(editedFile) => { setEditorFile(null); pickFile(editedFile); }}
         />
       )}
 

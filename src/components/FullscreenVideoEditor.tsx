@@ -4,7 +4,7 @@ import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume
 type Props = {
   file: File;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (file: File) => void;
 };
 
 const FILTERS: { id: string; label: string; css: string }[] = [
@@ -27,6 +27,9 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type CropRect = { x: number; y: number; w: number; h: number };
+
+const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -57,6 +60,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [overlayText, setOverlayText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textSize, setTextSize] = useState(28);
+  const [crop, setCrop] = useState<CropRect>(FULL_CROP);
+  const [savingCrop, setSavingCrop] = useState(false);
 
 
   useEffect(() => {
@@ -149,6 +154,26 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
 
+  const handleDone = async () => {
+    if (savingCrop) return;
+    const cropChanged = Math.abs(crop.x) > 0.05 || Math.abs(crop.y) > 0.05 || Math.abs(crop.w - 100) > 0.05 || Math.abs(crop.h - 100) > 0.05;
+    if (!cropChanged) {
+      onConfirm(file);
+      return;
+    }
+
+    setSavingCrop(true);
+    try {
+      const croppedFile = await createCroppedVideoFile(file, crop);
+      onConfirm(croppedFile);
+    } catch (error) {
+      console.error("Video crop failed", error);
+      window.alert("Crop save failed. Please try again.");
+    } finally {
+      setSavingCrop(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
       {/* Video */}
@@ -210,7 +235,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         {/* Bottom-right upload */}
         <div className="absolute bottom-20 right-4 z-10" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={onConfirm}
+            onClick={() => onConfirm(file)}
             className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
             aria-label="Upload"
           >
@@ -261,7 +286,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={onConfirm} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
+            <button onClick={handleDone} disabled={savingCrop} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition disabled:opacity-60">{savingCrop ? "Saving..." : "Done"}</button>
           </div>
 
           {/* Preview — fills remaining space, no extra gap */}
@@ -291,7 +316,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
             {/* Crop overlay — aligned to video's actual rendered edges, draggable */}
             {editTab === "crop" && (
-              <CropOverlay videoRef={editPreviewRef} />
+              <CropOverlay videoRef={editPreviewRef} crop={crop} onCropChange={setCrop} />
             )}
           </div>
 
@@ -565,6 +590,72 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   );
 }
 
+async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File> {
+  if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
+
+  const url = URL.createObjectURL(file);
+  const video = document.createElement("video");
+  video.src = url;
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.crossOrigin = "anonymous";
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      video.onloadedmetadata = () => resolve();
+      video.onerror = () => reject(new Error("Video load failed"));
+    });
+
+    const sourceW = video.videoWidth || 1;
+    const sourceH = video.videoHeight || 1;
+    const sx = Math.round((crop.x / 100) * sourceW);
+    const sy = Math.round((crop.y / 100) * sourceH);
+    const sw = Math.max(2, Math.round((crop.w / 100) * sourceW));
+    const sh = Math.max(2, Math.round((crop.h / 100) * sourceH));
+    const canvas = document.createElement("canvas");
+    canvas.width = sw;
+    canvas.height = sh;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) throw new Error("Canvas unavailable");
+
+    const stream = canvas.captureStream(30);
+    const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
+    const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
+    originalStream?.getAudioTracks().forEach((track) => stream.addTrack(track));
+
+    const mimeType = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"]
+      .find((type) => MediaRecorder.isTypeSupported(type));
+    const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
+    const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
+    const chunks: BlobPart[] = [];
+    recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+
+    const done = new Promise<Blob>((resolve, reject) => {
+      recorder.onerror = () => reject(new Error("Recording failed"));
+      recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
+    });
+
+    const draw = () => {
+      if (video.ended || video.paused) return;
+      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(draw);
+    };
+
+    video.currentTime = 0;
+    recorder.start(250);
+    await video.play();
+    draw();
+    await new Promise<void>((resolve) => { video.onended = () => resolve(); });
+    recorder.stop();
+    const blob = await done;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + "-cropped.webm", { type: blob.type || "video/webm" });
+  } finally {
+    video.pause();
+    URL.revokeObjectURL(url);
+  }
+}
+
 function SheetItem({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {
   return (
     <button
@@ -752,10 +843,8 @@ function TrimStrip({
 
 // Crop overlay aligned to the video's actual rendered rectangle (object-contain aware).
 // Does NOT mutate video size/position/zoom — only renders interactive handles on top.
-function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+function CropOverlay({ videoRef, crop, onCropChange }: { videoRef: React.RefObject<HTMLVideoElement | null>; crop: CropRect; onCropChange: (crop: CropRect) => void }) {
   const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
-  // crop rect in % of the displayed video rect
-  const [crop, setCrop] = useState({ x: 0, y: 0, w: 100, h: 100 });
 
   // Track the video's actual rendered rect within its container
   useEffect(() => {
@@ -818,7 +907,7 @@ function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement 
     const move = (ev: PointerEvent) => {
       const dx = ((ev.clientX - startX) / box.width) * 100;
       const dy = ((ev.clientY - startY) / box.height) * 100;
-      const MIN = 10;
+      const MIN = 2;
       let { x, y, w, h } = start;
       if (kind === "move") {
         x = Math.max(0, Math.min(100 - w, start.x + dx));
@@ -829,7 +918,7 @@ function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement 
         if (kind.includes("t")) { const ny = Math.max(0, Math.min(start.y + start.h - MIN, start.y + dy)); h = start.h + (start.y - ny); y = ny; }
         if (kind.includes("b")) { h = Math.max(MIN, Math.min(100 - start.y, start.h + dy)); }
       }
-      setCrop({ x, y, w, h });
+      onCropChange({ x, y, w, h });
     };
     const up = () => {
       window.removeEventListener("pointermove", move);
