@@ -764,7 +764,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               />
             </div>
             <p className="text-[11px] text-slate-500">
-              Playback preview only — original file is uploaded at full quality.
+              Trim is applied when you tap Done.
             </p>
           </div>
         </BottomSheet>
