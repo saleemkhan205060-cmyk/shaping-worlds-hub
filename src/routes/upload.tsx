@@ -382,7 +382,6 @@ function UploadPage() {
           )}
 
           <div className="flex items-center justify-between gap-2 pt-2">
-            <PostPrivacySettings isPrivate={isPrivate} onChange={setIsPrivate} />
             <div className="flex gap-2">
               <button
                 onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
@@ -391,10 +390,36 @@ function UploadPage() {
               >
                 Cancel
               </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 p-0.5">
+                <button
+                  type="button"
+                  onClick={() => setIsPrivate(false)}
+                  disabled={uploading}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold transition disabled:opacity-50 ${
+                    !isPrivate ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  <Globe2 className="h-3.5 w-3.5" />
+                  Public
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPrivate(true)}
+                  disabled={uploading}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold transition disabled:opacity-50 ${
+                    isPrivate ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  <Lock className="h-3.5 w-3.5" />
+                  Private
+                </button>
+              </div>
               <button
                 onClick={handleUpload}
                 disabled={!file || uploading}
-                className="px-4 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
+                className="px-5 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
                 {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> {progress}%</> : "Share"}
               </button>
