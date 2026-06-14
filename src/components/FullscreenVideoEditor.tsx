@@ -240,7 +240,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         onConfirm(file);
         return;
       }
-      const outFile = await createCroppedVideoFile(file, crop, trimStart, effectiveEnd);
+      const outFile = cropChanged
+        ? await createCroppedVideoFile(file, crop, trimStart, effectiveEnd)
+        : await createTrimmedVideoFile(file, trimStart, effectiveEnd);
       onConfirm(outFile);
     } catch (error) {
       console.error("Video export failed", error);
@@ -783,10 +785,7 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
   video.crossOrigin = "anonymous";
 
   try {
-    await new Promise<void>((resolve, reject) => {
-      video.onloadedmetadata = () => resolve();
-      video.onerror = () => reject(new Error("Video load failed"));
-    });
+    await waitForVideoReady(video);
 
     const sourceW = video.videoWidth || 1;
     const sourceH = video.videoHeight || 1;
@@ -805,13 +804,12 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
     const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
 
     const stream = canvas.captureStream(30);
+    const canvasTrack = stream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
     const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
     const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
     originalStream?.getAudioTracks().forEach((track) => stream.addTrack(track));
 
-    const playbackProbe = document.createElement("video");
-    const mimeType = ["video/mp4", "video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm"]
-      .find((type) => MediaRecorder.isTypeSupported(type) && playbackProbe.canPlayType(type));
+    const mimeType = getRecorderMimeType();
     const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
     const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
     const chunks: BlobPart[] = [];
@@ -829,19 +827,15 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
       if (stopped || video.ended || video.paused) return;
       if (video.currentTime >= endAt) { video.pause(); stopOnce(); return; }
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      canvasTrack?.requestFrame?.();
       requestAnimationFrame(draw);
     };
 
-    if (startAt > 0) {
-      await new Promise<void>((resolve) => {
-        const onSeeked = () => { video.removeEventListener("seeked", onSeeked); resolve(); };
-        video.addEventListener("seeked", onSeeked);
-        video.currentTime = startAt;
-      });
-    } else {
-      video.currentTime = 0;
-    }
-    recorder.start(250);
+    await seekVideo(video, startAt);
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    canvasTrack?.requestFrame?.();
+
+    recorder.start(100);
     await video.play();
     draw();
     await new Promise<void>((resolve) => {
@@ -856,13 +850,103 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
     stopOnce();
     const blob = await done;
     if (!blob.size) throw new Error("Output video is empty");
-    const outputType = (recorder.mimeType || blob.type || mimeType || "video/webm").split(";")[0];
-    const outputExt = outputType.includes("mp4") ? "mp4" : "webm";
-    return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}-edited.${outputExt}`, { type: outputType });
+    return fileFromRecordedBlob(file, blob, recorder.mimeType || mimeType || blob.type, "edited");
   } finally {
     video.pause();
     URL.revokeObjectURL(url);
   }
+}
+
+async function createTrimmedVideoFile(file: File, trimStart = 0, trimEnd = 0): Promise<File> {
+  if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
+
+  const url = URL.createObjectURL(file);
+  const video = document.createElement("video");
+  video.src = url;
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = "auto";
+
+  try {
+    await waitForVideoReady(video);
+    const totalDur = video.duration || 0;
+    const startAt = Math.max(0, Math.min(trimStart || 0, totalDur));
+    const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
+    await seekVideo(video, startAt);
+
+    const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
+    const stream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
+    if (!stream || !stream.getVideoTracks().length) throw new Error("Video capture unavailable");
+
+    const mimeType = getRecorderMimeType();
+    const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
+    const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
+    const chunks: BlobPart[] = [];
+    recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+
+    let stopped = false;
+    const stopOnce = () => { if (!stopped && recorder.state !== "inactive") { stopped = true; recorder.stop(); } };
+    const done = new Promise<Blob>((resolve, reject) => {
+      recorder.onerror = () => reject(new Error("Recording failed"));
+      recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
+    });
+
+    recorder.start(100);
+    await video.play();
+    await new Promise<void>((resolve) => {
+      video.onended = () => resolve();
+      const tick = () => {
+        if (stopped) { resolve(); return; }
+        if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    stopOnce();
+    const blob = await done;
+    if (!blob.size) throw new Error("Output video is empty");
+    return fileFromRecordedBlob(file, blob, recorder.mimeType || mimeType || blob.type, "trimmed");
+  } finally {
+    video.pause();
+    URL.revokeObjectURL(url);
+  }
+}
+
+function waitForVideoReady(video: HTMLVideoElement) {
+  return new Promise<void>((resolve, reject) => {
+    if (video.readyState >= 2 && video.videoWidth) { resolve(); return; }
+    const cleanup = () => {
+      video.removeEventListener("loadeddata", onReady);
+      video.removeEventListener("canplay", onReady);
+      video.removeEventListener("error", onError);
+    };
+    const onReady = () => { cleanup(); resolve(); };
+    const onError = () => { cleanup(); reject(new Error("Video load failed")); };
+    video.addEventListener("loadeddata", onReady, { once: true });
+    video.addEventListener("canplay", onReady, { once: true });
+    video.addEventListener("error", onError, { once: true });
+  });
+}
+
+function seekVideo(video: HTMLVideoElement, time: number) {
+  return new Promise<void>((resolve) => {
+    const target = Math.max(0, time);
+    if (Math.abs(video.currentTime - target) < 0.03 && video.readyState >= 2) { resolve(); return; }
+    const done = () => { video.removeEventListener("seeked", done); resolve(); };
+    video.addEventListener("seeked", done, { once: true });
+    video.currentTime = target;
+  });
+}
+
+function getRecorderMimeType() {
+  return ["video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+    .find((type) => MediaRecorder.isTypeSupported(type));
+}
+
+function fileFromRecordedBlob(source: File, blob: Blob, mimeType: string | undefined, suffix: string) {
+  const outputType = (mimeType || blob.type || "video/webm").split(";")[0];
+  const outputExt = outputType.includes("mp4") ? "mp4" : "webm";
+  return new File([blob], `${source.name.replace(/\.[^.]+$/, "")}-${suffix}.${outputExt}`, { type: outputType });
 }
 
 function SheetItem({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {
