@@ -624,12 +624,9 @@ async function createCroppedVideoFile(file: File, crop: CropRect): Promise<File>
     const originalStream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
     originalStream?.getAudioTracks().forEach((track) => stream.addTrack(track));
 
-    const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
-      ? "video/webm;codecs=vp9,opus"
-      : MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")
-        ? "video/webm;codecs=vp8,opus"
-        : "video/webm";
-    const recorder = new MediaRecorder(stream, { mimeType });
+    const mimeType = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"]
+      .find((type) => MediaRecorder.isTypeSupported(type));
+    const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
     const chunks: BlobPart[] = [];
     recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
 
@@ -909,7 +906,7 @@ function CropOverlay({ videoRef, crop, onCropChange }: { videoRef: React.RefObje
     const move = (ev: PointerEvent) => {
       const dx = ((ev.clientX - startX) / box.width) * 100;
       const dy = ((ev.clientY - startY) / box.height) * 100;
-      const MIN = 10;
+      const MIN = 2;
       let { x, y, w, h } = start;
       if (kind === "move") {
         x = Math.max(0, Math.min(100 - w, start.x + dx));
