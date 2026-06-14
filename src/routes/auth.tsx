@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
-import { Globe, Loader2 } from "lucide-react";
+import { Globe, Loader2, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -50,10 +50,11 @@ function AuthPage() {
     }
   };
 
-  const onGoogle = async () => {
+  const onGoogle = async (chooseAccount = false) => {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
+      extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
     });
     if (result.error) {
       console.error("Google sign-in error:", result.error);
@@ -87,14 +88,26 @@ function AuthPage() {
           {mode === "signin" ? "Sign in to VIP Life" : "Join the VIP Life community"}
         </p>
 
-        <button
-          type="button"
-          onClick={onGoogle}
-          disabled={busy}
-          className="mt-6 w-full flex items-center justify-center gap-2 border border-slate-200 rounded-full py-2.5 text-sm font-semibold hover:bg-slate-50 disabled:opacity-50"
-        >
-          <GoogleIcon /> Continue with Google
-        </button>
+        <div className="mt-6 flex items-stretch gap-2">
+          <button
+            type="button"
+            onClick={() => onGoogle(false)}
+            disabled={busy}
+            className="flex-1 flex items-center justify-center gap-2 border border-slate-200 rounded-full py-2.5 text-sm font-semibold hover:bg-slate-50 disabled:opacity-50"
+          >
+            <GoogleIcon /> Continue with Google
+          </button>
+          <button
+            type="button"
+            onClick={() => onGoogle(true)}
+            disabled={busy}
+            title="Choose a different Google account"
+            aria-label="Choose a different Google account"
+            className="px-3 flex items-center justify-center border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+          >
+            <ChevronDown className="h-4 w-4 text-slate-600" />
+          </button>
+        </div>
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
           <div className="flex-1 h-px bg-slate-200" /> OR <div className="flex-1 h-px bg-slate-200" />
