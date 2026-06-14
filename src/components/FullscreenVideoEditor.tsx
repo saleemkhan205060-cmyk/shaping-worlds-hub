@@ -29,8 +29,34 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 type EditTab = "auto" | "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
 type AdjustSub = "brightness" | "contrast" | "saturation" | "highlights" | "shadows" | "whitePoint" | "blackPoint" | "warmth" | "tint" | "vignette" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
+type VisualAdjustments = {
+  filter: string;
+  brightness: number;
+  contrast: number;
+  saturation: number;
+  highlights: number;
+  shadows: number;
+  whitePoint: number;
+  blackPoint: number;
+  warmth: number;
+  tint: number;
+  vignette: number;
+};
 
 const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
+const DEFAULT_VISUAL_ADJUSTMENTS: VisualAdjustments = {
+  filter: "none",
+  brightness: 1,
+  contrast: 1,
+  saturation: 1,
+  highlights: 0,
+  shadows: 0,
+  whitePoint: 0,
+  blackPoint: 0,
+  warmth: 0,
+  tint: 0,
+  vignette: 0,
+};
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -233,15 +259,17 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     const cropChanged = Math.abs(crop.x) > 0.05 || Math.abs(crop.y) > 0.05 || Math.abs(crop.w - 100) > 0.05 || Math.abs(crop.h - 100) > 0.05;
     const effectiveEnd = trimEnd > 0 ? trimEnd : duration;
     const trimChanged = duration > 0 && (trimStart > 0.05 || effectiveEnd < duration - 0.05);
+    const visualAdjustments: VisualAdjustments = { filter, brightness, contrast, saturation, highlights, shadows, whitePoint, blackPoint, warmth, tint, vignette };
+    const visualChanged = hasVisualAdjustments(visualAdjustments);
     setSavingCrop(true);
     try {
-      if (!cropChanged && !trimChanged) {
+      if (!cropChanged && !trimChanged && !visualChanged) {
         await new Promise((r) => setTimeout(r, Math.max(1200, Math.min(4000, Math.ceil((duration || 4) * 300)))));
         onConfirm(file);
         return;
       }
-      const outFile = cropChanged
-        ? await createCroppedVideoFile(file, crop, trimStart, effectiveEnd)
+      const outFile = cropChanged || visualChanged
+        ? await createCroppedVideoFile(file, cropChanged ? crop : FULL_CROP, trimStart, effectiveEnd, visualAdjustments)
         : await createTrimmedVideoFile(file, trimStart, effectiveEnd);
       onConfirm(outFile);
     } catch (error) {
@@ -328,7 +356,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         {/* Bottom-right upload */}
         <div className="absolute bottom-20 right-4 z-10" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={() => onConfirm(file)}
+            onClick={handleDone}
+            disabled={savingCrop}
             className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
             aria-label="Upload"
           >
