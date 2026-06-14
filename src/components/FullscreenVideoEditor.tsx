@@ -26,7 +26,7 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
   { id: "16:9", label: "16:9", ratio: "16 / 9" },
 ];
 
-type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type EditTab = "auto" | "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
 type AdjustSub = "brightness" | "contrast" | "saturation" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
 
