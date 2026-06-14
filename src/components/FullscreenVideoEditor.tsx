@@ -231,13 +231,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const handleDone = async () => {
     if (savingCrop) return;
     const cropChanged = Math.abs(crop.x) > 0.05 || Math.abs(crop.y) > 0.05 || Math.abs(crop.w - 100) > 0.05 || Math.abs(crop.h - 100) > 0.05;
-    if (!cropChanged) {
-      onConfirm(file);
-      return;
-    }
-
     setSavingCrop(true);
     try {
+      if (!cropChanged) {
+        // Brief processing indicator so the user sees progress even without a crop change
+        await new Promise((r) => setTimeout(r, Math.max(1200, Math.min(4000, Math.ceil((duration || 4) * 300)))));
+        onConfirm(file);
+        return;
+      }
       const croppedFile = await createCroppedVideoFile(file, crop);
       onConfirm(croppedFile);
     } catch (error) {
@@ -247,6 +248,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       setSavingCrop(false);
     }
   };
+
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
