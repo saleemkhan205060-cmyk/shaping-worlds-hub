@@ -1142,7 +1142,7 @@ export function HomeFeed() {
                     className="flex items-center hover:text-indigo-600"
                     aria-label="Share"
                   >
-                    <img src={shareIconAsset.url} alt="Share" className="h-6 w-6 object-contain" />
+                    <img src={shareIconAsset.url} alt="Share" className="h-7 w-7 object-contain" />
                   </button>
                   {hasMedia && (
                     <button
