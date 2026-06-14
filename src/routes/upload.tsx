@@ -487,7 +487,7 @@ function UploadPage() {
         <FullscreenVideoEditor
           file={editorFile}
           onClose={() => setEditorFile(null)}
-          onConfirm={(editedFile) => { setEditorFile(null); setFile(editedFile); setFullscreenPreviewOpen(true); }}
+          onConfirm={(editedFile) => { setEditorFile(null); setFile(editedFile); setFullscreenPreviewOpen(false); toast.success("Video cropped — ready to upload"); }}
         />
       )}
     </Layout>
