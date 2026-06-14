@@ -12,6 +12,7 @@ import {
   X,
   Check,
   Loader2,
+  Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
