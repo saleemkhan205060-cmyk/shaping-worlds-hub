@@ -805,7 +805,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 const EXPORT_FPS = 30;
 const MAX_EXPORT_EDGE = 1280;
 
-async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0): Promise<File> {
+async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0, adjustments: VisualAdjustments = DEFAULT_VISUAL_ADJUSTMENTS): Promise<File> {
   if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
 
   const url = URL.createObjectURL(file);
@@ -822,7 +822,7 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
     const startAt = Math.max(0, Math.min(trimStart || 0, Math.max(totalDur - 0.05, 0)));
     const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
 
-    return await recordCanvasVideo(file, video, crop, startAt, endAt, "edited", true);
+    return await recordCanvasVideo(file, video, crop, startAt, endAt, "edited", true, adjustments);
   } finally {
     video.pause();
     video.remove();
