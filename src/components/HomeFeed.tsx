@@ -1112,14 +1112,14 @@ export function HomeFeed() {
                     className={`flex items-center gap-1 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
                     aria-label={isLiked ? "Unlike" : "Like"}
                   >
-                    <Heart className={`h-4 w-4 ${isLiked ? "fill-rose-500" : ""}`} />
+                    <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500" : ""}`} />
                   </button>
                   <button
                     onClick={() => setCommentsOpenFor(p.id)}
                     className="flex items-center gap-1 hover:text-indigo-600"
                     aria-label="Open comments"
                   >
-                    <MessageCircle className="h-4 w-4" />
+                    <MessageCircle className="h-6 w-6" />
                   </button>
                   <button
                     onClick={() => {
@@ -1142,7 +1142,7 @@ export function HomeFeed() {
                     className="flex items-center hover:text-indigo-600"
                     aria-label="Share"
                   >
-                    <img src={shareIconAsset.url} alt="Share" className="h-4 w-4 object-contain" />
+                    <img src={shareIconAsset.url} alt="Share" className="h-6 w-6 object-contain" />
                   </button>
                   {hasMedia && (
                     <button
