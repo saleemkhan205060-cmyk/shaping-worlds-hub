@@ -57,8 +57,10 @@ function AuthPage() {
       extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
     });
     if (result.error) {
+      const msg = String((result.error as any)?.message ?? "");
+      const cancelled = /cancel|closed|popup|denied/i.test(msg);
       console.error("Google sign-in error:", result.error);
-      toast.error("Google sign-in failed. Please try again.");
+      if (!cancelled) toast.error("Google sign-in failed. Please try again.");
       setBusy(false);
       return;
     }
