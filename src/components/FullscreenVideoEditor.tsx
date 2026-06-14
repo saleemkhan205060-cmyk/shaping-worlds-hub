@@ -752,7 +752,7 @@ function TrimStrip({
 
 // Crop overlay aligned to the video's actual rendered rectangle (object-contain aware).
 // Does NOT mutate video size/position/zoom — only renders interactive handles on top.
-function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement> }) {
+function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
   const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
   // crop rect in % of the displayed video rect
   const [crop, setCrop] = useState({ x: 0, y: 0, w: 100, h: 100 });
