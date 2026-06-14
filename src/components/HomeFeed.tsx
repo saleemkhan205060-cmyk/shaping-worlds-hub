@@ -1053,9 +1053,7 @@ export function HomeFeed() {
                         className="w-full max-h-[520px] cursor-pointer"
                         onClick={() => openFullscreen(p.id)}
                       />
-                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 text-white text-[11px] font-semibold px-2 py-0.5 backdrop-blur-sm">
-                        {p.is_private ? <><Lock className="h-3 w-3" /> Private</> : <><Globe2 className="h-3 w-3" /> Public</>}
-                      </span>
+
                     </div>
                   </MediaActions>
                 )}
