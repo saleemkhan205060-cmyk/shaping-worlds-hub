@@ -235,7 +235,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         {/* Bottom-right upload */}
         <div className="absolute bottom-20 right-4 z-10" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={onConfirm}
+            onClick={() => onConfirm(file)}
             className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
             aria-label="Upload"
           >
