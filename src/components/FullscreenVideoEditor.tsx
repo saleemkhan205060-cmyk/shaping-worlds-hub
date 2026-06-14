@@ -181,10 +181,43 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const bDelta = brightness - 1;
   const effBrightness = 1 + bDelta * 0.85;
   const compContrast = contrast * (1 - bDelta * 0.18);
+  // Google Photos–style brightness: combine a gentle brightness() with a compensating
+  // contrast curve so highlights don't blow out and shadows lift cleanly.
+  const bDelta = brightness - 1;
+  const effBrightness = 1 + bDelta * 0.85;
+  const compContrast = contrast * (1 - bDelta * 0.18);
   const presetCss = FILTERS.find((f) => f.id === filter)?.css;
   const presetPart = presetCss && presetCss !== "none" ? presetCss + " " : "";
-  const videoFilter = `${presetPart}brightness(${effBrightness}) contrast(${compContrast}) saturate(${saturation})`;
+
+  // Warmth: positive = warmer (toward red/yellow), negative = cooler (toward blue)
+  // Tint: positive = magenta, negative = green. Approximated with hue-rotate + sepia.
+  const warmCss = warmth > 0
+    ? `sepia(${(warmth * 0.35).toFixed(3)}) hue-rotate(${(-warmth * 6).toFixed(2)}deg)`
+    : warmth < 0
+      ? `hue-rotate(${(-warmth * 18).toFixed(2)}deg) saturate(${(1 + Math.abs(warmth) * 0.1).toFixed(3)})`
+      : "";
+  const tintCss = tint !== 0 ? `hue-rotate(${(tint * 22).toFixed(2)}deg)` : "";
+
+  // Tone curve (highlights / shadows / white point / black point) via SVG feComponentTransfer
+  const toneActive = highlights !== 0 || shadows !== 0 || whitePoint !== 0 || blackPoint !== 0;
+  const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
+  const tonePts = [
+    clamp01(0 + blackPoint * 0.18),
+    clamp01(0.25 + shadows * 0.22),
+    0.5,
+    clamp01(0.75 + highlights * 0.22),
+    clamp01(1 + whitePoint * 0.18),
+  ];
+  const toneTable = tonePts.map((n) => n.toFixed(4)).join(" ");
+  const toneFilterPart = toneActive ? "url(#vfx-tone) " : "";
+
+  const videoFilter = `${toneFilterPart}${presetPart}${warmCss ? warmCss + " " : ""}${tintCss ? tintCss + " " : ""}brightness(${effBrightness}) contrast(${compContrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
+
+  // Vignette overlay style (radial darkening at edges)
+  const vignetteStyle: React.CSSProperties | null = vignette > 0
+    ? { background: `radial-gradient(ellipse at center, transparent ${(60 - vignette * 30).toFixed(0)}%, rgba(0,0,0,${(vignette * 0.75).toFixed(3)}) 100%)` }
+    : null;
 
   const handleDone = async () => {
     if (savingCrop) return;
