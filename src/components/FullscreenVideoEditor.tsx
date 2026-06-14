@@ -29,8 +29,34 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 type EditTab = "auto" | "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
 type AdjustSub = "brightness" | "contrast" | "saturation" | "highlights" | "shadows" | "whitePoint" | "blackPoint" | "warmth" | "tint" | "vignette" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
+type VisualAdjustments = {
+  filter: string;
+  brightness: number;
+  contrast: number;
+  saturation: number;
+  highlights: number;
+  shadows: number;
+  whitePoint: number;
+  blackPoint: number;
+  warmth: number;
+  tint: number;
+  vignette: number;
+};
 
 const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
+const DEFAULT_VISUAL_ADJUSTMENTS: VisualAdjustments = {
+  filter: "none",
+  brightness: 1,
+  contrast: 1,
+  saturation: 1,
+  highlights: 0,
+  shadows: 0,
+  whitePoint: 0,
+  blackPoint: 0,
+  warmth: 0,
+  tint: 0,
+  vignette: 0,
+};
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -233,15 +259,17 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     const cropChanged = Math.abs(crop.x) > 0.05 || Math.abs(crop.y) > 0.05 || Math.abs(crop.w - 100) > 0.05 || Math.abs(crop.h - 100) > 0.05;
     const effectiveEnd = trimEnd > 0 ? trimEnd : duration;
     const trimChanged = duration > 0 && (trimStart > 0.05 || effectiveEnd < duration - 0.05);
+    const visualAdjustments: VisualAdjustments = { filter, brightness, contrast, saturation, highlights, shadows, whitePoint, blackPoint, warmth, tint, vignette };
+    const visualChanged = hasVisualAdjustments(visualAdjustments);
     setSavingCrop(true);
     try {
-      if (!cropChanged && !trimChanged) {
+      if (!cropChanged && !trimChanged && !visualChanged) {
         await new Promise((r) => setTimeout(r, Math.max(1200, Math.min(4000, Math.ceil((duration || 4) * 300)))));
         onConfirm(file);
         return;
       }
-      const outFile = cropChanged
-        ? await createCroppedVideoFile(file, crop, trimStart, effectiveEnd)
+      const outFile = cropChanged || visualChanged
+        ? await createCroppedVideoFile(file, cropChanged ? crop : FULL_CROP, trimStart, effectiveEnd, visualAdjustments)
         : await createTrimmedVideoFile(file, trimStart, effectiveEnd);
       onConfirm(outFile);
     } catch (error) {
@@ -328,7 +356,8 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         {/* Bottom-right upload */}
         <div className="absolute bottom-20 right-4 z-10" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={() => onConfirm(file)}
+            onClick={handleDone}
+            disabled={savingCrop}
             className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
             aria-label="Upload"
           >
@@ -776,7 +805,43 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 const EXPORT_FPS = 30;
 const MAX_EXPORT_EDGE = 1280;
 
-async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0): Promise<File> {
+function hasVisualAdjustments(adjustments: VisualAdjustments) {
+  return adjustments.filter !== "none"
+    || Math.abs(adjustments.brightness - 1) > 0.005
+    || Math.abs(adjustments.contrast - 1) > 0.005
+    || Math.abs(adjustments.saturation - 1) > 0.005
+    || Math.abs(adjustments.highlights) > 0.005
+    || Math.abs(adjustments.shadows) > 0.005
+    || Math.abs(adjustments.whitePoint) > 0.005
+    || Math.abs(adjustments.blackPoint) > 0.005
+    || Math.abs(adjustments.warmth) > 0.005
+    || Math.abs(adjustments.tint) > 0.005
+    || adjustments.vignette > 0.005;
+}
+
+function buildCanvasFilter(adjustments: VisualAdjustments) {
+  const presetCss = FILTERS.find((f) => f.id === adjustments.filter)?.css;
+  const presetPart = presetCss && presetCss !== "none" ? `${presetCss} ` : "";
+  const warmthPart = adjustments.warmth > 0
+    ? `sepia(${(adjustments.warmth * 0.35).toFixed(3)}) hue-rotate(${(-adjustments.warmth * 6).toFixed(2)}deg) `
+    : adjustments.warmth < 0
+      ? `hue-rotate(${(-adjustments.warmth * 18).toFixed(2)}deg) saturate(${(1 + Math.abs(adjustments.warmth) * 0.1).toFixed(3)}) `
+      : "";
+  const tintPart = adjustments.tint !== 0 ? `hue-rotate(${(adjustments.tint * 22).toFixed(2)}deg) ` : "";
+  const brightnessPart = clampNumber(
+    adjustments.brightness + adjustments.shadows * 0.08 + adjustments.highlights * 0.05 + adjustments.whitePoint * 0.06 - adjustments.blackPoint * 0.06,
+    0.1,
+    3,
+  );
+  const contrastPart = clampNumber(adjustments.contrast * (1 - (adjustments.brightness - 1) * 0.12), 0.1, 3);
+  return `${presetPart}${warmthPart}${tintPart}brightness(${brightnessPart.toFixed(4)}) contrast(${contrastPart.toFixed(4)}) saturate(${clampNumber(adjustments.saturation, 0, 3).toFixed(4)})`;
+}
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0, adjustments: VisualAdjustments = DEFAULT_VISUAL_ADJUSTMENTS): Promise<File> {
   if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
 
   const url = URL.createObjectURL(file);
@@ -793,7 +858,7 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
     const startAt = Math.max(0, Math.min(trimStart || 0, Math.max(totalDur - 0.05, 0)));
     const endAt = trimEnd && trimEnd > startAt ? Math.min(trimEnd, totalDur) : totalDur;
 
-    return await recordCanvasVideo(file, video, crop, startAt, endAt, "edited", true);
+    return await recordCanvasVideo(file, video, crop, startAt, endAt, "edited", true, adjustments);
   } finally {
     video.pause();
     video.remove();
@@ -856,6 +921,7 @@ async function recordCanvasVideo(
   endAt: number,
   suffix: string,
   preferAudio: boolean,
+  adjustments: VisualAdjustments = DEFAULT_VISUAL_ADJUSTMENTS,
 ): Promise<File> {
   const sourceW = video.videoWidth || 1;
   const sourceH = video.videoHeight || 1;
@@ -870,7 +936,26 @@ async function recordCanvasVideo(
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) throw new Error("Canvas unavailable");
 
-  const drawFrame = () => ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  const canvasFilter = buildCanvasFilter(adjustments);
+  const drawFrame = () => {
+    ctx.filter = canvasFilter;
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    ctx.filter = "none";
+    if (adjustments.vignette > 0) {
+      const gradient = ctx.createRadialGradient(
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.min(canvas.width, canvas.height) * (0.25 + (1 - adjustments.vignette) * 0.2),
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.max(canvas.width, canvas.height) * 0.65,
+      );
+      gradient.addColorStop(0, "rgba(0,0,0,0)");
+      gradient.addColorStop(1, `rgba(0,0,0,${Math.min(0.75, adjustments.vignette * 0.75)})`);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  };
   const attempts = preferAudio ? [true, false] : [false];
   let lastError: unknown;
 
