@@ -788,6 +788,26 @@ function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement 
     return () => { ro.disconnect(); v.removeEventListener("loadedmetadata", measure); };
   }, [videoRef]);
 
+  // Apply the crop visually to the video via clip-path (inset relative to the video element box).
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !box) return;
+    const parent = v.parentElement;
+    if (!parent) return;
+    const vr = v.getBoundingClientRect();
+    const pr = parent.getBoundingClientRect();
+    const vOffLeft = vr.left - pr.left;
+    const vOffTop = vr.top - pr.top;
+    const cLeft = box.left - vOffLeft + (crop.x / 100) * box.width;
+    const cTop = box.top - vOffTop + (crop.y / 100) * box.height;
+    const cW = (crop.w / 100) * box.width;
+    const cH = (crop.h / 100) * box.height;
+    const right = Math.max(0, vr.width - cLeft - cW);
+    const bottom = Math.max(0, vr.height - cTop - cH);
+    v.style.clipPath = `inset(${Math.max(0, cTop)}px ${right}px ${bottom}px ${Math.max(0, cLeft)}px)`;
+    return () => { v.style.clipPath = ""; };
+  }, [crop, box, videoRef]);
+
   if (!box) return null;
 
   const startDrag = (kind: "tl" | "tr" | "bl" | "br" | "t" | "b" | "l" | "r" | "move") => (e: React.PointerEvent) => {
