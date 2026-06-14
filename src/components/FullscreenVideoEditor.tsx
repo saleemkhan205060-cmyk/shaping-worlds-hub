@@ -895,8 +895,9 @@ async function recordCanvasVideo(
 
       const recording = recordStreamSegment(canvasStream, video, endAt, () => {
         stopped = true;
+      }, () => {
+        drawLoop();
       });
-      drawLoop();
       const { blob, mimeType } = await recording;
       return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
     } catch (error) {
@@ -914,6 +915,7 @@ async function recordStreamSegment(
   video: HTMLVideoElement,
   endAt: number,
   onStop?: () => void,
+  onStarted?: () => void,
 ): Promise<{ blob: Blob; mimeType: string }> {
   const mimeType = getRecorderMimeType();
   const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 4_000_000, audioBitsPerSecond: 96_000 };
@@ -944,22 +946,26 @@ async function recordStreamSegment(
     };
   });
 
-  recorder.start(250);
-  await video.play();
-  await new Promise<void>((resolve) => {
-    video.onended = () => resolve();
-    const tick = () => {
-      if (stopped) { resolve(); return; }
-      if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
+  try {
+    recorder.start(250);
+    await video.play();
+    onStarted?.();
+    await new Promise<void>((resolve) => {
+      video.onended = () => resolve();
+      const tick = () => {
+        if (stopped) { resolve(); return; }
+        if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
+        requestAnimationFrame(tick);
+      };
       requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  });
-  stopOnce();
-  const blob = await done;
-  stream.getTracks().forEach((track) => track.stop());
-  if (!blob.size) throw new Error("Output video is empty");
-  return { blob, mimeType: recorder.mimeType || mimeType || blob.type };
+    });
+    stopOnce();
+    const blob = await done;
+    if (!blob.size) throw new Error("Output video is empty");
+    return { blob, mimeType: recorder.mimeType || mimeType || blob.type };
+  } finally {
+    stream.getTracks().forEach((track) => track.stop());
+  }
 }
 
 function waitForVideoReady(video: HTMLVideoElement) {
