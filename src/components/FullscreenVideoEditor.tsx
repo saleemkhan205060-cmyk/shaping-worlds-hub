@@ -785,6 +785,7 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
   video.muted = true;
   video.playsInline = true;
   video.preload = "auto";
+  attachHiddenVideo(video);
 
   try {
     await waitForVideoReady(video);
@@ -795,6 +796,7 @@ async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0,
     return await recordCanvasVideo(file, video, crop, startAt, endAt, "edited", true);
   } finally {
     video.pause();
+    video.remove();
     URL.revokeObjectURL(url);
   }
 }
@@ -808,6 +810,7 @@ async function createTrimmedVideoFile(file: File, trimStart = 0, trimEnd = 0): P
   video.muted = true;
   video.playsInline = true;
   video.preload = "auto";
+  attachHiddenVideo(video);
 
   try {
     await waitForVideoReady(video);
@@ -831,6 +834,7 @@ async function createTrimmedVideoFile(file: File, trimStart = 0, trimEnd = 0): P
     }
   } finally {
     video.pause();
+    video.remove();
     URL.revokeObjectURL(url);
   }
 }
@@ -982,6 +986,17 @@ function waitForVideoReady(video: HTMLVideoElement) {
     video.addEventListener("canplay", onReady, { once: true });
     video.addEventListener("error", onError, { once: true });
   });
+}
+
+function attachHiddenVideo(video: HTMLVideoElement) {
+  video.style.position = "fixed";
+  video.style.left = "-9999px";
+  video.style.top = "0";
+  video.style.width = "1px";
+  video.style.height = "1px";
+  video.style.opacity = "0";
+  video.style.pointerEvents = "none";
+  document.body.appendChild(video);
 }
 
 function makeEven(value: number) {
