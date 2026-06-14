@@ -289,14 +289,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
 
-            {/* Crop corner brackets overlay */}
+            {/* Crop overlay — aligned to video's actual rendered edges, draggable */}
             {editTab === "crop" && (
-              <div className="absolute inset-4 pointer-events-none">
-                <div className="absolute top-0 left-0 w-7 h-7 border-t-[3px] border-l-[3px] border-white rounded-tl-xl" />
-                <div className="absolute top-0 right-0 w-7 h-7 border-t-[3px] border-r-[3px] border-white rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-7 h-7 border-b-[3px] border-l-[3px] border-white rounded-bl-xl" />
-                <div className="absolute bottom-0 right-0 w-7 h-7 border-b-[3px] border-r-[3px] border-white rounded-br-xl" />
-              </div>
+              <CropOverlay videoRef={editPreviewRef} />
             )}
           </div>
 
