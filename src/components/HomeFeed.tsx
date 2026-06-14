@@ -128,6 +128,7 @@ export function HomeFeed() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
   const [captionMenuFor, setCaptionMenuFor] = useState<string | null>(null);
+  const [privacyMenuFor, setPrivacyMenuFor] = useState<string | null>(null);
   const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
   const [editCaptionValue, setEditCaptionValue] = useState("");
 
@@ -946,26 +947,61 @@ export function HomeFeed() {
                         <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
                         {(p.media_type === "image" || p.media_type === "video") && (
                           user?.id === p.user_id ? (
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                const next = !p.is_private;
-                                setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: next } : x));
-                                const { error } = await supabase.from("posts").update({ is_private: next } as any).eq("id", p.id);
-                                if (error) {
-                                  setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, is_private: !next } : x));
-                                  toast.error("Couldn't update privacy");
-                                } else {
-                                  toast.success(next ? "Set to Private" : "Set to Public");
-                                }
-                              }}
-                              className={`inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}
-                              aria-label="Toggle privacy"
-                            >
-                              {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
-                            </button>
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setPrivacyMenuFor((cur) => cur === p.id ? null : p.id);
+                                }}
+                                className={`inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}
+                                aria-label="Change privacy"
+                              >
+                                {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
+                              </button>
+                              {privacyMenuFor === p.id && (
+                                <>
+                                  <div className="fixed inset-0 z-40" onClick={() => setPrivacyMenuFor(null)} />
+                                  <div className="absolute left-0 top-full mt-1 z-50 w-32 rounded-lg border border-slate-200 bg-white shadow-lg overflow-hidden">
+                                    {([
+                                      { val: false, label: "Public", Icon: Globe2, color: "text-emerald-600" },
+                                      { val: true, label: "Private", Icon: Lock, color: "text-rose-600" },
+                                    ] as const).map(({ val, label, Icon, color }) => {
+                                      const active = !!p.is_private === val;
+                                      return (
+                                        <button
+                                          key={label}
+                                          type="button"
+                                          onClick={async (e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setPrivacyMenuFor(null);
+                                            if (active) return;
+                                            const prev = p.is_private;
+                                            setPosts((arr) => arr.map((x) => x.id === p.id ? { ...x, is_private: val } : x));
+                                            const { error } = await supabase.from("posts").update({ is_private: val } as any).eq("id", p.id);
+                                            if (error) {
+                                              setPosts((arr) => arr.map((x) => x.id === p.id ? { ...x, is_private: prev } : x));
+                                              toast.error("Couldn't update privacy");
+                                            } else {
+                                              toast.success(val ? "Set to Private" : "Set to Public");
+                                            }
+                                          }}
+                                          className={`flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-slate-50 ${active ? "bg-slate-50" : ""} ${color}`}
+                                        >
+                                          <Icon className="h-3.5 w-3.5" /> {label}
+                                          {active && <span className="ml-auto text-[10px]">✓</span>}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </>
+                              )}
+                            </div>
                           ) : (
                             <button
+
                               type="button"
                               onClick={(e) => {
                                 e.preventDefault();
