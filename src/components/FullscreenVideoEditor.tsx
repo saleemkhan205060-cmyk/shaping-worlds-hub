@@ -166,7 +166,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     setMusicName(f.name);
   };
 
-  const videoFilter = `${FILTERS.find((f) => f.id === filter)?.css ?? "none"} brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
+  // Google Photos–style brightness: gamma curve + subtle shadow lift, instead of a flat
+  // multiplicative brightness() which blows out highlights. Keeps highlights protected
+  // while lifting midtones/shadows for a cleaner, more professional look.
+  const brightnessGamma = 1 / Math.pow(Math.max(0.01, brightness), 1.35);
+  const brightnessLift = (brightness - 1) * 0.06; // tiny shadow lift
+  const brightnessSlope = 1 + (brightness - 1) * 0.15; // soft highlight roll-off
+  const presetCss = FILTERS.find((f) => f.id === filter)?.css ?? "";
+  const videoFilter = `${presetCss} url(#vfx-brightness-curve) contrast(${contrast}) saturate(${saturation})`.trim();
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
 
   const handleDone = async () => {
@@ -191,6 +198,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
+      {/* SVG filter defs for high-quality brightness (gamma curve) */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <defs>
+          <filter id="vfx-brightness-curve" colorInterpolationFilters="sRGB">
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude={brightnessSlope} exponent={brightnessGamma} offset={brightnessLift} />
+              <feFuncG type="gamma" amplitude={brightnessSlope} exponent={brightnessGamma} offset={brightnessLift} />
+              <feFuncB type="gamma" amplitude={brightnessSlope} exponent={brightnessGamma} offset={brightnessLift} />
+            </feComponentTransfer>
+          </filter>
+        </defs>
+      </svg>
+
       {/* Video */}
       <div className="relative flex-1 overflow-hidden" onClick={togglePlay}>
         {src && (
@@ -432,7 +452,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   ))}
                 </div>
                 {adjustSub === "brightness" && (
-                  <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
+                  <AdjustRow label="Brightness" value={brightness} min={0.3} max={1.8} onChange={setBrightness} />
                 )}
                 {adjustSub === "contrast" && (
                   <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
