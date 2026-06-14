@@ -27,6 +27,7 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
+type AdjustSub = "brightness" | "contrast" | "saturation" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
 
 const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
@@ -45,6 +46,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheet, setSheet] = useState<null | "filter" | "sound" | "trim" | "edit">("edit");
   const [editTab, setEditTab] = useState<EditTab>("crop");
+  const [adjustSub, setAdjustSub] = useState<AdjustSub>("brightness");
   const [filter, setFilter] = useState<string>("none");
   const [aspect, setAspect] = useState<string>("free");
   const [brightness, setBrightness] = useState(1);
@@ -401,10 +403,43 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
             {editTab === "adjust" && (
-              <div className="space-y-1.5 text-white text-xs">
-                <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
-                <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
-                <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
+              <div className="space-y-2 text-white">
+                <button
+                  onClick={() => setAdjustSub("brightness")}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${adjustSub === "brightness" ? "bg-white/15" : "bg-white/[0.06]"}`}
+                >
+                  <Sun className="h-5 w-5" />
+                  <span>Brightness</span>
+                </button>
+                {adjustSub === "brightness" && (
+                  <div className="px-2">
+                    <AdjustRow label="Brightness" value={brightness} min={0.5} max={1.5} onChange={setBrightness} />
+                  </div>
+                )}
+                <button
+                  onClick={() => setAdjustSub("contrast")}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${adjustSub === "contrast" ? "bg-white/15" : "bg-white/[0.06]"}`}
+                >
+                  <SlidersHorizontal className="h-5 w-5" />
+                  <span>Contrast</span>
+                </button>
+                {adjustSub === "contrast" && (
+                  <div className="px-2">
+                    <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
+                  </div>
+                )}
+                <button
+                  onClick={() => setAdjustSub("saturation")}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${adjustSub === "saturation" ? "bg-white/15" : "bg-white/[0.06]"}`}
+                >
+                  <Sparkles className="h-5 w-5" />
+                  <span>Saturation</span>
+                </button>
+                {adjustSub === "saturation" && (
+                  <div className="px-2">
+                    <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
+                  </div>
+                )}
               </div>
             )}
             {editTab === "filters" && (
@@ -490,7 +525,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Bottom tabs — Google Photos style */}
           <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
-            <EditTabBtn icon={<Sun className="h-6 w-6" />} label="Brightness" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
+            <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
             <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
             <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
             <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
