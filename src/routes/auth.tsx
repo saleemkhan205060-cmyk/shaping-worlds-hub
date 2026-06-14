@@ -90,22 +90,23 @@ function AuthPage() {
           {mode === "signin" ? "Sign in to VIP Life" : "Join the VIP Life community"}
         </p>
 
-        <div className="mt-6 flex items-stretch gap-2">
+        <div className="mt-6 flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50">
           <button
             type="button"
             onClick={() => onGoogle(false)}
             disabled={busy}
-            className="flex-1 flex items-center justify-center gap-2 border border-slate-200 rounded-full py-2.5 text-sm font-semibold hover:bg-slate-50 disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold disabled:opacity-50"
           >
             <GoogleIcon /> Continue with Google
           </button>
+          <div className="w-px h-6 bg-slate-200" />
           <button
             type="button"
             onClick={() => onGoogle(true)}
             disabled={busy}
             title="Choose a different Google account"
             aria-label="Choose a different Google account"
-            className="px-3 flex items-center justify-center border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+            className="px-3 flex items-center justify-center disabled:opacity-50"
           >
             <ChevronDown className="h-4 w-4 text-slate-600" />
           </button>
