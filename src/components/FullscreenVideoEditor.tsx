@@ -899,6 +899,7 @@ async function recordCanvasVideo(
   endAt: number,
   suffix: string,
   preferAudio: boolean,
+  adjustments: VisualAdjustments = DEFAULT_VISUAL_ADJUSTMENTS,
 ): Promise<File> {
   const sourceW = video.videoWidth || 1;
   const sourceH = video.videoHeight || 1;
@@ -913,7 +914,26 @@ async function recordCanvasVideo(
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) throw new Error("Canvas unavailable");
 
-  const drawFrame = () => ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  const canvasFilter = buildCanvasFilter(adjustments);
+  const drawFrame = () => {
+    ctx.filter = canvasFilter;
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    ctx.filter = "none";
+    if (adjustments.vignette > 0) {
+      const gradient = ctx.createRadialGradient(
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.min(canvas.width, canvas.height) * (0.25 + (1 - adjustments.vignette) * 0.2),
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.max(canvas.width, canvas.height) * 0.65,
+      );
+      gradient.addColorStop(0, "rgba(0,0,0,0)");
+      gradient.addColorStop(1, `rgba(0,0,0,${Math.min(0.75, adjustments.vignette * 0.75)})`);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  };
   const attempts = preferAudio ? [true, false] : [false];
   let lastError: unknown;
 
