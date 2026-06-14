@@ -12,6 +12,7 @@ import {
   X,
   Check,
   Loader2,
+  Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
@@ -37,6 +38,14 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [sentTo, setSentTo] = useState<Record<string, boolean>>({});
   const [sendingTo, setSendingTo] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredFriends = friends.filter((f) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    const name = (f.display_name || f.username || "").toLowerCase();
+    return name.includes(q);
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -158,17 +167,39 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
           <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 pb-2">
             Send to
           </p>
+
+          {/* Search bar */}
+          <div className="relative mb-3">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search"
+              className="w-full h-9 pl-8 pr-8 rounded-full bg-slate-100 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+
           {loadingFriends ? (
             <div className="flex items-center gap-2 text-xs text-slate-500 py-3">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading friends…
             </div>
-          ) : friends.length === 0 ? (
+          ) : filteredFriends.length === 0 ? (
             <p className="text-xs text-slate-500 py-2">
-              Follow people to send them posts directly.
+              {searchQuery ? "No friends found." : "Follow people to send them posts directly."}
             </p>
           ) : (
             <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
-              {friends.map((friend) => {
+              {filteredFriends.map((friend) => {
                 const name = friend.display_name || friend.username || "User";
                 const initial = name.trim().charAt(0).toUpperCase();
                 const isSent = !!sentTo[friend.id];
