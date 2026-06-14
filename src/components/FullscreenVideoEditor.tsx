@@ -289,14 +289,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
 
-            {/* Crop corner brackets overlay */}
+            {/* Crop overlay — aligned to video's actual rendered edges, draggable */}
             {editTab === "crop" && (
-              <div className="absolute inset-4 pointer-events-none">
-                <div className="absolute top-0 left-0 w-7 h-7 border-t-[3px] border-l-[3px] border-white rounded-tl-xl" />
-                <div className="absolute top-0 right-0 w-7 h-7 border-t-[3px] border-r-[3px] border-white rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-7 h-7 border-b-[3px] border-l-[3px] border-white rounded-bl-xl" />
-                <div className="absolute bottom-0 right-0 w-7 h-7 border-b-[3px] border-r-[3px] border-white rounded-br-xl" />
-              </div>
+              <CropOverlay videoRef={editPreviewRef} />
             )}
           </div>
 
@@ -750,6 +745,113 @@ function TrimStrip({
         <div className="h-full w-5 rounded-r-full bg-white flex items-center justify-center shadow">
           <div className="h-4 w-[3px] bg-slate-500 rounded-full" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Crop overlay aligned to the video's actual rendered rectangle (object-contain aware).
+// Does NOT mutate video size/position/zoom — only renders interactive handles on top.
+function CropOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+  const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+  // crop rect in % of the displayed video rect
+  const [crop, setCrop] = useState({ x: 0, y: 0, w: 100, h: 100 });
+
+  // Track the video's actual rendered rect within its container
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const parent = v.parentElement;
+    if (!parent) return;
+
+    const measure = () => {
+      const pr = parent.getBoundingClientRect();
+      const vw = v.videoWidth || 0;
+      const vh = v.videoHeight || 0;
+      if (!vw || !vh || !pr.width || !pr.height) {
+        // fallback: use the video element's own rect
+        const r = v.getBoundingClientRect();
+        setBox({ left: r.left - pr.left, top: r.top - pr.top, width: r.width, height: r.height });
+        return;
+      }
+      const scale = Math.min(pr.width / vw, pr.height / vh);
+      const w = vw * scale;
+      const h = vh * scale;
+      setBox({ left: (pr.width - w) / 2, top: (pr.height - h) / 2, width: w, height: h });
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    ro.observe(v);
+    v.addEventListener("loadedmetadata", measure);
+    return () => { ro.disconnect(); v.removeEventListener("loadedmetadata", measure); };
+  }, [videoRef]);
+
+  if (!box) return null;
+
+  const startDrag = (kind: "tl" | "tr" | "bl" | "br" | "t" | "b" | "l" | "r" | "move") => (e: React.PointerEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    const startX = e.clientX, startY = e.clientY;
+    const start = { ...crop };
+    const move = (ev: PointerEvent) => {
+      const dx = ((ev.clientX - startX) / box.width) * 100;
+      const dy = ((ev.clientY - startY) / box.height) * 100;
+      const MIN = 10;
+      let { x, y, w, h } = start;
+      if (kind === "move") {
+        x = Math.max(0, Math.min(100 - w, start.x + dx));
+        y = Math.max(0, Math.min(100 - h, start.y + dy));
+      } else {
+        if (kind.includes("l")) { const nx = Math.max(0, Math.min(start.x + start.w - MIN, start.x + dx)); w = start.w + (start.x - nx); x = nx; }
+        if (kind.includes("r")) { w = Math.max(MIN, Math.min(100 - start.x, start.w + dx)); }
+        if (kind.includes("t")) { const ny = Math.max(0, Math.min(start.y + start.h - MIN, start.y + dy)); h = start.h + (start.y - ny); y = ny; }
+        if (kind.includes("b")) { h = Math.max(MIN, Math.min(100 - start.y, start.h + dy)); }
+      }
+      setCrop({ x, y, w, h });
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
+
+  const HANDLE = "absolute w-4 h-4 bg-white rounded-full shadow border border-black/30 touch-none";
+  const EDGE = "absolute bg-white/80 touch-none";
+
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{ left: box.left, top: box.top, width: box.width, height: box.height }}
+    >
+      <div
+        className="absolute pointer-events-auto"
+        style={{ left: `${crop.x}%`, top: `${crop.y}%`, width: `${crop.w}%`, height: `${crop.h}%` }}
+      >
+        {/* Dim outside */}
+        <div className="absolute inset-0 ring-2 ring-white/95 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)]" />
+        {/* Grid */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-0 right-0 h-px bg-white/40" />
+          <div className="absolute top-2/3 left-0 right-0 h-px bg-white/40" />
+          <div className="absolute left-1/3 top-0 bottom-0 w-px bg-white/40" />
+          <div className="absolute left-2/3 top-0 bottom-0 w-px bg-white/40" />
+        </div>
+        {/* Move */}
+        <div className="absolute inset-3 cursor-move" onPointerDown={startDrag("move")} />
+        {/* Edges */}
+        <div className={`${EDGE} left-3 right-3 -top-0.5 h-1 cursor-ns-resize`} onPointerDown={startDrag("t")} />
+        <div className={`${EDGE} left-3 right-3 -bottom-0.5 h-1 cursor-ns-resize`} onPointerDown={startDrag("b")} />
+        <div className={`${EDGE} top-3 bottom-3 -left-0.5 w-1 cursor-ew-resize`} onPointerDown={startDrag("l")} />
+        <div className={`${EDGE} top-3 bottom-3 -right-0.5 w-1 cursor-ew-resize`} onPointerDown={startDrag("r")} />
+        {/* Corners */}
+        <div className={`${HANDLE} -top-2 -left-2 cursor-nwse-resize`} onPointerDown={startDrag("tl")} />
+        <div className={`${HANDLE} -top-2 -right-2 cursor-nesw-resize`} onPointerDown={startDrag("tr")} />
+        <div className={`${HANDLE} -bottom-2 -left-2 cursor-nesw-resize`} onPointerDown={startDrag("bl")} />
+        <div className={`${HANDLE} -bottom-2 -right-2 cursor-nwse-resize`} onPointerDown={startDrag("br")} />
       </div>
     </div>
   );
