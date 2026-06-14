@@ -66,6 +66,7 @@ type Post = {
   created_at: string;
   text_style?: unknown;
   thumbnail_url?: string | null;
+  is_private?: boolean | null;
 };
 
 
