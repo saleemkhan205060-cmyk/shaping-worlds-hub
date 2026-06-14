@@ -174,11 +174,10 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
     setMusicName(f.name);
   };
 
-  // Google Photos–style brightness: combine a gentle brightness() with a compensating
-  // contrast curve so highlights don't blow out and shadows lift cleanly.
-  const bDelta = brightness - 1;
-  const effBrightness = 1 + bDelta * 0.85;
-  const compContrast = contrast * (1 - bDelta * 0.18);
+  // High-quality pro tonal pipeline (Google Photos style).
+  // Brightness is baked into an SVG gamma+lift curve combined with shadows/highlights/
+  // black/white points, so it always applies smoothly across the full tonal range
+  // without blowing out highlights or crushing shadows.
   const presetCss = FILTERS.find((f) => f.id === filter)?.css;
   const presetPart = presetCss && presetCss !== "none" ? presetCss + " " : "";
 
@@ -191,20 +190,37 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       : "";
   const tintCss = tint !== 0 ? `hue-rotate(${(tint * 22).toFixed(2)}deg)` : "";
 
-  // Tone curve (highlights / shadows / white point / black point) via SVG feComponentTransfer
-  const toneActive = highlights !== 0 || shadows !== 0 || whitePoint !== 0 || blackPoint !== 0;
+  // Build a 9-point tone curve table combining brightness gamma + shadows/highlights/
+  // black/white points. brightness>1 → gamma<1 (lift midtones), brightness<1 → gamma>1.
+  const bDelta = brightness - 1; // typically -0.7 .. 0.8
+  const gamma = brightness > 0 ? 1 / Math.pow(brightness, 0.85) : 1;
+  const lift = bDelta * 0.04; // gentle shadow lift / drop
   const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
-  const tonePts = [
-    clamp01(0 + blackPoint * 0.18),
-    clamp01(0.25 + shadows * 0.22),
-    0.5,
-    clamp01(0.75 + highlights * 0.22),
-    clamp01(1 + whitePoint * 0.18),
-  ];
+  const buildPoint = (x: number) => {
+    // base brightness curve
+    let y = Math.pow(x, gamma) + lift;
+    // shadows: affect lower half, peak influence near x=0.25
+    const shadowWeight = Math.max(0, 1 - Math.abs(x - 0.25) / 0.4);
+    y += shadows * 0.22 * shadowWeight;
+    // highlights: affect upper half, peak influence near x=0.75
+    const highlightWeight = Math.max(0, 1 - Math.abs(x - 0.75) / 0.4);
+    y += highlights * 0.22 * highlightWeight;
+    // black point shifts the bottom of the curve
+    y += blackPoint * 0.18 * (1 - x);
+    // white point shifts the top of the curve
+    y += whitePoint * 0.18 * x;
+    return clamp01(y);
+  };
+  const steps = 9;
+  const tonePts: number[] = [];
+  for (let i = 0; i < steps; i++) tonePts.push(buildPoint(i / (steps - 1)));
   const toneTable = tonePts.map((n) => n.toFixed(4)).join(" ");
-  const toneFilterPart = toneActive ? "url(#vfx-tone) " : "";
 
-  const videoFilter = `${toneFilterPart}${presetPart}${warmCss ? warmCss + " " : ""}${tintCss ? tintCss + " " : ""}brightness(${effBrightness}) contrast(${compContrast}) saturate(${saturation})`;
+  // Compensating CSS contrast keeps punch when lifting brightness, so highlights
+  // stay clean and shadows keep depth even with the gamma curve applied.
+  const compContrast = contrast * (1 - bDelta * 0.12);
+
+  const videoFilter = `url(#vfx-tone) ${presetPart}${warmCss ? warmCss + " " : ""}${tintCss ? tintCss + " " : ""}contrast(${compContrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
 
   // Vignette overlay style (radial darkening at edges)
