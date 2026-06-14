@@ -8,6 +8,7 @@ import {
   Search,
   Heart,
   MessageCircle,
+  Share2,
   Loader2,
   Play,
   Maximize2,
