@@ -46,6 +46,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheet, setSheet] = useState<null | "filter" | "sound" | "trim" | "edit">("edit");
   const [editTab, setEditTab] = useState<EditTab>("crop");
+  const [adjustSub, setAdjustSub] = useState<AdjustSub>("brightness");
   const [filter, setFilter] = useState<string>("none");
   const [aspect, setAspect] = useState<string>("free");
   const [brightness, setBrightness] = useState(1);
