@@ -978,6 +978,11 @@ function waitForVideoReady(video: HTMLVideoElement) {
   });
 }
 
+function makeEven(value: number) {
+  const rounded = Math.max(2, Math.round(value));
+  return rounded % 2 === 0 ? rounded : rounded - 1;
+}
+
 function seekVideo(video: HTMLVideoElement, time: number) {
   return new Promise<void>((resolve) => {
     const target = Math.max(0, time);
@@ -989,7 +994,7 @@ function seekVideo(video: HTMLVideoElement, time: number) {
 }
 
 function getRecorderMimeType() {
-  return ["video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+  return ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm", "video/mp4"]
     .find((type) => MediaRecorder.isTypeSupported(type));
 }
 
