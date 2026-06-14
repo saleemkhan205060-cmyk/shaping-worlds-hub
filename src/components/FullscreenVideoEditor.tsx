@@ -403,17 +403,6 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               </div>
             )}
             {editTab === "auto" && (
-              <div className="text-white">
-                <button
-                  onClick={() => { setBrightness(1.08); setContrast(1.12); setSaturation(1.15); }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white/[0.08] hover:bg-white/20 transition active:scale-95"
-                >
-                  <Wand2 className="h-5 w-5" />
-                  <span className="text-sm font-medium">Auto Enhance</span>
-                </button>
-              </div>
-            )}
-            {editTab === "adjust" && (
               <div className="space-y-3 text-white">
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {([
@@ -440,6 +429,17 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 {adjustSub === "saturation" && (
                   <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
                 )}
+              </div>
+            )}
+            {editTab === "adjust" && (
+              <div className="text-white">
+                <button
+                  onClick={() => { setBrightness(1.08); setContrast(1.12); setSaturation(1.15); }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white/[0.08] hover:bg-white/20 transition active:scale-95"
+                >
+                  <Wand2 className="h-5 w-5" />
+                  <span className="text-sm font-medium">Auto Enhance</span>
+                </button>
               </div>
             )}
             {editTab === "filters" && (
