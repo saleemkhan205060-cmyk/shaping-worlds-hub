@@ -62,6 +62,19 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [textSize, setTextSize] = useState(28);
   const [crop, setCrop] = useState<CropRect>(FULL_CROP);
   const [savingCrop, setSavingCrop] = useState(false);
+  const [savingElapsed, setSavingElapsed] = useState(0);
+
+  useEffect(() => {
+    if (!savingCrop) { setSavingElapsed(0); return; }
+    const start = Date.now();
+    setSavingElapsed(0);
+    const id = window.setInterval(() => {
+      setSavingElapsed(Math.floor((Date.now() - start) / 1000));
+    }, 250);
+    return () => window.clearInterval(id);
+  }, [savingCrop]);
+
+
 
 
   useEffect(() => {
@@ -286,8 +299,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <X className="h-5 w-5" />
             </button>
             <span className="text-white text-sm font-semibold">Edit</span>
-            <button onClick={handleDone} disabled={savingCrop} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition disabled:opacity-60">{savingCrop ? "Saving..." : "Done"}</button>
+            {savingCrop ? (
+              <div className="text-white text-xs font-bold px-4 py-1.5 rounded-full bg-white/15 tabular-nums inline-flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-rose-400 animate-pulse" />
+                Processing {fmt(savingElapsed)}
+              </div>
+            ) : (
+              <button onClick={handleDone} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
+            )}
           </div>
+
 
           {/* Preview — fills remaining space, no extra gap */}
           <div className="flex-1 min-h-0 flex items-center justify-center relative">
