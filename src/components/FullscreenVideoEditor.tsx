@@ -234,6 +234,18 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
+      {/* Hidden SVG filter for pro tonal curve */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden>
+        <defs>
+          <filter id="vfx-tone" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+            <feComponentTransfer>
+              <feFuncR type="table" tableValues={toneTable} />
+              <feFuncG type="table" tableValues={toneTable} />
+              <feFuncB type="table" tableValues={toneTable} />
+            </feComponentTransfer>
+          </filter>
+        </defs>
+      </svg>
 
       {/* Video */}
       <div className="relative flex-1 overflow-hidden" onClick={togglePlay}>
@@ -248,6 +260,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             playsInline
           />
         )}
+        {vignetteStyle && <div className="absolute inset-0 pointer-events-none" style={vignetteStyle} />}
         {musicSrc && <audio ref={musicRef} src={musicSrc} loop />}
 
         {/* Overlay text */}
