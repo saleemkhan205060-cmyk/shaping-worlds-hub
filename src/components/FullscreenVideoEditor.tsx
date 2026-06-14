@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2 } from "lucide-react";
+import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2, Moon, Contrast, Droplet, Thermometer, Palette, CircleDot, Sunrise, Sunset } from "lucide-react";
 
 type Props = {
   file: File;
@@ -27,7 +27,7 @@ const ASPECTS: { id: string; label: string; ratio: string }[] = [
 ];
 
 type EditTab = "auto" | "crop" | "adjust" | "filters" | "audio" | "speed" | "music" | "text";
-type AdjustSub = "brightness" | "contrast" | "saturation" | null;
+type AdjustSub = "brightness" | "contrast" | "saturation" | "highlights" | "shadows" | "whitePoint" | "blackPoint" | "warmth" | "tint" | "vignette" | null;
 type CropRect = { x: number; y: number; w: number; h: number };
 
 const FULL_CROP: CropRect = { x: 0, y: 0, w: 100, h: 100 };
@@ -52,6 +52,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const [brightness, setBrightness] = useState(1);
   const [contrast, setContrast] = useState(1);
   const [saturation, setSaturation] = useState(1);
+  // Pro-grade tonal & color params (all centered at 0, range -1..1, except vignette 0..1)
+  const [highlights, setHighlights] = useState(0);
+  const [shadows, setShadows] = useState(0);
+  const [whitePoint, setWhitePoint] = useState(0);
+  const [blackPoint, setBlackPoint] = useState(0);
+  const [warmth, setWarmth] = useState(0);
+  const [tint, setTint] = useState(0);
+  const [vignette, setVignette] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [origVol, setOrigVol] = useState(1);
   const [musicVol, setMusicVol] = useState(0.8);
@@ -168,15 +176,41 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   // Google Photos–style brightness: combine a gentle brightness() with a compensating
   // contrast curve so highlights don't blow out and shadows lift cleanly.
-  // b > 1  -> brighten + slightly reduce contrast to protect highlights
-  // b < 1  -> darken   + slightly increase contrast to keep punch in shadows
   const bDelta = brightness - 1;
   const effBrightness = 1 + bDelta * 0.85;
   const compContrast = contrast * (1 - bDelta * 0.18);
   const presetCss = FILTERS.find((f) => f.id === filter)?.css;
   const presetPart = presetCss && presetCss !== "none" ? presetCss + " " : "";
-  const videoFilter = `${presetPart}brightness(${effBrightness}) contrast(${compContrast}) saturate(${saturation})`;
+
+  // Warmth: positive = warmer (toward red/yellow), negative = cooler (toward blue)
+  // Tint: positive = magenta, negative = green. Approximated with hue-rotate + sepia.
+  const warmCss = warmth > 0
+    ? `sepia(${(warmth * 0.35).toFixed(3)}) hue-rotate(${(-warmth * 6).toFixed(2)}deg)`
+    : warmth < 0
+      ? `hue-rotate(${(-warmth * 18).toFixed(2)}deg) saturate(${(1 + Math.abs(warmth) * 0.1).toFixed(3)})`
+      : "";
+  const tintCss = tint !== 0 ? `hue-rotate(${(tint * 22).toFixed(2)}deg)` : "";
+
+  // Tone curve (highlights / shadows / white point / black point) via SVG feComponentTransfer
+  const toneActive = highlights !== 0 || shadows !== 0 || whitePoint !== 0 || blackPoint !== 0;
+  const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
+  const tonePts = [
+    clamp01(0 + blackPoint * 0.18),
+    clamp01(0.25 + shadows * 0.22),
+    0.5,
+    clamp01(0.75 + highlights * 0.22),
+    clamp01(1 + whitePoint * 0.18),
+  ];
+  const toneTable = tonePts.map((n) => n.toFixed(4)).join(" ");
+  const toneFilterPart = toneActive ? "url(#vfx-tone) " : "";
+
+  const videoFilter = `${toneFilterPart}${presetPart}${warmCss ? warmCss + " " : ""}${tintCss ? tintCss + " " : ""}brightness(${effBrightness}) contrast(${compContrast}) saturate(${saturation})`;
   const aspectStyle = aspect === "free" ? {} : { aspectRatio: ASPECTS.find((a) => a.id === aspect)?.ratio };
+
+  // Vignette overlay style (radial darkening at edges)
+  const vignetteStyle: React.CSSProperties | null = vignette > 0
+    ? { background: `radial-gradient(ellipse at center, transparent ${(60 - vignette * 30).toFixed(0)}%, rgba(0,0,0,${(vignette * 0.75).toFixed(3)}) 100%)` }
+    : null;
 
   const handleDone = async () => {
     if (savingCrop) return;
@@ -200,6 +234,18 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
   return (
     <div className="fixed inset-0 z-[400] bg-black flex flex-col">
+      {/* Hidden SVG filter for pro tonal curve */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden>
+        <defs>
+          <filter id="vfx-tone" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+            <feComponentTransfer>
+              <feFuncR type="table" tableValues={toneTable} />
+              <feFuncG type="table" tableValues={toneTable} />
+              <feFuncB type="table" tableValues={toneTable} />
+            </feComponentTransfer>
+          </filter>
+        </defs>
+      </svg>
 
       {/* Video */}
       <div className="relative flex-1 overflow-hidden" onClick={togglePlay}>
@@ -214,6 +260,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             playsInline
           />
         )}
+        {vignetteStyle && <div className="absolute inset-0 pointer-events-none" style={vignetteStyle} />}
         {musicSrc && <audio ref={musicRef} src={musicSrc} loop />}
 
         {/* Overlay text */}
@@ -336,6 +383,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 onLoadedMetadata={(e) => { e.currentTarget.currentTime = current; }}
               />
             )}
+            {vignetteStyle && <div className="absolute inset-0 pointer-events-none" style={vignetteStyle} />}
             {overlayText && (
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none px-4">
                 <span
@@ -425,11 +473,18 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             )}
             {editTab === "adjust" && (
               <div className="space-y-3 text-white">
-                <div className="flex gap-2 overflow-x-auto pb-1">
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                   {([
                     { id: "brightness", label: "Brightness", icon: <Sun className="h-4 w-4" /> },
-                    { id: "contrast", label: "Contrast", icon: <SlidersHorizontal className="h-4 w-4" /> },
-                    { id: "saturation", label: "Saturation", icon: <Sparkles className="h-4 w-4" /> },
+                    { id: "contrast", label: "Contrast", icon: <Contrast className="h-4 w-4" /> },
+                    { id: "highlights", label: "Highlights", icon: <Sunrise className="h-4 w-4" /> },
+                    { id: "shadows", label: "Shadows", icon: <Moon className="h-4 w-4" /> },
+                    { id: "whitePoint", label: "White point", icon: <Sunset className="h-4 w-4" /> },
+                    { id: "blackPoint", label: "Black point", icon: <CircleDot className="h-4 w-4" /> },
+                    { id: "saturation", label: "Saturation", icon: <Droplet className="h-4 w-4" /> },
+                    { id: "warmth", label: "Warmth", icon: <Thermometer className="h-4 w-4" /> },
+                    { id: "tint", label: "Tint", icon: <Palette className="h-4 w-4" /> },
+                    { id: "vignette", label: "Vignette", icon: <SlidersHorizontal className="h-4 w-4" /> },
                   ] as const).map((a) => (
                     <button
                       key={a.id}
@@ -449,6 +504,27 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 )}
                 {adjustSub === "saturation" && (
                   <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
+                )}
+                {adjustSub === "highlights" && (
+                  <AdjustRow label="Highlights" value={highlights} min={-1} max={1} onChange={setHighlights} />
+                )}
+                {adjustSub === "shadows" && (
+                  <AdjustRow label="Shadows" value={shadows} min={-1} max={1} onChange={setShadows} />
+                )}
+                {adjustSub === "whitePoint" && (
+                  <AdjustRow label="White point" value={whitePoint} min={-1} max={1} onChange={setWhitePoint} />
+                )}
+                {adjustSub === "blackPoint" && (
+                  <AdjustRow label="Black point" value={blackPoint} min={-1} max={1} onChange={setBlackPoint} />
+                )}
+                {adjustSub === "warmth" && (
+                  <AdjustRow label="Warmth" value={warmth} min={-1} max={1} onChange={setWarmth} />
+                )}
+                {adjustSub === "tint" && (
+                  <AdjustRow label="Tint" value={tint} min={-1} max={1} onChange={setTint} />
+                )}
+                {adjustSub === "vignette" && (
+                  <AdjustRow label="Vignette" value={vignette} min={0} max={1} onChange={setVignette} />
                 )}
               </div>
             )}
