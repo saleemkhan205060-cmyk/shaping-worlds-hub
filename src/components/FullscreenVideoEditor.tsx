@@ -4,7 +4,7 @@ import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume
 type Props = {
   file: File;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (file: File) => void;
 };
 
 const FILTERS: { id: string; label: string; css: string }[] = [
