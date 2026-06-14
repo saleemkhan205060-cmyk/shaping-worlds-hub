@@ -819,6 +819,28 @@ function hasVisualAdjustments(adjustments: VisualAdjustments) {
     || adjustments.vignette > 0.005;
 }
 
+function buildCanvasFilter(adjustments: VisualAdjustments) {
+  const presetCss = FILTERS.find((f) => f.id === adjustments.filter)?.css;
+  const presetPart = presetCss && presetCss !== "none" ? `${presetCss} ` : "";
+  const warmthPart = adjustments.warmth > 0
+    ? `sepia(${(adjustments.warmth * 0.35).toFixed(3)}) hue-rotate(${(-adjustments.warmth * 6).toFixed(2)}deg) `
+    : adjustments.warmth < 0
+      ? `hue-rotate(${(-adjustments.warmth * 18).toFixed(2)}deg) saturate(${(1 + Math.abs(adjustments.warmth) * 0.1).toFixed(3)}) `
+      : "";
+  const tintPart = adjustments.tint !== 0 ? `hue-rotate(${(adjustments.tint * 22).toFixed(2)}deg) ` : "";
+  const brightnessPart = clampNumber(
+    adjustments.brightness + adjustments.shadows * 0.08 + adjustments.highlights * 0.05 + adjustments.whitePoint * 0.06 - adjustments.blackPoint * 0.06,
+    0.1,
+    3,
+  );
+  const contrastPart = clampNumber(adjustments.contrast * (1 - (adjustments.brightness - 1) * 0.12), 0.1, 3);
+  return `${presetPart}${warmthPart}${tintPart}brightness(${brightnessPart.toFixed(4)}) contrast(${contrastPart.toFixed(4)}) saturate(${clampNumber(adjustments.saturation, 0, 3).toFixed(4)})`;
+}
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
 async function createCroppedVideoFile(file: File, crop: CropRect, trimStart = 0, trimEnd = 0, adjustments: VisualAdjustments = DEFAULT_VISUAL_ADJUSTMENTS): Promise<File> {
   if (typeof MediaRecorder === "undefined") throw new Error("MediaRecorder unavailable");
 
