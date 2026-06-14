@@ -466,12 +466,34 @@ function UploadPage() {
             <MoreVertical className="h-5 w-5" />
           </button>
           <button
-            onClick={() => setFullscreenPreviewOpen(false)}
-            className="absolute bottom-6 right-6 h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg active:scale-95"
-            aria-label="Go to upload"
+            onClick={() => setUploadPrivacyOpen((v) => !v)}
+            disabled={!file || uploading}
+            className="absolute bottom-6 right-6 h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg active:scale-95 disabled:opacity-50"
+            aria-label="Upload"
           >
-            <Upload className="h-4 w-4" />
+            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
           </button>
+          {uploadPrivacyOpen && !uploading && (
+            <div
+              className="absolute bottom-20 right-6 bg-white rounded-xl shadow-2xl overflow-hidden w-44 z-[260]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => { setIsPrivate(false); setUploadPrivacyOpen(false); handleUpload(); }}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50 border-b border-slate-100"
+              >
+                <Globe2 className="h-4 w-4 text-indigo-600" />
+                Public
+              </button>
+              <button
+                onClick={() => { setIsPrivate(true); setUploadPrivacyOpen(false); handleUpload(); }}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              >
+                <Lock className="h-4 w-4 text-rose-600" />
+                Private
+              </button>
+            </div>
+          )}
         </div>
       )}
 
