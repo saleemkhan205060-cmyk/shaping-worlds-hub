@@ -75,7 +75,6 @@ function UploadPage() {
       return;
     }
     setFile(f);
-    if (isVideoFile(f)) setFullscreenPreviewOpen(true);
   };
 
   const onPickThumb = (f: File | null) => {
@@ -188,8 +187,12 @@ function UploadPage() {
             <div className="relative rounded-xl overflow-hidden bg-slate-100">
               {isVideoFile(file) ? (
                 <video
+                  key={preview ?? "v"}
                   src={preview ?? undefined}
                   controls
+                  playsInline
+                  muted
+                  preload="metadata"
                   controlsList="nodownload noplaybackrate noremoteplayback"
                   disablePictureInPicture
                   onContextMenu={(e) => e.preventDefault()}
