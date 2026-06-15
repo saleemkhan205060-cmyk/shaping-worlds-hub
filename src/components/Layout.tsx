@@ -213,15 +213,33 @@ export function Layout({
               <Badge n={unreadNotifs} />
             </Link>
             {user && (
-              <Link
-                to="/messages"
-                search={{ to: undefined }}
-                className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
-                aria-label="Messages"
-              >
-                <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
-                <Badge n={unreadMsgs} />
-              </Link>
+              <>
+                <Link
+                  to="/messages"
+                  search={{ to: undefined }}
+                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  aria-label="Messages"
+                >
+                  <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
+                  <Badge n={unreadMsgs} />
+                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-slate-100 text-slate-700 text-sm font-medium transition"
+                    >
+                      <span className="hidden sm:inline max-w-[120px] truncate">{userDisplayName}</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
+                      <User className="h-4 w-4 mr-2" /> {t("menu.about")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
