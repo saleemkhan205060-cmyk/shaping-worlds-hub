@@ -161,6 +161,7 @@ function Profile() {
           mobile: data.mobile ?? "",
           mobilePrivate: data.mobile_private ?? true,
           website: data.website ?? "",
+          isPublic: (data as any).is_public ?? false,
         });
         return;
       }
