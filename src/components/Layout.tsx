@@ -54,9 +54,46 @@ export function Layout({
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [homeReloading, setHomeReloading] = useState(false);
 
+  const refreshUnreadMsgs = useCallback(async () => {
+    if (!user) return setUnreadMsgs(0);
+    const { count } = await supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("recipient_id", user.id)
+      .is("read_at", null);
+    setUnreadMsgs(count ?? 0);
+  }, [user]);
+
+  const refreshUnreadNotifs = useCallback(async () => {
+    if (!user) return setUnreadNotifs(0);
+    const seen = localStorage.getItem(NOTIF_SEEN_KEY) ?? new Date(0).toISOString();
+    // followers (new)
+    const followsP = supabase
+      .from("follows")
+      .select("id", { count: "exact", head: true })
+      .eq("following_id", user.id)
+      .gt("created_at", seen);
+    // likes & comments on my posts
+    const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", user.id);
+    const ids = (myPosts ?? []).map((p) => p.id);
+    let likes = 0, comments = 0;
+    if (ids.length) {
+      const [lk, cm] = await Promise.all([
+        supabase.from("post_likes").select("id", { count: "exact", head: true })
+          .in("post_id", ids).neq("user_id", user.id).gt("created_at", seen),
+        supabase.from("post_comments").select("id", { count: "exact", head: true })
+          .in("post_id", ids).neq("user_id", user.id).gt("created_at", seen),
+      ]);
+      likes = lk.count ?? 0;
+      comments = cm.count ?? 0;
+    }
+    const { count: foll } = await followsP;
+    setUnreadNotifs((foll ?? 0) + likes + comments);
+  }, [user]);
+
   useEffect(() => {
-    refreshUnreadMsgs();
-    refreshUnreadNotifs();
+    initNotificationSoundUnlock();
+  }, []);
     if (!user) return;
     const ch = supabase
       .channel("layout-unread")
