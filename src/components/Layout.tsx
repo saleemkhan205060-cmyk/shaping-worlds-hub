@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2 } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
