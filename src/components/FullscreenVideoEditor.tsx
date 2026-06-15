@@ -803,7 +803,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 }
 
 const EXPORT_FPS = 30;
-const MAX_EXPORT_EDGE = 1280;
+const MAX_EXPORT_EDGE = 1080;
 
 function hasVisualAdjustments(adjustments: VisualAdjustments) {
   return adjustments.filter !== "none"
@@ -963,12 +963,14 @@ async function recordCanvasVideo(
     try {
       await seekVideo(video, startAt);
       drawFrame();
-      // captureStream(0) = manual frame mode; we push frames at a steady cadence
-      // below to keep MediaRecorder timing smooth on mobile (rAF gets throttled
-      // while a <video> is playing, which produced visible stutter).
-      const canvasStream = canvas.captureStream(0);
-      const canvasTrack = canvasStream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
-      canvasTrack?.requestFrame?.();
+      // Let the browser timestamp the canvas stream at a fixed frame rate.
+      // Manual captureStream(0) + requestFrame can create uneven frame timing on
+      // some phones, which makes the saved video play in small jumps.
+      const canvasStream = canvas.captureStream(EXPORT_FPS);
+      const frameVideo = video as HTMLVideoElement & {
+        requestVideoFrameCallback?: (callback: () => void) => number;
+        cancelVideoFrameCallback?: (handle: number) => void;
+      };
 
       if (withAudio) {
         const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream; mozCaptureStream?: () => MediaStream };
@@ -978,20 +980,29 @@ async function recordCanvasVideo(
 
       let stopped = false;
       let intervalId: ReturnType<typeof setInterval> | null = null;
+      let videoFrameCallbackId: number | null = null;
       const frameIntervalMs = 1000 / EXPORT_FPS;
       const pump = () => {
         if (stopped) return;
         if (video.ended || video.currentTime >= endAt) return;
         drawFrame();
-        canvasTrack?.requestFrame?.();
+      };
+      const scheduleVideoFrame = () => {
+        if (stopped || !frameVideo.requestVideoFrameCallback) return;
+        videoFrameCallbackId = frameVideo.requestVideoFrameCallback(() => {
+          pump();
+          scheduleVideoFrame();
+        });
       };
 
       const recording = recordStreamSegment(canvasStream, video, endAt, () => {
         stopped = true;
         if (intervalId !== null) { clearInterval(intervalId); intervalId = null; }
+        if (videoFrameCallbackId !== null) { frameVideo.cancelVideoFrameCallback?.(videoFrameCallbackId); videoFrameCallbackId = null; }
       }, () => {
         pump();
         intervalId = setInterval(pump, frameIntervalMs);
+        scheduleVideoFrame();
       });
       const { blob, mimeType } = await recording;
       if (intervalId !== null) clearInterval(intervalId);
