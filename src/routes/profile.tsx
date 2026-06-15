@@ -281,6 +281,7 @@ function Profile() {
       mobile: next.mobile ?? "",
       mobile_private: next.mobilePrivate ?? true,
       website: next.website ?? "",
+      is_public: next.isPublic ?? false,
     });
     if (error) {
       toast.error("Failed to save");
