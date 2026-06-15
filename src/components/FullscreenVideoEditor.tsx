@@ -994,6 +994,7 @@ async function recordCanvasVideo(
           scheduleVideoFrame();
         });
       };
+      const hasVideoFrameCallback = typeof frameVideo.requestVideoFrameCallback === "function";
 
       const recording = recordStreamSegment(canvasStream, video, endAt, () => {
         stopped = true;
@@ -1001,8 +1002,8 @@ async function recordCanvasVideo(
         if (videoFrameCallbackId !== null) { frameVideo.cancelVideoFrameCallback?.(videoFrameCallbackId); videoFrameCallbackId = null; }
       }, () => {
         pump();
-        intervalId = setInterval(pump, frameIntervalMs);
-        scheduleVideoFrame();
+        if (hasVideoFrameCallback) scheduleVideoFrame();
+        else intervalId = setInterval(pump, frameIntervalMs);
       });
       const { blob, mimeType } = await recording;
       if (intervalId !== null) clearInterval(intervalId);
@@ -1061,13 +1062,20 @@ async function recordStreamSegment(
     await video.play();
     onStarted?.();
     const playbackDone = new Promise<void>((resolve) => {
-      video.onended = () => resolve();
-      const tick = () => {
-        if (stopped) { resolve(); return; }
-        if (video.currentTime >= endAt) { video.pause(); resolve(); return; }
-        requestAnimationFrame(tick);
+      let intervalId: ReturnType<typeof setInterval> | null = null;
+      let resolved = false;
+      const finish = () => {
+        if (resolved) return;
+        resolved = true;
+        if (intervalId !== null) clearInterval(intervalId);
+        video.onended = null;
+        resolve();
       };
-      requestAnimationFrame(tick);
+      video.onended = finish;
+      intervalId = setInterval(() => {
+        if (stopped) { finish(); return; }
+        if (video.currentTime >= endAt) { video.pause(); finish(); }
+      }, 40);
     });
     await Promise.race([playbackDone, done.then(() => undefined)]);
     stopOnce();
