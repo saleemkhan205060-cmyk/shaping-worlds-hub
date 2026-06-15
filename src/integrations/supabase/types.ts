@@ -358,6 +358,7 @@ export type Database = {
           email: string
           email_private: boolean
           gender: string
+          is_public: boolean
           languages: string
           marital_status: string
           mobile: string
@@ -376,6 +377,7 @@ export type Database = {
           email?: string
           email_private?: boolean
           gender?: string
+          is_public?: boolean
           languages?: string
           marital_status?: string
           mobile?: string
@@ -394,6 +396,7 @@ export type Database = {
           email?: string
           email_private?: boolean
           gender?: string
+          is_public?: boolean
           languages?: string
           marital_status?: string
           mobile?: string
