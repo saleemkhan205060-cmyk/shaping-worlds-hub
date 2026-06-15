@@ -111,6 +111,7 @@ function Profile() {
     mobile: string;
     mobilePrivate: boolean;
     website: string;
+    isPublic: boolean;
   };
 
   const defaultAbout = (): AboutInfo => ({
@@ -127,6 +128,7 @@ function Profile() {
     mobile: "",
     mobilePrivate: true,
     website: "",
+    isPublic: false,
   });
 
   const [about, setAbout] = useState<AboutInfo>(defaultAbout);
