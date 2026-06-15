@@ -151,6 +151,7 @@ export function HomeFeed() {
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [shareCounts, setShareCounts] = useState<Record<string, number>>({});
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [sharePost, setSharePost] = useState<Post | null>(null);
