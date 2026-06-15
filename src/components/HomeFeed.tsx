@@ -1028,8 +1028,8 @@ export function HomeFeed() {
                           )
                         )}
                       </div>
-                      <p className="text-xs text-slate-500">
-                        {new Date(p.created_at).toLocaleString()}
+                      <p className="text-xs text-slate-500 truncate">
+                        {p.caption || "No title"}
                       </p>
                     </div>
                   </Link>
