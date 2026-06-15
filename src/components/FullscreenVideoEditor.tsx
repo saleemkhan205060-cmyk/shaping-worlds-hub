@@ -1131,14 +1131,17 @@ function seekVideo(video: HTMLVideoElement, time: number) {
 }
 
 function getRecorderMimeType() {
-  return ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm", "video/mp4"]
+  return ["video/mp4", "video/webm;codecs=vp8,opus", "video/webm", "video/webm;codecs=vp9,opus"]
     .find((type) => MediaRecorder.isTypeSupported(type));
 }
 
-function fileFromRecordedBlob(source: File, blob: Blob, mimeType: string | undefined, suffix: string) {
+async function fileFromRecordedBlob(source: File, blob: Blob, mimeType: string | undefined, suffix: string, durationMs: number) {
   const outputType = (mimeType || blob.type || "video/webm").split(";")[0];
   const outputExt = outputType.includes("mp4") ? "mp4" : "webm";
-  return new File([blob], `${source.name.replace(/\.[^.]+$/, "")}-${suffix}.${outputExt}`, { type: outputType });
+  const fixedBlob = outputExt === "webm" && durationMs > 0
+    ? await fixWebmDuration(blob, durationMs, { logger: false }).catch(() => blob)
+    : blob;
+  return new File([fixedBlob], `${source.name.replace(/\.[^.]+$/, "")}-${suffix}.${outputExt}`, { type: outputType });
 }
 
 function SheetItem({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {
