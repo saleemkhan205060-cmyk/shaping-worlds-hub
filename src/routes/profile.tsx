@@ -448,13 +448,28 @@ function Profile() {
           </div>
         </div>
 
-        {/* Name row: name + flag + chevron centered */}
+        {/* Name row: name + dropdown centered */}
         <div className="mt-5 px-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div />
-          <div className="flex items-center gap-1.5 justify-self-center">
-            <h1 className="text-2xl font-extrabold text-slate-900">{displayName}</h1>
-            <ChevronDown className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="flex items-center gap-1.5 justify-self-center outline-none"
+              >
+                <h1 className="text-2xl font-extrabold text-slate-900">{displayName}</h1>
+                <ChevronDown className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="w-44">
+              <DropdownMenuItem onClick={startEditBio}>
+                <Pencil className="h-4 w-4 mr-2" /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setAboutOpen(true)}>
+                <User className="h-4 w-4 mr-2" /> About
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div />
         </div>
 
