@@ -223,25 +223,6 @@ export function Layout({
                   <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
                   <Badge n={unreadMsgs} />
                 </Link>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-slate-100 text-slate-700 text-sm font-medium transition"
-                    >
-                      <span className="hidden sm:inline max-w-[120px] truncate">{userDisplayName}</span>
-                      <ChevronDown className="h-4 w-4" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-44">
-                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { edit: "open" } })}>
-                      <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
-                      <User className="h-4 w-4 mr-2" /> {t("menu.about")}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </>
             )}
             <DropdownMenu>

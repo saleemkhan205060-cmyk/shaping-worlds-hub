@@ -12,6 +12,12 @@ import { AvatarImg } from "@/components/AvatarImg";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { SearchablePicker } from "@/components/SearchablePicker";
 import { COUNTRIES, LANGUAGES, PROFESSIONS, EDUCATION } from "@/lib/picker-options";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 
 export const Route = createFileRoute("/profile")({ component: Profile });
