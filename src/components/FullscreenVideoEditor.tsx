@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2, Moon, Contrast, Droplet, Thermometer, Palette, CircleDot, Sunrise, Sunset } from "lucide-react";
+import fixWebmDuration from "fix-webm-duration";
 
 type Props = {
   file: File;
@@ -803,7 +804,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 }
 
 const EXPORT_FPS = 30;
-const MAX_EXPORT_EDGE = 1080;
+const MAX_EXPORT_EDGE = 720;
 
 function hasVisualAdjustments(adjustments: VisualAdjustments) {
   return adjustments.filter !== "none"
