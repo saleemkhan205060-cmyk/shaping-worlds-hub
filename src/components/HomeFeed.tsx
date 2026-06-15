@@ -586,14 +586,24 @@ export function HomeFeed() {
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         {TABS.map((t) => {
           const active = tab === t.id;
+          const color =
+            t.id === "videos"
+              ? { active: "bg-rose-500 text-white border-rose-500", inactive: "bg-white text-rose-600 border-rose-200 hover:bg-rose-50" }
+              : t.id === "photos"
+              ? { active: "bg-emerald-500 text-white border-emerald-500", inactive: "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50" }
+              : t.id === "users"
+              ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
+              : t.id === "marriage"
+              ? { active: "bg-pink-500 text-white border-pink-500", inactive: "bg-white text-pink-600 border-pink-200 hover:bg-pink-50" }
+              : t.id === "market"
+              ? { active: "bg-amber-500 text-white border-amber-500", inactive: "bg-white text-amber-600 border-amber-200 hover:bg-amber-50" }
+              : { active: "bg-indigo-600 text-white border-indigo-600", inactive: "bg-white text-slate-600 border-slate-200 hover:bg-slate-50" };
           return (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
-                active
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+              className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition ${
+                active ? color.active + " shadow-sm" : color.inactive
               }`}
             >
               {t.label}
