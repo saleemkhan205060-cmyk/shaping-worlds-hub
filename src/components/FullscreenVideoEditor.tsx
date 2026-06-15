@@ -963,7 +963,10 @@ async function recordCanvasVideo(
     try {
       await seekVideo(video, startAt);
       drawFrame();
-      const canvasStream = canvas.captureStream(EXPORT_FPS);
+      // captureStream(0) = manual frame mode; we push frames at a steady cadence
+      // below to keep MediaRecorder timing smooth on mobile (rAF gets throttled
+      // while a <video> is playing, which produced visible stutter).
+      const canvasStream = canvas.captureStream(0);
       const canvasTrack = canvasStream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
       canvasTrack?.requestFrame?.();
 
@@ -974,20 +977,24 @@ async function recordCanvasVideo(
       }
 
       let stopped = false;
-      const drawLoop = () => {
-        if (stopped || video.ended || video.paused) return;
-        if (video.currentTime >= endAt) return;
+      let intervalId: ReturnType<typeof setInterval> | null = null;
+      const frameIntervalMs = 1000 / EXPORT_FPS;
+      const pump = () => {
+        if (stopped) return;
+        if (video.ended || video.currentTime >= endAt) return;
         drawFrame();
         canvasTrack?.requestFrame?.();
-        requestAnimationFrame(drawLoop);
       };
 
       const recording = recordStreamSegment(canvasStream, video, endAt, () => {
         stopped = true;
+        if (intervalId !== null) { clearInterval(intervalId); intervalId = null; }
       }, () => {
-        drawLoop();
+        pump();
+        intervalId = setInterval(pump, frameIntervalMs);
       });
       const { blob, mimeType } = await recording;
+      if (intervalId !== null) clearInterval(intervalId);
       return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
     } catch (error) {
       lastError = error;
@@ -1007,7 +1014,7 @@ async function recordStreamSegment(
   onStarted?: () => void,
 ): Promise<{ blob: Blob; mimeType: string }> {
   const mimeType = getRecorderMimeType();
-  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 4_000_000, audioBitsPerSecond: 96_000 };
+  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
   const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
   const chunks: BlobPart[] = [];
   recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
