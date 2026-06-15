@@ -199,6 +199,13 @@ function Profile() {
     }
   }, [search.about, navigate]);
 
+  useEffect(() => {
+    if (search.edit === "open") {
+      startEditBio();
+      navigate({ to: "/profile", search: {} });
+    }
+  }, [search.edit, navigate]);
+
   const DEFAULT_BIO =
     "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
 
