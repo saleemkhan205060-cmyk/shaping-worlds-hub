@@ -1014,7 +1014,7 @@ async function recordStreamSegment(
   onStarted?: () => void,
 ): Promise<{ blob: Blob; mimeType: string }> {
   const mimeType = getRecorderMimeType();
-  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 4_000_000, audioBitsPerSecond: 96_000 };
+  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
   const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
   const chunks: BlobPart[] = [];
   recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
