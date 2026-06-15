@@ -959,7 +959,7 @@ export function HomeFeed() {
             const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <div className="flex items-center gap-2 px-4 py-3">
+                <div className="flex items-center gap-2 px-4 py-1.5">
                   <Link
                     to="/u/$id"
                     params={{ id: p.user_id }}
