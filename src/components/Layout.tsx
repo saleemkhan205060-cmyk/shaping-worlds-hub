@@ -53,6 +53,7 @@ export function Layout({
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [homeReloading, setHomeReloading] = useState(false);
+  const [userDisplayName, setUserDisplayName] = useState<string>("");
 
   const refreshUnreadMsgs = useCallback(async () => {
     if (!user) return setUnreadMsgs(0);
@@ -94,6 +95,16 @@ export function Layout({
   useEffect(() => {
     initNotificationSoundUnlock();
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      setUserDisplayName("");
+      return;
+    }
+    supabase.from("profiles").select("display_name, username").eq("id", user.id).single().then(({ data }) => {
+      setUserDisplayName(data?.display_name || data?.username || user.email || "");
+    });
+  }, [user]);
 
   useEffect(() => {
     refreshUnreadMsgs();
@@ -228,9 +239,6 @@ export function Layout({
                 </DropdownMenuItem>
                 {user && (
                   <>
-                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
-                      <User className="h-4 w-4 mr-2" /> {t("menu.about")}
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="h-4 w-4 mr-2" /> {t("menu.signOut")}
                     </DropdownMenuItem>
