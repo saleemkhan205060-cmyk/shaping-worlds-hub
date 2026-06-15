@@ -442,21 +442,14 @@ function Profile() {
           </div>
         </div>
 
-        {/* Name row: name + flag + chevron centered, Edit button on right */}
+        {/* Name row: name + flag + chevron centered */}
         <div className="mt-5 px-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div />
           <div className="flex items-center gap-1.5 justify-self-center">
             <h1 className="text-2xl font-extrabold text-slate-900">{displayName}</h1>
             <ChevronDown className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
           </div>
-          <div className="justify-self-end">
-            <button
-              onClick={startEditBio}
-              className="px-5 py-2 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-200 text-sm font-semibold"
-            >
-              Edit
-            </button>
-          </div>
+          <div />
         </div>
 
         {/* Bio under name */}
