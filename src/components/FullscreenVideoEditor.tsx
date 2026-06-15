@@ -911,7 +911,7 @@ async function recordCapturedVideo(file: File, video: HTMLVideoElement, startAt:
   const stream = captureVideo.captureStream?.() ?? captureVideo.mozCaptureStream?.();
   if (!stream || !stream.getVideoTracks().length) throw new Error("Video capture unavailable");
   const { blob, mimeType } = await recordStreamSegment(stream, video, endAt);
-  return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
+  return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix, (endAt - startAt) * 1000);
 }
 
 async function recordCanvasVideo(
@@ -1008,7 +1008,7 @@ async function recordCanvasVideo(
       });
       const { blob, mimeType } = await recording;
       if (intervalId !== null) clearInterval(intervalId);
-      return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix);
+      return fileFromRecordedBlob(file, blob, mimeType || blob.type, suffix, (endAt - startAt) * 1000);
     } catch (error) {
       lastError = error;
       video.pause();
@@ -1027,7 +1027,7 @@ async function recordStreamSegment(
   onStarted?: () => void,
 ): Promise<{ blob: Blob; mimeType: string }> {
   const mimeType = getRecorderMimeType();
-  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 128_000 };
+  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 3_500_000, audioBitsPerSecond: 96_000 };
   const recorder = new MediaRecorder(stream, mimeType ? { ...recorderOptions, mimeType } : recorderOptions);
   const chunks: BlobPart[] = [];
   recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
