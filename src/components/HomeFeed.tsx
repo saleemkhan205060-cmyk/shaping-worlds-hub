@@ -1050,7 +1050,7 @@ export function HomeFeed() {
                   </Link>
                 </div>
                 {p.caption && p.media_type !== "text" && (
-                  <div className="relative px-4 pb-3">
+                  <div className="relative px-4 pb-2">
                     <p
                       className="text-sm whitespace-pre-wrap select-none"
                       onPointerDown={() => startCaptionPress(p)}
@@ -1131,7 +1131,7 @@ export function HomeFeed() {
                     </div>
                   </MediaActions>
                 )}
-                <div className="flex items-center gap-5 px-4 py-3 text-sm text-slate-600">
+                <div className="flex items-center gap-5 px-4 py-2 text-sm text-slate-600">
                   <button
                     onClick={() => toggleLike(p.id)}
                     className={`flex flex-col items-center gap-0.5 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
