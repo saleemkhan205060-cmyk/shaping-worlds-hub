@@ -94,6 +94,10 @@ export function Layout({
   useEffect(() => {
     initNotificationSoundUnlock();
   }, []);
+
+  useEffect(() => {
+    refreshUnreadMsgs();
+    refreshUnreadNotifs();
     if (!user) return;
     const ch = supabase
       .channel("layout-unread")
