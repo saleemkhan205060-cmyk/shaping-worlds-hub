@@ -44,7 +44,7 @@ type ProfileRow = {
 function Profile() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const search = Route.useSearch() as { about?: string };
+  const search = Route.useSearch() as { about?: string; edit?: string };
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
