@@ -235,7 +235,7 @@ export function Layout({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-44">
                     <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { edit: "open" } })}>
-                      <Pencil className="h-4 w-4 mr-2" /> {t("menu.edit")}
+                      <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
                       <User className="h-4 w-4 mr-2" /> {t("menu.about")}
