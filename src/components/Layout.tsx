@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, ChevronDown, Pencil } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,7 +53,6 @@ export function Layout({
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [homeReloading, setHomeReloading] = useState(false);
-  const [userDisplayName, setUserDisplayName] = useState<string>("");
 
   const refreshUnreadMsgs = useCallback(async () => {
     if (!user) return setUnreadMsgs(0);
@@ -95,16 +94,6 @@ export function Layout({
   useEffect(() => {
     initNotificationSoundUnlock();
   }, []);
-
-  useEffect(() => {
-    if (!user) {
-      setUserDisplayName("");
-      return;
-    }
-    supabase.from("profiles").select("display_name, username").eq("id", user.id).single().then(({ data }) => {
-      setUserDisplayName(data?.display_name || data?.username || user.email || "");
-    });
-  }, [user]);
 
   useEffect(() => {
     refreshUnreadMsgs();
@@ -223,25 +212,6 @@ export function Layout({
                   <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
                   <Badge n={unreadMsgs} />
                 </Link>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-slate-100 text-slate-700 text-sm font-medium transition"
-                    >
-                      <span className="hidden sm:inline max-w-[120px] truncate">{userDisplayName}</span>
-                      <ChevronDown className="h-4 w-4" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-44">
-                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { edit: "open" } })}>
-                      <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
-                      <User className="h-4 w-4 mr-2" /> {t("menu.about")}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </>
             )}
             <DropdownMenu>
