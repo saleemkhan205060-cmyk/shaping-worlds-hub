@@ -214,9 +214,10 @@ export function HomeFeed() {
     const ids = posts.map((p) => p.id);
     if (ids.length === 0) return;
     (async () => {
-      const [{ data: likes }, { data: comments }] = await Promise.all([
+      const [{ data: likes }, { data: comments }, { data: shares }] = await Promise.all([
         supabase.from("post_likes").select("post_id,user_id").in("post_id", ids),
         supabase.from("post_comments").select("post_id").in("post_id", ids),
+        supabase.from("post_shares").select("post_id").in("post_id", ids),
       ]);
       const lc: Record<string, number> = {};
       const me: Record<string, boolean> = {};
@@ -228,9 +229,14 @@ export function HomeFeed() {
       (comments ?? []).forEach((c: any) => {
         cc[c.post_id] = (cc[c.post_id] ?? 0) + 1;
       });
+      const sc: Record<string, number> = {};
+      (shares ?? []).forEach((s: any) => {
+        sc[s.post_id] = (sc[s.post_id] ?? 0) + 1;
+      });
       setLikeCounts(lc);
       setLikedByMe(me);
       setCommentCounts(cc);
+      setShareCounts(sc);
     })();
   }, [posts, user]);
 
@@ -1113,27 +1119,34 @@ export function HomeFeed() {
                 <div className="flex items-center gap-5 px-4 py-3 text-sm text-slate-600">
                   <button
                     onClick={() => toggleLike(p.id)}
-                    className={`flex items-center gap-1 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
+                    className={`flex flex-col items-center gap-0.5 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
                     aria-label={isLiked ? "Unlike" : "Like"}
                   >
                     <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500" : ""}`} />
+                    <span className="text-[11px] font-semibold tabular-nums">{likeCounts[p.id] ?? 0}</span>
                   </button>
                   <button
                     onClick={() => setCommentsOpenFor(p.id)}
-                    className="flex items-center gap-1 hover:text-indigo-600"
+                    className="flex flex-col items-center gap-0.5 hover:text-indigo-600"
                     aria-label="Open comments"
                   >
                     <MessageCircle className="h-6 w-6" />
+                    <span className="text-[11px] font-semibold tabular-nums">{commentCounts[p.id] ?? 0}</span>
                   </button>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
+                      if (user) {
+                        await supabase.from("post_shares").insert({ post_id: p.id, user_id: user.id });
+                        setShareCounts((c) => ({ ...c, [p.id]: (c[p.id] ?? 0) + 1 }));
+                      }
                       setSharePost(p);
                       setShareOpen(true);
                     }}
-                    className="flex items-center hover:text-indigo-600"
+                    className="flex flex-col items-center gap-0.5 hover:text-indigo-600"
                     aria-label="Share"
                   >
                     <img src={shareIconAsset.url} alt="Share" className="h-7 w-7 object-contain" />
+                    <span className="text-[11px] font-semibold tabular-nums">{shareCounts[p.id] ?? 0}</span>
                   </button>
                   {hasMedia && (
                     <button
