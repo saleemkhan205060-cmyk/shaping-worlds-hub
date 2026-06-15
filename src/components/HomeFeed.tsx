@@ -959,11 +959,11 @@ export function HomeFeed() {
             const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
               <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <div className="flex items-center gap-2 px-4 py-1.5">
+                <div className="flex items-center gap-2 px-4 py-1">
                   <Link
                     to="/u/$id"
                     params={{ id: p.user_id }}
-                    className="flex items-center gap-3 flex-1 min-w-0 hover:bg-slate-50 transition rounded-lg -mx-1 px-1 py-1"
+                    className="flex items-center gap-3 flex-1 min-w-0 hover:bg-slate-50 transition rounded-lg -mx-1 px-1 py-0"
                   >
                     <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
                       <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
