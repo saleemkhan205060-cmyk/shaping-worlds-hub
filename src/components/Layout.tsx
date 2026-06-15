@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, ChevronDown } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, ChevronDown, Pencil } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -234,6 +234,9 @@ export function Layout({
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { edit: "open" } })}>
+                      <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate({ to: "/profile", search: { about: "open" } })}>
                       <User className="h-4 w-4 mr-2" /> {t("menu.about")}
                     </DropdownMenuItem>

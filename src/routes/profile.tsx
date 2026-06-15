@@ -44,7 +44,7 @@ type ProfileRow = {
 function Profile() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const search = Route.useSearch() as { about?: string };
+  const search = Route.useSearch() as { about?: string; edit?: string };
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -198,6 +198,13 @@ function Profile() {
       navigate({ to: "/profile", search: {} });
     }
   }, [search.about, navigate]);
+
+  useEffect(() => {
+    if (search.edit === "open") {
+      startEditBio();
+      navigate({ to: "/profile", search: {} });
+    }
+  }, [search.edit, navigate]);
 
   const DEFAULT_BIO =
     "Building communities at the intersection of entertainment, business and meaningful relationships. Shaping the world one connection at a time.";
@@ -435,21 +442,14 @@ function Profile() {
           </div>
         </div>
 
-        {/* Name row: name + flag + chevron centered, Edit button on right */}
+        {/* Name row: name + flag + chevron centered */}
         <div className="mt-5 px-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div />
           <div className="flex items-center gap-1.5 justify-self-center">
             <h1 className="text-2xl font-extrabold text-slate-900">{displayName}</h1>
             <ChevronDown className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
           </div>
-          <div className="justify-self-end">
-            <button
-              onClick={startEditBio}
-              className="px-5 py-2 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-200 text-sm font-semibold"
-            >
-              Edit
-            </button>
-          </div>
+          <div />
         </div>
 
         {/* Bio under name */}
