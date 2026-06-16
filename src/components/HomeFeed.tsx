@@ -118,10 +118,10 @@ type MarriageProfile = {
 
 export function HomeFeed() {
   const { user } = useAuth();
+  const { query, setQuery } = useContext(SearchContext);
   const [posts, setPosts] = useState<Post[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
   const [tab, setTab] = useState<SearchTab>("all");
   const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
   const [caption, setCaption] = useState("");
