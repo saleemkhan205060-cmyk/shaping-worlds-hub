@@ -592,7 +592,7 @@ export function HomeFeed() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition ${
+              className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold border min-w-[72px] transition ${
                 active ? color.active + " shadow-sm" : color.inactive
               }`}
             >
