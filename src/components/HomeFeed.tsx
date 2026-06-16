@@ -64,6 +64,7 @@ type Post = {
   user_id: string;
   media_url: string | null;
   media_type: "image" | "video" | "text";
+  title: string | null;
   caption: string | null;
   category: string | null;
   created_at: string;
