@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useContext } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Image as ImageIcon,
   Video as VideoIcon,
   Send,
   X,
-  Search,
   Heart,
   MessageCircle,
   Loader2,
@@ -15,6 +14,7 @@ import {
   Film,
   Upload,
 } from "lucide-react";
+import { SearchContext } from "@/components/Layout";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
