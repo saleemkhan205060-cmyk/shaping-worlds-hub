@@ -388,5 +388,6 @@ export function Layout({
       </nav>
       )}
     </div>
+    </SearchContext.Provider>
   );
 }
