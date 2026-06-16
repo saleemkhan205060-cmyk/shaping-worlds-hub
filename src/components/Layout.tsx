@@ -189,36 +189,23 @@ export function Layout({
             </div>
           </Link>
 
-          {/* Expandable search bar */}
+          {/* Search trigger — opens dedicated search page */}
           <div className="flex-1 flex justify-center px-2 min-w-0">
-            <div className={`relative flex items-center transition-all duration-300 ${searchFocused ? "w-full max-w-md" : "w-36 sm:w-44"}`}>
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none z-10" />
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => {
-                  if (!searchQuery) setSearchFocused(false);
-                }}
-                placeholder="Search…"
-                className={`w-full h-10 pl-9 pr-8 rounded-full bg-slate-100 border border-transparent text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white focus:border-indigo-200 transition-all duration-300 ${searchQuery || searchFocused ? "" : "placeholder:text-slate-400"}`}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSearchFocused(false);
-                  }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              )}
-            </div>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/search", search: { q: "", tab: "all" } })}
+              className="group flex items-center gap-2 h-11 w-full max-w-md px-4 rounded-full bg-gradient-to-r from-indigo-50 to-pink-50 hover:from-indigo-100 hover:to-pink-100 border border-indigo-100 transition shadow-sm"
+              aria-label="Search"
+            >
+              <span className="h-7 w-7 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 text-white flex items-center justify-center shrink-0 shadow">
+                <Search className="h-4 w-4" strokeWidth={3} />
+              </span>
+              <span className="text-sm font-medium text-slate-500 truncate">
+                Search VIP Life…
+              </span>
+            </button>
           </div>
+
 
           <nav className="hidden md:flex items-center gap-1 shrink-0">
             {navItems.map((item) => {
