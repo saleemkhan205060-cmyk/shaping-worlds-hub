@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as UploadRouteImport } from './routes/upload'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
@@ -31,6 +32,11 @@ const VideosRoute = VideosRouteImport.update({
 const UploadRoute = UploadRouteImport.update({
   id: '/upload',
   path: '/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
   '/market/create': typeof MarketCreateRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
   '/market/create': typeof MarketCreateRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
   '/market_/create': typeof MarketCreateRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/profile'
+    | '/search'
     | '/upload'
     | '/videos'
     | '/market/create'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/profile'
+    | '/search'
     | '/upload'
     | '/videos'
     | '/market/create'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/profile'
+    | '/search'
     | '/upload'
     | '/videos'
     | '/market_/create'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
+  SearchRoute: typeof SearchRoute
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
   MarketCreateRoute: typeof MarketCreateRoute
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/upload'
       fullPath: '/upload'
       preLoaderRoute: typeof UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -313,6 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
+  SearchRoute: SearchRoute,
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
   MarketCreateRoute: MarketCreateRoute,
