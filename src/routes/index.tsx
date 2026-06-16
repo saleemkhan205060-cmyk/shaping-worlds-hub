@@ -58,7 +58,7 @@ function Index() {
   return (
     <Layout>
       {/* Quick nav icons */}
-      <section className="mb-6 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
+      <section className="mb-6 bg-white/50 rounded-3xl border border-slate-200/60 shadow-sm p-3 sm:p-4">
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {QUICK_NAV.map((item) => {
             const { label, icon: Icon, to, tint, iconFill } = item;
@@ -67,16 +67,16 @@ function Index() {
             <Link
               key={label}
               to={to}
-              className="flex flex-col items-center gap-2 group"
+              className="flex flex-col items-center gap-1.5 group"
             >
               <span
-                className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full overflow-hidden flex items-center justify-center shadow-lg group-active:scale-95 transition ${image ? "bg-white" : `bg-gradient-to-br ${tint} text-white`}`}
+                className={`h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden flex items-center justify-center shadow-sm group-active:scale-95 transition ${image ? "" : `bg-gradient-to-br ${tint} text-white`}`}
               >
                 {image ? (
                   <img src={image} alt={label} className="h-full w-full object-cover" />
                 ) : (
                   <Icon
-                    className={`h-7 w-7 sm:h-9 sm:w-9 ${iconFill ? "fill-white" : ""}`}
+                    className={`h-6 w-6 sm:h-7 sm:w-7 ${iconFill ? "fill-white" : ""}`}
                     strokeWidth={2.2}
                   />
                 )}
