@@ -572,110 +572,6 @@ export function HomeFeed() {
 
   return (
     <section className="mt-6 space-y-4">
-      {/* Category tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-        {TABS.map((t) => {
-          const active = tab === t.id;
-          const color =
-            t.id === "videos"
-              ? { active: "bg-rose-500 text-white border-rose-500", inactive: "bg-white text-rose-600 border-rose-200 hover:bg-rose-50" }
-              : t.id === "photos"
-              ? { active: "bg-emerald-500 text-white border-emerald-500", inactive: "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50" }
-              : t.id === "users"
-              ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
-              : t.id === "marriage"
-              ? { active: "bg-pink-500 text-white border-pink-500", inactive: "bg-white text-pink-600 border-pink-200 hover:bg-pink-50" }
-              : t.id === "market"
-              ? { active: "bg-amber-500 text-white border-amber-500", inactive: "bg-white text-amber-600 border-amber-200 hover:bg-amber-50" }
-              : { active: "bg-indigo-600 text-white border-indigo-600", inactive: "bg-white text-slate-600 border-slate-200 hover:bg-slate-50" };
-          return (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold border min-w-[72px] transition ${
-                active ? color.active + " shadow-sm" : color.inactive
-              }`}
-            >
-              {t.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Users tab / People matches */}
-      {tab === "users" && matchedProfiles.length > 0 && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-3">
-          <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
-          <div className="flex gap-3 overflow-x-auto">
-            {matchedProfiles.slice(0, 20).map((p) => (
-              <Link
-                key={p.id}
-                to="/u/$id"
-                params={{ id: p.id }}
-                className="shrink-0 flex flex-col items-center w-16"
-              >
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden">
-                  <AvatarImg
-                    src={p.avatar_url}
-                    alt={p.display_name ?? p.username ?? "?"}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <span className="text-[11px] mt-1 truncate w-full text-center">
-                  {p.display_name ?? p.username}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Marriage tab */}
-      {tab === "marriage" && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-3 space-y-2">
-          <p className="text-xs font-semibold text-slate-500 px-2">Marriage Profiles</p>
-          {matchedMarriage.length === 0 ? (
-            <p className="text-sm text-slate-500 px-2 py-4 text-center">No marriage profiles found.</p>
-          ) : (
-            matchedMarriage.slice(0, 30).map((m) => {
-              const prof = profiles[m.user_id];
-              const name = prof?.display_name ?? prof?.username ?? "Member";
-              return (
-                <Link
-                  key={m.id}
-                  to="/marriage"
-                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition"
-                >
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold overflow-hidden">
-                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">{name}</p>
-                    <p className="text-xs text-slate-500 truncate">
-                      {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })
-          )}
-        </div>
-      )}
-
-      {/* Market tab */}
-      {tab === "market" && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
-          <p className="text-sm text-slate-600 mb-3">Browse market items by category.</p>
-          <Link
-            to="/market"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600"
-          >
-            Open Market
-          </Link>
-        </div>
-      )}
-
-
       {/* Composer */}
       {user && (
         <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
@@ -935,7 +831,108 @@ export function HomeFeed() {
           <Link to="/auth" className="text-indigo-600 font-semibold">Sign in</Link> to post and join the feed.
         </div>
       )}
+      {/* Category tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+        {TABS.map((t) => {
+          const active = tab === t.id;
+          const color =
+            t.id === "videos"
+              ? { active: "bg-rose-500 text-white border-rose-500", inactive: "bg-white text-rose-600 border-rose-200 hover:bg-rose-50" }
+              : t.id === "photos"
+              ? { active: "bg-emerald-500 text-white border-emerald-500", inactive: "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50" }
+              : t.id === "users"
+              ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
+              : t.id === "marriage"
+              ? { active: "bg-pink-500 text-white border-pink-500", inactive: "bg-white text-pink-600 border-pink-200 hover:bg-pink-50" }
+              : t.id === "market"
+              ? { active: "bg-amber-500 text-white border-amber-500", inactive: "bg-white text-amber-600 border-amber-200 hover:bg-amber-50" }
+              : { active: "bg-indigo-600 text-white border-indigo-600", inactive: "bg-white text-slate-600 border-slate-200 hover:bg-slate-50" };
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold border min-w-[72px] transition ${
+                active ? color.active + " shadow-sm" : color.inactive
+              }`}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
 
+      {/* Users tab / People matches */}
+      {tab === "users" && matchedProfiles.length > 0 && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-3">
+          <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
+          <div className="flex gap-3 overflow-x-auto">
+            {matchedProfiles.slice(0, 20).map((p) => (
+              <Link
+                key={p.id}
+                to="/u/$id"
+                params={{ id: p.id }}
+                className="shrink-0 flex flex-col items-center w-16"
+              >
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden">
+                  <AvatarImg
+                    src={p.avatar_url}
+                    alt={p.display_name ?? p.username ?? "?"}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <span className="text-[11px] mt-1 truncate w-full text-center">
+                  {p.display_name ?? p.username}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Marriage tab */}
+      {tab === "marriage" && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-3 space-y-2">
+          <p className="text-xs font-semibold text-slate-500 px-2">Marriage Profiles</p>
+          {matchedMarriage.length === 0 ? (
+            <p className="text-sm text-slate-500 px-2 py-4 text-center">No marriage profiles found.</p>
+          ) : (
+            matchedMarriage.slice(0, 30).map((m) => {
+              const prof = profiles[m.user_id];
+              const name = prof?.display_name ?? prof?.username ?? "Member";
+              return (
+                <Link
+                  key={m.id}
+                  to="/marriage"
+                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition"
+                >
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold overflow-hidden">
+                    <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{name}</p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* Market tab */}
+      {tab === "market" && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
+          <p className="text-sm text-slate-600 mb-3">Browse market items by category.</p>
+          <Link
+            to="/market"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600"
+          >
+            Open Market
+          </Link>
+        </div>
+      )}
       {/* Feed */}
       {tab !== "users" && tab !== "marriage" && tab !== "market" && (
       <div className="space-y-4">
