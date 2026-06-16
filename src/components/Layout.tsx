@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2 } from "lucide-react";
+import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, Search, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,16 @@ import { initNotificationSoundUnlock } from "@/lib/notification-sound";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
+
+interface SearchContextType {
+  query: string;
+  setQuery: (q: string) => void;
+}
+
+export const SearchContext = createContext<SearchContextType>({
+  query: "",
+  setQuery: () => {},
+});
 
 const FeedIcon = ({ className }: { className?: string }) => (
   <img src={feedIconUrl} alt="Feed" className={`${className ?? ""} object-contain`} />
