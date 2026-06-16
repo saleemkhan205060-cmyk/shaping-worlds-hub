@@ -5,6 +5,7 @@ import {
   Video as VideoIcon,
   Send,
   X,
+  Search,
   Heart,
   MessageCircle,
   Loader2,
