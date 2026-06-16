@@ -572,18 +572,6 @@ export function HomeFeed() {
 
   return (
     <section className="mt-6 space-y-4">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          type="search"
-          placeholder="Search users, posts, photos, videos, hashtags, marriage, market…"
-          className="w-full h-12 pl-11 pr-4 rounded-full bg-white border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
-        />
-      </div>
-
       {/* Category tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         {TABS.map((t) => {
