@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z as _z } from "zod";
 import { z } from "zod";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon, Store } from "lucide-react";
