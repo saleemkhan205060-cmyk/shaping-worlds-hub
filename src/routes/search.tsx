@@ -87,17 +87,19 @@ function SearchPage() {
       return;
     }
     setLoading(true);
+    // PostgREST .or() filter uses `*` as the ILIKE wildcard (not `%`).
+    const orLike = `*${term}*`;
     const like = `%${term}%`;
     Promise.all([
       supabase
         .from("profiles")
         .select("id, username, display_name, avatar_url, bio")
-        .or(`username.ilike.${like},display_name.ilike.${like}`)
+        .or(`username.ilike.${orLike},display_name.ilike.${orLike}`)
         .limit(30),
       supabase
         .from("posts")
         .select("id,user_id,media_url,media_type,title,caption,thumbnail_url,created_at")
-        .or(`title.ilike.${like},caption.ilike.${like}`)
+        .or(`title.ilike.${orLike},caption.ilike.${orLike}`)
         .order("created_at", { ascending: false })
         .limit(60),
       (supabase as any)
