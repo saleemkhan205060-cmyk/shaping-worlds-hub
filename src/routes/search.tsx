@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { z as _z } from "zod";
 import { z } from "zod";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon, Store } from "lucide-react";
@@ -7,12 +6,12 @@ import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 
 const searchSchema = z.object({
-  q: fallback(z.string(), "").default(""),
-  tab: fallback(z.enum(["all", "reels", "photos", "people", "market"]), "all").default("all"),
+  q: z.string().optional().default(""),
+  tab: z.enum(["all", "reels", "photos", "people", "market"]).optional().default("all"),
 });
 
 export const Route = createFileRoute("/search")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (s: Record<string, unknown>) => searchSchema.parse(s),
   component: SearchPage,
 });
 
