@@ -70,7 +70,7 @@ function Index() {
               className="flex flex-col items-center gap-1.5 group"
             >
               <span
-                className={`h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden flex items-center justify-center shadow-sm group-active:scale-95 transition ${image ? "" : `bg-gradient-to-br ${tint} text-white`}`}
+                className={`h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden flex items-center justify-center shadow-md group-active:scale-95 transition ${image ? "" : `bg-gradient-to-br ${tint} text-white`}`}
               >
                 {image ? (
                   <img src={image} alt={label} className="h-full w-full object-cover" />
