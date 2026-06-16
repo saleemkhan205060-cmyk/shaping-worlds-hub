@@ -171,7 +171,7 @@ export function Layout({
     ) : null;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchFocused, setSearchFocused] = useState(false);
+
 
   return (
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
