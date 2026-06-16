@@ -100,8 +100,8 @@ function SearchPage() {
         .or(`title.ilike.${like},caption.ilike.${like}`)
         .order("created_at", { ascending: false })
         .limit(60),
-      supabase
-        .from("market_listings")
+      (supabase as any)
+        .from("market_products")
         .select("id,title,price,image_url")
         .ilike("title", like)
         .limit(30),
