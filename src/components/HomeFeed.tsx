@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useContext } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Image as ImageIcon,
@@ -15,6 +15,7 @@ import {
   Film,
   Upload,
 } from "lucide-react";
+import { SearchContext } from "@/components/Layout";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -117,10 +118,10 @@ type MarriageProfile = {
 
 export function HomeFeed() {
   const { user } = useAuth();
+  const { query, setQuery } = useContext(SearchContext);
   const [posts, setPosts] = useState<Post[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
   const [tab, setTab] = useState<SearchTab>("all");
   const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
   const [caption, setCaption] = useState("");
@@ -571,18 +572,6 @@ export function HomeFeed() {
 
   return (
     <section className="mt-6 space-y-4">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          type="search"
-          placeholder="Search users, posts, photos, videos, hashtags, marriage, market…"
-          className="w-full h-12 pl-11 pr-4 rounded-full bg-white border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
-        />
-      </div>
-
       {/* Category tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         {TABS.map((t) => {

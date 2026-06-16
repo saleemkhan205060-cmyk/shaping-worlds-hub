@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2 } from "lucide-react";
+import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
+import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, Search, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,16 @@ import { initNotificationSoundUnlock } from "@/lib/notification-sound";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
+
+interface SearchContextType {
+  query: string;
+  setQuery: (q: string) => void;
+}
+
+export const SearchContext = createContext<SearchContextType>({
+  query: "",
+  setQuery: () => {},
+});
 
 const FeedIcon = ({ className }: { className?: string }) => (
   <img src={feedIconUrl} alt="Feed" className={`${className ?? ""} object-contain`} />
@@ -160,11 +170,15 @@ export function Layout({
       </span>
     ) : null;
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+
   return (
+    <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
     <div className={`min-h-screen bg-slate-50 text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
 
       <header className={`sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center justify-between gap-2 sm:gap-3">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
@@ -175,7 +189,38 @@ export function Layout({
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Expandable search bar */}
+          <div className="flex-1 flex justify-center px-2 min-w-0">
+            <div className={`relative flex items-center transition-all duration-300 ${searchFocused ? "w-full max-w-md" : "w-36 sm:w-44"}`}>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none z-10" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => {
+                  if (!searchQuery) setSearchFocused(false);
+                }}
+                placeholder="Search…"
+                className={`w-full h-10 pl-9 pr-8 rounded-full bg-slate-100 border border-transparent text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white focus:border-indigo-200 transition-all duration-300 ${searchQuery || searchFocused ? "" : "placeholder:text-slate-400"}`}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSearchFocused(false);
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-1 shrink-0">
             {navItems.map((item) => {
               const active = path === item.to;
               return (
@@ -343,5 +388,6 @@ export function Layout({
       </nav>
       )}
     </div>
+    </SearchContext.Provider>
   );
 }
