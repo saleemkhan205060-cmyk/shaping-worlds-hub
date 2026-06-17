@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -28,8 +29,10 @@ export function OnlineUsers() {
   const [statuses, setStatuses] = useState<Record<string, Status>>({});
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const dotBtnRef = useRef<HTMLButtonElement | null>(null);
 
   // Presence channel
   useEffect(() => {
@@ -160,12 +163,15 @@ export function OnlineUsers() {
               </div>
               {isMe ? (
                 <button
+                  ref={dotBtnRef}
                   type="button"
                   aria-label={`Set status (current: ${meta.label})`}
                   title={`Status: ${meta.label}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                    setMenuPos({ top: rect.top, left: rect.left + rect.width / 2 });
                     setMenuOpen((v) => !v);
                   }}
                   className={`absolute bottom-0.5 right-0.5 h-4 w-4 sm:h-4.5 sm:w-4.5 rounded-full ${meta.dot} border-2 border-white ring-2 ${meta.ring} cursor-pointer`}
@@ -177,34 +183,44 @@ export function OnlineUsers() {
                 />
               )}
 
-              {isMe && menuOpen && (
-                <div
-                  ref={menuRef}
-                  className="absolute z-30 top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1 text-left"
-                >
-                  {(Object.keys(STATUS_META) as Status[]).map((s) => {
-                    const sm = STATUS_META[s];
-                    return (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          changeStatus(s);
-                        }}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 ${
-                          myStatus === s ? "font-semibold text-slate-900" : "text-slate-700"
-                        }`}
-                      >
-                        <span className={`h-3 w-3 rounded-full ${sm.dot}`} />
-                        <span>{sm.label}</span>
-                        {myStatus === s && <span className="ml-auto text-emerald-600">✓</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              {isMe &&
+                menuOpen &&
+                menuPos &&
+                createPortal(
+                  <div
+                    ref={menuRef}
+                    style={{
+                      top: menuPos.top - 8,
+                      left: menuPos.left,
+                    }}
+                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1 text-left"
+                  >
+                    {(Object.keys(STATUS_META) as Status[]).map((s) => {
+                      const sm = STATUS_META[s];
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            changeStatus(s);
+                          }}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 ${
+                            myStatus === s ? "font-semibold text-slate-900" : "text-slate-700"
+                          }`}
+                        >
+                          <span className={`h-3 w-3 rounded-full ${sm.dot}`} />
+                          <span>{sm.label}</span>
+                          {myStatus === s && <span className="ml-auto text-emerald-600">✓</span>}
+                        </button>
+                      );
+                    })}
+                    {/* Downward arrow pointing to the status dot */}
+                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45 shadow-sm" />
+                  </div>,
+                  document.body
+                )}
             </div>
           );
 
