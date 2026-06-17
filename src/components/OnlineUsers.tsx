@@ -11,10 +11,10 @@ type Profile = {
 
 type Status = "online" | "busy" | "dnd";
 
-const STATUS_META: Record<Status, { dot: string; ring: string; label: string; emoji: string }> = {
-  online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Green Indicator - Online", emoji: "🟢" },
-  busy: { dot: "bg-amber-400", ring: "ring-amber-200", label: "Yellow Indicator - Busy", emoji: "🟡" },
-  dnd: { dot: "bg-red-500", ring: "ring-red-200", label: "Red Indicator - Do Not Disturb Me", emoji: "🔴" },
+const STATUS_META: Record<Status, { dot: string; ring: string; label: string }> = {
+  online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Online" },
+  busy:   { dot: "bg-amber-400",   ring: "ring-amber-200",   label: "Busy" },
+  dnd:    { dot: "bg-red-500",     ring: "ring-red-200",     label: "Do Not Disturb Me" },
 };
 
 const STORAGE_KEY = "vip:my-status";
