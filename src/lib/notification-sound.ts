@@ -237,7 +237,8 @@ export function initBackgroundMessageNotifications() {
   if (typeof window === "undefined") return;
   if (!canUseBrowserNotifications()) return;
   if (window.Notification.permission === "default") {
-    requestNotificationPermissionFromGesture();
+    // Proactively ask so background message chime/notification can fire later
+    void window.Notification.requestPermission().catch(() => {});
   }
 }
 
@@ -261,6 +262,10 @@ export async function showNewMessageNotification({
     badge: NOTIFICATION_ICON,
     tag,
     data: { url },
+    silent: false,
+    renotify: Boolean(tag),
+    requireInteraction: false,
+    vibrate: [200, 100, 200],
   } as NotificationOptions;
 
   try {
