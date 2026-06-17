@@ -99,28 +99,35 @@ function Messages() {
   // realtime
   useEffect(() => {
     if (!user) return;
+    const handleNew = async (payload: any) => {
+      const m = payload.new as Msg;
+      if (m.sender_id !== user.id && m.recipient_id !== user.id) return;
+      if (m.recipient_id === user.id && m.sender_id !== user.id) playSoftChime(m.id);
+      setMsgs((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+      const otherId = m.sender_id === user.id ? m.recipient_id : m.sender_id;
+      if (!profiles[otherId]) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("id, username, display_name, avatar_url")
+          .eq("id", otherId)
+          .maybeSingle();
+        if (data) setProfiles((p) => ({ ...p, [otherId]: data as Profile }));
+      }
+    };
     const channel = supabase
       .channel(`messages-${user.id}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
-        async (payload) => {
-          const m = payload.new as Msg;
-          if (m.sender_id !== user.id && m.recipient_id !== user.id) return;
-          if (m.recipient_id === user.id && m.sender_id !== user.id) playSoftChime(m.id);
-          setMsgs((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
-          const otherId = m.sender_id === user.id ? m.recipient_id : m.sender_id;
-          if (!profiles[otherId]) {
-            const { data } = await supabase
-              .from("profiles")
-              .select("id, username, display_name, avatar_url")
-              .eq("id", otherId)
-              .maybeSingle();
-            if (data) setProfiles((p) => ({ ...p, [otherId]: data as Profile }));
-          }
-        },
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        handleNew,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages", filter: `sender_id=eq.${user.id}` },
+        handleNew,
       )
       .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
     };

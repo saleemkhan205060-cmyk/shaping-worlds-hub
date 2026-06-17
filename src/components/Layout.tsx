@@ -113,14 +113,15 @@ export function Layout({
       .channel("layout-unread")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages" },
+        { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
         refreshUnreadMsgs,
       )
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
+        { event: "*", schema: "public", table: "messages", filter: `sender_id=eq.${user.id}` },
         refreshUnreadMsgs,
       )
+
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` },
