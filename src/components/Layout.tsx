@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
 import { initNotificationSoundUnlock } from "@/lib/notification-sound";
+import { useGlobalPresence } from "@/lib/presence";
 import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
@@ -104,6 +105,9 @@ export function Layout({
   useEffect(() => {
     initNotificationSoundUnlock();
   }, []);
+
+  // Keep the user "online" across all routes; only drops when tab is closed.
+  useGlobalPresence(user?.id ?? null);
 
   useEffect(() => {
     refreshUnreadMsgs();

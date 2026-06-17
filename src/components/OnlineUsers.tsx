@@ -2,6 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  PRESENCE_STORAGE_KEY,
+  setMyStatus as setMyStatusGlobal,
+  usePresenceState,
+  type Status,
+} from "@/lib/presence";
 
 type Profile = {
   id: string;
@@ -10,74 +16,32 @@ type Profile = {
   avatar_url: string | null;
 };
 
-type Status = "online" | "busy" | "dnd";
-
 const STATUS_META: Record<Status, { dot: string; ring: string; label: string }> = {
   online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Online" },
   busy:   { dot: "bg-amber-400",   ring: "ring-amber-200",   label: "Busy" },
   dnd:    { dot: "bg-red-500",     ring: "ring-red-200",     label: "Do Not Disturb Me" },
 };
 
-const STORAGE_KEY = "vip:my-status";
-
 export function OnlineUsers() {
   const [me, setMe] = useState<string | null>(null);
-  const [myStatus, setMyStatus] = useState<Status>(() => {
+  const [myStatus, setMyStatusLocal] = useState<Status>(() => {
     if (typeof window === "undefined") return "online";
-    return (localStorage.getItem(STORAGE_KEY) as Status) || "online";
+    return (localStorage.getItem(PRESENCE_STORAGE_KEY) as Status) || "online";
   });
-  const [statuses, setStatuses] = useState<Record<string, Status>>({});
+  const statuses = usePresenceState();
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const dotBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  // Presence channel
   useEffect(() => {
     let cancelled = false;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
-
-    (async () => {
-      const { data: auth } = await supabase.auth.getUser();
-      const uid = auth.user?.id;
-      if (!uid || cancelled) return;
-      setMe(uid);
-
-      channel = supabase.channel("online-users", {
-        config: { presence: { key: uid } },
-      });
-      channelRef.current = channel;
-
-      const syncStatuses = () => {
-        const state = channel!.presenceState() as Record<string, Array<{ status?: Status }>>;
-        const next: Record<string, Status> = {};
-        for (const [id, metas] of Object.entries(state)) {
-          const s = metas[0]?.status;
-          next[id] = s === "busy" || s === "dnd" ? s : "online";
-        }
-        setStatuses(next);
-      };
-
-      channel
-        .on("presence", { event: "sync" }, syncStatuses)
-        .on("presence", { event: "join" }, syncStatuses)
-        .on("presence", { event: "leave" }, syncStatuses)
-        .subscribe(async (status) => {
-          if (status === "SUBSCRIBED") {
-            const initial = (localStorage.getItem(STORAGE_KEY) as Status) || "online";
-            await channel!.track({ status: initial, online_at: new Date().toISOString() });
-          }
-        });
-    })();
-
+    supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setMe(data.user?.id ?? null);
+    });
     return () => {
       cancelled = true;
-      const ch = channelRef.current;
-      if (ch) {
-        ch.untrack().finally(() => supabase.removeChannel(ch));
-      }
     };
   }, []);
 
@@ -115,12 +79,12 @@ export function OnlineUsers() {
   }, [menuOpen]);
 
   const changeStatus = async (s: Status) => {
-    setMyStatus(s);
-    localStorage.setItem(STORAGE_KEY, s);
+    setMyStatusLocal(s);
     setMenuOpen(false);
-    const ch = channelRef.current;
-    if (ch) await ch.track({ status: s, online_at: new Date().toISOString() });
+    await setMyStatusGlobal(s);
   };
+
+
 
   // Sort: me first, then others
   const orderedIds = useMemo(() => {
