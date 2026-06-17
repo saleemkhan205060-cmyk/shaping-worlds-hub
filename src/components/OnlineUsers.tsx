@@ -180,7 +180,7 @@ export function OnlineUsers() {
               {isMe && menuOpen && (
                 <div
                   ref={menuRef}
-                  className="absolute z-30 top-full left-1/2 -translate-x-1/2 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-200 py-1 text-left"
+                  className="absolute z-30 top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1 text-left"
                 >
                   {(Object.keys(STATUS_META) as Status[]).map((s) => {
                     const sm = STATUS_META[s];
