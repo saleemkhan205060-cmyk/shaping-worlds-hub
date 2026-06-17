@@ -171,10 +171,10 @@ export function OnlineUsers() {
                     e.preventDefault();
                     e.stopPropagation();
                     const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
-                    setMenuPos({ top: rect.top, left: rect.left + rect.width / 2 });
+                    setMenuPos({ top: rect.top + rect.height / 2, left: rect.left + rect.width / 2 });
                     setMenuOpen((v) => !v);
                   }}
-                  className={`absolute bottom-0.5 right-0.5 h-4 w-4 sm:h-4.5 sm:w-4.5 rounded-full ${meta.dot} border-2 border-white ring-2 ${meta.ring} cursor-pointer`}
+                  className={`absolute bottom-0 right-0 h-4 w-4 rounded-full ${meta.dot} border-[2.5px] border-white shadow-sm cursor-pointer`}
                 />
               ) : (
                 <span
@@ -193,7 +193,7 @@ export function OnlineUsers() {
                       top: menuPos.top - 8,
                       left: menuPos.left,
                     }}
-                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1 text-left"
+                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-40 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 text-left"
                   >
                     {(Object.keys(STATUS_META) as Status[]).map((s) => {
                       const sm = STATUS_META[s];
@@ -206,18 +206,18 @@ export function OnlineUsers() {
                             e.stopPropagation();
                             changeStatus(s);
                           }}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 ${
-                            myStatus === s ? "font-semibold text-slate-900" : "text-slate-700"
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-slate-50 ${
+                            myStatus === s ? "font-semibold text-slate-900" : "text-slate-600"
                           }`}
                         >
-                          <span className={`h-3 w-3 rounded-full ${sm.dot}`} />
+                          <span className={`h-8 w-8 rounded-full ${sm.dot} shrink-0`} />
                           <span>{sm.label}</span>
-                          {myStatus === s && <span className="ml-auto text-emerald-600">✓</span>}
+                          {myStatus === s && <span className="ml-auto text-emerald-600 text-base">✓</span>}
                         </button>
                       );
                     })}
                     {/* Downward arrow pointing to the status dot */}
-                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45 shadow-sm" />
+                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-b border-r border-slate-100 rotate-45" />
                   </div>,
                   document.body
                 )}
