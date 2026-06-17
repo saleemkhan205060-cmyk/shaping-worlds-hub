@@ -193,11 +193,11 @@ export function OnlineUsers() {
                           e.stopPropagation();
                           changeStatus(s);
                         }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-slate-50 ${
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 ${
                           myStatus === s ? "font-semibold text-slate-900" : "text-slate-700"
                         }`}
                       >
-                        <span className={`h-2.5 w-2.5 rounded-full ${sm.dot}`} />
+                        <span className={`h-3 w-3 rounded-full ${sm.dot}`} />
                         <span>{sm.label}</span>
                         {myStatus === s && <span className="ml-auto text-emerald-600">✓</span>}
                       </button>
