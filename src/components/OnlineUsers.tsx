@@ -11,10 +11,10 @@ type Profile = {
 
 type Status = "online" | "busy" | "dnd";
 
-const STATUS_META: Record<Status, { dot: string; ring: string; label: string; emoji: string }> = {
-  online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Green Indicator - Online", emoji: "🟢" },
-  busy: { dot: "bg-amber-400", ring: "ring-amber-200", label: "Yellow Indicator - Busy", emoji: "🟡" },
-  dnd: { dot: "bg-red-500", ring: "ring-red-200", label: "Red Indicator - Do Not Disturb Me", emoji: "🔴" },
+const STATUS_META: Record<Status, { dot: string; ring: string; label: string }> = {
+  online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Online" },
+  busy:   { dot: "bg-amber-400",   ring: "ring-amber-200",   label: "Busy" },
+  dnd:    { dot: "bg-red-500",     ring: "ring-red-200",     label: "Do Not Disturb Me" },
 };
 
 const STORAGE_KEY = "vip:my-status";
@@ -193,11 +193,11 @@ export function OnlineUsers() {
                           e.stopPropagation();
                           changeStatus(s);
                         }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-slate-50 ${
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 ${
                           myStatus === s ? "font-semibold text-slate-900" : "text-slate-700"
                         }`}
                       >
-                        <span className={`h-2.5 w-2.5 rounded-full ${sm.dot}`} />
+                        <span className={`h-3 w-3 rounded-full ${sm.dot}`} />
                         <span>{sm.label}</span>
                         {myStatus === s && <span className="ml-auto text-emerald-600">✓</span>}
                       </button>
