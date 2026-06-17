@@ -12,9 +12,9 @@ type Profile = {
 type Status = "online" | "busy" | "dnd";
 
 const STATUS_META: Record<Status, { dot: string; ring: string; label: string; emoji: string }> = {
-  online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Online", emoji: "🟢" },
-  busy: { dot: "bg-amber-400", ring: "ring-amber-200", label: "Busy", emoji: "🟡" },
-  dnd: { dot: "bg-red-500", ring: "ring-red-200", label: "Do Not Disturb", emoji: "🔴" },
+  online: { dot: "bg-emerald-500", ring: "ring-emerald-200", label: "Green Indicator - Online", emoji: "🟢" },
+  busy: { dot: "bg-amber-400", ring: "ring-amber-200", label: "Yellow Indicator - Busy", emoji: "🟡" },
+  dnd: { dot: "bg-red-500", ring: "ring-red-200", label: "Red Indicator - Do Not Disturb Me", emoji: "🔴" },
 };
 
 const STORAGE_KEY = "vip:my-status";
@@ -180,7 +180,7 @@ export function OnlineUsers() {
               {isMe && menuOpen && (
                 <div
                   ref={menuRef}
-                  className="absolute z-30 top-full left-1/2 -translate-x-1/2 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-200 py-1 text-left"
+                  className="absolute z-30 top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1 text-left"
                 >
                   {(Object.keys(STATUS_META) as Status[]).map((s) => {
                     const sm = STATUS_META[s];
