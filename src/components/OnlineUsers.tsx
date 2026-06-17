@@ -186,12 +186,10 @@ export function OnlineUsers() {
                 <div
                   ref={menuRef}
                   style={{
-                    position: "fixed",
                     top: menuPos.top - 8,
                     left: menuPos.left,
-                    transform: "translate(-50%, -100%)",
                   }}
-                  className="z-[100] w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1 text-left"
+                  className="fixed z-[100] -translate-x-1/2 -translate-y-full w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1 text-left"
                 >
                   {(Object.keys(STATUS_META) as Status[]).map((s) => {
                     const sm = STATUS_META[s];
