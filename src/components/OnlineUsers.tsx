@@ -11,16 +11,66 @@ type Profile = {
 
 export function OnlineUsers() {
   const [users, setUsers] = useState<Profile[]>([]);
+  const [onlineIds, setOnlineIds] = useState<string[]>([]);
 
+  // Track presence — current user joins the channel, we read who else is online
   useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      const me = auth.user?.id;
+      if (!me || cancelled) return;
+
+      channel = supabase.channel("online-users", {
+        config: { presence: { key: me } },
+      });
+
+      const syncIds = () => {
+        const state = channel!.presenceState() as Record<string, unknown[]>;
+        setOnlineIds(Object.keys(state));
+      };
+
+      channel
+        .on("presence", { event: "sync" }, syncIds)
+        .on("presence", { event: "join" }, syncIds)
+        .on("presence", { event: "leave" }, syncIds)
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await channel!.track({ online_at: new Date().toISOString() });
+          }
+        });
+    })();
+
+    return () => {
+      cancelled = true;
+      if (channel) {
+        channel.untrack().finally(() => supabase.removeChannel(channel!));
+      }
+    };
+  }, []);
+
+  // Load profiles for currently online users
+  useEffect(() => {
+    if (onlineIds.length === 0) {
+      setUsers([]);
+      return;
+    }
+    let cancelled = false;
     supabase
       .from("profiles")
       .select("id, username, display_name, avatar_url")
-      .not("avatar_url", "is", null)
-      .order("updated_at", { ascending: false })
-      .limit(20)
-      .then(({ data }) => setUsers((data as Profile[]) ?? []));
-  }, []);
+      .in("id", onlineIds)
+      .limit(50)
+      .then(({ data }) => {
+        if (cancelled) return;
+        setUsers((data as Profile[]) ?? []);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [onlineIds]);
 
   if (users.length === 0) return null;
 
