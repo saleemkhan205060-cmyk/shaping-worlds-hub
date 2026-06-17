@@ -46,10 +46,11 @@ export function AppMessageNotifications() {
       .channel(`app-message-notifications-${user.id}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
         async (payload) => {
           const message = payload.new as MessagePayload;
-          if (message.recipient_id !== user.id || message.sender_id === user.id) return;
+          if (message.sender_id === user.id) return;
+
 
           playSoftChime(message.id);
 
