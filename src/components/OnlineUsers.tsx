@@ -193,7 +193,7 @@ export function OnlineUsers() {
                       top: menuPos.top - 8,
                       left: menuPos.left,
                     }}
-                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-44 bg-white rounded-2xl shadow-2xl border border-slate-100 py-1.5 text-left"
+                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-40 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 text-left"
                   >
                     {(Object.keys(STATUS_META) as Status[]).map((s) => {
                       const sm = STATUS_META[s];
@@ -206,11 +206,11 @@ export function OnlineUsers() {
                             e.stopPropagation();
                             changeStatus(s);
                           }}
-                          className={`w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-slate-50 ${
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-slate-50 ${
                             myStatus === s ? "font-semibold text-slate-900" : "text-slate-600"
                           }`}
                         >
-                          <span className={`h-7 w-7 rounded-full ${sm.dot} shrink-0`} />
+                          <span className={`h-8 w-8 rounded-full ${sm.dot} shrink-0`} />
                           <span>{sm.label}</span>
                           {myStatus === s && <span className="ml-auto text-emerald-600 text-base">✓</span>}
                         </button>
