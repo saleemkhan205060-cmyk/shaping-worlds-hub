@@ -106,6 +106,9 @@ export function Layout({
     initNotificationSoundUnlock();
   }, []);
 
+  // Keep the user "online" across all routes; only drops when tab is closed.
+  useGlobalPresence(user?.id ?? null);
+
   useEffect(() => {
     refreshUnreadMsgs();
     refreshUnreadNotifs();
