@@ -162,12 +162,15 @@ export function OnlineUsers() {
               </div>
               {isMe ? (
                 <button
+                  ref={dotBtnRef}
                   type="button"
                   aria-label={`Set status (current: ${meta.label})`}
                   title={`Status: ${meta.label}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                    setMenuPos({ top: rect.top, left: rect.left + rect.width / 2 });
                     setMenuOpen((v) => !v);
                   }}
                   className={`absolute bottom-0.5 right-0.5 h-4 w-4 sm:h-4.5 sm:w-4.5 rounded-full ${meta.dot} border-2 border-white ring-2 ${meta.ring} cursor-pointer`}
