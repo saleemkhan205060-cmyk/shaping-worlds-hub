@@ -261,6 +261,10 @@ export async function showNewMessageNotification({
     badge: NOTIFICATION_ICON,
     tag,
     data: { url },
+    silent: false,
+    renotify: Boolean(tag),
+    requireInteraction: false,
+    vibrate: [200, 100, 200],
   } as NotificationOptions;
 
   try {
