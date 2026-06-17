@@ -28,8 +28,10 @@ export function OnlineUsers() {
   const [statuses, setStatuses] = useState<Record<string, Status>>({});
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const dotBtnRef = useRef<HTMLButtonElement | null>(null);
 
   // Presence channel
   useEffect(() => {
