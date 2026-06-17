@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
+import { OnlineUsers } from "../components/OnlineUsers";
 import marriageIconUrl from "@/assets/marriage-icon.jpg";
 import feedQuickNavUrl from "@/assets/feed-quicknav.jpeg";
 import marketIconUrl from "@/assets/market-icon.jpeg";
@@ -57,6 +58,9 @@ const QUICK_NAV = [
 function Index() {
   return (
     <Layout>
+      {/* Online users */}
+      <OnlineUsers />
+
       {/* Quick nav icons */}
       <section className="mb-6 bg-white/50 rounded-3xl border border-slate-200/60 shadow-sm p-3 sm:p-4">
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
