@@ -180,7 +180,7 @@ export function OnlineUsers() {
               {isMe && menuOpen && (
                 <div
                   ref={menuRef}
-                  className="absolute z-30 top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1 text-left"
+                  className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1 text-left"
                 >
                   {(Object.keys(STATUS_META) as Status[]).map((s) => {
                     const sm = STATUS_META[s];
@@ -203,6 +203,8 @@ export function OnlineUsers() {
                       </button>
                     );
                   })}
+                  {/* Downward arrow pointing to the status dot */}
+                  <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45 shadow-sm" />
                 </div>
               )}
             </div>
