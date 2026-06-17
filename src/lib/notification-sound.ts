@@ -237,7 +237,8 @@ export function initBackgroundMessageNotifications() {
   if (typeof window === "undefined") return;
   if (!canUseBrowserNotifications()) return;
   if (window.Notification.permission === "default") {
-    requestNotificationPermissionFromGesture();
+    // Proactively ask so background message chime/notification can fire later
+    void window.Notification.requestPermission().catch(() => {});
   }
 }
 
