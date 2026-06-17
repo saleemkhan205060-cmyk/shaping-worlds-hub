@@ -193,7 +193,7 @@ export function OnlineUsers() {
                       top: menuPos.top - 8,
                       left: menuPos.left,
                     }}
-                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1 text-left"
+                    className="fixed z-[100] -translate-x-1/2 -translate-y-full w-48 bg-white rounded-2xl shadow-2xl border border-slate-200 py-1 text-left"
                   >
                     {(Object.keys(STATUS_META) as Status[]).map((s) => {
                       const sm = STATUS_META[s];
@@ -206,18 +206,18 @@ export function OnlineUsers() {
                             e.stopPropagation();
                             changeStatus(s);
                           }}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 ${
+                          className={`w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-slate-50 ${
                             myStatus === s ? "font-semibold text-slate-900" : "text-slate-700"
                           }`}
                         >
-                          <span className={`h-3 w-3 rounded-full ${sm.dot}`} />
+                          <span className={`h-4 w-4 rounded-full ${sm.dot} shrink-0`} />
                           <span>{sm.label}</span>
-                          {myStatus === s && <span className="ml-auto text-emerald-600">✓</span>}
+                          {myStatus === s && <span className="ml-auto text-emerald-600 text-base">✓</span>}
                         </button>
                       );
                     })}
                     {/* Downward arrow pointing to the status dot */}
-                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45 shadow-sm" />
+                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45" />
                   </div>,
                   document.body
                 )}
