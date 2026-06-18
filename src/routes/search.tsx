@@ -1,13 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon, Store } from "lucide-react";
+import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 
 const searchSchema = z.object({
   q: z.string().optional().default(""),
-  tab: z.enum(["all", "reels", "photos", "people", "market"]).optional().default("all"),
+  tab: z.enum(["all", "reels", "photos", "people"]).optional().default("all"),
 });
 
 export const Route = createFileRoute("/search")({
@@ -34,19 +34,11 @@ type Post = {
   created_at: string;
 };
 
-type MarketItem = {
-  id: string;
-  title: string;
-  price: number | null;
-  image_url: string | null;
-};
-
 const TABS = [
   { key: "all", label: "All", color: "from-indigo-500 to-purple-500" },
   { key: "reels", label: "Reels", color: "from-pink-500 to-rose-500" },
   { key: "photos", label: "Photos", color: "from-amber-500 to-orange-500" },
   { key: "people", label: "People", color: "from-sky-500 to-cyan-500" },
-  { key: "market", label: "Market", color: "from-emerald-500 to-teal-500" },
 ] as const;
 
 function SearchPage() {
@@ -55,7 +47,6 @@ function SearchPage() {
   const [input, setInput] = useState(q);
   const [people, setPeople] = useState<Profile[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [market, setMarket] = useState<MarketItem[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -83,13 +74,11 @@ function SearchPage() {
     if (!term) {
       setPeople([]);
       setPosts([]);
-      setMarket([]);
       return;
     }
     setLoading(true);
     // PostgREST .or() filter uses `*` as the ILIKE wildcard (not `%`).
     const orLike = `*${term}*`;
-    const like = `%${term}%`;
     Promise.all([
       supabase
         .from("profiles")
@@ -102,15 +91,9 @@ function SearchPage() {
         .or(`title.ilike.${orLike},caption.ilike.${orLike}`)
         .order("created_at", { ascending: false })
         .limit(60),
-      (supabase as any)
-        .from("market_products")
-        .select("id,title,price,image_url")
-        .ilike("title", like)
-        .limit(30),
-    ]).then(([p, po, m]) => {
+    ]).then(([p, po]) => {
       setPeople((p.data as Profile[]) ?? []);
       setPosts((po.data as Post[]) ?? []);
-      setMarket((m.data as any) ?? []);
       setLoading(false);
     });
   }, [q]);
@@ -196,12 +179,8 @@ function SearchPage() {
               {(tab === "all" || tab === "photos") && (
                 <MediaGrid items={photos} kind="image" />
               )}
-              {(tab === "all" || tab === "market") && (
-                <MarketList items={market} />
-              )}
               {people.length === 0 &&
-                posts.length === 0 &&
-                market.length === 0 && (
+                posts.length === 0 && (
                   <div className="py-16 text-center text-sm text-slate-500">
                     No results for "{q}"
                   </div>
@@ -285,27 +264,6 @@ function MediaGrid({ items, kind }: { items: Post[]; kind: "video" | "image" }) 
   );
 }
 
-function MarketList({ items }: { items: MarketItem[] }) {
-  if (items.length === 0) return null;
-  return (
-    <div className="mt-2">
-      <SectionTitle icon={<Store className="h-4 w-4" />} label="Marketplace" />
-      <div className="grid grid-cols-2 gap-2 p-2">
-        {items.map((m) => (
-          <div key={m.id} className="rounded-xl overflow-hidden bg-white border border-slate-200">
-            <div className="aspect-square bg-slate-100">
-              {m.image_url && <img src={m.image_url} alt={m.title} className="h-full w-full object-cover" />}
-            </div>
-            <div className="p-2">
-              <div className="text-sm font-medium truncate">{m.title}</div>
-              {m.price != null && <div className="text-sm font-bold text-emerald-600">${m.price}</div>}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function SectionTitle({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
