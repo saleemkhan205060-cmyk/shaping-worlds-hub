@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck } from "lucide-react";
+import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
