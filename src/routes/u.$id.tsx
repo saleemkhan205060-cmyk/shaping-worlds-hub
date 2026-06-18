@@ -192,6 +192,18 @@ function UserProfile() {
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
                 <CheckCircle2 className="h-5 w-5 text-sky-500 fill-sky-500" />
+                {!isSelf && (
+                  <button
+                    onClick={() => navigate({ to: "/messages", search: { to: id } })}
+                    className="relative ml-1 focus:outline-none"
+                    aria-label="Send message"
+                  >
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30 ring-2 ring-white/80">
+                      <MessageCircle className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-red-500 border-2 border-white" />
+                  </button>
+                )}
               </div>
               <p className="text-sm text-slate-500">@{handle}</p>
             </div>
