@@ -6,7 +6,7 @@ import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
 import marriageIconUrl from "@/assets/marriage-icon.jpg";
 import feedQuickNavUrl from "@/assets/feed-quicknav.jpeg";
-import marketIconUrl from "@/assets/market-icon.jpeg";
+
 import {
   Play,
   TrendingUp,
@@ -25,7 +25,6 @@ import {
   CheckCircle2,
   Play as PlayIcon,
   Gem,
-  Store,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
