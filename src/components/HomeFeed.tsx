@@ -94,14 +94,13 @@ const MAX_BYTES = 500 * 1024 * 1024;
 const isVideoFile = (f: File) => f.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi|3gp)$/i.test(f.name);
 const isImageFile = (f: File) => f.type.startsWith("image/") || /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(f.name);
 
-type SearchTab = "all" | "videos" | "photos" | "users" | "marriage" | "market";
+type SearchTab = "all" | "videos" | "photos" | "users" | "marriage";
 const TABS: { id: SearchTab; label: string }[] = [
   { id: "all", label: "All" },
   { id: "videos", label: "Videos" },
   { id: "photos", label: "Photos" },
   { id: "users", label: "Users" },
   { id: "marriage", label: "Marriage" },
-  { id: "market", label: "Market" },
 ];
 
 type MarriageProfile = {
@@ -844,8 +843,6 @@ export function HomeFeed() {
               ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
               : t.id === "marriage"
               ? { active: "bg-pink-500 text-white border-pink-500", inactive: "bg-white text-pink-600 border-pink-200 hover:bg-pink-50" }
-              : t.id === "market"
-              ? { active: "bg-amber-500 text-white border-amber-500", inactive: "bg-white text-amber-600 border-amber-200 hover:bg-amber-50" }
               : { active: "bg-indigo-600 text-white border-indigo-600", inactive: "bg-white text-slate-600 border-slate-200 hover:bg-slate-50" };
           return (
             <button
@@ -921,20 +918,8 @@ export function HomeFeed() {
         </div>
       )}
 
-      {/* Market tab */}
-      {tab === "market" && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
-          <p className="text-sm text-slate-600 mb-3">Browse market items by category.</p>
-          <Link
-            to="/market"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600"
-          >
-            Open Market
-          </Link>
-        </div>
-      )}
       {/* Feed */}
-      {tab !== "users" && tab !== "marriage" && tab !== "market" && (
+      {tab !== "users" && tab !== "marriage" && (
       <div className="space-y-4">
 
         {loading ? (

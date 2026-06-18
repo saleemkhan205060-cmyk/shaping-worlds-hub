@@ -46,13 +46,6 @@ const QUICK_NAV = [
     tint: "from-pink-500 to-rose-600",
     image: marriageIconUrl,
   },
-  {
-    label: "Market",
-    icon: Store,
-    to: "/market" as const,
-    tint: "from-amber-400 to-orange-500",
-    image: marketIconUrl,
-  },
 ];
 
 function Index() {
