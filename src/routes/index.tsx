@@ -6,7 +6,7 @@ import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
 import marriageIconUrl from "@/assets/marriage-icon.jpg";
 import feedQuickNavUrl from "@/assets/feed-quicknav.jpeg";
-import marketIconUrl from "@/assets/market-icon.jpeg";
+
 import {
   Play,
   TrendingUp,
@@ -25,7 +25,6 @@ import {
   CheckCircle2,
   Play as PlayIcon,
   Gem,
-  Store,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -45,13 +44,6 @@ const QUICK_NAV = [
     to: "/marriage" as const,
     tint: "from-pink-500 to-rose-600",
     image: marriageIconUrl,
-  },
-  {
-    label: "Market",
-    icon: Store,
-    to: "/market" as const,
-    tint: "from-amber-400 to-orange-500",
-    image: marketIconUrl,
   },
 ];
 

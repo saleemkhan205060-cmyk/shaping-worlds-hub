@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
-import { Home, User, Bell, LogOut, LogIn, Store, Menu, Languages, Check, Loader2, Search } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +42,6 @@ const FeedIcon = ({ className }: { className?: string }) => (
 const navItems = [
   { to: "/", labelKey: "nav.home", icon: Home },
   { to: "/videos", labelKey: "nav.feed", icon: FeedIcon },
-  { to: "/market", labelKey: "nav.market", icon: Store },
   { to: "/profile", labelKey: "nav.profile", icon: User },
 ] as const;
 
