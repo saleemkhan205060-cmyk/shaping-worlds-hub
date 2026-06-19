@@ -247,7 +247,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   // Esc to close
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
