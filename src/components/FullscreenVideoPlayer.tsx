@@ -53,6 +53,7 @@ type Props = {
 };
 
 export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
+  const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
   const initialActiveId = items[startIndex]?.id ?? "";
   const containerRef = useRef<HTMLDivElement>(null);
