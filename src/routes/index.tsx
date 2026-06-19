@@ -49,8 +49,9 @@ function Index() {
       <section className="mb-6 bg-white/50 rounded-3xl border border-slate-200/60 shadow-sm p-3 sm:p-4">
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {QUICK_NAV.map((item) => {
-            const { label, icon: Icon, to, tint, iconFill } = item;
+            const { label, icon: Icon, to, tint } = item;
             const image = (item as { image?: string }).image;
+            const iconFill = false;
             return (
             <Link
               key={label}
