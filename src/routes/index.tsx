@@ -4,8 +4,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
-import marriageIconUrl from "@/assets/marriage-icon.jpg";
-
 
 import {
   Play,
@@ -23,8 +21,6 @@ import {
   ArrowRight,
   Star,
   CheckCircle2,
-  Play as PlayIcon,
-  Gem,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
