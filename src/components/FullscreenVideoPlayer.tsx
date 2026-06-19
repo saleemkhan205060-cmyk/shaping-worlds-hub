@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import {
   X,
   Heart,
