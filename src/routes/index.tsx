@@ -37,39 +37,6 @@ function Index() {
       {/* Online users */}
       <OnlineUsers />
 
-      {/* Quick nav icons */}
-      <section className="mb-6 bg-white/50 rounded-3xl border border-slate-200/60 shadow-sm p-3 sm:p-4">
-        <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          {QUICK_NAV.map((item) => {
-            const { label, icon: Icon, to, tint } = item;
-            const image = (item as { image?: string }).image;
-            const iconFill = false;
-            return (
-            <Link
-              key={label}
-              to={to}
-              className="flex flex-col items-center gap-1.5 group"
-            >
-              <span
-                className={`h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden flex items-center justify-center shadow-md group-active:scale-95 transition ${image ? "" : `bg-gradient-to-br ${tint} text-white`}`}
-              >
-                {image ? (
-                  <img src={image} alt={label} className="h-full w-full object-cover" />
-                ) : (
-                  <Icon
-                    className={`h-6 w-6 sm:h-7 sm:w-7 ${iconFill ? "fill-white" : ""}`}
-                    strokeWidth={2.2}
-                  />
-                )}
-              </span>
-              <span className="text-[11px] sm:text-sm font-semibold text-slate-700 text-center">
-                {label}
-              </span>
-            </Link>
-            );
-          })}
-        </div>
-      </section>
 
       {/* Live feed + search + composer */}
       <HomeFeed />
