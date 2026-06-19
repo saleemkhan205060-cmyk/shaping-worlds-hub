@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { Layout } from "../components/Layout";
 import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload, Globe2, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
