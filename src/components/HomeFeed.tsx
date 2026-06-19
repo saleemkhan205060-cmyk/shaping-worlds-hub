@@ -100,8 +100,6 @@ const TABS: { id: SearchTab; label: string }[] = [
   { id: "all", label: "All" },
   { id: "videos", label: "Videos" },
   { id: "photos", label: "Photos" },
-  { id: "users", label: "Users" },
-  { id: "marriage", label: "Marriage" },
 ];
 
 type MarriageProfile = {
