@@ -94,7 +94,7 @@ export function CommentsSheet({
       >
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h3 className="font-bold">Comments</h3>
-          <button onClick={onClose} aria-label="Close" className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
+          <button onClick={handleClose} aria-label="Close" className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
             <X className="h-4 w-4" />
           </button>
         </div>
