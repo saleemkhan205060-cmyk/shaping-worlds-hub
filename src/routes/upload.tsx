@@ -454,7 +454,7 @@ function UploadPage() {
             className="w-full h-full object-contain bg-black"
           />
           <button
-            onClick={() => setFullscreenPreviewOpen(false)}
+            onClick={closeFullscreenPreview}
             className="absolute top-4 left-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
             aria-label="Close"
           >
