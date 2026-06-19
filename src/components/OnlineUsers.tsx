@@ -8,6 +8,8 @@ import {
   usePresenceState,
   type Status,
 } from "@/lib/presence";
+import { Gem } from "lucide-react";
+import marriageIconUrl from "@/assets/marriage-icon.jpg";
 
 type Profile = {
   id: string;

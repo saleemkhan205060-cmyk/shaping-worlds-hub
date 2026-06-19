@@ -29,15 +29,7 @@ import {
 
 export const Route = createFileRoute("/")({ component: Index });
 
-const QUICK_NAV = [
-  {
-    label: "Marriage",
-    icon: Gem,
-    to: "/marriage" as const,
-    tint: "from-pink-500 to-rose-600",
-    image: marriageIconUrl,
-  },
-];
+const QUICK_NAV = [] as const;
 
 function Index() {
   return (
