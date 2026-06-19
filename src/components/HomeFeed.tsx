@@ -145,7 +145,7 @@ export function HomeFeed() {
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
-  const closeFullscreenPreview = useHistoryBackClose(() => setFullscreenPreviewOpen(false));
+  const closeFullscreenPreview = useHistoryBackClose(() => setFullscreenPreviewOpen(false), fullscreenPreviewOpen);
   const [uploadPrivacyOpen, setUploadPrivacyOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
