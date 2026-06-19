@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useContext } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { Link } from "@tanstack/react-router";
 import {
   Image as ImageIcon,
