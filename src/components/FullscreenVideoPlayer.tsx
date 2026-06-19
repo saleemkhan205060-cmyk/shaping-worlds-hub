@@ -353,7 +353,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       toast.error("Couldn't delete. Please try again.");
     } else {
       toast.success("Post deleted");
-      onClose();
+      handleClose();
     }
   };
 
