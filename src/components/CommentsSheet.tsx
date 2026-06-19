@@ -30,6 +30,7 @@ export function CommentsSheet({
   onClose: () => void;
   onCountChange?: (n: number) => void;
 }) {
+  const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
   const [items, setItems] = useState<Comment[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
