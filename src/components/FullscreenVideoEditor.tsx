@@ -61,6 +61,7 @@ const DEFAULT_VISUAL_ADJUSTMENTS: VisualAdjustments = {
 };
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
+  const handleClose = useHistoryBackClose(onClose);
   const videoRef = useRef<HTMLVideoElement>(null);
   const editPreviewRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
