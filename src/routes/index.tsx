@@ -5,7 +5,7 @@ import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
 import marriageIconUrl from "@/assets/marriage-icon.jpg";
-import feedQuickNavUrl from "@/assets/feed-quicknav.jpeg";
+
 
 import {
   Play,
@@ -31,14 +31,6 @@ export const Route = createFileRoute("/")({ component: Index });
 
 const QUICK_NAV = [
   {
-    label: "Feed",
-    icon: PlayIcon,
-    to: "/videos" as const,
-    tint: "from-fuchsia-500 via-pink-500 to-rose-500",
-    iconFill: true,
-    image: feedQuickNavUrl,
-  },
-  {
     label: "Marriage",
     icon: Gem,
     to: "/marriage" as const,
@@ -57,8 +49,9 @@ function Index() {
       <section className="mb-6 bg-white/50 rounded-3xl border border-slate-200/60 shadow-sm p-3 sm:p-4">
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {QUICK_NAV.map((item) => {
-            const { label, icon: Icon, to, tint, iconFill } = item;
+            const { label, icon: Icon, to, tint } = item;
             const image = (item as { image?: string }).image;
+            const iconFill = false;
             return (
             <Link
               key={label}
