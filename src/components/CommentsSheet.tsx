@@ -87,7 +87,7 @@ export function CommentsSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-[120] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={handleClose}>
       <div
         className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
