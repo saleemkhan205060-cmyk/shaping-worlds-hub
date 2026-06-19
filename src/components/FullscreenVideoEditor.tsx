@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2, Moon, Contrast, Droplet, Thermometer, Palette, CircleDot, Sunrise, Sunset } from "lucide-react";
 import fixWebmDuration from "fix-webm-duration";
 
