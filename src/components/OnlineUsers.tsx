@@ -108,6 +108,25 @@ export function OnlineUsers() {
         </Link>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+        {/* Marriage link — first item */}
+        <Link
+          to="/marriage"
+          className="flex flex-col items-center shrink-0 w-16 sm:w-20 group"
+        >
+          <div className="relative">
+            <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-white shadow-md bg-slate-200 group-active:scale-95 transition">
+              <img src={marriageIconUrl} alt="Marriage" className="h-full w-full object-cover" />
+            </div>
+            <span
+              title="Marriage"
+              className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-emerald-500 border-2 border-white"
+            />
+          </div>
+          <span className="mt-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 truncate max-w-full">
+            Marriage
+          </span>
+        </Link>
+
         {orderedIds.map((id) => {
           const u = profiles[id];
           const isMe = id === me;
