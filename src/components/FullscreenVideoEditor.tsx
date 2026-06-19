@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2, Moon, Contrast, Droplet, Thermometer, Palette, CircleDot, Sunrise, Sunset } from "lucide-react";
 import fixWebmDuration from "fix-webm-duration";
 
@@ -60,6 +61,7 @@ const DEFAULT_VISUAL_ADJUSTMENTS: VisualAdjustments = {
 };
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
+  const handleClose = useHistoryBackClose(onClose);
   const videoRef = useRef<HTMLVideoElement>(null);
   const editPreviewRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
@@ -328,7 +330,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         {/* Top-right menu */}
         <div className="absolute top-3 right-3 z-10 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
             aria-label="Close"
           >

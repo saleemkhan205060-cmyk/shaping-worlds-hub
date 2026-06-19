@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useContext } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { Link } from "@tanstack/react-router";
 import {
   Image as ImageIcon,
@@ -144,6 +145,7 @@ export function HomeFeed() {
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
+  const closeFullscreenPreview = useHistoryBackClose(() => setFullscreenPreviewOpen(false), fullscreenPreviewOpen);
   const [uploadPrivacyOpen, setUploadPrivacyOpen] = useState(false);
   const captionPressTimer = useRef<number | null>(null);
 
@@ -385,7 +387,7 @@ export function HomeFeed() {
       }
       setCaption("");
       setFile(null);
-      setFullscreenPreviewOpen(false);
+      closeFullscreenPreview();
       setUploadPrivacyOpen(false);
       setThumbFile(null);
       setIsPrivate(false);
@@ -1248,7 +1250,7 @@ export function HomeFeed() {
             className="w-full h-full object-contain bg-black no-fs-video"
           />
           <button
-            onClick={() => setFullscreenPreviewOpen(false)}
+            onClick={closeFullscreenPreview}
             className="absolute top-4 left-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
             aria-label="Close"
           >

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import {
   X,
   Heart,
@@ -52,6 +53,7 @@ type Props = {
 };
 
 export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
+  const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
   const initialActiveId = items[startIndex]?.id ?? "";
   const containerRef = useRef<HTMLDivElement>(null);
@@ -245,7 +247,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   // Esc to close
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -351,7 +353,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       toast.error("Couldn't delete. Please try again.");
     } else {
       toast.success("Post deleted");
-      onClose();
+      handleClose();
     }
   };
 
@@ -379,7 +381,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 ownerId={it.user_id ?? null}
                 mediaUrl={it.media_url}
                 caption={it.caption}
-                onDeleted={() => onClose()}
+                onDeleted={() => handleClose()}
               >
                 {it.media_type === "video" ? (
                   <video

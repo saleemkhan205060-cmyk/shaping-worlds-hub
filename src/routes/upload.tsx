@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { Layout } from "../components/Layout";
 import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload, Globe2, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -37,6 +38,7 @@ function UploadPage() {
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
+  const closeFullscreenPreview = useHistoryBackClose(() => setFullscreenPreviewOpen(false), fullscreenPreviewOpen);
   const [uploadPrivacyOpen, setUploadPrivacyOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const galleryImgRef = useRef<HTMLInputElement>(null);
@@ -452,7 +454,7 @@ function UploadPage() {
             className="w-full h-full object-contain bg-black"
           />
           <button
-            onClick={() => setFullscreenPreviewOpen(false)}
+            onClick={closeFullscreenPreview}
             className="absolute top-4 left-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
             aria-label="Close"
           >

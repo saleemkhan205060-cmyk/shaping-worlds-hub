@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { X, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -29,6 +30,7 @@ export function CommentsSheet({
   onClose: () => void;
   onCountChange?: (n: number) => void;
 }) {
+  const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
   const [items, setItems] = useState<Comment[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
@@ -85,14 +87,14 @@ export function CommentsSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-[120] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={handleClose}>
       <div
         className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h3 className="font-bold">Comments</h3>
-          <button onClick={onClose} aria-label="Close" className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
+          <button onClick={handleClose} aria-label="Close" className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
             <X className="h-4 w-4" />
           </button>
         </div>
