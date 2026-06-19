@@ -1094,22 +1094,22 @@ export function HomeFeed() {
                     caption={p.caption}
                     onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
                   >
-                    <div className="relative bg-black">
-                      <video
-                        ref={(el) => {
-                          videoRefs.current[p.id] = el;
-                        }}
-                        src={p.media_url}
-                        poster={p.thumbnail_url ?? undefined}
-                        playsInline
-                        muted
-                        loop
-                        preload="metadata"
-                        className="w-full max-h-[520px] cursor-pointer"
-                        onClick={() => openFullscreen(p.id)}
-                      />
+                  <div className="relative bg-black aspect-[4/5]">
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[p.id] = el;
+                      }}
+                      src={p.media_url}
+                      poster={p.thumbnail_url ?? undefined}
+                      playsInline
+                      muted
+                      loop
+                      preload="metadata"
+                      className="w-full h-full object-cover cursor-pointer"
+                      onClick={() => openFullscreen(p.id)}
+                    />
 
-                    </div>
+                  </div>
                   </MediaActions>
                 )}
                 <div className="flex items-center gap-5 px-4 py-2 text-sm text-slate-600">
