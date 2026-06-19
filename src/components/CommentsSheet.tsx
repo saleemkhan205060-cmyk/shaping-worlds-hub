@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { X, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
