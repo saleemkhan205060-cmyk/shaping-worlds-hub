@@ -381,7 +381,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 ownerId={it.user_id ?? null}
                 mediaUrl={it.media_url}
                 caption={it.caption}
-                onDeleted={() => onClose()}
+                onDeleted={() => handleClose()}
               >
                 {it.media_type === "video" ? (
                   <video
