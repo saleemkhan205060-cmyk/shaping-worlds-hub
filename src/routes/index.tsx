@@ -25,8 +25,6 @@ import {
 
 export const Route = createFileRoute("/")({ component: Index });
 
-const QUICK_NAV = [] as const;
-
 function Index() {
   return (
     <Layout>
