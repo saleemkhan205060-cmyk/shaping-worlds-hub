@@ -330,7 +330,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
         {/* Top-right menu */}
         <div className="absolute top-3 right-3 z-10 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
             aria-label="Close"
           >
