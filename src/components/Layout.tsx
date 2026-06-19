@@ -41,7 +41,6 @@ const FeedIcon = ({ className }: { className?: string }) => (
 
 const navItems = [
   { to: "/", labelKey: "nav.home", icon: Home },
-  { to: "/videos", labelKey: "nav.feed", icon: FeedIcon },
   { to: "/profile", labelKey: "nav.profile", icon: User },
 ] as const;
 
