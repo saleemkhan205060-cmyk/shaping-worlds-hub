@@ -388,6 +388,7 @@ export function HomeFeed() {
       setCaption("");
       setFile(null);
       setFullscreenPreviewOpen(false);
+      closeFullscreenPreview();
       setUploadPrivacyOpen(false);
       setThumbFile(null);
       setIsPrivate(false);
