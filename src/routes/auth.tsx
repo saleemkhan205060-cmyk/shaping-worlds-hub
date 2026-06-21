@@ -16,6 +16,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [agreedTerms, setAgreedTerms] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/" });
@@ -23,6 +24,10 @@ function AuthPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === "signup" && !agreedTerms) {
+      toast.error("Please accept the Terms & Conditions to continue.");
+      return;
+    }
     setBusy(true);
     try {
       if (mode === "signup") {
