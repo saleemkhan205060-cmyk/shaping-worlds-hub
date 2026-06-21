@@ -56,6 +56,10 @@ function AuthPage() {
   };
 
   const onGoogle = async (chooseAccount = false) => {
+    if (mode === "signup" && !agreedTerms) {
+      toast.error("Please accept the Terms & Conditions to continue.");
+      return;
+    }
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
@@ -95,11 +99,28 @@ function AuthPage() {
           {mode === "signin" ? "Sign in to VIP Life" : "Join the VIP Life community"}
         </p>
 
-        <div className="mt-6 flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50">
+        {mode === "signup" && (
+          <label className="mt-5 flex items-start gap-2 text-xs text-slate-700 select-none cursor-pointer bg-indigo-50 border border-indigo-100 rounded-xl p-3">
+            <input
+              type="checkbox"
+              checked={agreedTerms}
+              onChange={(e) => setAgreedTerms(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0"
+            />
+            <span>
+              I have read and agree to the{" "}
+              <Link to="/terms" target="_blank" className="text-indigo-600 font-semibold hover:underline">
+                Terms &amp; Conditions
+              </Link>
+            </span>
+          </label>
+        )}
+
+        <div className={`${mode === "signup" ? "mt-3" : "mt-6"} flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50`}>
           <button
             type="button"
             onClick={() => onGoogle(false)}
-            disabled={busy}
+            disabled={busy || (mode === "signup" && !agreedTerms)}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold disabled:opacity-50"
           >
             <GoogleIcon /> Continue with Google
@@ -108,7 +129,7 @@ function AuthPage() {
           <button
             type="button"
             onClick={() => onGoogle(true)}
-            disabled={busy}
+            disabled={busy || (mode === "signup" && !agreedTerms)}
             title="Choose a different Google account"
             aria-label="Choose a different Google account"
             className="px-3 flex items-center justify-center disabled:opacity-50"
