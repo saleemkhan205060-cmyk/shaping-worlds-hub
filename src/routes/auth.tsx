@@ -100,20 +100,22 @@ function AuthPage() {
         </p>
 
         {mode === "signup" && (
-          <label className="mt-5 flex items-start gap-2 text-xs text-slate-700 select-none cursor-pointer bg-indigo-50 border border-indigo-100 rounded-xl p-3">
-            <input
-              type="checkbox"
-              checked={agreedTerms}
-              onChange={(e) => setAgreedTerms(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0"
-            />
-            <span>
-              I have read and agree to the{" "}
-              <Link to="/terms" target="_blank" className="text-indigo-600 font-semibold hover:underline">
-                Terms &amp; Conditions
-              </Link>
-            </span>
-          </label>
+          <div className="mt-5">
+            <label className="flex items-start gap-2 text-sm text-slate-800 select-none cursor-pointer bg-amber-50 border-2 border-amber-300 rounded-xl p-3 shadow-sm">
+              <input
+                type="checkbox"
+                checked={agreedTerms}
+                onChange={(e) => setAgreedTerms(e.target.checked)}
+                className="mt-0.5 h-5 w-5 rounded border-slate-400 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0"
+              />
+              <span className="leading-snug">
+                I have read and agree to the{" "}
+                <Link to="/terms" target="_blank" className="text-indigo-600 font-bold underline">
+                  Terms &amp; Conditions
+                </Link>
+              </span>
+            </label>
+          </div>
         )}
 
         <div className={`${mode === "signup" ? "mt-3" : "mt-6"} flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50`}>
@@ -168,22 +170,6 @@ function AuthPage() {
             placeholder="Password (min 6 chars)"
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
           />
-          {mode === "signup" && (
-            <label className="flex items-start gap-2 text-xs text-slate-600 select-none cursor-pointer">
-              <input
-                type="checkbox"
-                checked={agreedTerms}
-                onChange={(e) => setAgreedTerms(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-              />
-              <span>
-                I agree to the{" "}
-                <Link to="/terms" target="_blank" className="text-indigo-600 font-semibold hover:underline">
-                  Terms &amp; Conditions
-                </Link>
-              </span>
-            </label>
-          )}
           <button
             type="submit"
             disabled={busy || (mode === "signup" && !agreedTerms)}
