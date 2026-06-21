@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as UploadRouteImport } from './routes/upload'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -30,6 +31,11 @@ const VideosRoute = VideosRouteImport.update({
 const UploadRoute = UploadRouteImport.update({
   id: '/upload',
   path: '/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
   '/marriage/edit': typeof MarriageEditRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
   '/marriage/edit': typeof MarriageEditRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
   '/marriage/edit': typeof MarriageEditRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/terms'
     | '/upload'
     | '/videos'
     | '/marriage/edit'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/terms'
     | '/upload'
     | '/videos'
     | '/marriage/edit'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/terms'
     | '/upload'
     | '/videos'
     | '/marriage/edit'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
+  TermsRoute: typeof TermsRoute
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
   UIdRoute: typeof UIdRoute
@@ -196,6 +209,13 @@ declare module '@tanstack/react-router' {
       path: '/upload'
       fullPath: '/upload'
       preLoaderRoute: typeof UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -293,6 +313,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
+  TermsRoute: TermsRoute,
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
   UIdRoute: UIdRoute,

@@ -16,6 +16,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [agreedTerms, setAgreedTerms] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/" });
@@ -23,6 +24,10 @@ function AuthPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === "signup" && !agreedTerms) {
+      toast.error("Please accept the Terms & Conditions to continue.");
+      return;
+    }
     setBusy(true);
     try {
       if (mode === "signup") {
@@ -142,9 +147,25 @@ function AuthPage() {
             placeholder="Password (min 6 chars)"
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
           />
+          {mode === "signup" && (
+            <label className="flex items-start gap-2 text-xs text-slate-600 select-none cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreedTerms}
+                onChange={(e) => setAgreedTerms(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+              />
+              <span>
+                I agree to the{" "}
+                <Link to="/terms" target="_blank" className="text-indigo-600 font-semibold hover:underline">
+                  Terms &amp; Conditions
+                </Link>
+              </span>
+            </label>
+          )}
           <button
             type="submit"
-            disabled={busy}
+            disabled={busy || (mode === "signup" && !agreedTerms)}
             className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
