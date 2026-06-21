@@ -170,22 +170,6 @@ function AuthPage() {
             placeholder="Password (min 6 chars)"
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
           />
-          {mode === "signup" && (
-            <label className="flex items-start gap-2 text-xs text-slate-600 select-none cursor-pointer">
-              <input
-                type="checkbox"
-                checked={agreedTerms}
-                onChange={(e) => setAgreedTerms(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-              />
-              <span>
-                I agree to the{" "}
-                <Link to="/terms" target="_blank" className="text-indigo-600 font-semibold hover:underline">
-                  Terms &amp; Conditions
-                </Link>
-              </span>
-            </label>
-          )}
           <button
             type="submit"
             disabled={busy || (mode === "signup" && !agreedTerms)}
