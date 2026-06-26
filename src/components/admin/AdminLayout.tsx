@@ -27,12 +27,13 @@ const NAV: NavItem[] = [
 export function AdminLayout({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isLoginRoute = pathname === "/admin/login";
   const [checking, setChecking] = useState(true);
   const [allowed, setAllowed] = useState(false);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const check = useServerFn(checkIsAdmin);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     const saved = localStorage.getItem("admin-theme");
@@ -43,8 +44,14 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (isLoginRoute) {
+      setChecking(false);
+      setAllowed(true);
+      return;
+    }
     if (loading) return;
     if (!user) {
+      setChecking(false);
       navigate({ to: "/admin/login" });
       return;
     }
@@ -55,7 +62,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       })
       .catch(() => navigate({ to: "/" }))
       .finally(() => setChecking(false));
-  }, [user, loading, check, navigate]);
+  }, [user, loading, check, navigate, isLoginRoute]);
 
   const toggleDark = () => {
     const next = !dark;
@@ -63,6 +70,8 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("admin-theme", next ? "dark" : "light");
   };
+
+  if (isLoginRoute) return <>{children}</>;
 
   if (loading || checking) {
     return (
