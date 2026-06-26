@@ -19,14 +19,20 @@ function AdminLoginPage() {
   const check = useServerFn(checkIsAdmin);
 
   const onForgot = async () => {
-    if (!email) { toast.error("Enter your admin email first"); return; }
+    let target = email.trim();
+    if (!target) {
+      const entered = window.prompt("Enter your admin email to receive a reset link:");
+      if (!entered) return;
+      target = entered.trim();
+      setEmail(target);
+    }
     setResetBusy(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(target, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      toast.success("Password reset email sent. Check your inbox.");
+      toast.success(`Reset email sent to ${target}. Check inbox & spam.`);
     } catch (err: any) {
       toast.error(err?.message || "Failed to send reset email");
     } finally {
@@ -103,11 +109,12 @@ function AdminLoginPage() {
             Sign in to Admin
           </button>
         </form>
-        <div className="mt-3 text-center">
+        <div className="mt-4 text-center">
           <button
             type="button" onClick={onForgot} disabled={resetBusy}
-            className="text-xs text-indigo-600 hover:underline disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-indigo-600 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
           >
+            {resetBusy && <Loader2 className="h-4 w-4 animate-spin" />}
             {resetBusy ? "Sending..." : "Forgot password? Send reset email"}
           </button>
         </div>
