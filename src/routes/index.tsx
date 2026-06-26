@@ -270,11 +270,11 @@ function Index() {
             All in One Place.
           </span>
         </p>
-        <div className="flex gap-3 text-white/70">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">f</a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">ig</a>
-          <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">x</a>
-          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">yt</a>
+        <div className="flex gap-3 text-white/70" aria-label="VIP Life social channels">
+          <span aria-label="Facebook" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">f</span>
+          <span aria-label="Instagram" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">ig</span>
+          <span aria-label="X" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">x</span>
+          <span aria-label="YouTube" className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">yt</span>
         </div>
 
       </footer>
