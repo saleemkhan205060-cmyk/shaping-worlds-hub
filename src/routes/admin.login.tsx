@@ -15,7 +15,24 @@ function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
   const check = useServerFn(checkIsAdmin);
+
+  const onForgot = async () => {
+    if (!email) { toast.error("Enter your admin email first"); return; }
+    setResetBusy(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Password reset email sent. Check your inbox.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to send reset email");
+    } finally {
+      setResetBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (loading || !user) return;
