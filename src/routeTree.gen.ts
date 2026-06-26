@@ -37,6 +37,7 @@ import { Route as AdminMarriageRouteImport } from './routes/admin.marriage'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCommentsRouteImport } from './routes/admin.comments'
 import { Route as AdminChatRouteImport } from './routes/admin.chat'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -178,6 +179,12 @@ const AdminChatRoute = AdminChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AdminRoute,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -208,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -236,6 +244,7 @@ export interface FileRoutesByTo {
   '/u/$id': typeof UIdRoute
   '/admin': typeof AdminIndexRoute
   '/marriage': typeof MarriageIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -267,6 +276,7 @@ export interface FileRoutesById {
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/admin/'
     | '/marriage/'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/admin'
     | '/marriage'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -357,6 +369,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/admin/'
     | '/marriage/'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -373,6 +386,7 @@ export interface RootRouteChildren {
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
   UIdRoute: typeof UIdRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -573,6 +587,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChatRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -638,6 +659,7 @@ const rootRouteChildren: RootRouteChildren = {
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
   UIdRoute: UIdRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
