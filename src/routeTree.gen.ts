@@ -18,10 +18,24 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MarriageRouteImport } from './routes/marriage'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MarriageIndexRouteImport } from './routes/marriage.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
+import { Route as AdminVideosRouteImport } from './routes/admin.videos'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSecurityRouteImport } from './routes/admin.security'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminPostsRouteImport } from './routes/admin.posts'
+import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminMarriageRouteImport } from './routes/admin.marriage'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminCommentsRouteImport } from './routes/admin.comments'
+import { Route as AdminChatRouteImport } from './routes/admin.chat'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -68,6 +82,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -77,6 +96,11 @@ const MarriageIndexRoute = MarriageIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarriageRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const UIdRoute = UIdRouteImport.update({
   id: '/u/$id',
@@ -88,9 +112,70 @@ const MarriageEditRoute = MarriageEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => MarriageRoute,
 } as any)
+const AdminVideosRoute = AdminVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSecurityRoute = AdminSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPostsRoute = AdminPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPhotosRoute = AdminPhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMarriageRoute = AdminMarriageRouteImport.update({
+  id: '/marriage',
+  path: '/marriage',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCommentsRoute = AdminCommentsRouteImport.update({
+  id: '/comments',
+  path: '/comments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminChatRoute = AdminChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
@@ -100,8 +185,21 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/admin/chat': typeof AdminChatRoute
+  '/admin/comments': typeof AdminCommentsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/marriage': typeof AdminMarriageRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/photos': typeof AdminPhotosRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/videos': typeof AdminVideosRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
 }
 export interface FileRoutesByTo {
@@ -114,13 +212,27 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/admin/chat': typeof AdminChatRoute
+  '/admin/comments': typeof AdminCommentsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/marriage': typeof AdminMarriageRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/photos': typeof AdminPhotosRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/videos': typeof AdminVideosRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
+  '/admin': typeof AdminIndexRoute
   '/marriage': typeof MarriageIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
@@ -130,14 +242,28 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/admin/chat': typeof AdminChatRoute
+  '/admin/comments': typeof AdminCommentsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/marriage': typeof AdminMarriageRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/photos': typeof AdminPhotosRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/videos': typeof AdminVideosRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/marriage'
     | '/messages'
@@ -147,8 +273,21 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/admin/chat'
+    | '/admin/comments'
+    | '/admin/login'
+    | '/admin/marriage'
+    | '/admin/notifications'
+    | '/admin/photos'
+    | '/admin/posts'
+    | '/admin/reports'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/videos'
     | '/marriage/edit'
     | '/u/$id'
+    | '/admin/'
     | '/marriage/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -161,12 +300,26 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/admin/chat'
+    | '/admin/comments'
+    | '/admin/login'
+    | '/admin/marriage'
+    | '/admin/notifications'
+    | '/admin/photos'
+    | '/admin/posts'
+    | '/admin/reports'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/videos'
     | '/marriage/edit'
     | '/u/$id'
+    | '/admin'
     | '/marriage'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/marriage'
     | '/messages'
@@ -176,13 +329,27 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/admin/chat'
+    | '/admin/comments'
+    | '/admin/login'
+    | '/admin/marriage'
+    | '/admin/notifications'
+    | '/admin/photos'
+    | '/admin/posts'
+    | '/admin/reports'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/videos'
     | '/marriage/edit'
     | '/u/$id'
+    | '/admin/'
     | '/marriage/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   MarriageRoute: typeof MarriageRouteWithChildren
   MessagesRoute: typeof MessagesRoute
@@ -260,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -273,6 +447,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/marriage/'
       preLoaderRoute: typeof MarriageIndexRouteImport
       parentRoute: typeof MarriageRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/u/$id': {
       id: '/u/$id'
@@ -288,8 +469,126 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarriageEditRouteImport
       parentRoute: typeof MarriageRoute
     }
+    '/admin/videos': {
+      id: '/admin/videos'
+      path: '/videos'
+      fullPath: '/admin/videos'
+      preLoaderRoute: typeof AdminVideosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/security': {
+      id: '/admin/security'
+      path: '/security'
+      fullPath: '/admin/security'
+      preLoaderRoute: typeof AdminSecurityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/posts': {
+      id: '/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/photos': {
+      id: '/admin/photos'
+      path: '/photos'
+      fullPath: '/admin/photos'
+      preLoaderRoute: typeof AdminPhotosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/marriage': {
+      id: '/admin/marriage'
+      path: '/marriage'
+      fullPath: '/admin/marriage'
+      preLoaderRoute: typeof AdminMarriageRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comments': {
+      id: '/admin/comments'
+      path: '/comments'
+      fullPath: '/admin/comments'
+      preLoaderRoute: typeof AdminCommentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/chat': {
+      id: '/admin/chat'
+      path: '/chat'
+      fullPath: '/admin/chat'
+      preLoaderRoute: typeof AdminChatRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminChatRoute: typeof AdminChatRoute
+  AdminCommentsRoute: typeof AdminCommentsRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminMarriageRoute: typeof AdminMarriageRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminPhotosRoute: typeof AdminPhotosRoute
+  AdminPostsRoute: typeof AdminPostsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminSecurityRoute: typeof AdminSecurityRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminVideosRoute: typeof AdminVideosRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminChatRoute: AdminChatRoute,
+  AdminCommentsRoute: AdminCommentsRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminMarriageRoute: AdminMarriageRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminPhotosRoute: AdminPhotosRoute,
+  AdminPostsRoute: AdminPostsRoute,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminSecurityRoute: AdminSecurityRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminVideosRoute: AdminVideosRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface MarriageRouteChildren {
   MarriageEditRoute: typeof MarriageEditRoute
@@ -307,6 +606,7 @@ const MarriageRouteWithChildren = MarriageRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   MarriageRoute: MarriageRouteWithChildren,
   MessagesRoute: MessagesRoute,
@@ -321,13 +621,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
