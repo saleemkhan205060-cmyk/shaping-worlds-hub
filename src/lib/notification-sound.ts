@@ -287,7 +287,16 @@ export async function showNewMessageNotification({
     const notification = new window.Notification(title, options);
     notification.onclick = () => {
       window.focus();
-      window.location.href = url;
+      if (url) {
+        try {
+          const target = new URL(url, window.location.origin);
+          if (target.origin === window.location.origin) {
+            window.location.assign(`${target.pathname}${target.search}${target.hash}`);
+          }
+        } catch {
+          // Ignore invalid notification targets.
+        }
+      }
       notification.close();
     };
   } catch {

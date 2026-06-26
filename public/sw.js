@@ -65,7 +65,16 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || "/messages";
+  const rawUrl = event.notification.data?.url || "/messages";
+  let targetUrl = "/messages";
+  try {
+    const parsed = new URL(rawUrl, self.location.origin);
+    if (parsed.origin === self.location.origin) {
+      targetUrl = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    }
+  } catch {
+    targetUrl = "/messages";
+  }
   event.waitUntil(
     (async () => {
       const allClients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
