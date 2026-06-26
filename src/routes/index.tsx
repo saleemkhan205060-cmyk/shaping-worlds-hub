@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Layout } from "../components/Layout";
@@ -19,9 +18,9 @@ import {
   Lock,
   Rocket,
   ArrowRight,
-  Star,
   CheckCircle2,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({ component: Index });
 
@@ -170,96 +169,40 @@ function Index() {
         </div>
       </section>
 
-      {/* Popular videos + top businesses */}
+      {/* Explore CTA */}
       <section className="mt-10 grid lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold">Popular Videos</h3>
+            <h3 className="font-bold">Videos</h3>
             <Link to="/videos" className="text-sm text-indigo-600 font-medium">
-              View All
+              Browse
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { title: "Amazing Dance Performance", views: "25.4K", who: "John Doe", hue: "from-fuchsia-500 to-purple-700" },
-              { title: "Beautiful Nature 4K", views: "18.7K", who: "Sara Khan", hue: "from-sky-500 to-emerald-500" },
-              { title: "Cover Song – Perfect", views: "32.1K", who: "Ali Music", hue: "from-amber-500 to-rose-500" },
-              { title: "Delicious Food Recipe", views: "21.6K", who: "Foodie Love", hue: "from-orange-500 to-red-500" },
-            ].map((v) => (
-              <Link key={v.title} to="/videos" className="group block text-left">
-                <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${v.hue} relative overflow-hidden group-hover:opacity-90 transition`}>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                    <span className="h-12 w-12 rounded-full bg-white/90 flex items-center justify-center shadow">
-                      <Play className="h-5 w-5 text-slate-900 fill-slate-900 ml-0.5" />
-                    </span>
-                  </div>
-                  <div className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
-                    <Play className="h-3 w-3 fill-white" />
-                    {v.views}
-                  </div>
-                </div>
-                <p className="mt-2 text-sm font-semibold line-clamp-2">{v.title}</p>
-                <div className="mt-1 flex items-center gap-1.5">
-                  <div className="h-5 w-5 rounded-full bg-slate-200" />
-                  <span className="text-xs text-slate-600">{v.who}</span>
-                  <CheckCircle2 className="h-3 w-3 text-sky-500 fill-sky-500" />
-                </div>
-              </Link>
-            ))}
-
-          </div>
+          <p className="text-sm text-slate-600">
+            Watch short videos shared by the community. Sign in to upload your own.
+          </p>
+          <Link
+            to="/videos"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold"
+          >
+            Open Videos <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold">Top Businesses</h3>
-          </div>
-          <ul className="space-y-3">
-            {[
-              { name: "Smart Digital Agency", rating: "4.8", n: "256", c: "from-indigo-500 to-purple-600" },
-              { name: "Creative Designers", rating: "4.7", n: "198", c: "from-pink-500 to-rose-600" },
-              { name: "BuildTech Solutions", rating: "4.9", n: "312", c: "from-sky-500 to-cyan-600" },
-              { name: "Growth Marketing", rating: "4.6", n: "178", c: "from-emerald-500 to-teal-600" },
-            ].map((b) => (
-              <li key={b.name} className="flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${b.c} flex items-center justify-center text-white font-bold`}>
-                  {b.name[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm truncate">{b.name}</p>
-                  <p className="text-xs text-slate-500 flex items-center gap-1">
-                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
-                    {b.rating} ({b.n})
-                  </p>
-                </div>
-                <FollowButton name={b.name} />
-
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Match CTA */}
-      <section className="mt-6 rounded-2xl bg-gradient-to-r from-rose-100 to-pink-100 p-5 flex flex-col sm:flex-row items-center gap-4">
-        <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center shrink-0">
-          <Heart className="h-6 w-6 text-rose-500 fill-rose-500" />
-        </div>
-        <div className="flex-1 text-center sm:text-left">
-          <p className="font-bold text-rose-600">Find Your Perfect Match</p>
+          <h3 className="font-bold mb-2">Marriage</h3>
           <p className="text-sm text-slate-600">
-            Join thousands of people who found their special someone.
+            Create a profile and connect with verified members looking for a life partner.
           </p>
+          <Link
+            to="/marriage"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-semibold"
+          >
+            Open Marriage <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-        <div className="flex -space-x-2">
-          {["from-amber-400 to-rose-400","from-pink-400 to-purple-400","from-sky-400 to-indigo-400","from-emerald-400 to-teal-400"].map((g, i) => (
-            <div key={i} className={`h-9 w-9 rounded-full bg-gradient-to-br ${g} border-2 border-white`} />
-          ))}
-        </div>
-        <Link to="/auth" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white font-semibold text-sm shadow hover:shadow-md">
-          Get Started <ArrowRight className="h-4 w-4" />
-        </Link>
       </section>
+
 
       {/* Footer */}
       <footer className="mt-8 rounded-2xl bg-slate-950 text-white p-5 flex flex-col sm:flex-row gap-3 items-center justify-between">
@@ -330,20 +273,5 @@ function Pill({ icon: Icon, text }: any) {
   );
 }
 
-function FollowButton({ name }: { name: string }) {
-  const [following, setFollowing] = useState(false);
-  return (
-    <button
-      onClick={() => setFollowing((f) => !f)}
-      aria-label={`${following ? "Unfollow" : "Follow"} ${name}`}
-      className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
-        following
-          ? "bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700"
-          : "border border-indigo-200 text-indigo-600 hover:bg-indigo-50"
-      }`}
-    >
-      {following ? "Following" : "Follow"}
-    </button>
-  );
-}
+
 
