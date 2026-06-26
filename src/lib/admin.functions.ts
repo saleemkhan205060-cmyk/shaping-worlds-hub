@@ -146,7 +146,7 @@ export const updateUserFlag = createServerFn({ method: "POST" })
     if (data.is_suspended !== undefined) update.is_suspended = data.is_suspended;
     if (data.is_banned !== undefined) update.is_banned = data.is_banned;
     if (data.suspended_until !== undefined) update.suspended_until = data.suspended_until;
-    const { error } = await supabaseAdmin.from("profiles").update(update).eq("id", data.userId);
+    const { error } = await supabaseAdmin.from("profiles").update(update as any).eq("id", data.userId);
     if (error) throw error;
     await logAction(supabaseAdmin, context.userId, "update_user_flag", "user", data.userId, update);
     return { ok: true };
@@ -227,7 +227,7 @@ export const updatePostFlag = createServerFn({ method: "POST" })
     const update: Record<string, unknown> = {};
     if (data.is_hidden !== undefined) update.is_hidden = data.is_hidden;
     if (data.is_pinned !== undefined) update.is_pinned = data.is_pinned;
-    const { error } = await supabaseAdmin.from("posts").update(update).eq("id", data.postId);
+    const { error } = await supabaseAdmin.from("posts").update(update as any).eq("id", data.postId);
     if (error) throw error;
     await logAction(supabaseAdmin, context.userId, "update_post_flag", "post", data.postId, update);
     return { ok: true };
@@ -417,7 +417,7 @@ export const sendNotification = createServerFn({ method: "POST" })
       sent_by: context.userId,
     });
     if (error) throw error;
-    await logAction(supabaseAdmin, context.userId, "send_notification", "notification", null, {
+    await logAction(supabaseAdmin, context.userId, "send_notification", "notification", undefined, {
       title: data.title,
       broadcast: data.broadcast,
       count: data.userIds?.length,
