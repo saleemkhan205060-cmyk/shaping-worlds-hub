@@ -19,14 +19,20 @@ function AdminLoginPage() {
   const check = useServerFn(checkIsAdmin);
 
   const onForgot = async () => {
-    if (!email) { toast.error("Enter your admin email first"); return; }
+    let target = email.trim();
+    if (!target) {
+      const entered = window.prompt("Enter your admin email to receive a reset link:");
+      if (!entered) return;
+      target = entered.trim();
+      setEmail(target);
+    }
     setResetBusy(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(target, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      toast.success("Password reset email sent. Check your inbox.");
+      toast.success(`Reset email sent to ${target}. Check inbox & spam.`);
     } catch (err: any) {
       toast.error(err?.message || "Failed to send reset email");
     } finally {
