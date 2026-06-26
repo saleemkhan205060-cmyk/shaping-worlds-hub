@@ -103,6 +103,14 @@ function AdminLoginPage() {
             Sign in to Admin
           </button>
         </form>
+        <div className="mt-3 text-center">
+          <button
+            type="button" onClick={onForgot} disabled={resetBusy}
+            className="text-xs text-indigo-600 hover:underline disabled:opacity-50"
+          >
+            {resetBusy ? "Sending..." : "Forgot password? Send reset email"}
+          </button>
+        </div>
         <div className="mt-4 text-center text-xs text-slate-400">
           <Link to="/" className="hover:underline">← Back to VIP Life</Link>
         </div>
