@@ -3,20 +3,24 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // Helper: throw if not admin
 async function assertAdmin(supabase: any, userId: string) {
-  const { data, error } = await supabase.rpc("has_role", {
-    _user_id: userId,
-    _role: "admin",
-  });
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
   if (error) throw new Error("Role check failed");
   if (!data) throw new Error("Forbidden: admin only");
 }
 
 async function assertModOrAdmin(supabase: any, userId: string) {
-  const [{ data: a }, { data: m }] = await Promise.all([
-    supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
-    supabase.rpc("has_role", { _user_id: userId, _role: "moderator" }),
-  ]);
-  if (!a && !m) throw new Error("Forbidden: moderator/admin only");
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["admin", "moderator"]);
+  if (error) throw new Error("Role check failed");
+  if (!data || data.length === 0) throw new Error("Forbidden: moderator/admin only");
 }
 
 async function logAction(
@@ -40,15 +44,12 @@ async function logAction(
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    const { data: mod } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "moderator",
-    });
-    return { isAdmin: !!data, isModerator: !!mod };
+    const { data } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId);
+    const roles = (data ?? []).map((r: any) => r.role);
+    return { isAdmin: roles.includes("admin"), isModerator: roles.includes("moderator") };
   });
 
 // =================== DASHBOARD STATS ===================
