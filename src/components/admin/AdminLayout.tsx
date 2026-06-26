@@ -8,7 +8,8 @@ import {
   Flag, Heart, MessagesSquare, Bell, Settings, Shield, Menu, X, LogOut, Moon, Sun, Loader2,
 } from "lucide-react";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: any; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/posts", label: "Posts", icon: FileText },
@@ -21,7 +22,7 @@ const NAV = [
   { to: "/admin/notifications", label: "Notifications", icon: Bell },
   { to: "/admin/settings", label: "Settings", icon: Settings },
   { to: "/admin/security", label: "Security", icon: Shield },
-] as const;
+];
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -95,7 +96,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             return (
               <Link
                 key={item.to}
-                to={item.to}
+                to={item.to as any}
                 onClick={() => setOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   active

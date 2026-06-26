@@ -18,10 +18,13 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MarriageRouteImport } from './routes/marriage'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MarriageIndexRouteImport } from './routes/marriage.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -68,6 +71,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -77,6 +85,11 @@ const MarriageIndexRoute = MarriageIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarriageRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const UIdRoute = UIdRouteImport.update({
   id: '/u/$id',
@@ -88,9 +101,15 @@ const MarriageEditRoute = MarriageEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => MarriageRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
@@ -100,8 +119,10 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/admin/login': typeof AdminLoginRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
 }
 export interface FileRoutesByTo {
@@ -114,13 +135,16 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/admin/login': typeof AdminLoginRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
+  '/admin': typeof AdminIndexRoute
   '/marriage': typeof MarriageIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
@@ -130,14 +154,17 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/admin/login': typeof AdminLoginRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/marriage'
     | '/messages'
@@ -147,8 +174,10 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/admin/login'
     | '/marriage/edit'
     | '/u/$id'
+    | '/admin/'
     | '/marriage/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -161,12 +190,15 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/admin/login'
     | '/marriage/edit'
     | '/u/$id'
+    | '/admin'
     | '/marriage'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/marriage'
     | '/messages'
@@ -176,13 +208,16 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/admin/login'
     | '/marriage/edit'
     | '/u/$id'
+    | '/admin/'
     | '/marriage/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   MarriageRoute: typeof MarriageRouteWithChildren
   MessagesRoute: typeof MessagesRoute
@@ -260,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -273,6 +315,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/marriage/'
       preLoaderRoute: typeof MarriageIndexRouteImport
       parentRoute: typeof MarriageRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/u/$id': {
       id: '/u/$id'
@@ -288,8 +337,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarriageEditRouteImport
       parentRoute: typeof MarriageRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface MarriageRouteChildren {
   MarriageEditRoute: typeof MarriageEditRoute
@@ -307,6 +375,7 @@ const MarriageRouteWithChildren = MarriageRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   MarriageRoute: MarriageRouteWithChildren,
   MessagesRoute: MessagesRoute,
