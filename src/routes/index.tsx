@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Layout } from "../components/Layout";
@@ -19,9 +18,9 @@ import {
   Lock,
   Rocket,
   ArrowRight,
-  Star,
   CheckCircle2,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({ component: Index });
 
