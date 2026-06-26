@@ -279,7 +279,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             label="Messenger"
             icon={<MessagesSquare className="h-5 w-5" />}
             tone="bg-[#A334FA] text-white"
-            onClick={() => openShareUrl(`fb-messenger://share?link=${encodedUrl}`)}
+            onClick={moreApps}
           />
           <ShareChoice
             label="Telegram"

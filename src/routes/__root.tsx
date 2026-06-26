@@ -20,25 +20,8 @@ function useRegisterServiceWorker() {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
 
-    const inIframe = (() => {
-      try { return window.self !== window.top; } catch { return true; }
-    })();
-    const host = window.location.hostname;
-    const isPreviewHost =
-      host.includes("id-preview--") ||
-      host.includes("lovableproject.com") ||
-      host === "localhost" ||
-      host === "127.0.0.1";
-
-    if (inIframe || isPreviewHost) {
-      navigator.serviceWorker.getRegistrations?.().then((rs) =>
-        rs.forEach((r) => r.unregister())
-      );
-      return;
-    }
-
-    navigator.serviceWorker.register("/sw.js").catch((err) => {
-      console.error("SW registration failed", err);
+    navigator.serviceWorker.getRegistrations?.().then((registrations) => {
+      registrations.forEach((registration) => registration.unregister());
     });
   }, []);
 }
