@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { listUsers, updateUserFlag, setUserRole, deleteUser } from "@/lib/admin.functions";
+import { listUsers, updateUserFlag, setUserRole, deleteUser, deleteAllUserContent } from "@/lib/admin.functions";
 import { Card, ConfirmDialog } from "@/components/admin/AdminLayout";
-import { Search, Shield, Ban, CheckCircle2, Trash2, ShieldOff } from "lucide-react";
+import { Search, Shield, Ban, CheckCircle2, Trash2, ShieldOff, Eraser, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/users")({ component: UsersPage });
