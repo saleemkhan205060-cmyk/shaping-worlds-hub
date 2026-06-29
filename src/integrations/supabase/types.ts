@@ -444,6 +444,7 @@ export type Database = {
       }
       post_comments: {
         Row: {
+          auto_flag_reason: string | null
           content: string
           created_at: string
           id: string
@@ -452,6 +453,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          auto_flag_reason?: string | null
           content: string
           created_at?: string
           id?: string
@@ -460,6 +462,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          auto_flag_reason?: string | null
           content?: string
           created_at?: string
           id?: string
@@ -578,6 +581,7 @@ export type Database = {
       }
       posts: {
         Row: {
+          auto_flag_reason: string | null
           caption: string | null
           category: string | null
           created_at: string
@@ -595,6 +599,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          auto_flag_reason?: string | null
           caption?: string | null
           category?: string | null
           created_at?: string
@@ -612,6 +617,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          auto_flag_reason?: string | null
           caption?: string | null
           category?: string | null
           created_at?: string
@@ -728,6 +734,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auto_flag_reason: string | null
           avatar_url: string | null
           bio: string | null
           cover_url: string | null
@@ -744,6 +751,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          auto_flag_reason?: string | null
           avatar_url?: string | null
           bio?: string | null
           cover_url?: string | null
@@ -760,6 +768,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          auto_flag_reason?: string | null
           avatar_url?: string | null
           bio?: string | null
           cover_url?: string | null
@@ -934,6 +943,8 @@ export type Database = {
       }
     }
     Functions: {
+      actor_is_staff: { Args: { _uid: string }; Returns: boolean }
+      classify_risky_text: { Args: { _t: string }; Returns: string }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
