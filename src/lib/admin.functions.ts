@@ -198,7 +198,7 @@ export const deleteAllUserContent = createServerFn({ method: "POST" })
       supabaseAdmin.from("post_likes").delete().eq("user_id", data.userId),
       supabaseAdmin.from("post_shares").delete().eq("user_id", data.userId),
       supabaseAdmin.from("marriage_profiles").delete().eq("user_id", data.userId),
-      supabaseAdmin.from("market_products").delete().eq("seller_id", data.userId),
+      supabaseAdmin.from("market_products").delete().eq("user_id", data.userId),
     ]);
     const firstErr = results.find((r: any) => r.error)?.error;
     if (firstErr) throw firstErr;
