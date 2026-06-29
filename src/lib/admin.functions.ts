@@ -536,10 +536,18 @@ export const getAuditLogs = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 50;
     const { data: rows, count } = await supabaseAdmin
       .from("admin_activity_logs")
-      .select("*, admin:admin_id(display_name)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
-    return { rows: rows ?? [], count: count ?? 0 };
+    const adminIds = Array.from(new Set((rows ?? []).map((r: any) => r.admin_id).filter(Boolean)));
+    const { data: admins } = adminIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name").in("id", adminIds)
+      : { data: [] as any[] };
+    const amap = new Map((admins ?? []).map((a: any) => [a.id, a]));
+    return {
+      rows: (rows ?? []).map((r: any) => ({ ...r, admin: amap.get(r.admin_id) ?? null })),
+      count: count ?? 0,
+    };
   });
 
 export const getLoginHistory = createServerFn({ method: "GET" })
@@ -549,11 +557,17 @@ export const getLoginHistory = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("admin_login_history")
-      .select("*, user:user_id(display_name)")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(100);
-    return { rows: data ?? [] };
+    const userIds = Array.from(new Set((data ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return { rows: (data ?? []).map((r: any) => ({ ...r, user: pmap.get(r.user_id) ?? null })) };
   });
+
 
 export const getFailedLogins = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
