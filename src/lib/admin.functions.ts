@@ -375,14 +375,20 @@ export const listMarriage = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("marriage_profiles")
-      .select("*, profiles:user_id(id, display_name, avatar_url)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.status) q = q.eq("status", data.status);
     const { data: rows, count, error } = await q;
     if (error) throw error;
-    return { rows: rows ?? [], count: count ?? 0 };
+    const userIds = Array.from(new Set((rows ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name, avatar_url").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return { rows: (rows ?? []).map((r: any) => ({ ...r, profiles: pmap.get(r.user_id) ?? null })), count: count ?? 0 };
   });
+
 
 export const updateMarriageStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -419,12 +425,31 @@ export const listMessageReports = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("message_reports")
-      .select("*, messages:message_id(id, content, sender_id, recipient_id, created_at), reporter:reporter_id(id, display_name)")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw error;
-    return { rows: data ?? [] };
+    const msgIds = Array.from(new Set((data ?? []).map((r: any) => r.message_id).filter(Boolean)));
+    const reporterIds = Array.from(new Set((data ?? []).map((r: any) => r.reporter_id).filter(Boolean)));
+    const [{ data: msgs }, { data: reporters }] = await Promise.all([
+      msgIds.length
+        ? supabaseAdmin.from("messages").select("id, content, sender_id, recipient_id, created_at").in("id", msgIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+      reporterIds.length
+        ? supabaseAdmin.from("profiles").select("id, display_name").in("id", reporterIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+    ]);
+    const mmap = new Map((msgs ?? []).map((m: any) => [m.id, m]));
+    const rmap = new Map((reporters ?? []).map((r: any) => [r.id, r]));
+    return {
+      rows: (data ?? []).map((r: any) => ({
+        ...r,
+        messages: mmap.get(r.message_id) ?? null,
+        reporter: rmap.get(r.reporter_id) ?? null,
+      })),
+    };
   });
+
 
 export const deleteMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
