@@ -319,15 +319,35 @@ export const listReports = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("post_reports")
-      .select("*, posts:post_id(id, caption, media_url, media_type, user_id), reporter:reporter_id(id, display_name)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.reason) q = q.eq("reason", data.reason);
     if (data.status) q = q.eq("status", data.status);
     const { data: rows, count, error } = await q;
     if (error) throw error;
-    return { rows: rows ?? [], count: count ?? 0 };
+    const postIds = Array.from(new Set((rows ?? []).map((r: any) => r.post_id).filter(Boolean)));
+    const reporterIds = Array.from(new Set((rows ?? []).map((r: any) => r.reporter_id).filter(Boolean)));
+    const [{ data: posts }, { data: reporters }] = await Promise.all([
+      postIds.length
+        ? supabaseAdmin.from("posts").select("id, caption, media_url, media_type, user_id").in("id", postIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+      reporterIds.length
+        ? supabaseAdmin.from("profiles").select("id, display_name").in("id", reporterIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+    ]);
+    const pmap = new Map((posts ?? []).map((p: any) => [p.id, p]));
+    const rmap = new Map((reporters ?? []).map((r: any) => [r.id, r]));
+    return {
+      rows: (rows ?? []).map((r: any) => ({
+        ...r,
+        posts: pmap.get(r.post_id) ?? null,
+        reporter: rmap.get(r.reporter_id) ?? null,
+      })),
+      count: count ?? 0,
+    };
   });
+
 
 export const resolveReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
