@@ -75,6 +75,11 @@ function UsersPage() {
                       <div className="font-medium flex items-center gap-1">
                         {u.display_name || "Unnamed"}
                         {u.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-blue-500" />}
+                        {u.auto_flag_reason && (
+                          <span title={`Auto-flagged: ${u.auto_flag_reason}`} className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
+                            <AlertTriangle className="h-3 w-3" />{u.auto_flag_reason}
+                          </span>
+                        )}
                       </div>
                       <div className="text-xs text-slate-500">{u.id.slice(0, 8)}</div>
                     </div>
