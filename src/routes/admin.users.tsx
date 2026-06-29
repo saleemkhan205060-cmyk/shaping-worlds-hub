@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { listUsers, updateUserFlag, setUserRole, deleteUser } from "@/lib/admin.functions";
+import { listUsers, updateUserFlag, setUserRole, deleteUser, deleteAllUserContent } from "@/lib/admin.functions";
 import { Card, ConfirmDialog } from "@/components/admin/AdminLayout";
-import { Search, Shield, Ban, CheckCircle2, Trash2, ShieldOff } from "lucide-react";
+import { Search, Shield, Ban, CheckCircle2, Trash2, ShieldOff, Eraser, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/users")({ component: UsersPage });
@@ -14,6 +14,7 @@ function UsersPage() {
   const flag = useServerFn(updateUserFlag);
   const role = useServerFn(setUserRole);
   const del = useServerFn(deleteUser);
+  const wipe = useServerFn(deleteAllUserContent);
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -74,6 +75,11 @@ function UsersPage() {
                       <div className="font-medium flex items-center gap-1">
                         {u.display_name || "Unnamed"}
                         {u.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-blue-500" />}
+                        {u.auto_flag_reason && (
+                          <span title={`Auto-flagged: ${u.auto_flag_reason}`} className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
+                            <AlertTriangle className="h-3 w-3" />{u.auto_flag_reason}
+                          </span>
+                        )}
                       </div>
                       <div className="text-xs text-slate-500">{u.id.slice(0, 8)}</div>
                     </div>
@@ -113,7 +119,16 @@ function UsersPage() {
                       className="rounded p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-950">
                       {u.is_banned ? <ShieldOff className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
                     </button>
-                    <button title="Delete"
+                    <button title="Wipe all content (keep account)"
+                      onClick={() => setConfirm({
+                        title: "Delete all content?",
+                        msg: `Permanently removes every post, comment, like, share, marriage profile, and marketplace listing from ${u.display_name || "this user"}. The account stays. Cannot be undone.`,
+                        action: () => act(() => wipe({ data: { userId: u.id } }), "All content removed"),
+                      })}
+                      className="rounded p-1.5 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950">
+                      <Eraser className="h-4 w-4" />
+                    </button>
+                    <button title="Delete user"
                       onClick={() => setConfirm({
                         title: "Delete user?",
                         msg: `This permanently deletes ${u.display_name || "this user"} and all their data. Cannot be undone.`,

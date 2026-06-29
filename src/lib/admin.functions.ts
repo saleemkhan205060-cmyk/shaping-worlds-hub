@@ -184,6 +184,28 @@ export const deleteUser = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const deleteAllUserContent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { userId: string }) => d)
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    if (data.userId === context.userId) throw new Error("Cannot wipe your own content");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Cascades clean up likes/comments/shares/reports for posts.
+    const results = await Promise.all([
+      supabaseAdmin.from("posts").delete().eq("user_id", data.userId),
+      supabaseAdmin.from("post_comments").delete().eq("user_id", data.userId),
+      supabaseAdmin.from("post_likes").delete().eq("user_id", data.userId),
+      supabaseAdmin.from("post_shares").delete().eq("user_id", data.userId),
+      supabaseAdmin.from("marriage_profiles").delete().eq("user_id", data.userId),
+      supabaseAdmin.from("market_products").delete().eq("user_id", data.userId),
+    ]);
+    const firstErr = results.find((r: any) => r.error)?.error;
+    if (firstErr) throw firstErr;
+    await logAction(supabaseAdmin, context.userId, "delete_all_content", "user", data.userId);
+    return { ok: true };
+  });
+
 // =================== POSTS / VIDEOS / PHOTOS ===================
 export const listPosts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
