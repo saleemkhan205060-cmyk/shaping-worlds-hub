@@ -14,6 +14,7 @@ function UsersPage() {
   const flag = useServerFn(updateUserFlag);
   const role = useServerFn(setUserRole);
   const del = useServerFn(deleteUser);
+  const wipe = useServerFn(deleteAllUserContent);
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
