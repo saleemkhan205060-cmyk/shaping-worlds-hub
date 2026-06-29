@@ -201,7 +201,7 @@ export const listPosts = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("posts")
-      .select("*, profiles:user_id(id, display_name, avatar_url)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.mediaType && data.mediaType !== "all") q = q.eq("media_type", data.mediaType);
@@ -216,8 +216,17 @@ export const listPosts = createServerFn({ method: "GET" })
       const ids = new Set((reportedIds ?? []).map((r: any) => r.post_id));
       rows = (rows ?? []).filter((r: any) => ids.has(r.id));
     }
-    return { rows: rows ?? [], count: count ?? 0 };
+
+    // Manually attach profiles (no FK declared between posts.user_id and profiles)
+    const userIds = Array.from(new Set((rows ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name, avatar_url").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    const out = (rows ?? []).map((r: any) => ({ ...r, profiles: pmap.get(r.user_id) ?? null }));
+    return { rows: out, count: count ?? 0 };
   });
+
 
 export const updatePostFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -257,14 +266,20 @@ export const listComments = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("post_comments")
-      .select("*, profiles:user_id(id, display_name, avatar_url)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.search) q = q.ilike("content", `%${data.search}%`);
     const { data: rows, count, error } = await q;
     if (error) throw error;
-    return { rows: rows ?? [], count: count ?? 0 };
+    const userIds = Array.from(new Set((rows ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name, avatar_url").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return { rows: (rows ?? []).map((r: any) => ({ ...r, profiles: pmap.get(r.user_id) ?? null })), count: count ?? 0 };
   });
+
 
 export const updateCommentFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
