@@ -119,7 +119,16 @@ function UsersPage() {
                       className="rounded p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-950">
                       {u.is_banned ? <ShieldOff className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
                     </button>
-                    <button title="Delete"
+                    <button title="Wipe all content (keep account)"
+                      onClick={() => setConfirm({
+                        title: "Delete all content?",
+                        msg: `Permanently removes every post, comment, like, share, marriage profile, and marketplace listing from ${u.display_name || "this user"}. The account stays. Cannot be undone.`,
+                        action: () => act(() => wipe({ data: { userId: u.id } }), "All content removed"),
+                      })}
+                      className="rounded p-1.5 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950">
+                      <Eraser className="h-4 w-4" />
+                    </button>
+                    <button title="Delete user"
                       onClick={() => setConfirm({
                         title: "Delete user?",
                         msg: `This permanently deletes ${u.display_name || "this user"} and all their data. Cannot be undone.`,
