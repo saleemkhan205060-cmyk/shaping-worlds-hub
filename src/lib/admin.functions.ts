@@ -201,7 +201,7 @@ export const listPosts = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("posts")
-      .select("*, profiles:user_id(id, display_name, avatar_url)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.mediaType && data.mediaType !== "all") q = q.eq("media_type", data.mediaType);
@@ -216,8 +216,17 @@ export const listPosts = createServerFn({ method: "GET" })
       const ids = new Set((reportedIds ?? []).map((r: any) => r.post_id));
       rows = (rows ?? []).filter((r: any) => ids.has(r.id));
     }
-    return { rows: rows ?? [], count: count ?? 0 };
+
+    // Manually attach profiles (no FK declared between posts.user_id and profiles)
+    const userIds = Array.from(new Set((rows ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name, avatar_url").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    const out = (rows ?? []).map((r: any) => ({ ...r, profiles: pmap.get(r.user_id) ?? null }));
+    return { rows: out, count: count ?? 0 };
   });
+
 
 export const updatePostFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -257,14 +266,20 @@ export const listComments = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("post_comments")
-      .select("*, profiles:user_id(id, display_name, avatar_url)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.search) q = q.ilike("content", `%${data.search}%`);
     const { data: rows, count, error } = await q;
     if (error) throw error;
-    return { rows: rows ?? [], count: count ?? 0 };
+    const userIds = Array.from(new Set((rows ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name, avatar_url").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return { rows: (rows ?? []).map((r: any) => ({ ...r, profiles: pmap.get(r.user_id) ?? null })), count: count ?? 0 };
   });
+
 
 export const updateCommentFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -304,15 +319,35 @@ export const listReports = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("post_reports")
-      .select("*, posts:post_id(id, caption, media_url, media_type, user_id), reporter:reporter_id(id, display_name)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.reason) q = q.eq("reason", data.reason);
     if (data.status) q = q.eq("status", data.status);
     const { data: rows, count, error } = await q;
     if (error) throw error;
-    return { rows: rows ?? [], count: count ?? 0 };
+    const postIds = Array.from(new Set((rows ?? []).map((r: any) => r.post_id).filter(Boolean)));
+    const reporterIds = Array.from(new Set((rows ?? []).map((r: any) => r.reporter_id).filter(Boolean)));
+    const [{ data: posts }, { data: reporters }] = await Promise.all([
+      postIds.length
+        ? supabaseAdmin.from("posts").select("id, caption, media_url, media_type, user_id").in("id", postIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+      reporterIds.length
+        ? supabaseAdmin.from("profiles").select("id, display_name").in("id", reporterIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+    ]);
+    const pmap = new Map((posts ?? []).map((p: any) => [p.id, p]));
+    const rmap = new Map((reporters ?? []).map((r: any) => [r.id, r]));
+    return {
+      rows: (rows ?? []).map((r: any) => ({
+        ...r,
+        posts: pmap.get(r.post_id) ?? null,
+        reporter: rmap.get(r.reporter_id) ?? null,
+      })),
+      count: count ?? 0,
+    };
   });
+
 
 export const resolveReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -340,14 +375,20 @@ export const listMarriage = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 20;
     let q = supabaseAdmin
       .from("marriage_profiles")
-      .select("*, profiles:user_id(id, display_name, avatar_url)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
     if (data.status) q = q.eq("status", data.status);
     const { data: rows, count, error } = await q;
     if (error) throw error;
-    return { rows: rows ?? [], count: count ?? 0 };
+    const userIds = Array.from(new Set((rows ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name, avatar_url").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return { rows: (rows ?? []).map((r: any) => ({ ...r, profiles: pmap.get(r.user_id) ?? null })), count: count ?? 0 };
   });
+
 
 export const updateMarriageStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -384,12 +425,31 @@ export const listMessageReports = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("message_reports")
-      .select("*, messages:message_id(id, content, sender_id, recipient_id, created_at), reporter:reporter_id(id, display_name)")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw error;
-    return { rows: data ?? [] };
+    const msgIds = Array.from(new Set((data ?? []).map((r: any) => r.message_id).filter(Boolean)));
+    const reporterIds = Array.from(new Set((data ?? []).map((r: any) => r.reporter_id).filter(Boolean)));
+    const [{ data: msgs }, { data: reporters }] = await Promise.all([
+      msgIds.length
+        ? supabaseAdmin.from("messages").select("id, content, sender_id, recipient_id, created_at").in("id", msgIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+      reporterIds.length
+        ? supabaseAdmin.from("profiles").select("id, display_name").in("id", reporterIds)
+        : Promise.resolve({ data: [] as any[] } as any),
+    ]);
+    const mmap = new Map((msgs ?? []).map((m: any) => [m.id, m]));
+    const rmap = new Map((reporters ?? []).map((r: any) => [r.id, r]));
+    return {
+      rows: (data ?? []).map((r: any) => ({
+        ...r,
+        messages: mmap.get(r.message_id) ?? null,
+        reporter: rmap.get(r.reporter_id) ?? null,
+      })),
+    };
   });
+
 
 export const deleteMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -476,10 +536,18 @@ export const getAuditLogs = createServerFn({ method: "GET" })
     const size = data.pageSize ?? 50;
     const { data: rows, count } = await supabaseAdmin
       .from("admin_activity_logs")
-      .select("*, admin:admin_id(display_name)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(page * size, page * size + size - 1);
-    return { rows: rows ?? [], count: count ?? 0 };
+    const adminIds = Array.from(new Set((rows ?? []).map((r: any) => r.admin_id).filter(Boolean)));
+    const { data: admins } = adminIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name").in("id", adminIds)
+      : { data: [] as any[] };
+    const amap = new Map((admins ?? []).map((a: any) => [a.id, a]));
+    return {
+      rows: (rows ?? []).map((r: any) => ({ ...r, admin: amap.get(r.admin_id) ?? null })),
+      count: count ?? 0,
+    };
   });
 
 export const getLoginHistory = createServerFn({ method: "GET" })
@@ -489,11 +557,17 @@ export const getLoginHistory = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("admin_login_history")
-      .select("*, user:user_id(display_name)")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(100);
-    return { rows: data ?? [] };
+    const userIds = Array.from(new Set((data ?? []).map((r: any) => r.user_id).filter(Boolean)));
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, display_name").in("id", userIds)
+      : { data: [] as any[] };
+    const pmap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return { rows: (data ?? []).map((r: any) => ({ ...r, user: pmap.get(r.user_id) ?? null })) };
   });
+
 
 export const getFailedLogins = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
