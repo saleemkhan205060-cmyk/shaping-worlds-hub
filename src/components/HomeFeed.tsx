@@ -392,10 +392,14 @@ export function HomeFeed() {
       setTextStyle(DEFAULT_TEXT_STYLE);
 
       toast.success("Posted!");
-    } catch (e) {
+    } catch (e: any) {
       console.error("[HomeFeed.submit] post failed:", e);
-      const msg = e instanceof Error ? e.message : String(e);
+      const msg =
+        (e && typeof e === "object" && (e.message || e.error_description || e.hint || e.details)) ||
+        (e instanceof Error ? e.message : null) ||
+        (typeof e === "string" ? e : JSON.stringify(e));
       toast.error(`Couldn't post: ${msg}`);
+
     } finally {
       setPosting(false);
       setUploadPct(0);
