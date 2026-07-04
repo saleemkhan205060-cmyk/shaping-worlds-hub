@@ -16,6 +16,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MarriageRouteImport } from './routes/marriage'
@@ -75,6 +76,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -278,6 +286,7 @@ export interface FileRoutesById {
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/marriage'
     | '/messages'
     | '/notifications'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/search'
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/messages'
     | '/notifications'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/search'
@@ -380,6 +391,7 @@ export interface FileRouteTypes {
     | '/marriage'
     | '/messages'
     | '/notifications'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/search'
@@ -415,6 +427,7 @@ export interface RootRouteChildren {
   MarriageRoute: typeof MarriageRouteWithChildren
   MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -712,6 +732,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarriageRoute: MarriageRouteWithChildren,
   MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
