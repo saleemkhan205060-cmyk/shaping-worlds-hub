@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/admin.functions";
+import { useAuth } from "@/hooks/use-auth";
 import { Card } from "@/components/admin/AdminLayout";
 import {
   Users, FileText, Video, Image as ImageIcon, MessageSquare, Heart,
