@@ -64,7 +64,7 @@ function SettingsPage() {
             </div>
           </label>
         </Card>
-        <div className="fixed inset-x-0 bottom-0 z-[100] border-t border-slate-200 bg-white px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-2xl shadow-slate-900/10 backdrop-blur dark:border-slate-800 dark:bg-slate-900 lg:left-64 sm:px-6 lg:px-8">
+        <div className="sticky bottom-4 z-50 mt-6 flex justify-end rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
           <button type="submit" disabled={busy}
             className="ml-auto flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-3 font-semibold text-white shadow-lg disabled:opacity-50 sm:w-auto">
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
