@@ -547,6 +547,17 @@ export const updateSettings = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// Public: legal + branding fields for user-facing pages (no auth required)
+export const getPublicLegal = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("app_settings")
+    .select("app_name,privacy_policy,terms,contact_email,contact_phone")
+    .eq("id", 1)
+    .maybeSingle();
+  return data ?? { app_name: "", privacy_policy: "", terms: "", contact_email: "", contact_phone: "" };
+});
+
 // =================== SECURITY / AUDIT ===================
 export const getAuditLogs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
