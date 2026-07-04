@@ -36,7 +36,7 @@ function SettingsPage() {
   const fb = (k: string) => (e: any) => setForm({ ...form, [k]: e.target.checked });
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-4 pb-32">
       <h1 className="text-2xl font-bold">App Settings</h1>
       <form onSubmit={save} className="space-y-4">
         <Card className="space-y-3">
@@ -64,9 +64,9 @@ function SettingsPage() {
             </div>
           </label>
         </Card>
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 px-4 sm:px-6 lg:px-8 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95 flex justify-end lg:pl-72">
+        <div className="fixed inset-x-0 bottom-0 z-[100] border-t border-slate-200 bg-white px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-2xl shadow-slate-900/10 backdrop-blur dark:border-slate-800 dark:bg-slate-900 lg:left-64 sm:px-6 lg:px-8">
           <button type="submit" disabled={busy}
-            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-2.5 font-semibold text-white shadow-lg disabled:opacity-50">
+            className="ml-auto flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-3 font-semibold text-white shadow-lg disabled:opacity-50 sm:w-auto">
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save Settings
           </button>
