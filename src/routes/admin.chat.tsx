@@ -6,17 +6,24 @@ import { listMessageReports, deleteMessage, updateUserFlag } from "@/lib/admin.f
 import { Card, ConfirmDialog } from "@/components/admin/AdminLayout";
 import { Trash2, Ban } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/admin/chat")({ component: ChatModPage });
 
 function ChatModPage() {
+  const { user } = useAuth();
   const list = useServerFn(listMessageReports);
   const del = useServerFn(deleteMessage);
   const flag = useServerFn(updateUserFlag);
   const qc = useQueryClient();
   const [confirm, setConfirm] = useState<{ action: () => void; title: string; msg: string } | null>(null);
 
-  const { data, isLoading } = useQuery({ queryKey: ["admin", "msg-reports"], queryFn: () => list() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "msg-reports"],
+    queryFn: () => list(),
+    enabled: !!user,
+    retry: false,
+  });
   const invalidate = () => qc.invalidateQueries({ queryKey: ["admin", "msg-reports"] });
   const act = async (fn: () => Promise<unknown>, m: string) => {
     try { await fn(); toast.success(m); invalidate(); } catch (e: any) { toast.error(e?.message ?? "Failed"); }
