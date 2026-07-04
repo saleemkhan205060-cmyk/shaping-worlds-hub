@@ -25,9 +25,9 @@ function SettingsPage() {
     try {
       const { id, updated_at, updated_by, ...rest } = form;
       await upd({ data: rest });
-      toast.success("Settings saved");
+      toast.success("Settings saved successfully.");
       qc.invalidateQueries({ queryKey: ["admin", "settings"] });
-    } catch (e: any) { toast.error(e?.message ?? "Failed"); }
+    } catch (e: any) { toast.error(e?.message ?? "Failed to save settings"); }
     finally { setBusy(false); }
   };
 
