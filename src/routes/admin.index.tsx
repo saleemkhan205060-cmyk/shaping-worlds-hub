@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/admin.functions";
+import { useAuth } from "@/hooks/use-auth";
 import { Card } from "@/components/admin/AdminLayout";
 import {
   Users, FileText, Video, Image as ImageIcon, MessageSquare, Heart,
@@ -28,7 +29,13 @@ function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: stri
 
 function DashboardPage() {
   const fn = useServerFn(getDashboardStats);
-  const { data, isLoading } = useQuery({ queryKey: ["admin", "stats"], queryFn: () => fn() });
+  const { user, loading } = useAuth();
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "stats"],
+    queryFn: () => fn(),
+    enabled: !loading && !!user,
+    retry: false,
+  });
 
   return (
     <div className="space-y-6">
