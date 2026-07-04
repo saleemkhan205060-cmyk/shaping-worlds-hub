@@ -28,7 +28,13 @@ function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: stri
 
 function DashboardPage() {
   const fn = useServerFn(getDashboardStats);
-  const { data, isLoading } = useQuery({ queryKey: ["admin", "stats"], queryFn: () => fn() });
+  const { user, loading } = useAuth();
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "stats"],
+    queryFn: () => fn(),
+    enabled: !loading && !!user,
+    retry: false,
+  });
 
   return (
     <div className="space-y-6">
