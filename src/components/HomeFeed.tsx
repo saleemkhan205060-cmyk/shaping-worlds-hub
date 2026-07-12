@@ -140,6 +140,7 @@ export function HomeFeed() {
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
+  const [videoMenuFor, setVideoMenuFor] = useState<string | null>(null);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
@@ -1004,7 +1005,7 @@ export function HomeFeed() {
                     </div>
                   </Link>
                 </div>
-                {p.caption && p.media_type !== "text" && (
+                {p.caption && p.media_type !== "text" && p.media_type !== "video" && (
                   <div className="relative px-4 pb-2">
                     <p
                       className="text-sm whitespace-pre-wrap select-none"
@@ -1082,7 +1083,17 @@ export function HomeFeed() {
                       className="w-full h-full object-cover cursor-pointer"
                       onClick={() => openFullscreen(p.id)}
                     />
-
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVideoMenuFor(p.id);
+                      }}
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center active:scale-95"
+                      aria-label="More options"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </button>
                   </div>
                   </MediaActions>
                 )}
@@ -1321,6 +1332,42 @@ export function HomeFeed() {
               className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
             >
               Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {videoMenuFor && (
+        <div
+          className="fixed inset-0 z-[300] bg-black/60 flex items-end sm:items-center justify-center"
+          onClick={() => setVideoMenuFor(null)}
+        >
+          <div
+            className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-5 pt-5 pb-2">
+              <h3 className="text-sm font-bold text-slate-900 mb-2">Caption</h3>
+              <p className="text-sm text-slate-700 whitespace-pre-wrap">
+                {posts.find((p) => p.id === videoMenuFor)?.caption || "No caption"}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                const postId = videoMenuFor;
+                setVideoMenuFor(null);
+                openFullscreen(postId);
+              }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-t border-slate-100 active:bg-slate-100"
+            >
+              <Maximize2 className="h-5 w-5" />
+              Open fullscreen
+            </button>
+            <button
+              onClick={() => setVideoMenuFor(null)}
+              className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50 border-t border-slate-100"
+            >
+              Close
             </button>
           </div>
         </div>
