@@ -746,38 +746,8 @@ export function HomeFeed() {
           )}
 
           <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-slate-100">
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => {
-                  if (fileRef.current) fileRef.current.accept = "image/*";
-                  fileRef.current?.click();
-                }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-emerald-700 hover:bg-emerald-50 transition"
-              >
-                <ImageIcon className="h-4 w-4" /> Photo
-              </button>
-              <button
-                onClick={() => setShowCamera(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-sm text-rose-700 hover:bg-rose-50 transition"
-              >
-                <VideoIcon className="h-4 w-4" /> Video
-              </button>
-              <input
-                ref={fileRef}
-                type="file"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0] ?? null;
-                  e.currentTarget.value = "";
-                  if (!f) return;
-                  if (isVideoFile(f)) {
-                    if (f.size > MAX_BYTES) { toast.error("File must be under 500MB"); return; }
-                    pickFile(f);
-                    return;
-                  }
-                  pickFile(f);
-                }}
-              />
+            <div className="flex items-center gap-1 text-[11px] text-slate-400">
+              {/* Photo & Video upload moved to the bottom-nav + button */}
             </div>
             <div className="flex items-center gap-2 relative">
               <button
