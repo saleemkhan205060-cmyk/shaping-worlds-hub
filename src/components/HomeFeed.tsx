@@ -140,6 +140,7 @@ export function HomeFeed() {
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
+  const [videoMenuFor, setVideoMenuFor] = useState<string | null>(null);
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const [fullscreenPreviewOpen, setFullscreenPreviewOpen] = useState(false);
