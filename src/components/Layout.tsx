@@ -238,7 +238,7 @@ export function Layout({
               <Bell className="h-7 w-7" />
               <Badge n={unreadNotifs} />
             </Link>
-            {user && (
+            {mounted && user && (
               <>
                 <Link
                   to="/messages"
