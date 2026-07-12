@@ -1083,7 +1083,17 @@ export function HomeFeed() {
                       className="w-full h-full object-cover cursor-pointer"
                       onClick={() => openFullscreen(p.id)}
                     />
-
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVideoMenuFor(p.id);
+                      }}
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center active:scale-95"
+                      aria-label="More options"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </button>
                   </div>
                   </MediaActions>
                 )}
