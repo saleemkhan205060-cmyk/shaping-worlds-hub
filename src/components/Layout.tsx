@@ -265,7 +265,7 @@ export function Layout({
                 <DropdownMenuItem onClick={() => setLangOpen(true)}>
                   <Languages className="h-4 w-4 mr-2" /> {t("menu.language")}
                 </DropdownMenuItem>
-                {user && (
+                {mounted && user && (
                   <>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="h-4 w-4 mr-2" /> {t("menu.signOut")}
@@ -274,7 +274,7 @@ export function Layout({
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            {!user && (
+            {mounted && !user && (
               <Link
                 to="/auth"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
