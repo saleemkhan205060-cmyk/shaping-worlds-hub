@@ -62,6 +62,8 @@ export function Layout({
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [homeReloading, setHomeReloading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const refreshUnreadMsgs = useCallback(async () => {
     if (!user) return setUnreadMsgs(0);
