@@ -31,7 +31,7 @@ function UploadPage() {
   const [thumbTitle, setThumbTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
-  const [visibility, setVisibility] = useState<"public" | "friends" | "private">("public");
+  const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [visibilityOpen, setVisibilityOpen] = useState(false);
   const isPrivate = visibility === "private";
   const setIsPrivate = (v: boolean) => setVisibility(v ? "private" : "public");
@@ -338,7 +338,7 @@ function UploadPage() {
               >
                 <div className="flex items-center gap-2">
                   {(() => {
-                    const Icon = visibility === "private" ? Lock : visibility === "friends" ? Users : Globe2;
+                    const Icon = visibility === "private" ? Lock : Globe2;
                     return <Icon className="h-4 w-4 text-slate-500" />;
                   })()}
                   <span className="text-sm font-semibold text-slate-800 capitalize">{visibility}</span>
@@ -360,7 +360,6 @@ function UploadPage() {
                     </div>
                     {([
                       { key: "public", label: "Public", Icon: Globe2, hint: "Anyone on VIP Life" },
-                      { key: "friends", label: "Friends", Icon: Users, hint: "Your followers" },
                       { key: "private", label: "Private", Icon: Lock, hint: "Only you" },
                     ] as const).map(({ key, label, Icon, hint }) => {
                       const active = visibility === key;
