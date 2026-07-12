@@ -1005,7 +1005,7 @@ export function HomeFeed() {
                     </div>
                   </Link>
                 </div>
-                {p.caption && p.media_type !== "text" && (
+                {p.caption && p.media_type !== "text" && p.media_type !== "video" && (
                   <div className="relative px-4 pb-2">
                     <p
                       className="text-sm whitespace-pre-wrap select-none"
