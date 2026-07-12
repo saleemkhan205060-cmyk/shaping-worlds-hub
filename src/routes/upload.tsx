@@ -157,8 +157,20 @@ function UploadPage() {
         />
       )}
       <div className="max-w-xl mx-auto">
-        <h1 className="text-2xl font-extrabold mb-1">Upload</h1>
-        <p className="text-sm text-slate-500 mb-5">Share a photo or video with the community.</p>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h1 className="text-2xl font-extrabold mb-1">Upload</h1>
+            <p className="text-sm text-slate-500">Share a photo or video with the community.</p>
+          </div>
+          <button
+            onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
+            disabled={uploading}
+            aria-label="Close"
+            className="shrink-0 h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 flex items-center justify-center hover:bg-slate-50 active:scale-95 disabled:opacity-50 transition"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
           {!file ? (
