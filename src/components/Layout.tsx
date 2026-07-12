@@ -62,6 +62,8 @@ export function Layout({
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [homeReloading, setHomeReloading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const refreshUnreadMsgs = useCallback(async () => {
     if (!user) return setUnreadMsgs(0);
@@ -236,7 +238,7 @@ export function Layout({
               <Bell className="h-7 w-7" />
               <Badge n={unreadNotifs} />
             </Link>
-            {user && (
+            {mounted && user && (
               <>
                 <Link
                   to="/messages"
@@ -263,7 +265,7 @@ export function Layout({
                 <DropdownMenuItem onClick={() => setLangOpen(true)}>
                   <Languages className="h-4 w-4 mr-2" /> {t("menu.language")}
                 </DropdownMenuItem>
-                {user && (
+                {mounted && user && (
                   <>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="h-4 w-4 mr-2" /> {t("menu.signOut")}
@@ -272,7 +274,7 @@ export function Layout({
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            {!user && (
+            {mounted && !user && (
               <Link
                 to="/auth"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
@@ -320,7 +322,7 @@ export function Layout({
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="relative grid grid-cols-3 items-center">
+        <div className="relative grid grid-cols-3 items-end">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
             const active = path === item.to;
@@ -363,15 +365,17 @@ export function Layout({
                     }
                   }
                 }}
-                className={`${colClass} flex flex-col items-center justify-center py-2 text-xs font-medium transition ${
+                className={`${colClass} row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium transition ${
                   active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
                 }`}
               >
-                {showSpinner ? (
-                  <Loader2 className="h-6 w-6 mb-1 animate-spin" />
-                ) : (
-                  <Icon className="h-6 w-6 mb-1" />
-                )}
+                <span className="h-8 w-8 flex items-center justify-center mb-1">
+                  {showSpinner ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    <Icon className="h-6 w-6" />
+                  )}
+                </span>
                 {t(item.labelKey)}
               </Link>
             );
@@ -381,9 +385,9 @@ export function Layout({
           <Link
             to={user ? "/upload" : "/auth"}
             aria-label="Upload photo or video"
-            className="col-start-2 flex flex-col items-center justify-center py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
+            className="col-start-2 row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
           >
-            <span className="h-6 w-6 flex items-center justify-center mb-1">
+            <span className="h-8 w-8 flex items-center justify-center mb-1">
               <span className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md shadow-indigo-500/30 ring-2 ring-white flex items-center justify-center transition-transform active:scale-95">
                 <Plus className="h-4 w-4 text-white" strokeWidth={3} />
               </span>
