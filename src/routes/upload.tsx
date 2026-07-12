@@ -31,7 +31,7 @@ function UploadPage() {
   const [thumbTitle, setThumbTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
-  const [visibility, setVisibility] = useState<"public" | "friends" | "private">("public");
+  const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [visibilityOpen, setVisibilityOpen] = useState(false);
   const isPrivate = visibility === "private";
   const setIsPrivate = (v: boolean) => setVisibility(v ? "private" : "public");
