@@ -360,7 +360,6 @@ function UploadPage() {
                     </div>
                     {([
                       { key: "public", label: "Public", Icon: Globe2, hint: "Anyone on VIP Life" },
-                      { key: "friends", label: "Friends", Icon: Users, hint: "Your followers" },
                       { key: "private", label: "Private", Icon: Lock, hint: "Only you" },
                     ] as const).map(({ key, label, Icon, hint }) => {
                       const active = visibility === key;
