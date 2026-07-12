@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { Layout } from "../components/Layout";
-import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload, Globe2, Lock, Users, Check } from "lucide-react";
+import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload, Globe2, Lock, Users, Check, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -32,6 +32,7 @@ function UploadPage() {
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
   const [visibility, setVisibility] = useState<"public" | "friends" | "private">("public");
+  const [visibilityOpen, setVisibilityOpen] = useState(false);
   const isPrivate = visibility === "private";
   const setIsPrivate = (v: boolean) => setVisibility(v ? "private" : "public");
   const [uploading, setUploading] = useState(false);
@@ -329,38 +330,74 @@ function UploadPage() {
 
           <div className="pt-1 space-y-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">Visibility</p>
-              <div className="grid grid-cols-3 gap-2">
-                {([
-                  { key: "public", label: "Public", Icon: Globe2, hint: "Anyone" },
-                  { key: "friends", label: "Friends", Icon: Users, hint: "Followers" },
-                  { key: "private", label: "Private", Icon: Lock, hint: "Only me" },
-                ] as const).map(({ key, label, Icon, hint }) => {
-                  const active = visibility === key;
-                  return (
+              <button
+                type="button"
+                onClick={() => setVisibilityOpen(true)}
+                disabled={uploading}
+                className="w-full flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition active:bg-slate-50 disabled:opacity-50"
+              >
+                <span className="text-sm font-semibold text-slate-800">Publish</span>
+                <div className="flex items-center gap-1.5">
+                  {(() => {
+                    const Icon = visibility === "private" ? Lock : visibility === "friends" ? Users : Globe2;
+                    return <Icon className="h-4 w-4 text-slate-500" />;
+                  })()}
+                  <span className="text-sm font-medium text-slate-600 capitalize">{visibility}</span>
+                  <ChevronDown className="h-4 w-4 text-slate-400" />
+                </div>
+              </button>
+
+              {visibilityOpen && (
+                <div
+                  className="fixed inset-0 z-[300] bg-black/40 flex items-end sm:items-center justify-center"
+                  onClick={() => setVisibilityOpen(false)}
+                >
+                  <div
+                    className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="px-5 py-3 border-b border-slate-100">
+                      <p className="text-sm font-bold text-slate-800">Who can see this?</p>
+                    </div>
+                    {([
+                      { key: "public", label: "Public", Icon: Globe2, hint: "Anyone on VIP Life" },
+                      { key: "friends", label: "Friends", Icon: Users, hint: "Your followers" },
+                      { key: "private", label: "Private", Icon: Lock, hint: "Only you" },
+                    ] as const).map(({ key, label, Icon, hint }) => {
+                      const active = visibility === key;
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => { setVisibility(key); setVisibilityOpen(false); }}
+                          className="w-full flex items-center justify-between px-5 py-3.5 text-left border-b border-slate-100 last:border-b-0 active:bg-slate-50 transition"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`h-9 w-9 rounded-full flex items-center justify-center ${active ? "bg-indigo-50 text-indigo-600" : "bg-slate-100 text-slate-500"}`}>
+                              <Icon className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <p className={`text-sm font-semibold ${active ? "text-indigo-700" : "text-slate-800"}`}>{label}</p>
+                              <p className="text-xs text-slate-500">{hint}</p>
+                            </div>
+                          </div>
+                          {active && (
+                            <span className="h-5 w-5 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                              <Check className="h-3 w-3" strokeWidth={3} />
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                     <button
-                      key={key}
-                      type="button"
-                      onClick={() => setVisibility(key)}
-                      disabled={uploading}
-                      className={`relative flex flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-3 transition disabled:opacity-50 ${
-                        active
-                          ? "border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm"
-                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                      }`}
+                      onClick={() => setVisibilityOpen(false)}
+                      className="w-full py-3.5 text-sm font-semibold text-slate-600 border-t border-slate-100 active:bg-slate-50"
                     >
-                      {active && (
-                        <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-indigo-600 text-white flex items-center justify-center">
-                          <Check className="h-2.5 w-2.5" strokeWidth={3} />
-                        </span>
-                      )}
-                      <Icon className={`h-5 w-5 ${active ? "text-indigo-600" : "text-slate-500"}`} />
-                      <span className="text-xs font-semibold">{label}</span>
-                      <span className="text-[10px] text-slate-400">{hint}</span>
+                      Cancel
                     </button>
-                  );
-                })}
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button
