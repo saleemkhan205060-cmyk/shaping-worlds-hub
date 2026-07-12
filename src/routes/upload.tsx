@@ -295,57 +295,13 @@ function UploadPage() {
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-700">Thumbnail</label>
-            <div className="mt-1 flex items-start gap-3">
-              <button
-                type="button"
-                onClick={() => thumbRef.current?.click()}
-                className="relative h-24 w-24 shrink-0 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden hover:border-indigo-400"
-              >
-                {thumbPreview ? (
-                  <img src={thumbPreview} alt="thumb" className="w-full h-full object-cover" />
-                ) : (
-                  <ImageIcon className="h-6 w-6 text-slate-400" />
-                )}
-              </button>
-              <div className="flex-1 space-y-2">
-                <input
-                  value={thumbTitle}
-                  onChange={(e) => setThumbTitle(e.target.value)}
-                  maxLength={80}
-                  placeholder="Thumbnail title (text on cover)"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
-                />
-                {file && isVideoFile(file) && preview && (
-                  <button
-                    type="button"
-                    onClick={() => setFramePickerOpen(true)}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-indigo-600 px-2.5 py-1.5 rounded-md w-fit active:scale-95"
-                  >
-                    <Film className="h-3.5 w-3.5" />
-                    Pick from video
-                  </button>
-                )}
-                {thumbFile && (
-                  <button
-                    type="button"
-                    onClick={() => setThumbFile(null)}
-                    className="text-xs text-rose-600 font-medium"
-                  >
-                    Remove thumbnail
-                  </button>
-                )}
-              </div>
-            </div>
-            <input
-              ref={thumbRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => onPickThumb(e.target.files?.[0] ?? null)}
-            />
-          </div>
+          <input
+            ref={thumbRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => onPickThumb(e.target.files?.[0] ?? null)}
+          />
 
           {uploading && (
             <div className="space-y-1">
