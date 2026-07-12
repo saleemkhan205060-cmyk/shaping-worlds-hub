@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { Layout } from "../components/Layout";
-import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload, Globe2, Lock } from "lucide-react";
+import { UploadCloud, Loader2, Image as ImageIcon, Video as VideoIcon, X, Camera, FolderOpen, Film, MoreVertical, Upload, Globe2, Lock, Users, Check } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -31,7 +31,9 @@ function UploadPage() {
   const [thumbTitle, setThumbTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("For You");
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [visibility, setVisibility] = useState<"public" | "friends" | "private">("public");
+  const isPrivate = visibility === "private";
+  const setIsPrivate = (v: boolean) => setVisibility(v ? "private" : "public");
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showCamera, setShowCamera] = useState(true);
@@ -155,8 +157,20 @@ function UploadPage() {
         />
       )}
       <div className="max-w-xl mx-auto">
-        <h1 className="text-2xl font-extrabold mb-1">Upload</h1>
-        <p className="text-sm text-slate-500 mb-5">Share a photo or video with the community.</p>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h1 className="text-2xl font-extrabold mb-1">Upload</h1>
+            <p className="text-sm text-slate-500">Share a photo or video with the community.</p>
+          </div>
+          <button
+            onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
+            disabled={uploading}
+            aria-label="Close"
+            className="shrink-0 h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 flex items-center justify-center hover:bg-slate-50 active:scale-95 disabled:opacity-50 transition"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
           {!file ? (
@@ -313,50 +327,55 @@ function UploadPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-2 pt-2">
-            <button
-              onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
-              disabled={uploading}
-              className="px-4 py-2.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
-            >
-              Cancel
-            </button>
-
-            {/* Upload button with Public / Private inside */}
-            <div className="inline-flex items-center rounded-full bg-indigo-600 overflow-hidden shadow-sm">
-              <button
-                type="button"
-                onClick={() => setIsPrivate(false)}
-                disabled={uploading}
-                className={`inline-flex items-center gap-1 px-3 py-2.5 text-xs font-semibold transition disabled:opacity-50 ${
-                  !isPrivate ? "bg-white/20 text-white" : "text-indigo-100 hover:bg-white/10"
-                }`}
-              >
-                <Globe2 className="h-3.5 w-3.5" />
-                Public
-              </button>
-              <div className="w-px h-4 bg-indigo-400/40" />
-              <button
-                type="button"
-                onClick={() => setIsPrivate(true)}
-                disabled={uploading}
-                className={`inline-flex items-center gap-1 px-3 py-2.5 text-xs font-semibold transition disabled:opacity-50 ${
-                  isPrivate ? "bg-white/20 text-white" : "text-indigo-100 hover:bg-white/10"
-                }`}
-              >
-                <Lock className="h-3.5 w-3.5" />
-                Private
-              </button>
-              <div className="w-px h-4 bg-indigo-400/40" />
-              <button
-                onClick={handleUpload}
-                disabled={!file || uploading}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition"
-              >
-                {uploading ? <><Loader2 className="h-4 w-4 animate-spin" /> {progress}%</> : <><UploadCloud className="h-4 w-4" /> Share</>}
-              </button>
+          <div className="pt-1 space-y-3">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">Visibility</p>
+              <div className="grid grid-cols-3 gap-2">
+                {([
+                  { key: "public", label: "Public", Icon: Globe2, hint: "Anyone" },
+                  { key: "friends", label: "Friends", Icon: Users, hint: "Followers" },
+                  { key: "private", label: "Private", Icon: Lock, hint: "Only me" },
+                ] as const).map(({ key, label, Icon, hint }) => {
+                  const active = visibility === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setVisibility(key)}
+                      disabled={uploading}
+                      className={`relative flex flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-3 transition disabled:opacity-50 ${
+                        active
+                          ? "border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm"
+                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                      }`}
+                    >
+                      {active && (
+                        <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                          <Check className="h-2.5 w-2.5" strokeWidth={3} />
+                        </span>
+                      )}
+                      <Icon className={`h-5 w-5 ${active ? "text-indigo-600" : "text-slate-500"}`} />
+                      <span className="text-xs font-semibold">{label}</span>
+                      <span className="text-[10px] text-slate-400">{hint}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+
+            <button
+              onClick={handleUpload}
+              disabled={!file || uploading}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/30 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-50 disabled:shadow-none transition active:scale-[0.99]"
+            >
+              {uploading ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Uploading {progress}%</>
+              ) : (
+                <><UploadCloud className="h-5 w-5" /> Upload Video</>
+              )}
+            </button>
           </div>
+
 
 
         </div>
