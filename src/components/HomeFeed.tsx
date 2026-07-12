@@ -1347,10 +1347,21 @@ export function HomeFeed() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-5 pt-5 pb-2">
-              <h3 className="text-sm font-bold text-slate-900 mb-2">Caption</h3>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">
-                {posts.find((p) => p.id === videoMenuFor)?.caption || "No caption"}
-              </p>
+              <h3 className="text-sm font-bold text-slate-900 mb-3">Video details</h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Category</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-800">
+                    {posts.find((p) => p.id === videoMenuFor)?.category || "For You"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Caption</p>
+                  <p className="mt-1 text-sm text-slate-700 whitespace-pre-wrap">
+                    {posts.find((p) => p.id === videoMenuFor)?.caption || "No caption"}
+                  </p>
+                </div>
+              </div>
             </div>
             <button
               onClick={() => {
