@@ -381,14 +381,14 @@ export function Layout({
           <Link
             to={user ? "/upload" : "/auth"}
             aria-label="Upload photo or video"
-            className="col-start-2 flex flex-col items-center justify-center py-2 text-xs font-medium group"
+            className="col-start-2 flex flex-col items-center justify-center py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
           >
-            <span className="relative h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md shadow-indigo-500/30 ring-2 ring-white flex items-center justify-center mb-1 transition-transform group-active:scale-95">
-              <Plus className="h-5 w-5 text-white" strokeWidth={3} />
+            <span className="h-6 w-6 flex items-center justify-center mb-1">
+              <span className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md shadow-indigo-500/30 ring-2 ring-white flex items-center justify-center transition-transform active:scale-95">
+                <Plus className="h-4 w-4 text-white" strokeWidth={3} />
+              </span>
             </span>
-            <span className="text-xs font-medium text-slate-500 group-hover:text-slate-700">
-              Upload
-            </span>
+            Upload
           </Link>
         </div>
       </nav>
