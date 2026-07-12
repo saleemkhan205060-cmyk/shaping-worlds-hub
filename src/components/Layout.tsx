@@ -363,7 +363,7 @@ export function Layout({
                     }
                   }
                 }}
-                className={`${colClass} flex flex-col items-center justify-end py-2 text-xs font-medium transition ${
+                className={`${colClass} row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium transition ${
                   active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
                 }`}
               >
