@@ -338,7 +338,7 @@ function UploadPage() {
               >
                 <div className="flex items-center gap-2">
                   {(() => {
-                    const Icon = visibility === "private" ? Lock : visibility === "friends" ? Users : Globe2;
+                    const Icon = visibility === "private" ? Lock : Globe2;
                     return <Icon className="h-4 w-4 text-slate-500" />;
                   })()}
                   <span className="text-sm font-semibold text-slate-800 capitalize">{visibility}</span>
