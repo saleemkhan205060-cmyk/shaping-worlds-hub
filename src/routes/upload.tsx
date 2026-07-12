@@ -336,15 +336,14 @@ function UploadPage() {
                 disabled={uploading}
                 className="w-full flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition active:bg-slate-50 disabled:opacity-50"
               >
-                <span className="text-sm font-semibold text-slate-800">Publish</span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {(() => {
                     const Icon = visibility === "private" ? Lock : visibility === "friends" ? Users : Globe2;
                     return <Icon className="h-4 w-4 text-slate-500" />;
                   })()}
-                  <span className="text-sm font-medium text-slate-600 capitalize">{visibility}</span>
-                  <ChevronDown className="h-4 w-4 text-slate-400" />
+                  <span className="text-sm font-semibold text-slate-800 capitalize">{visibility}</span>
                 </div>
+                <ChevronDown className="h-4 w-4 text-slate-400" />
               </button>
 
               {visibilityOpen && (
