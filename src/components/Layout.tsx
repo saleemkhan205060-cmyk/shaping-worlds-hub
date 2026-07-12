@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
-import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -320,12 +320,14 @@ export function Layout({
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="grid grid-cols-4">
-          {navItems.map((item) => {
+        <div className="relative grid grid-cols-3 items-end">
+          {navItems.map((item, idx) => {
             const Icon = item.icon;
             const active = path === item.to;
             const isHome = item.to === "/";
             const showSpinner = isHome && homeReloading;
+            // Insert the + button visually in the middle column by ordering
+            const colClass = idx === 0 ? "col-start-1" : "col-start-3";
             return (
               <Link
                 key={item.to}
@@ -361,7 +363,7 @@ export function Layout({
                     }
                   }
                 }}
-                className={`flex flex-col items-center justify-center py-2.5 text-[11px] font-medium transition ${
+                className={`${colClass} flex flex-col items-center justify-center py-2.5 text-[11px] font-medium transition ${
                   active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -374,6 +376,21 @@ export function Layout({
               </Link>
             );
           })}
+
+          {/* Center + button: upload photo/video */}
+          <Link
+            to={user ? "/upload" : "/auth"}
+            aria-label="Upload photo or video"
+            className="col-start-2 justify-self-center -mt-6 mb-1 flex flex-col items-center group"
+          >
+            <span className="relative h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-lg shadow-indigo-500/40 ring-4 ring-white flex items-center justify-center transition-transform group-active:scale-95">
+              <span className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-400 to-pink-400 opacity-60 blur-md -z-10" />
+              <Plus className="h-7 w-7 text-white" strokeWidth={3} />
+            </span>
+            <span className="mt-0.5 text-[10px] font-semibold bg-gradient-to-r from-indigo-600 to-pink-600 bg-clip-text text-transparent">
+              Upload
+            </span>
+          </Link>
         </div>
       </nav>
       )}
