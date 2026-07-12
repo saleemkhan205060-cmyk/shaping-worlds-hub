@@ -1337,6 +1337,42 @@ export function HomeFeed() {
         </div>
       )}
 
+      {videoMenuFor && (
+        <div
+          className="fixed inset-0 z-[300] bg-black/60 flex items-end sm:items-center justify-center"
+          onClick={() => setVideoMenuFor(null)}
+        >
+          <div
+            className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-5 pt-5 pb-2">
+              <h3 className="text-sm font-bold text-slate-900 mb-2">Caption</h3>
+              <p className="text-sm text-slate-700 whitespace-pre-wrap">
+                {posts.find((p) => p.id === videoMenuFor)?.caption || "No caption"}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                const postId = videoMenuFor;
+                setVideoMenuFor(null);
+                openFullscreen(postId);
+              }}
+              className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-t border-slate-100 active:bg-slate-100"
+            >
+              <Maximize2 className="h-5 w-5" />
+              Open fullscreen
+            </button>
+            <button
+              onClick={() => setVideoMenuFor(null)}
+              className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50 border-t border-slate-100"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       {shareOpen && sharePost && (
         <ShareSheet
           open={shareOpen}
