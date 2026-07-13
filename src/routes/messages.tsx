@@ -197,10 +197,16 @@ function Messages() {
       return;
     }
     const t = setTimeout(async () => {
+      // Sanitize: strip PostgREST filter grammar chars to prevent .or() injection
+      const safe = q.replace(/[,()\\*%"]/g, "").slice(0, 100);
+      if (!safe) {
+        setSearchResults([]);
+        return;
+      }
       const { data } = await supabase
         .from("profiles")
         .select("id, username, display_name, avatar_url")
-        .or(`username.ilike.%${q}%,display_name.ilike.%${q}%`)
+        .or(`username.ilike.%${safe}%,display_name.ilike.%${safe}%`)
         .limit(15);
       setSearchResults(((data ?? []) as Profile[]).filter((p) => p.id !== user?.id));
     }, 250);
