@@ -77,8 +77,17 @@ function SearchPage() {
       return;
     }
     setLoading(true);
+    // Sanitize: strip PostgREST filter grammar chars (comma, parens, backslash, quotes, wildcards)
+    // to prevent .or() filter injection. Users typing these get plain-text search anyway.
+    const safeTerm = term.replace(/[,()\\*%"]/g, "").slice(0, 100);
+    if (!safeTerm) {
+      setPeople([]);
+      setPosts([]);
+      setLoading(false);
+      return;
+    }
     // PostgREST .or() filter uses `*` as the ILIKE wildcard (not `%`).
-    const orLike = `*${term}*`;
+    const orLike = `*${safeTerm}*`;
     Promise.all([
       supabase
         .from("profiles")
