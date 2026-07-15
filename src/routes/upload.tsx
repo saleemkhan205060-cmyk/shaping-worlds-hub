@@ -129,21 +129,73 @@ function UploadPage() {
     setThumbFile(f);
   };
 
+  const moderateFn = useServerFn(moderateImage);
+
   const handleUpload = async () => {
     if (!user || !file) return;
     setUploading(true);
     setProgress(0);
     try {
-      const ext = file.name.split(".").pop() || "bin";
-      const path = `${user.id}/${Date.now()}.${ext}`;
-      await uploadToStorage({
-        bucket: "media",
-        path,
-        file,
-        onProgress: (pct) => setProgress(pct),
-      });
-      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
       const mediaType = isVideoFile(file) ? "video" : "image";
+
+      // ---- Content moderation (visual) ----
+      // For images: upload to storage first, moderate the public URL, delete if unsafe.
+      // For videos: capture a client-side frame, upload the frame, moderate it; delete on unsafe.
+      let modUrl: string | null = null;
+      let modPath: string | null = null;
+      let modFrameForThumb: Blob | null = null;
+
+      if (mediaType === "image") {
+        const ext = file.name.split(".").pop() || "jpg";
+        modPath = `${user.id}/mod/${Date.now()}.${ext}`;
+        await uploadToStorage({ bucket: "media", path: modPath, file });
+        modUrl = supabase.storage.from("media").getPublicUrl(modPath).data.publicUrl;
+      } else {
+        toast.message("Checking video…");
+        const frame = await captureVideoFrame(file);
+        if (frame) {
+          modFrameForThumb = frame;
+          modPath = `${user.id}/mod/${Date.now()}-frame.jpg`;
+          const frameFile = new File([frame], "frame.jpg", { type: "image/jpeg" });
+          await uploadToStorage({ bucket: "media", path: modPath, file: frameFile });
+          modUrl = supabase.storage.from("media").getPublicUrl(modPath).data.publicUrl;
+        }
+      }
+
+      if (modUrl) {
+        try {
+          const result = await moderateFn({ data: { imageUrl: modUrl, kind: mediaType } });
+          if (!result.safe) {
+            try { if (modPath) await supabase.storage.from("media").remove([modPath]); } catch {}
+            toast.error(
+              `This ${mediaType} was blocked by our safety filter (${result.reason ?? "unsafe"}). Please choose different content.`
+            );
+            setUploading(false);
+            return;
+          }
+        } catch (e) {
+          console.warn("moderation call failed, allowing upload:", e);
+        }
+      }
+
+      // ---- Actual publish upload ----
+      let publicUrl: string;
+      let mediaPath: string;
+      if (mediaType === "image" && modPath && modUrl) {
+        // Reuse the moderated image as the published media (avoids re-upload).
+        mediaPath = modPath;
+        publicUrl = modUrl;
+      } else {
+        const ext = file.name.split(".").pop() || "bin";
+        mediaPath = `${user.id}/${Date.now()}.${ext}`;
+        await uploadToStorage({
+          bucket: "media",
+          path: mediaPath,
+          file,
+          onProgress: (pct) => setProgress(pct),
+        });
+        publicUrl = supabase.storage.from("media").getPublicUrl(mediaPath).data.publicUrl;
+      }
 
       let thumbnailUrl: string | null = null;
       if (thumbFile) {
@@ -151,11 +203,15 @@ function UploadPage() {
         const tpath = `${user.id}/thumbs/${Date.now()}.${text}`;
         await uploadToStorage({ bucket: "media", path: tpath, file: thumbFile });
         thumbnailUrl = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
+      } else if (mediaType === "video" && modUrl) {
+        // Reuse the moderated frame as the auto-thumbnail.
+        thumbnailUrl = modUrl;
+        void modFrameForThumb; // keep reference alive
       }
 
       const { error: insErr } = await supabase.from("posts").insert({
         user_id: user.id,
-        media_url: pub.publicUrl,
+        media_url: publicUrl,
         media_type: mediaType,
         title: title.trim() || null,
         thumbnail_url: thumbnailUrl,
@@ -174,6 +230,7 @@ function UploadPage() {
       setUploading(false);
     }
   };
+
 
   if (!mounted || loading || !user) {
     return (
