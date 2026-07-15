@@ -345,6 +345,8 @@ function Profile() {
     }
   };
 
+  const moderateMediaFn = useServerFn(moderateUploadedMedia);
+
   const handleImageUpload = async (file: File, kind: "avatar" | "cover") => {
     if (!user) return;
     if (!file.type.startsWith("image/")) {
@@ -368,6 +370,28 @@ function Profile() {
       setUploading(null);
       return;
     }
+
+    // Content-safety scan BEFORE the URL is saved on the profile
+    try {
+      const verdict = await moderateMediaFn({
+        data: { bucket: "media", path, mediaType: "image", surface: kind },
+      });
+      if (!verdict.safe) {
+        toast.error(
+          `Your ${kind === "avatar" ? "profile picture" : "cover photo"} was blocked by our safety filter (${verdict.reason}).`,
+          { duration: 6000 },
+        );
+        setUploading(null);
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Safety check failed. Please try another image.");
+      try { await supabase.storage.from("media").remove([path]); } catch {}
+      setUploading(null);
+      return;
+    }
+
     const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
     const url = pub.publicUrl;
     const column = kind === "avatar" ? "avatar_url" : "cover_url";
@@ -381,6 +405,7 @@ function Profile() {
     }
     setUploading(null);
   };
+
 
   if (loading || !user) {
     return (
