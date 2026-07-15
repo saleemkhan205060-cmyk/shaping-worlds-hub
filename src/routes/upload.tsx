@@ -11,8 +11,45 @@ import { Progress } from "@/components/ui/progress";
 import { CameraCapture } from "@/components/CameraCapture";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
+import { useServerFn } from "@tanstack/react-start";
+import { moderateImage } from "@/lib/moderate.functions";
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
+
+// Capture a still frame from a video File as a JPEG Blob (client-side, for moderation).
+async function captureVideoFrame(file: File): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    try {
+      const url = URL.createObjectURL(file);
+      const v = document.createElement("video");
+      v.muted = true;
+      v.playsInline = true;
+      v.preload = "auto";
+      v.src = url;
+      const cleanup = () => { try { URL.revokeObjectURL(url); } catch {} };
+      v.onloadedmetadata = () => {
+        const target = Math.min(1, Math.max(0.1, (v.duration || 2) * 0.25));
+        try { v.currentTime = target; } catch { resolve(null); cleanup(); }
+      };
+      v.onseeked = () => {
+        try {
+          const c = document.createElement("canvas");
+          const w = v.videoWidth || 320;
+          const h = v.videoHeight || 240;
+          const scale = Math.min(1, 512 / Math.max(w, h));
+          c.width = Math.max(1, Math.round(w * scale));
+          c.height = Math.max(1, Math.round(h * scale));
+          const ctx = c.getContext("2d");
+          if (!ctx) { resolve(null); cleanup(); return; }
+          ctx.drawImage(v, 0, 0, c.width, c.height);
+          c.toBlob((b) => { resolve(b); cleanup(); }, "image/jpeg", 0.8);
+        } catch { resolve(null); cleanup(); }
+      };
+      v.onerror = () => { resolve(null); cleanup(); };
+    } catch { resolve(null); }
+  });
+}
+
 
 const CATEGORIES = ["For You", "Trending", "Music", "Food", "Travel"];
 const MAX_BYTES = 500 * 1024 * 1024; // 500MB
