@@ -35,6 +35,7 @@ import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPostsRouteImport } from './routes/admin.posts'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminModerationRouteImport } from './routes/admin.moderation'
 import { Route as AdminMarriageRouteImport } from './routes/admin.marriage'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCommentsRouteImport } from './routes/admin.comments'
@@ -173,6 +174,11 @@ const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminModerationRoute = AdminModerationRouteImport.update({
+  id: '/moderation',
+  path: '/moderation',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMarriageRoute = AdminMarriageRouteImport.update({
   id: '/marriage',
   path: '/marriage',
@@ -229,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/marriage': typeof AdminMarriageRoute
+  '/admin/moderation': typeof AdminModerationRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/posts': typeof AdminPostsRoute
@@ -262,6 +269,7 @@ export interface FileRoutesByTo {
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/marriage': typeof AdminMarriageRoute
+  '/admin/moderation': typeof AdminModerationRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/posts': typeof AdminPostsRoute
@@ -298,6 +306,7 @@ export interface FileRoutesById {
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/marriage': typeof AdminMarriageRoute
+  '/admin/moderation': typeof AdminModerationRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/posts': typeof AdminPostsRoute
@@ -335,6 +344,7 @@ export interface FileRouteTypes {
     | '/admin/comments'
     | '/admin/login'
     | '/admin/marriage'
+    | '/admin/moderation'
     | '/admin/notifications'
     | '/admin/photos'
     | '/admin/posts'
@@ -368,6 +378,7 @@ export interface FileRouteTypes {
     | '/admin/comments'
     | '/admin/login'
     | '/admin/marriage'
+    | '/admin/moderation'
     | '/admin/notifications'
     | '/admin/photos'
     | '/admin/posts'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/admin/comments'
     | '/admin/login'
     | '/admin/marriage'
+    | '/admin/moderation'
     | '/admin/notifications'
     | '/admin/photos'
     | '/admin/posts'
@@ -625,6 +637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNotificationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/moderation': {
+      id: '/admin/moderation'
+      path: '/moderation'
+      fullPath: '/admin/moderation'
+      preLoaderRoute: typeof AdminModerationRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/marriage': {
       id: '/admin/marriage'
       path: '/marriage'
@@ -682,6 +701,7 @@ interface AdminRouteChildren {
   AdminCommentsRoute: typeof AdminCommentsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMarriageRoute: typeof AdminMarriageRoute
+  AdminModerationRoute: typeof AdminModerationRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminPostsRoute: typeof AdminPostsRoute
@@ -698,6 +718,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCommentsRoute: AdminCommentsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMarriageRoute: AdminMarriageRoute,
+  AdminModerationRoute: AdminModerationRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
   AdminPhotosRoute: AdminPhotosRoute,
   AdminPostsRoute: AdminPostsRoute,

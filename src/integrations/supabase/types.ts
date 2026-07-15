@@ -442,6 +442,96 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_logs: {
+        Row: {
+          ai_raw: Json | null
+          caption: string | null
+          category: string | null
+          created_at: string
+          id: string
+          is_private: boolean
+          media_path: string | null
+          media_type: string
+          media_url: string
+          published_post_id: string | null
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_raw?: Json | null
+          caption?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_private?: boolean
+          media_path?: string | null
+          media_type: string
+          media_url: string
+          published_post_id?: string | null
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_raw?: Json | null
+          caption?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_private?: boolean
+          media_path?: string | null
+          media_type?: string
+          media_url?: string
+          published_post_id?: string | null
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      moderation_rules: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          enabled: boolean
+          id: string
+          rule: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          id?: string
+          rule: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          id?: string
+          rule?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       post_comments: {
         Row: {
           auto_flag_reason: string | null

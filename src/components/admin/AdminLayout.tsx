@@ -5,7 +5,7 @@ import { useAuth, signOut } from "@/hooks/use-auth";
 import { checkIsAdmin } from "@/lib/admin.functions";
 import {
   LayoutDashboard, Users, FileText, Video, Image as ImageIcon, MessageSquare,
-  Flag, Heart, MessagesSquare, Bell, Settings, Shield, Menu, X, LogOut, Moon, Sun, Loader2,
+  Flag, Heart, MessagesSquare, Bell, Settings, Shield, ShieldAlert, Menu, X, LogOut, Moon, Sun, Loader2,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: any; exact?: boolean };
@@ -15,6 +15,7 @@ const NAV: NavItem[] = [
   { to: "/admin/posts", label: "Posts", icon: FileText },
   { to: "/admin/videos", label: "Videos", icon: Video },
   { to: "/admin/photos", label: "Photos", icon: ImageIcon },
+  { to: "/admin/moderation", label: "Moderation", icon: ShieldAlert },
   { to: "/admin/comments", label: "Comments", icon: MessageSquare },
   { to: "/admin/reports", label: "Reports", icon: Flag },
   { to: "/admin/marriage", label: "Marriage", icon: Heart },
