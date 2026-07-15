@@ -12,7 +12,8 @@ import { CameraCapture } from "@/components/CameraCapture";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import { useServerFn } from "@tanstack/react-start";
-import { moderateImage } from "@/lib/moderate.functions";
+import { publishPost } from "@/lib/moderate.functions";
+
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
 
