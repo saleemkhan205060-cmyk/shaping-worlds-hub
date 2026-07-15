@@ -318,9 +318,11 @@ function Messages() {
     setPending(null);
   };
 
+  const moderateChatMedia = useServerFn(moderateUploadedMedia);
+
   const confirmSendPending = async () => {
     if (!pending || !user || !activePeer) return;
-    const { file } = pending;
+    const { file, kind } = pending;
     setBusy(true);
     try {
       const ext = file.name.split(".").pop() || "bin";
@@ -330,6 +332,45 @@ function Messages() {
         upsert: false,
       });
       if (upErr) throw upErr;
+
+      // Content-safety scan for images & videos before the message is sent.
+      // Audio / file / document attachments are not visually scanned here
+      // (text triggers still classify captions server-side).
+      if (kind === "image" || kind === "video") {
+        let framePath: string | null = null;
+        if (kind === "video") {
+          toast.message("Checking video…");
+          const frame = await captureChatVideoFrame(file);
+          if (frame) {
+            framePath = `${user.id}/frames/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+            const frameFile = new File([frame], "frame.jpg", { type: "image/jpeg" });
+            const { error: fErr } = await supabase.storage.from("message-media").upload(framePath, frameFile, {
+              contentType: "image/jpeg", upsert: false,
+            });
+            if (fErr) framePath = null;
+          }
+        }
+        const verdict = await moderateChatMedia({
+          data: {
+            bucket: "message-media",
+            path,
+            mediaType: kind,
+            surface: kind === "image" ? "chat_image" : "chat_video",
+            framePath,
+          },
+        });
+        // Clean up the frame regardless of verdict; only the media path is referenced by the message.
+        if (framePath) { try { await supabase.storage.from("message-media").remove([framePath]); } catch {} }
+        if (!verdict.safe) {
+          toast.error(
+            `This ${kind} was blocked by our safety filter (${verdict.reason}). It was not sent.`,
+            { duration: 6000 },
+          );
+          cancelPending();
+          return;
+        }
+      }
+
       // Store an opaque reference; recipients fetch a short-lived signed URL on render
       await sendContent(`mm://${path}`);
       cancelPending();
@@ -339,6 +380,7 @@ function Messages() {
       setBusy(false);
     }
   };
+
 
   // voice recording (WhatsApp-style: tap mic to start, tap send to upload, tap trash to discard)
   const [recording, setRecording] = useState(false);
