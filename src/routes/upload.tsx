@@ -130,7 +130,7 @@ function UploadPage() {
     setThumbFile(f);
   };
 
-  const moderateFn = useServerFn(moderateImage);
+  const publishFn = useServerFn(publishPost);
 
   const handleUpload = async () => {
     if (!user || !file) return;
@@ -139,89 +139,63 @@ function UploadPage() {
     try {
       const mediaType = isVideoFile(file) ? "video" : "image";
 
-      // ---- Content moderation (visual) ----
-      // For images: upload to storage first, moderate the public URL, delete if unsafe.
-      // For videos: capture a client-side frame, upload the frame, moderate it; delete on unsafe.
-      let modUrl: string | null = null;
-      let modPath: string | null = null;
-      let modFrameForThumb: Blob | null = null;
+      // Upload the main media
+      const ext = file.name.split(".").pop() || "bin";
+      const mediaPath = `${user.id}/${Date.now()}.${ext}`;
+      await uploadToStorage({
+        bucket: "media",
+        path: mediaPath,
+        file,
+        onProgress: (pct) => setProgress(pct),
+      });
 
-      if (mediaType === "image") {
-        const ext = file.name.split(".").pop() || "jpg";
-        modPath = `${user.id}/mod/${Date.now()}.${ext}`;
-        await uploadToStorage({ bucket: "media", path: modPath, file });
-        modUrl = supabase.storage.from("media").getPublicUrl(modPath).data.publicUrl;
-      } else {
+      // Produce a moderation image URL: for images the media itself, for videos a captured frame
+      let moderationImageUrl = supabase.storage.from("media").getPublicUrl(mediaPath).data.publicUrl;
+      let framePath: string | null = null;
+      let thumbnailUrl: string | null = thumbFile ? null : null; // will fill below
+
+      if (mediaType === "video") {
         toast.message("Checking video…");
         const frame = await captureVideoFrame(file);
         if (frame) {
-          modFrameForThumb = frame;
-          modPath = `${user.id}/mod/${Date.now()}-frame.jpg`;
+          framePath = `${user.id}/thumbs/${Date.now()}-frame.jpg`;
           const frameFile = new File([frame], "frame.jpg", { type: "image/jpeg" });
-          await uploadToStorage({ bucket: "media", path: modPath, file: frameFile });
-          modUrl = supabase.storage.from("media").getPublicUrl(modPath).data.publicUrl;
+          await uploadToStorage({ bucket: "media", path: framePath, file: frameFile });
+          moderationImageUrl = supabase.storage.from("media").getPublicUrl(framePath).data.publicUrl;
+          if (!thumbFile) thumbnailUrl = moderationImageUrl;
         }
       }
 
-      if (modUrl) {
-        try {
-          const result = await moderateFn({ data: { imageUrl: modUrl, kind: mediaType } });
-          if (!result.safe) {
-            try { if (modPath) await supabase.storage.from("media").remove([modPath]); } catch {}
-            toast.error(
-              `This ${mediaType} was blocked by our safety filter (${result.reason ?? "unsafe"}). Please choose different content.`
-            );
-            setUploading(false);
-            return;
-          }
-        } catch (e) {
-          console.warn("moderation call failed, allowing upload:", e);
-        }
-      }
-
-      // ---- Actual publish upload ----
-      let publicUrl: string;
-      let mediaPath: string;
-      if (mediaType === "image" && modPath && modUrl) {
-        // Reuse the moderated image as the published media (avoids re-upload).
-        mediaPath = modPath;
-        publicUrl = modUrl;
-      } else {
-        const ext = file.name.split(".").pop() || "bin";
-        mediaPath = `${user.id}/${Date.now()}.${ext}`;
-        await uploadToStorage({
-          bucket: "media",
-          path: mediaPath,
-          file,
-          onProgress: (pct) => setProgress(pct),
-        });
-        publicUrl = supabase.storage.from("media").getPublicUrl(mediaPath).data.publicUrl;
-      }
-
-      let thumbnailUrl: string | null = null;
       if (thumbFile) {
         const text = thumbFile.name.split(".").pop() || "jpg";
         const tpath = `${user.id}/thumbs/${Date.now()}.${text}`;
         await uploadToStorage({ bucket: "media", path: tpath, file: thumbFile });
         thumbnailUrl = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
-      } else if (mediaType === "video" && modUrl) {
-        // Reuse the moderated frame as the auto-thumbnail.
-        thumbnailUrl = modUrl;
-        void modFrameForThumb; // keep reference alive
       }
 
-      const { error: insErr } = await supabase.from("posts").insert({
-        user_id: user.id,
-        media_url: publicUrl,
-        media_type: mediaType,
-        title: title.trim() || null,
-        thumbnail_url: thumbnailUrl,
-        thumbnail_title: thumbTitle.trim() || null,
-        caption: caption.trim() || null,
-        category,
-        is_private: isPrivate,
-      } as any);
-      if (insErr) throw insErr;
+      // Atomic: server-side moderation + insert (or log for admin review)
+      const result = await publishFn({
+        data: {
+          mediaPath,
+          mediaType,
+          moderationImageUrl,
+          title: title.trim() || null,
+          caption: caption.trim() || null,
+          category,
+          isPrivate,
+          thumbnailUrl,
+          thumbnailTitle: thumbTitle.trim() || null,
+        },
+      });
+
+      if (!result.published) {
+        toast.error(
+          `Your ${mediaType} was blocked by our safety filter (${result.reason}). It's saved for admin review — you'll be notified if approved.`,
+          { duration: 6000 },
+        );
+        return;
+      }
+
       toast.success("Uploaded!");
       navigate({ to: "/" });
     } catch (e) {
@@ -231,6 +205,7 @@ function UploadPage() {
       setUploading(false);
     }
   };
+
 
 
   if (!mounted || loading || !user) {
