@@ -32,15 +32,31 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Decode signing keystore
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/release-key.jks
+          cat > android/keystore.properties <<EOF
+          VIP_LIFE_STORE_FILE=release-key.jks
+          VIP_LIFE_STORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD
+          VIP_LIFE_KEY_ALIAS=$ANDROID_KEY_ALIAS
+          VIP_LIFE_KEY_PASSWORD=$ANDROID_KEY_PASSWORD
+          EOF
+
       - name: Make Gradle executable
         run: chmod +x android/gradlew
 
-      - name: Build installable debug APK
+      - name: Build signed release AAB
         working-directory: android
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew bundleRelease --stacktrace
 
-      - name: Upload APK
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
-          name: vip-life-debug-apk
-          path: android/app/build/outputs/apk/debug/*.apk
+          name: vip-life-release-aab
+          path: android/app/build/outputs/bundle/release/*.aab
