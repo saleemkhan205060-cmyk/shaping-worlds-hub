@@ -1,51 +1,16 @@
-name: Android Build
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
-      - name: Build Capacitor web
-        run: npm run build:capacitor
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Decode signing keystore
-        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+ - name: Decode signing keystore
         env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/release-key.jks
+          echo "$KEYSTORE_BASE64" | base64 -d > android/app/release-key.jks
           cat > android/keystore.properties <<EOF
           VIP_LIFE_STORE_FILE=release-key.jks
-          VIP_LIFE_STORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD
-          VIP_LIFE_KEY_ALIAS=$ANDROID_KEY_ALIAS
-          VIP_LIFE_KEY_PASSWORD=$ANDROID_KEY_PASSWORD
+          VIP_LIFE_STORE_PASSWORD=$KEYSTORE_PASSWORD
+          VIP_LIFE_KEY_ALIAS=$KEY_ALIAS
+          VIP_LIFE_KEY_PASSWORD=$KEY_PASSWORD
           EOF
 
       - name: Make Gradle executable
@@ -54,7 +19,6 @@ jobs:
       - name: Build signed release AAB
         working-directory: android
         run: ./gradlew bundleRelease --stacktrace
-
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
