@@ -22,8 +22,16 @@ export default defineConfig({
   },
   plugins: [tailwindcss(), tsconfigPaths({ projects: [resolve(projectRoot, "tsconfig.json")], ignoreConfigErrors: true }), react()],
   resolve: {
-    alias: {
-      "@": resolve(projectRoot, "src"),
-    },
+    alias: [
+      // Shim server-only modules that would otherwise pull TanStack Start's
+      // server pipeline (and the "#tanstack-router-entry" specifier) into the
+      // Capacitor SPA bundle.
+      { find: /^@tanstack\/react-start\/server$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /^@tanstack\/react-start-server$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /^@tanstack\/start-server-core$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /.*\/integrations\/supabase\/auth-middleware$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /.*\/integrations\/supabase\/client\.server$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: "@", replacement: resolve(projectRoot, "src") },
+    ],
   },
 });
