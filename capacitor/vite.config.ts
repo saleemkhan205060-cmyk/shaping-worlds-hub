@@ -29,6 +29,7 @@ export default defineConfig({
       { find: /^@tanstack\/react-start\/server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /^@tanstack\/react-start-server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /^@tanstack\/start-server-core$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /^@tanstack\/start-storage-context$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /.*\/integrations\/supabase\/auth-middleware$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /.*\/integrations\/supabase\/client\.server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: "@", replacement: resolve(projectRoot, "src") },
