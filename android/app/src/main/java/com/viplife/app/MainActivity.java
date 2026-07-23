@@ -26,12 +26,6 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        applyCleanFullscreen();
-    }
-
-    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) applyCleanFullscreen();
