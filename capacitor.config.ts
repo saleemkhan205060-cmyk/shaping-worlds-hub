@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.viplife.app",
+  appId: "app.lovable.vip_life.twa",
   appName: "VIP Life",
   webDir: "dist-capacitor",
   bundledWebRuntime: false,

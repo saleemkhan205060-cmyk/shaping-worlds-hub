@@ -1,4 +1,4 @@
-package com.viplife.app;
+package app.lovable.vip_life.twa;
 
 import android.graphics.Color;
 import android.os.Build;
