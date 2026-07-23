@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">VIP Life</string>
     <string name="title_activity_main">VIP Life</string>
-    <string name="package_name">com.viplife.app</string>
-    <string name="custom_url_scheme">com.viplife.app</string>
+    <string name="package_name">app.lovable.vip_life.twa</string>
+    <string name="custom_url_scheme">app.lovable.vip_life.twa</string>
 </resources>
