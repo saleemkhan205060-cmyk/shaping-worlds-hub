@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#E6F6EA"
     tools:context=".MainActivity">
 
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
+        android:background="#E6F6EA"
         android:overScrollMode="never"
         android:scrollbarStyle="outsideOverlay" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
