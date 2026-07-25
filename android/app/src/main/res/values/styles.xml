@@ -7,6 +7,7 @@
         <item name="colorPrimary">#E6F6EA</item>
         <item name="colorPrimaryDark">#E6F6EA</item>
         <item name="colorAccent">#111827</item>
+        <item name="android:windowBackground">#E6F6EA</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
     </style>
