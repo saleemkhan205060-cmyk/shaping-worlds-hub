@@ -46,8 +46,21 @@ jobs:
           VIP_LIFE_KEY_PASSWORD=$KEY_PASSWORD
           EOF
 
+      - name: Print release keystore SHA-256 fingerprint
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          echo "=== SHA-256 fingerprint for assetlinks.json ==="
+          keytool -list -v \
+            -keystore android/app/release-key.jks \
+            -alias "$KEY_ALIAS" \
+            -storepass "$KEYSTORE_PASSWORD" | grep -E "SHA256:|SHA-256:"
+          echo "==============================================="
+
       - name: Make Gradle executable
         run: chmod +x android/gradlew
+
 
       - name: Build signed release AAB
         working-directory: android
