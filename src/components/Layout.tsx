@@ -182,7 +182,7 @@ export function Layout({
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
     <div className={`min-h-screen bg-background text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
 
-      <header className={`sticky top-0 z-30 bg-[#E6F6EA]/90 backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
+      <header className={`sticky top-0 z-30 bg-[#E6F6EA] backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
@@ -319,10 +319,10 @@ export function Layout({
 
       {!hideMobileNav && (
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-background/95 backdrop-blur border-t border-slate-200"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#E6F6EA]"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="relative grid grid-cols-3 items-end">
+        <div className="bg-background/95 backdrop-blur border-t border-slate-200 relative grid grid-cols-3 items-end">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
             const active = path === item.to;
