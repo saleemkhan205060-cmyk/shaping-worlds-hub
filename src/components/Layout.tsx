@@ -319,10 +319,10 @@ export function Layout({
 
       {!hideMobileNav && (
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-background/95 backdrop-blur border-t border-slate-200"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#E6F6EA]"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="relative grid grid-cols-3 items-end">
+        <div className="bg-background/95 backdrop-blur border-t border-slate-200 relative grid grid-cols-3 items-end">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
             const active = path === item.to;
