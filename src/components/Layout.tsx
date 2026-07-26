@@ -182,7 +182,7 @@ export function Layout({
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
     <div className={`min-h-screen bg-background text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
 
-      <header className={`sticky top-0 z-30 bg-[#E6F6EA]/90 backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
+      <header className={`sticky top-0 z-30 bg-[#E6F6EA] backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
