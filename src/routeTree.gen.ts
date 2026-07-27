@@ -40,6 +40,7 @@ import { Route as AdminMarriageRouteImport } from './routes/admin.marriage'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCommentsRouteImport } from './routes/admin.comments'
 import { Route as AdminChatRouteImport } from './routes/admin.chat'
+import { Route as DotwellKnownAssetlinksDotjsonRouteImport } from './routes/[.]well-known.assetlinks[.]json'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -199,6 +200,12 @@ const AdminChatRoute = AdminChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AdminRoute,
 } as any)
+const DotwellKnownAssetlinksDotjsonRoute =
+  DotwellKnownAssetlinksDotjsonRouteImport.update({
+    id: '/.well-known/assetlinks.json',
+    path: '/.well-known/assetlinks.json',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -231,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/.well-known/assetlinks.json': typeof DotwellKnownAssetlinksDotjsonRoute
   '/admin/chat': typeof AdminChatRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -265,6 +273,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/.well-known/assetlinks.json': typeof DotwellKnownAssetlinksDotjsonRoute
   '/admin/chat': typeof AdminChatRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -302,6 +311,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/upload': typeof UploadRoute
   '/videos': typeof VideosRoute
+  '/.well-known/assetlinks.json': typeof DotwellKnownAssetlinksDotjsonRoute
   '/admin/chat': typeof AdminChatRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/.well-known/assetlinks.json'
     | '/admin/chat'
     | '/admin/comments'
     | '/admin/login'
@@ -374,6 +385,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/.well-known/assetlinks.json'
     | '/admin/chat'
     | '/admin/comments'
     | '/admin/login'
@@ -410,6 +422,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/upload'
     | '/videos'
+    | '/.well-known/assetlinks.json'
     | '/admin/chat'
     | '/admin/comments'
     | '/admin/login'
@@ -447,6 +460,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
+  DotwellKnownAssetlinksDotjsonRoute: typeof DotwellKnownAssetlinksDotjsonRoute
   UIdRoute: typeof UIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -672,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChatRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/.well-known/assetlinks.json': {
+      id: '/.well-known/assetlinks.json'
+      path: '/.well-known/assetlinks.json'
+      fullPath: '/.well-known/assetlinks.json'
+      preLoaderRoute: typeof DotwellKnownAssetlinksDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -761,6 +782,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
+  DotwellKnownAssetlinksDotjsonRoute: DotwellKnownAssetlinksDotjsonRoute,
   UIdRoute: UIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
