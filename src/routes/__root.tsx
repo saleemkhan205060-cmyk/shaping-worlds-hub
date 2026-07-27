@@ -20,9 +20,20 @@ function useRegisterServiceWorker() {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
 
-    navigator.serviceWorker.getRegistrations?.().then((registrations) => {
-      registrations.forEach((registration) => registration.unregister());
-    });
+    try {
+      const getRegistrations = navigator.serviceWorker.getRegistrations;
+      if (typeof getRegistrations !== "function") return;
+
+      getRegistrations.call(navigator.serviceWorker)
+        .then((registrations) => {
+          registrations.forEach((registration) => registration.unregister());
+        })
+        .catch(() => {
+          // Service worker cleanup should never block the app from opening.
+        });
+    } catch {
+      // Some Android WebViews expose partial service worker APIs.
+    }
   }, []);
 }
 
