@@ -1,5 +1,7 @@
 // Stubs server-only modules for the Capacitor SPA build.
 // Any named import resolves to a no-op function via a Proxy.
+import { createFileRoute } from "@tanstack/react-router";
+
 const noop: any = () => undefined;
 const handler: ProxyHandler<any> = {
   get: (_t, prop) => {
@@ -9,19 +11,11 @@ const handler: ProxyHandler<any> = {
   },
 };
 const shim: any = new Proxy(noop, handler);
-const routeShim: any = {
-  update() {
-    return routeShim;
-  },
-  _addFileChildren() {
-    return routeShim;
-  },
-  _addFileTypes() {
-    return routeShim;
-  },
-};
+const Route = createFileRoute("/__capacitor_server_route_stub__")({
+  component: () => null,
+});
 export default shim;
-export const Route: any = routeShim;
+export { Route };
 export const requireSupabaseAuth: any = noop;
 export const supabaseAdmin: any = shim;
 export const getRequest: any = () => new Request("http://localhost");
