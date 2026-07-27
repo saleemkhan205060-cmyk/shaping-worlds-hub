@@ -9,7 +9,19 @@ const handler: ProxyHandler<any> = {
   },
 };
 const shim: any = new Proxy(noop, handler);
+const routeShim: any = {
+  update() {
+    return routeShim;
+  },
+  _addFileChildren() {
+    return routeShim;
+  },
+  _addFileTypes() {
+    return routeShim;
+  },
+};
 export default shim;
+export const Route: any = routeShim;
 export const requireSupabaseAuth: any = noop;
 export const supabaseAdmin: any = shim;
 export const getRequest: any = () => new Request("http://localhost");
