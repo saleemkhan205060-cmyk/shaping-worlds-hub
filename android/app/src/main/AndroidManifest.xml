@@ -25,6 +25,10 @@
 
         </activity>
 
+        <!-- FCM: default notification channel + icon/color so background pushes look right -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="messages" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

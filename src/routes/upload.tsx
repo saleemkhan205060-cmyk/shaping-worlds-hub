@@ -476,7 +476,7 @@ function UploadPage() {
               {uploading ? (
                 <><Loader2 className="h-4 w-4 animate-spin" /> Uploading {progress}%</>
               ) : (
-                <><UploadCloud className="h-5 w-5" /> Upload</>
+                <><UploadCloud className="h-5 w-5" /> Upload Video</>
               )}
             </button>
           </div>
