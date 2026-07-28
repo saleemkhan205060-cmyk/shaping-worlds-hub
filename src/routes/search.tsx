@@ -1,17 +1,24 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 
-const searchSchema = z.object({
-  q: z.string().optional().default(""),
-  tab: z.enum(["all", "reels", "photos", "people"]).optional().default("all"),
-});
+type SearchTab = "all" | "reels" | "photos" | "people";
+
+const SEARCH_TABS = ["all", "reels", "photos", "people"] as const;
+
+function parseSearch(search: Record<string, unknown>): { q: string; tab: SearchTab } {
+  const rawTab = typeof search.tab === "string" ? search.tab : "all";
+
+  return {
+    q: typeof search.q === "string" ? search.q : "",
+    tab: SEARCH_TABS.includes(rawTab as SearchTab) ? (rawTab as SearchTab) : "all",
+  };
+}
 
 export const Route = createFileRoute("/search")({
-  validateSearch: (s: Record<string, unknown>) => searchSchema.parse(s),
+  validateSearch: parseSearch,
   component: SearchPage,
 });
 
