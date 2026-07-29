@@ -54,6 +54,10 @@ workflows:
           export PATH="$HOME/.bun/bin:$PATH"
           npx cap sync android
 
+      - name: Verify Capacitor bundle
+        script: |
+          npm run verify:capacitor
+
       - name: Build Android App Bundle (AAB)
         script: |
           cd android

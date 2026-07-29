@@ -31,6 +31,9 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Verify Capacitor bundle
+        run: npm run verify:capacitor
+
       - name: Decode signing keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
