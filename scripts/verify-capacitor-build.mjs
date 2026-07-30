@@ -23,10 +23,13 @@ for (const density of ["mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"]) {
   assertFile(join(resDir, `mipmap-${density}`, "ic_launcher.png"));
   assertFile(join(resDir, `mipmap-${density}`, "ic_launcher_round.png"));
   assertFile(join(resDir, `mipmap-${density}`, "ic_launcher_foreground.png"));
+  assertFile(join(resDir, `mipmap-${density}`, "ic_launcher_monochrome.png"));
 }
 
 assertFile(join(resDir, "mipmap-anydpi-v26", "ic_launcher.xml"));
 assertFile(join(resDir, "mipmap-anydpi-v26", "ic_launcher_round.xml"));
+assertFile(join(resDir, "mipmap-anydpi-v33", "ic_launcher.xml"));
+assertFile(join(resDir, "mipmap-anydpi-v33", "ic_launcher_round.xml"));
 
 const html = readFileSync(indexPath, "utf8");
 const assetRefs = [...html.matchAll(/(?:src|href)="\/(assets\/[^\"]+)"/g)].map((match) => match[1]);
