@@ -12,6 +12,7 @@ const projectRoot = resolve(__dirname, "..");
 // Run from project root:  npx vite build --config capacitor/vite.config.ts
 export default defineConfig({
   root: __dirname,
+  envDir: projectRoot,
   publicDir: resolve(projectRoot, "public"),
   build: {
     outDir: resolve(projectRoot, "dist-capacitor"),
@@ -30,11 +31,11 @@ export default defineConfig({
       { find: /^@tanstack\/react-start-server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /^@tanstack\/start-server-core$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /^@tanstack\/start-storage-context$/, replacement: resolve(__dirname, "empty-shim.ts") },
-      { find: /.*\/routes\/sitemap\[\.\]xml$/, replacement: resolve(__dirname, "empty-shim.ts") },
-      { find: /.*\/routes\/\[\.\]well-known\.assetlinks\[\.\]json$/, replacement: resolve(__dirname, "empty-shim.ts") },
-      { find: /.*\/routes\/lovable\/email\/auth\/preview$/, replacement: resolve(__dirname, "empty-shim.ts") },
-      { find: /.*\/routes\/lovable\/email\/auth\/webhook$/, replacement: resolve(__dirname, "empty-shim.ts") },
-      { find: /.*\/routes\/lovable\/email\/queue\/process$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /.*\/routes\/sitemap\[\.\]xml$/, replacement: resolve(__dirname, "route-shim-sitemap.ts") },
+      { find: /.*\/routes\/\[\.\]well-known\.assetlinks\[\.\]json$/, replacement: resolve(__dirname, "route-shim-assetlinks.ts") },
+      { find: /.*\/routes\/lovable\/email\/auth\/preview$/, replacement: resolve(__dirname, "route-shim-email-preview.ts") },
+      { find: /.*\/routes\/lovable\/email\/auth\/webhook$/, replacement: resolve(__dirname, "route-shim-email-webhook.ts") },
+      { find: /.*\/routes\/lovable\/email\/queue\/process$/, replacement: resolve(__dirname, "route-shim-email-queue.ts") },
       { find: /.*\/integrations\/supabase\/auth-middleware$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /.*\/integrations\/supabase\/client\.server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: "@", replacement: resolve(projectRoot, "src") },
