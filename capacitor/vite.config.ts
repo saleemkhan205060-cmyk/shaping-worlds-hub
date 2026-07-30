@@ -30,6 +30,7 @@ export default defineConfig({
       { find: /^@tanstack\/react-start-server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /^@tanstack\/start-server-core$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /^@tanstack\/start-storage-context$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /.*\/routes\/sitemap\[\.\]xml$/, replacement: resolve(__dirname, "route-shim-sitemap.ts") },
       { find: /.*\/routes\/\[\.\]well-known\.assetlinks\[\.\]json$/, replacement: resolve(__dirname, "route-shim-assetlinks.ts") },
       { find: /.*\/routes\/lovable\/email\/auth\/preview$/, replacement: resolve(__dirname, "route-shim-email-preview.ts") },
       { find: /.*\/routes\/lovable\/email\/auth\/webhook$/, replacement: resolve(__dirname, "route-shim-email-webhook.ts") },
