@@ -62,7 +62,7 @@ function AuthPage() {
     }
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: getOAuthRedirectOrigin(),
       extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
     });
     if (result.error) {
