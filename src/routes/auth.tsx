@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/use-auth";
+import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 

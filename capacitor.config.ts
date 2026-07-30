@@ -13,7 +13,16 @@ const config: CapacitorConfig = {
     androidScheme: "https",
     hostname: "localhost",
     cleartext: false,
-    allowNavigation: [],
+    // OAuth needs to reach Google + the Lovable auth broker from the WebView.
+    allowNavigation: [
+      "accounts.google.com",
+      "*.google.com",
+      "oauth.lovable.app",
+      "*.lovable.app",
+      "viplifes.com",
+      "*.viplifes.com",
+      "*.supabase.co",
+    ],
   },
   android: {
     allowMixedContent: true,
