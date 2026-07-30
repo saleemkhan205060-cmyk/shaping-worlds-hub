@@ -9,23 +9,24 @@ type GoogleSignInOptions = {
 };
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
-  const redirectOrigin = getOAuthRedirectOrigin();
+  const brokerOrigin = getOAuthRedirectOrigin();
 
   if (!isNativeCapacitorApp()) {
     return lovable.auth.signInWithOAuth("google", {
-      redirect_uri: redirectOrigin,
+      redirect_uri: brokerOrigin,
       extraParams: options.extraParams,
     });
   }
 
   // Capacitor serves the bundled app from https://localhost. The default
   // relative /~oauth/initiate URL would therefore hit the local TanStack
-  // router and render its 404 page. Start OAuth on the public app origin.
+  // router and render its 404 page. Start OAuth on the public app origin,
+  // but return to the WebView origin so the session is stored in the app.
   const nativeAuth = createLovableAuth({
-    oauthBrokerUrl: `${redirectOrigin}/~oauth/initiate`,
+    oauthBrokerUrl: `${brokerOrigin}/~oauth/initiate`,
   });
   const result = await nativeAuth.signInWithOAuth("google", {
-    redirect_uri: redirectOrigin,
+    redirect_uri: window.location.origin,
     extraParams: options.extraParams,
   });
 
