@@ -7,7 +7,15 @@
 		"androidScheme": "https",
 		"hostname": "localhost",
 		"cleartext": false,
-		"allowNavigation": []
+		"allowNavigation": [
+			"accounts.google.com",
+			"*.google.com",
+			"oauth.lovable.app",
+			"*.lovable.app",
+			"viplifes.com",
+			"*.viplifes.com",
+			"*.supabase.co"
+		]
 	},
 	"android": {
 		"allowMixedContent": true,
