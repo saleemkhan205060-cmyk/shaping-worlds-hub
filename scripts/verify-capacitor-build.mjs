@@ -48,4 +48,20 @@ if (bundle.includes(duplicateRouteStub)) {
   fail("server routes were collapsed into one Route instance; the router will fail at startup");
 }
 
+const envPath = ".env";
+assertFile(envPath);
+const env = Object.fromEntries(
+  readFileSync(envPath, "utf8")
+    .split(/\r?\n/)
+    .filter((line) => line && !line.startsWith("#") && line.includes("="))
+    .map((line) => {
+      const separator = line.indexOf("=");
+      return [line.slice(0, separator), line.slice(separator + 1).replace(/^['\"]|['\"]$/g, "")];
+    }),
+);
+const backendUrl = env.VITE_SUPABASE_URL;
+if (!backendUrl || !bundle.includes(backendUrl)) {
+  fail("the backend URL was not embedded; check the Capacitor Vite envDir configuration");
+}
+
 console.log(`Capacitor bundle verified: web entry and Android launcher resources are present.`);

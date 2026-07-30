@@ -12,6 +12,7 @@ const projectRoot = resolve(__dirname, "..");
 // Run from project root:  npx vite build --config capacitor/vite.config.ts
 export default defineConfig({
   root: __dirname,
+  envDir: projectRoot,
   publicDir: resolve(projectRoot, "public"),
   build: {
     outDir: resolve(projectRoot, "dist-capacitor"),
