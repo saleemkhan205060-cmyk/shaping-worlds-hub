@@ -128,8 +128,11 @@ export function useAuth() {
 
   useEffect(() => {
     ensureAuthInitialized();
-    setState(authState);
+    // Subscribe before copying the singleton snapshot. An OAuth callback can
+    // publish between these two operations; subscribing first guarantees that
+    // successful SIGNED_IN state cannot be missed by this component.
     listeners.add(setState);
+    setState(authState);
     return () => {
       listeners.delete(setState);
     };
