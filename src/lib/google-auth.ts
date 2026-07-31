@@ -1,5 +1,5 @@
 import { App } from "@capacitor/app";
-import { Browser } from "@capacitor/browser";
+import { registerPlugin } from "@capacitor/core";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { isNativeCapacitorApp } from "./native-share";
@@ -8,6 +8,13 @@ import { PUBLISHED_ORIGIN } from "./oauth-origin";
 type GoogleSignInOptions = {
   extraParams?: Record<string, string>;
 };
+
+type SafeBrowserPlugin = {
+  open(options: { url: string }): Promise<{ opened: boolean }>;
+};
+
+const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
+const NATIVE_REDIRECT_URI = "lovable://oauth-callback";
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isNativeCapacitorApp()) {
@@ -25,7 +32,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   // navigates the whole app away. Keep the WebView alive, complete OAuth in the
   // system browser, and receive the session through an Android deep link.
   const state = crypto.randomUUID();
-  const redirectUri = "lovable://oauth-callback";
+  const redirectUri = NATIVE_REDIRECT_URI;
   const params = new URLSearchParams({
     provider: "google",
     redirect_uri: redirectUri,
@@ -49,7 +56,6 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     const listener = await App.addListener("appUrlOpen", async ({ url }) => {
       if (!url.startsWith(redirectUri)) return;
 
-      await Browser.close().catch(() => undefined);
       const callback = new URL(url);
       const values = new URLSearchParams(callback.hash.replace(/^#/, "") || callback.search);
       const returnedState = values.get("state");
@@ -82,12 +88,11 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     });
 
     const timeoutId = window.setTimeout(() => {
-      void Browser.close().catch(() => undefined);
       finish({ error: new Error("Google sign-in timed out") });
     }, 120_000);
 
     try {
-      await Browser.open({ url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}` });
+      await SafeBrowser.open({ url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}` });
     } catch (error) {
       finish({ error: error instanceof Error ? error : new Error(String(error)) });
     }
