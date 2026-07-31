@@ -176,22 +176,20 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   >((resolve) => {
     let settled = false;
     let timeoutId: number | undefined;
-    let listener: Awaited<ReturnType<typeof App.addListener>> | undefined;
+    let unsubscribeAuth: (() => void) | undefined;
     const finish = (result: Parameters<typeof resolve>[0]) => {
       if (settled) return;
       settled = true;
       if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-      void listener?.remove();
+      unsubscribeAuth?.();
       resolve(result);
     };
 
-    const handleCallback = async (url: string) => {
-      try {
-        const restored = await restoreSessionFromNativeCallback(url, state);
-        if (!restored) return;
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
-        if (!session) throw new Error("Google session could not be restored");
+    void (async () => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!session) return;
         finish({
           tokens: {
             access_token: session.access_token,
@@ -199,15 +197,8 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
           },
           error: null,
         });
-      } catch (error) {
-        finish({ error: error instanceof Error ? error : new Error(String(error)) });
-      }
-    };
-
-    void (async () => {
-      listener = await App.addListener("appUrlOpen", ({ url }) => {
-        void handleCallback(url);
       });
+      unsubscribeAuth = () => subscription.unsubscribe();
 
       timeoutId = window.setTimeout(() => {
         finish({ error: new Error("Google sign-in timed out") });
