@@ -6,6 +6,7 @@ import { restoreNativeGoogleSession, signInWithGoogle } from "@/lib/google-auth"
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 import { isNativeCapacitorApp } from "@/lib/native-share";
+import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -87,7 +88,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${getOAuthRedirectOrigin()}/`,
             data: { display_name: displayName || email.split("@")[0] },
           },
         }));
