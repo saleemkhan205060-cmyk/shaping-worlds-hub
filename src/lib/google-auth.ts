@@ -18,8 +18,17 @@ const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
 
+function isInstalledNativeRuntime() {
+  if (!isNativeCapacitorApp() || typeof window === "undefined") return false;
+
+  // Lovable's mobile preview exposes a Capacitor bridge so native APIs can be
+  // previewed, but it still runs on an HTTPS project origin. Only packaged
+  // Android builds use Capacitor's local WebView origin.
+  return window.location.hostname === "localhost";
+}
+
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
-  if (!isNativeCapacitorApp()) {
+  if (!isInstalledNativeRuntime()) {
     return lovable.auth.signInWithOAuth("google", {
       // Preview, published, and custom-domain sessions must return to the
       // exact origin that opened the OAuth popup. Sending preview users to a
