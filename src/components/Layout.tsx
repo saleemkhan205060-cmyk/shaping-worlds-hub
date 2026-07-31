@@ -21,8 +21,7 @@ import { toast } from "sonner";
 import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
 import { initNotificationSoundUnlock } from "@/lib/notification-sound";
 import { useGlobalPresence } from "@/lib/presence";
-import logoAsset from "@/assets/vip-logo-new.jpg.asset.json";
-const logoUrl = logoAsset.url;
+import logoUrl from "@/assets/logo.png";
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
 
@@ -186,7 +185,7 @@ export function Layout({
       <header className={`sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoUrl} alt="VIP Life logo" className="h-16 w-16 rounded-xl object-contain" />
+            <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
             <div className="leading-tight hidden xs:block sm:block">
               <div className="font-extrabold text-base tracking-tight">VIP</div>
               <div className="font-extrabold text-base -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
