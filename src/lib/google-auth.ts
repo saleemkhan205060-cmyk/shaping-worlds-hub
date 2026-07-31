@@ -41,7 +41,7 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   }
 
   const values = callbackValues(url);
-  const storedState = sessionStorage.getItem(NATIVE_OAUTH_STATE_KEY);
+  const storedState = localStorage.getItem(NATIVE_OAUTH_STATE_KEY);
   const requiredState = expectedState ?? storedState;
   const returnedState = values.get("state");
   const callbackError = values.get("error_description") ?? values.get("error");
@@ -72,7 +72,7 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   if (error) throw error;
   if (!data.session) throw new Error("Google session could not be restored");
 
-  sessionStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
+  localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
   return true;
 }
 
@@ -101,7 +101,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   // navigates the whole app away. Keep the WebView alive, complete OAuth in the
   // system browser, and receive the session through an Android deep link.
   const state = crypto.randomUUID();
-  sessionStorage.setItem(NATIVE_OAUTH_STATE_KEY, state);
+  localStorage.setItem(NATIVE_OAUTH_STATE_KEY, state);
   const redirectUri = NATIVE_REDIRECT_URI;
   const params = new URLSearchParams({
     provider: "google",
