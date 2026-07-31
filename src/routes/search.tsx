@@ -69,11 +69,11 @@ function SearchPage() {
   useEffect(() => {
     const t = setTimeout(() => {
       if (input !== q) {
-        navigate({ to: ".", search: (prev) => ({ ...prev, q: input }), replace: true });
+        navigate({ to: ".", search: { q: input, tab }, replace: true });
       }
     }, 250);
     return () => clearTimeout(t);
-  }, [input, q, navigate]);
+  }, [input, q, tab, navigate]);
 
   // Fetch results
   useEffect(() => {
@@ -118,7 +118,7 @@ function SearchPage() {
   const photos = useMemo(() => posts.filter((p) => p.media_type === "image"), [posts]);
 
   const setTab = (key: typeof TABS[number]["key"]) =>
-    navigate({ to: ".", search: (prev) => ({ ...prev, tab: key }), replace: true });
+    navigate({ to: ".", search: { q, tab: key }, replace: true });
 
   return (
     <Layout hideMobileNav fullScreenMobile>
