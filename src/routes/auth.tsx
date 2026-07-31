@@ -5,7 +5,6 @@ import { confirmAuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { restoreNativeGoogleSession, signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
-import { isNativeCapacitorApp } from "@/lib/native-share";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
