@@ -90,7 +90,10 @@ export async function restoreNativeGoogleSession() {
   return restoreSessionFromNativeCallback(launch.url);
 }
 
-export function listenForNativeGoogleSession(onRestored: () => void, onError: (error: Error) => void) {
+export function listenForNativeGoogleSession(
+  onRestored: () => void,
+  onError: (error: Error) => void,
+) {
   if (!isInstalledNativeRuntime()) return () => undefined;
 
   let active = true;
