@@ -27,7 +27,7 @@ import { Route as MarriageIndexRouteImport } from './routes/marriage.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
-import { Route as AuthNativeCallbackRouteImport } from './routes/auth.native-callback'
+import { Route as AuthNativeCallbackRouteImport } from './routes/auth_.native-callback'
 import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -137,9 +137,9 @@ const MarriageEditRoute = MarriageEditRouteImport.update({
   getParentRoute: () => MarriageRoute,
 } as any)
 const AuthNativeCallbackRoute = AuthNativeCallbackRouteImport.update({
-  id: '/native-callback',
-  path: '/native-callback',
-  getParentRoute: () => AuthRoute,
+  id: '/auth_/native-callback',
+  path: '/auth/native-callback',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminVideosRoute = AdminVideosRouteImport.update({
   id: '/videos',
@@ -232,7 +232,7 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
+  '/auth': typeof AuthRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
@@ -269,7 +269,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
+  '/auth': typeof AuthRoute
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
@@ -307,7 +307,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
+  '/auth': typeof AuthRoute
   '/marriage': typeof MarriageRouteWithChildren
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
@@ -333,7 +333,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
-  '/auth/native-callback': typeof AuthNativeCallbackRoute
+  '/auth_/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -447,7 +447,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
-    | '/auth/native-callback'
+    | '/auth_/native-callback'
     | '/marriage/edit'
     | '/u/$id'
     | '/admin/'
@@ -460,7 +460,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
+  AuthRoute: typeof AuthRoute
   MarriageRoute: typeof MarriageRouteWithChildren
   MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -473,6 +473,7 @@ export interface RootRouteChildren {
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
   DotwellKnownAssetlinksDotjsonRoute: typeof DotwellKnownAssetlinksDotjsonRoute
+  AuthNativeCallbackRoute: typeof AuthNativeCallbackRoute
   UIdRoute: typeof UIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -607,12 +608,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarriageEditRouteImport
       parentRoute: typeof MarriageRoute
     }
-    '/auth/native-callback': {
-      id: '/auth/native-callback'
-      path: '/native-callback'
+    '/auth_/native-callback': {
+      id: '/auth_/native-callback'
+      path: '/auth/native-callback'
       fullPath: '/auth/native-callback'
       preLoaderRoute: typeof AuthNativeCallbackRouteImport
-      parentRoute: typeof AuthRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/videos': {
       id: '/admin/videos'
@@ -772,16 +773,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface AuthRouteChildren {
-  AuthNativeCallbackRoute: typeof AuthNativeCallbackRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthNativeCallbackRoute: AuthNativeCallbackRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 interface MarriageRouteChildren {
   MarriageEditRoute: typeof MarriageEditRoute
   MarriageIndexRoute: typeof MarriageIndexRoute
@@ -799,7 +790,7 @@ const MarriageRouteWithChildren = MarriageRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AuthRoute: AuthRouteWithChildren,
+  AuthRoute: AuthRoute,
   MarriageRoute: MarriageRouteWithChildren,
   MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
@@ -812,6 +803,7 @@ const rootRouteChildren: RootRouteChildren = {
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
   DotwellKnownAssetlinksDotjsonRoute: DotwellKnownAssetlinksDotjsonRoute,
+  AuthNativeCallbackRoute: AuthNativeCallbackRoute,
   UIdRoute: UIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
