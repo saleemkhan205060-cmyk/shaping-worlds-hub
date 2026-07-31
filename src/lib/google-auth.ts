@@ -141,26 +141,11 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
 
     if (result.error || result.redirected) return result;
 
-    // cloud-auth-js returns the broker tokens, but its generated wrapper only
-    // catches thrown exceptions from setSession(). Auth failures are normally
-    // returned in the `error` field instead, so a failed handoff was previously
-    // reported as success while no session was stored in the app. Persist and
-    // validate the broker response here, using the session returned by the same
-    // call so there is no competing getSession/getUser lock in mobile WebViews.
-    const { data: sessionData, error: sessionError } = await supabase.auth.setSession(
-      result.tokens,
-    );
-    if (sessionError) {
-      return { error: sessionError, redirected: false as const };
-    }
-    if (!sessionData.session?.user) {
-      return {
-        error: new Error("Google sign-in completed without a valid app session"),
-        redirected: false as const,
-      };
-    }
-
-    publishAuthenticatedSession(sessionData.session);
+    // The generated Lovable auth wrapper has already awaited setSession here.
+    // Writing the same tokens a second time races the auth-state listener in
+    // mobile WebViews and can leave the UI signed out even though OAuth itself
+    // succeeded. Let the single shared onAuthStateChange listener publish the
+    // session instead.
     return result;
   }
 
