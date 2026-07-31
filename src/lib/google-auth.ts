@@ -136,9 +136,25 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
 
     if (result.error || result.redirected) return result;
 
-    // The generated managed-auth wrapper has already persisted the returned
-    // tokens. Calling setSession/getUser again here can contend for the same
-    // auth lock in mobile WebViews and turn a successful login into a timeout.
+    // cloud-auth-js returns the broker tokens, but its generated wrapper only
+    // catches thrown exceptions from setSession(). Auth failures are normally
+    // returned in the `error` field instead, so a failed handoff was previously
+    // reported as success while no session was stored in the app. Persist and
+    // validate the broker response here, using the session returned by the same
+    // call so there is no competing getSession/getUser lock in mobile WebViews.
+    const { data: sessionData, error: sessionError } = await supabase.auth.setSession(
+      result.tokens,
+    );
+    if (sessionError) {
+      return { error: sessionError, redirected: false as const };
+    }
+    if (!sessionData.session?.user) {
+      return {
+        error: new Error("Google sign-in completed without a valid app session"),
+        redirected: false as const,
+      };
+    }
+
     return result;
   }
 
