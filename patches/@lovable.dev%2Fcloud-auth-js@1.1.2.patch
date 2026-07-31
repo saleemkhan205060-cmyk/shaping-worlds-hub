@@ -1,14 +1,15 @@
-diff --git a/dist/index.js b/dist/index.js
-index 83d07aa..87662ab 100644
---- a/dist/index.js
-+++ b/dist/index.js
-@@ -41,6 +41,7 @@ var DEFAULT_MOBILE_DEEP_LINK_REDIRECT_URI = "lovable://oauth-callback";
+diff --git a/dist/index.cjs b/dist/index.cjs
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -67,6 +67,7 @@
+ var DEFAULT_MOBILE_DEEP_LINK_REDIRECT_URI = "lovable://oauth-callback";
  var DEFAULT_DESKTOP_LOCALHOST_REDIRECT_URI = "http://127.0.0.1/iframe-oauth/callback";
  var POPUP_CHECK_INTERVAL_MS = 500;
 +var POPUP_CLOSE_GRACE_MS = 3e3;
  var IFRAME_FALLBACK_TIMEOUT_MS = 12e4;
  function startWebMessageListener(supportedOrigins) {
-@@ -177,12 +178,15 @@ function createAuth(config = {}) {
+   let resolvePromise;
+@@ -204,11 +205,14 @@
        return { error: new Error("Popup was blocked") };
      }
      let popupCheckInterval;
@@ -24,7 +25,7 @@ index 83d07aa..87662ab 100644
          }
        }, POPUP_CHECK_INTERVAL_MS);
      });
-@@ -195,6 +199,7 @@ function createAuth(config = {}) {
+@@ -221,6 +225,7 @@
        };
      } finally {
        clearInterval(popupCheckInterval);
@@ -32,17 +33,18 @@ index 83d07aa..87662ab 100644
        cleanup();
        popup?.close();
      }
-diff --git a/dist/index.cjs b/dist/index.cjs
-index 3548486..0a534fe 100644
---- a/dist/index.cjs
-+++ b/dist/index.cjs
-@@ -67,6 +67,7 @@ var DEFAULT_MOBILE_DEEP_LINK_REDIRECT_URI = "lovable://oauth-callback";
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -41,6 +41,7 @@
+ var DEFAULT_MOBILE_DEEP_LINK_REDIRECT_URI = "lovable://oauth-callback";
  var DEFAULT_DESKTOP_LOCALHOST_REDIRECT_URI = "http://127.0.0.1/iframe-oauth/callback";
  var POPUP_CHECK_INTERVAL_MS = 500;
 +var POPUP_CLOSE_GRACE_MS = 3e3;
  var IFRAME_FALLBACK_TIMEOUT_MS = 12e4;
  function startWebMessageListener(supportedOrigins) {
-@@ -203,12 +204,15 @@ function createAuth(config = {}) {
+   let resolvePromise;
+@@ -178,11 +179,14 @@
        return { error: new Error("Popup was blocked") };
      }
      let popupCheckInterval;
@@ -58,7 +60,7 @@ index 3548486..0a534fe 100644
          }
        }, POPUP_CHECK_INTERVAL_MS);
      });
-@@ -221,6 +225,7 @@ function createAuth(config = {}) {
+@@ -195,6 +199,7 @@
        };
      } finally {
        clearInterval(popupCheckInterval);
