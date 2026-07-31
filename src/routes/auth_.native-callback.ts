@@ -34,7 +34,10 @@ const PAGE = `<!doctype html>
     <script>
       (function () {
         function payload() {
-          return window.location.hash.replace(/^#/, "") || window.location.search.replace(/^\\?/, "");
+          var values = new URLSearchParams(window.location.search);
+          var fragment = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+          fragment.forEach(function (value, key) { values.set(key, value); });
+          return values.toString();
         }
         function forward() {
           window.location.replace("lovable://oauth-callback#" + payload());

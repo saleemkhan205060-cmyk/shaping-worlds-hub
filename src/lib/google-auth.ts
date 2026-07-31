@@ -17,6 +17,7 @@ const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
 // Use an allow-listed HTTPS App Link rather than a custom scheme. The managed
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
+const NATIVE_OAUTH_STATE_KEY = "vip-life-google-oauth-state";
 
 function isInstalledNativeRuntime() {
   if (!isNativeCapacitorApp() || typeof window === "undefined") return false;
@@ -24,6 +25,62 @@ function isInstalledNativeRuntime() {
   // The mobile preview exposes a Capacitor bridge but reports the web
   // platform. Only the packaged Play Store app may use the native callback.
   return Capacitor.getPlatform() === "android";
+}
+
+function callbackValues(url: string) {
+  const callback = new URL(url);
+  const values = new URLSearchParams(callback.search);
+  const fragment = new URLSearchParams(callback.hash.replace(/^#/, ""));
+  fragment.forEach((value, key) => values.set(key, value));
+  return values;
+}
+
+async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
+  if (!url.startsWith(NATIVE_REDIRECT_URI) && !url.startsWith("lovable://oauth-callback")) {
+    return false;
+  }
+
+  const values = callbackValues(url);
+  const storedState = localStorage.getItem(NATIVE_OAUTH_STATE_KEY);
+  const requiredState = expectedState ?? storedState;
+  const returnedState = values.get("state");
+  const callbackError = values.get("error_description") ?? values.get("error");
+
+  if (callbackError) throw new Error(callbackError);
+  if (!requiredState || returnedState !== requiredState) {
+    throw new Error("Google sign-in verification failed");
+  }
+
+  const code = values.get("code");
+  const accessToken = values.get("access_token");
+  const refreshToken = values.get("refresh_token");
+
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) throw error;
+  } else if (accessToken && refreshToken) {
+    const { error } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+    if (error) throw error;
+  } else {
+    throw new Error("Google sign-in did not return a session");
+  }
+
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  if (!data.session) throw new Error("Google session could not be restored");
+
+  localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
+  return true;
+}
+
+export async function restoreNativeGoogleSession() {
+  if (!isInstalledNativeRuntime()) return false;
+  const launch = await App.getLaunchUrl();
+  if (!launch?.url) return false;
+  return restoreSessionFromNativeCallback(launch.url);
 }
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
@@ -44,6 +101,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   // navigates the whole app away. Keep the WebView alive, complete OAuth in the
   // system browser, and receive the session through an Android deep link.
   const state = crypto.randomUUID();
+  localStorage.setItem(NATIVE_OAUTH_STATE_KEY, state);
   const redirectUri = NATIVE_REDIRECT_URI;
   const params = new URLSearchParams({
     provider: "google",
@@ -57,62 +115,40 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     | { tokens?: undefined; error: Error; redirected?: false }
   >(async (resolve) => {
     let settled = false;
+    let timeoutId: number | undefined;
+    let listener: Awaited<ReturnType<typeof App.addListener>> | undefined;
     const finish = (result: Parameters<typeof resolve>[0]) => {
       if (settled) return;
       settled = true;
-      window.clearTimeout(timeoutId);
-      void listener.remove();
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      void listener?.remove();
       resolve(result);
     };
 
     const handleCallback = async (url: string) => {
-      // Verified App Link hands us the https URL directly; the browser
-      // fallback page on /auth/native-callback forwards the same payload
-      // through the custom scheme registered in the Android manifest.
-      if (!url.startsWith(redirectUri) && !url.startsWith("lovable://oauth-callback")) return;
-
-      const callback = new URL(url);
-      const values = new URLSearchParams(callback.hash.replace(/^#/, "") || callback.search);
-      const returnedState = values.get("state");
-      const error = values.get("error_description") ?? values.get("error");
-      const accessToken = values.get("access_token");
-      const refreshToken = values.get("refresh_token");
-
-      if (returnedState !== state) {
-        finish({ error: new Error("Google sign-in verification failed") });
-        return;
+      try {
+        const restored = await restoreSessionFromNativeCallback(url, state);
+        if (!restored) return;
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+        if (!session) throw new Error("Google session could not be restored");
+        finish({
+          tokens: {
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+          },
+          error: null,
+        });
+      } catch (error) {
+        finish({ error: error instanceof Error ? error : new Error(String(error)) });
       }
-      if (error) {
-        finish({ error: new Error(error) });
-        return;
-      }
-      if (!accessToken || !refreshToken) {
-        finish({ error: new Error("Google sign-in did not return a session") });
-        return;
-      }
-
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-      if (sessionError) {
-        finish({ error: sessionError });
-        return;
-      }
-      finish({ tokens: { access_token: accessToken, refresh_token: refreshToken }, error: null });
     };
 
-    const listener = await App.addListener("appUrlOpen", ({ url }) => {
+    listener = await App.addListener("appUrlOpen", ({ url }) => {
       void handleCallback(url);
     });
 
-    // Android can recreate the activity while the system browser is open. In
-    // that case appUrlOpen may fire before the WebView listener is restored,
-    // so also consume the launch URL after registering the listener.
-    const launch = await App.getLaunchUrl();
-    if (launch?.url) void handleCallback(launch.url);
-
-    const timeoutId = window.setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
       finish({ error: new Error("Google sign-in timed out") });
     }, 120_000);
 
