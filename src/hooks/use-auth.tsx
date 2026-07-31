@@ -65,7 +65,7 @@ function ensureAuthInitialized() {
 
   const initializationRevision = authRevision;
   withAuthTimeout(supabase.auth.getSession(), "Auth session initialization timed out")
-    .then(async ({ data, error }) => {
+    .then(({ data, error }) => {
       if (error) throw error;
 
       // An auth event may complete while this initial storage read is pending.
@@ -73,15 +73,9 @@ function ensureAuthInitialized() {
       if (authRevision !== initializationRevision) return;
 
       if (data.session) {
-        const { data: identity, error: identityError } = await withAuthTimeout(
-          supabase.auth.getUser(),
-          "Auth identity verification timed out",
-        );
-        if (identityError) throw identityError;
-        if (authRevision !== initializationRevision) return;
         publishAuthState({
           session: data.session,
-          user: identity.user,
+          user: data.session.user,
           loading: false,
         });
         return;
@@ -94,6 +88,10 @@ function ensureAuthInitialized() {
       });
     })
     .catch(async (error) => {
+      // A SIGNED_IN event may arrive while the initial storage read is still
+      // pending. Its session is newer and must never be erased by a stale
+      // initialization timeout or verification failure.
+      if (authRevision !== initializationRevision) return;
       if (isInvalidRefreshSession(error)) {
         await clearBrokenSession();
       } else {
@@ -139,17 +137,10 @@ export async function confirmAuthenticatedUser() {
   if (sessionError) throw sessionError;
   if (!sessionData.session) return null;
 
-  const { data: userData, error: userError } = await withAuthTimeout(
-    supabase.auth.getUser(),
-    "Auth identity verification timed out",
-  );
-  if (userError) throw userError;
-  if (!userData.user) return null;
-
   publishAuthState({
     session: sessionData.session,
-    user: userData.user,
+    user: sessionData.session.user,
     loading: false,
   });
-  return userData.user;
+  return sessionData.session.user;
 }
