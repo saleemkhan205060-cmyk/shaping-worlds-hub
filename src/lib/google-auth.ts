@@ -19,6 +19,8 @@ const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
 const NATIVE_OAUTH_STATE_KEY = "vip-life-google-oauth-state";
+let nativeCallbackInFlight: Promise<boolean> | null = null;
+let completedNativeCallbackUrl: string | null = null;
 
 function isInstalledNativeRuntime() {
   if (!isNativeCapacitorApp() || typeof window === "undefined") return false;
@@ -36,10 +38,27 @@ function callbackValues(url: string) {
   return values;
 }
 
-async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
+async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?: string) {
   if (!url.startsWith(NATIVE_REDIRECT_URI) && !url.startsWith("lovable://oauth-callback")) {
     return false;
   }
+
+  if (url === completedNativeCallbackUrl) return true;
+  if (nativeCallbackInFlight) return nativeCallbackInFlight;
+
+  nativeCallbackInFlight = restoreSessionFromNativeCallback(url, expectedState)
+    .then((restored) => {
+      if (restored) completedNativeCallbackUrl = url;
+      return restored;
+    })
+    .finally(() => {
+      nativeCallbackInFlight = null;
+    });
+
+  return nativeCallbackInFlight;
+}
+
+async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
 
   const values = callbackValues(url);
   const storedState = localStorage.getItem(NATIVE_OAUTH_STATE_KEY);
@@ -92,7 +111,7 @@ export async function restoreNativeGoogleSession() {
   if (!isInstalledNativeRuntime()) return false;
   const launch = await App.getLaunchUrl();
   if (!launch?.url) return false;
-  return restoreSessionFromNativeCallback(launch.url);
+  return restoreSessionFromNativeCallbackOnce(launch.url);
 }
 
 export function listenForNativeGoogleSession(
@@ -105,7 +124,7 @@ export function listenForNativeGoogleSession(
   let removeListener: (() => Promise<void>) | undefined;
 
   void App.addListener("appUrlOpen", ({ url }) => {
-    void restoreSessionFromNativeCallback(url)
+    void restoreSessionFromNativeCallbackOnce(url)
       .then((restored) => {
         if (active && restored) onRestored();
       })

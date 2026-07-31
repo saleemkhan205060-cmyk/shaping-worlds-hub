@@ -118,7 +118,13 @@ function ensureAuthInitialized() {
 }
 
 export function useAuth() {
-  const [state, setState] = useState<AuthState>(authState);
+  // Keep the server and first client render identical. The live singleton may
+  // already contain a browser session after HMR or an OAuth callback.
+  const [state, setState] = useState<AuthState>({
+    session: null,
+    user: null,
+    loading: true,
+  });
 
   useEffect(() => {
     ensureAuthInitialized();
