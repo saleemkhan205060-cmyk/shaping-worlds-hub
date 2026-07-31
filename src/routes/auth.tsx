@@ -2,7 +2,11 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { confirmAuthenticatedUser, useAuth } from "@/hooks/use-auth";
-import { restoreNativeGoogleSession, signInWithGoogle } from "@/lib/google-auth";
+import {
+  listenForNativeGoogleSession,
+  restoreNativeGoogleSession,
+  signInWithGoogle,
+} from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
@@ -87,6 +91,18 @@ function AuthPage() {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
+    const stopListening = listenForNativeGoogleSession(
+      () => {
+        setBusy(false);
+        navigate({ to: "/" });
+      },
+      (error) => {
+        console.error("Google callback session restore failed:", error);
+        setBusy(false);
+        toast.error(authErrorMessage(error, "google"));
+      },
+    );
+
     void restoreNativeGoogleSession()
       .then((restored) => {
         if (restored) {
@@ -98,6 +114,7 @@ function AuthPage() {
         console.error("Google callback session restore failed:", error);
         setBusy(false);
       });
+    return stopListening;
   }, [navigate]);
 
   const onSubmit = async (e: React.FormEvent) => {

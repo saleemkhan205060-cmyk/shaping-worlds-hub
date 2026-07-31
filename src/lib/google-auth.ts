@@ -90,6 +90,35 @@ export async function restoreNativeGoogleSession() {
   return restoreSessionFromNativeCallback(launch.url);
 }
 
+export function listenForNativeGoogleSession(onRestored: () => void, onError: (error: Error) => void) {
+  if (!isInstalledNativeRuntime()) return () => undefined;
+
+  let active = true;
+  let removeListener: (() => Promise<void>) | undefined;
+
+  void App.addListener("appUrlOpen", ({ url }) => {
+    void restoreSessionFromNativeCallback(url)
+      .then((restored) => {
+        if (active && restored) onRestored();
+      })
+      .catch((error) => {
+        if (!active) return;
+        onError(error instanceof Error ? error : new Error(String(error)));
+      });
+  }).then((listener) => {
+    if (!active) {
+      void listener.remove();
+      return;
+    }
+    removeListener = () => listener.remove();
+  });
+
+  return () => {
+    active = false;
+    void removeListener?.();
+  };
+}
+
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
     // Let the managed SDK own the browser flow. It builds the signed broker
