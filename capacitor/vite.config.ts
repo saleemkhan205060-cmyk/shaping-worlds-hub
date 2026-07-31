@@ -17,7 +17,7 @@ export default defineConfig({
   build: {
     // Older Android System WebViews choke on newer syntax and fail silently
     // with a blank screen, so compile down to a widely supported baseline.
-    target: ["es2019", "chrome79", "safari13"],
+    target: ["es2020", "chrome87", "safari14"],
     outDir: resolve(projectRoot, "dist-capacitor"),
     emptyOutDir: true,
     rollupOptions: {
