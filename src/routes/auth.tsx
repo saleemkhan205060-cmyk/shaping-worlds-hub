@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
-import { Globe, Loader2, ChevronDown } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
+import vipLogoAsset from "@/assets/vip-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -80,13 +81,15 @@ function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
         <Link to="/" className="flex items-center gap-2 justify-center mb-6">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
-            <Globe className="h-5 w-5" />
-          </div>
+          <img
+            src={vipLogoAsset.url}
+            alt="VIP Life"
+            className="h-12 w-auto object-contain"
+          />
           <div className="leading-tight">
-            <div className="font-extrabold text-sm">SHAPING</div>
+            <div className="font-extrabold text-sm">VIP</div>
             <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-              WORLD
+              LIFE
             </div>
           </div>
         </Link>
@@ -172,7 +175,7 @@ function AuthPage() {
           <button
             type="submit"
             disabled={busy || (mode === "signup" && !agreedTerms)}
-            className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-full bg-green-600 text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
             {mode === "signin" ? "Sign in" : "Create account"}
