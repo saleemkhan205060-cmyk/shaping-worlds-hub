@@ -11,8 +11,27 @@ type AuthState = {
 let authState: AuthState = { session: null, user: null, loading: true };
 const listeners = new Set<(state: AuthState) => void>();
 let authInitialized = false;
+let authRevision = 0;
+const AUTH_REQUEST_TIMEOUT_MS = 15_000;
+
+function withAuthTimeout<T>(operation: Promise<T>, message: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => reject(new Error(message)), AUTH_REQUEST_TIMEOUT_MS);
+    operation.then(
+      (result) => {
+        window.clearTimeout(timeoutId);
+        resolve(result);
+      },
+      (error) => {
+        window.clearTimeout(timeoutId);
+        reject(error);
+      },
+    );
+  });
+}
 
 function publishAuthState(next: AuthState) {
+  authRevision += 1;
   authState = next;
   listeners.forEach((listener) => listener(authState));
 }
@@ -20,7 +39,10 @@ function publishAuthState(next: AuthState) {
 function isInvalidRefreshSession(error: unknown) {
   const message = String((error as { message?: unknown })?.message ?? error ?? "");
   const code = String((error as { code?: unknown })?.code ?? "");
-  return code === "refresh_token_not_found" || /Invalid Refresh Token|Refresh Token Not Found/i.test(message);
+  return (
+    code === "refresh_token_not_found" ||
+    /Invalid Refresh Token|Refresh Token Not Found/i.test(message)
+  );
 }
 
 async function clearBrokenSession() {
@@ -35,15 +57,39 @@ function ensureAuthInitialized() {
   if (authInitialized) return;
   authInitialized = true;
 
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, s) => {
     publishAuthState({ session: s, user: s?.user ?? null, loading: false });
   });
 
-  supabase.auth.getSession()
-    .then(({ data }) => {
+  const initializationRevision = authRevision;
+  withAuthTimeout(supabase.auth.getSession(), "Auth session initialization timed out")
+    .then(async ({ data, error }) => {
+      if (error) throw error;
+
+      // An auth event may complete while this initial storage read is pending.
+      // Never let the older result overwrite a newer SIGNED_IN/USER_UPDATED event.
+      if (authRevision !== initializationRevision) return;
+
+      if (data.session) {
+        const { data: identity, error: identityError } = await withAuthTimeout(
+          supabase.auth.getUser(),
+          "Auth identity verification timed out",
+        );
+        if (identityError) throw identityError;
+        if (authRevision !== initializationRevision) return;
+        publishAuthState({
+          session: data.session,
+          user: identity.user,
+          loading: false,
+        });
+        return;
+      }
+
       publishAuthState({
-        session: data.session,
-        user: data.session?.user ?? null,
+        session: null,
+        user: null,
         loading: false,
       });
     })
@@ -83,4 +129,27 @@ export function useAuth() {
 export async function signOut() {
   await supabase.auth.signOut();
   publishAuthState({ session: null, user: null, loading: false });
+}
+
+export async function confirmAuthenticatedUser() {
+  const { data: sessionData, error: sessionError } = await withAuthTimeout(
+    supabase.auth.getSession(),
+    "Auth session verification timed out",
+  );
+  if (sessionError) throw sessionError;
+  if (!sessionData.session) return null;
+
+  const { data: userData, error: userError } = await withAuthTimeout(
+    supabase.auth.getUser(),
+    "Auth identity verification timed out",
+  );
+  if (userError) throw userError;
+  if (!userData.user) return null;
+
+  publishAuthState({
+    session: sessionData.session,
+    user: userData.user,
+    loading: false,
+  });
+  return userData.user;
 }

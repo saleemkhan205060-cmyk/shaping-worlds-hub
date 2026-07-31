@@ -72,6 +72,13 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   if (error) throw error;
   if (!data.session) throw new Error("Google session could not be restored");
 
+  // Revalidate the restored JWT with Auth before telling the UI that login is
+  // complete. This also guarantees the shared auth listener receives a usable
+  // identity rather than a storage-only session.
+  const { data: identity, error: identityError } = await supabase.auth.getUser();
+  if (identityError) throw identityError;
+  if (!identity.user) throw new Error("Google user could not be verified");
+
   localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
   return true;
 }
@@ -96,7 +103,6 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     });
   }
 
-
   // cloud-auth-js treats a top-level Capacitor WebView as a normal browser and
   // navigates the whole app away. Keep the WebView alive, complete OAuth in the
   // system browser, and receive the session through an Android deep link.
@@ -113,7 +119,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   return new Promise<
     | { tokens: { access_token: string; refresh_token: string }; error: null; redirected?: false }
     | { tokens?: undefined; error: Error; redirected?: false }
-  >(async (resolve) => {
+  >((resolve) => {
     let settled = false;
     let timeoutId: number | undefined;
     let listener: Awaited<ReturnType<typeof App.addListener>> | undefined;
@@ -144,18 +150,22 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
       }
     };
 
-    listener = await App.addListener("appUrlOpen", ({ url }) => {
-      void handleCallback(url);
-    });
+    void (async () => {
+      listener = await App.addListener("appUrlOpen", ({ url }) => {
+        void handleCallback(url);
+      });
 
-    timeoutId = window.setTimeout(() => {
-      finish({ error: new Error("Google sign-in timed out") });
-    }, 120_000);
+      timeoutId = window.setTimeout(() => {
+        finish({ error: new Error("Google sign-in timed out") });
+      }, 120_000);
 
-    try {
-      await SafeBrowser.open({ url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}` });
-    } catch (error) {
-      finish({ error: error instanceof Error ? error : new Error(String(error)) });
-    }
+      try {
+        await SafeBrowser.open({
+          url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}`,
+        });
+      } catch (error) {
+        finish({ error: error instanceof Error ? error : new Error(String(error)) });
+      }
+    })();
   });
 }

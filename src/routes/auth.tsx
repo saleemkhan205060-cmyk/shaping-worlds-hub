@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
+import { confirmAuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { restoreNativeGoogleSession, signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 import { isNativeCapacitorApp } from "@/lib/native-share";
+import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -30,22 +31,31 @@ function AuthPage() {
   };
 
   const waitForGoogleSession = async () => {
-    const existing = await supabase.auth.getSession();
-    if (existing.data.session) return true;
+    if (await confirmAuthenticatedUser()) return true;
 
     return new Promise<boolean>((resolve) => {
       let settled = false;
-      const finish = (authenticated: boolean) => {
+      const finish = async (authenticated: boolean) => {
         if (settled) return;
         settled = true;
         window.clearTimeout(timeoutId);
         subscription.unsubscribe();
-        resolve(authenticated);
+        if (!authenticated) {
+          resolve(false);
+          return;
+        }
+        try {
+          resolve(Boolean(await confirmAuthenticatedUser()));
+        } catch {
+          resolve(false);
+        }
       };
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (session) finish(true);
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session) void finish(true);
       });
-      const timeoutId = window.setTimeout(() => finish(false), 10_000);
+      const timeoutId = window.setTimeout(() => void finish(false), 15_000);
     });
   };
 
@@ -76,27 +86,44 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: { display_name: displayName || email.split("@")[0] },
-          },
-        });
+        const { data, error } = await runAndroidAuth(
+          supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: `${getOAuthRedirectOrigin()}/`,
+              data: { display_name: displayName || email.split("@")[0] },
+            },
+          }),
+        );
         if (error) throw error;
-        toast.success("Account created! Check your email to confirm.");
+        if (data.session) {
+          if (!(await confirmAuthenticatedUser())) {
+            throw new Error("Account session was not created");
+          }
+          toast.success("Account created!");
+          navigate({ to: "/" });
+        } else {
+          toast.success("Account created! Check your email to confirm.");
+        }
       } else {
-        const { error } = await runAndroidAuth(
+        const { data, error } = await runAndroidAuth(
           supabase.auth.signInWithPassword({ email, password }),
         );
         if (error) throw error;
+        if (!data.session || !(await confirmAuthenticatedUser())) {
+          throw new Error("Sign-in completed without a valid session");
+        }
         toast.success("Welcome back!");
         navigate({ to: "/" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Auth error:", err);
-      toast.error(mode === "signin" ? "Invalid email or password" : "Couldn't create your account. Please try again.");
+      toast.error(
+        mode === "signin"
+          ? "Invalid email or password"
+          : "Couldn't create your account. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -120,7 +147,7 @@ function AuthPage() {
           navigate({ to: "/" });
           return;
         }
-        const msg = String((result.error as any)?.message ?? "");
+        const msg = String(result.error?.message ?? "");
         const cancelled = /cancel|closed|popup|denied/i.test(msg);
         console.error("Google sign-in error:", result.error);
         if (!cancelled) toast.error("Google sign-in failed. Please try again.");
@@ -128,6 +155,9 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
+      if (!(await waitForGoogleSession())) {
+        throw new Error("Google sign-in completed without a valid session");
+      }
       navigate({ to: "/" });
     } catch (error) {
       console.error("Google sign-in error:", error);
@@ -177,7 +207,9 @@ function AuthPage() {
           </div>
         )}
 
-        <div className={`${mode === "signup" ? "mt-3" : "mt-6"} flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50`}>
+        <div
+          className={`${mode === "signup" ? "mt-3" : "mt-6"} flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50`}
+        >
           <button
             type="button"
             onClick={() => onGoogle(false)}
@@ -200,7 +232,8 @@ function AuthPage() {
         </div>
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
-          <div className="flex-1 h-px bg-slate-200" /> OR <div className="flex-1 h-px bg-slate-200" />
+          <div className="flex-1 h-px bg-slate-200" /> OR{" "}
+          <div className="flex-1 h-px bg-slate-200" />
         </div>
 
         <form onSubmit={onSubmit} className="space-y-3">
@@ -257,10 +290,22 @@ function AuthPage() {
 function GoogleIcon() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      />
     </svg>
   );
 }
