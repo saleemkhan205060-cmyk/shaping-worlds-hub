@@ -14,7 +14,9 @@ type SafeBrowserPlugin = {
 };
 
 const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
-const NATIVE_REDIRECT_URI = "lovable://oauth-callback";
+// Use an allow-listed HTTPS App Link rather than a custom scheme. The managed
+// OAuth broker only accepts the project's trusted HTTPS redirect origins.
+const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isNativeCapacitorApp()) {
@@ -53,7 +55,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
       resolve(result);
     };
 
-    const listener = await App.addListener("appUrlOpen", async ({ url }) => {
+    const handleCallback = async (url: string) => {
       if (!url.startsWith(redirectUri)) return;
 
       const callback = new URL(url);
@@ -85,7 +87,17 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
         return;
       }
       finish({ tokens: { access_token: accessToken, refresh_token: refreshToken }, error: null });
+    };
+
+    const listener = await App.addListener("appUrlOpen", ({ url }) => {
+      void handleCallback(url);
     });
+
+    // Android can recreate the activity while the system browser is open. In
+    // that case appUrlOpen may fire before the WebView listener is restored,
+    // so also consume the launch URL after registering the listener.
+    const launch = await App.getLaunchUrl();
+    if (launch?.url) void handleCallback(launch.url);
 
     const timeoutId = window.setTimeout(() => {
       finish({ error: new Error("Google sign-in timed out") });

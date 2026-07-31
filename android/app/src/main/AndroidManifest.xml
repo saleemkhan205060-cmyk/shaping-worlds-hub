@@ -30,6 +30,17 @@
                 <data android:scheme="lovable" android:host="oauth-callback" />
             </intent-filter>
 
+            <!-- Verified HTTPS callback accepted by the managed OAuth allow-list. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="viplifes.com"
+                    android:pathPrefix="/auth/native-callback" />
+            </intent-filter>
+
         </activity>
 
         <!-- FCM: default notification channel + icon/color so background pushes look right -->
