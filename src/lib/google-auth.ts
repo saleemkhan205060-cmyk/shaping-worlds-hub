@@ -66,7 +66,10 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     };
 
     const handleCallback = async (url: string) => {
-      if (!url.startsWith(redirectUri)) return;
+      // Verified App Link hands us the https URL directly; the browser
+      // fallback page on /auth/native-callback forwards the same payload
+      // through the custom scheme registered in the Android manifest.
+      if (!url.startsWith(redirectUri) && !url.startsWith("lovable://oauth-callback")) return;
 
       const callback = new URL(url);
       const values = new URLSearchParams(callback.hash.replace(/^#/, "") || callback.search);
