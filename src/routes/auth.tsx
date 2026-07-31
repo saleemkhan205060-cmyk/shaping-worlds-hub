@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Loader2, ChevronDown } from "lucide-react";
-import vipLogoAsset from "@/assets/vib-logo-new.jpg.asset.json";
+import vipLogoAsset from "@/assets/vip-logo-new.jpg.asset.json";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
