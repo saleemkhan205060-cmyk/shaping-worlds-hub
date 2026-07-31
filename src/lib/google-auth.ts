@@ -79,7 +79,6 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) throw error;
     if (!data.session) throw new Error("Google sign-in did not return a session");
-    publishAuthenticatedSession(data.session);
   } else if (accessToken && refreshToken) {
     const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
@@ -87,7 +86,6 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
     });
     if (error) throw error;
     if (!data.session) throw new Error("Google sign-in did not return a session");
-    publishAuthenticatedSession(data.session);
   } else {
     throw new Error("Google sign-in did not return a session");
   }
@@ -103,6 +101,9 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   if (identityError) throw identityError;
   if (!identity.user) throw new Error("Google user could not be verified");
 
+  // Publish only after both persisted-session recovery and server identity
+  // validation succeed, so the app never observes a half-restored login.
+  publishAuthenticatedSession(data.session);
   localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
   return true;
 }
