@@ -170,47 +170,20 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     ...options.extraParams,
   });
 
-  return new Promise<
-    | { tokens: { access_token: string; refresh_token: string }; error: null; redirected?: false }
-    | { tokens?: undefined; error: Error; redirected?: false }
-  >((resolve) => {
-    let settled = false;
-    let timeoutId: number | undefined;
-    let unsubscribeAuth: (() => void) | undefined;
-    const finish = (result: Parameters<typeof resolve>[0]) => {
-      if (settled) return;
-      settled = true;
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-      unsubscribeAuth?.();
-      resolve(result);
+  try {
+    await SafeBrowser.open({
+      url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}`,
+    });
+
+    // Opening the browser is the end of this request. The persistent
+    // appUrlOpen listener on the auth page exclusively owns callback parsing,
+    // PKCE/token restoration, and navigation. Waiting for that same auth event
+    // here left this promise pending behind the UI's 30-second request timeout.
+    return { error: null, redirected: true as const };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error : new Error(String(error)),
+      redirected: false as const,
     };
-
-    void (async () => {
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (!session) return;
-        finish({
-          tokens: {
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-          },
-          error: null,
-        });
-      });
-      unsubscribeAuth = () => subscription.unsubscribe();
-
-      timeoutId = window.setTimeout(() => {
-        finish({ error: new Error("Google sign-in timed out") });
-      }, 120_000);
-
-      try {
-        await SafeBrowser.open({
-          url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}`,
-        });
-      } catch (error) {
-        finish({ error: error instanceof Error ? error : new Error(String(error)) });
-      }
-    })();
-  });
+  }
 }
