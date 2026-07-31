@@ -29,6 +29,15 @@ function AuthPage() {
     ]);
   };
 
+  const waitForGoogleSession = async () => {
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) return true;
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 250));
+    }
+    return false;
+  };
+
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/" });
   }, [user, authLoading, navigate]);
@@ -79,6 +88,13 @@ function AuthPage() {
         extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
       });
       if (result.error) {
+        // The managed OAuth popup can report "cancelled" just before its
+        // successful session handoff finishes. Confirm the actual auth state
+        // before treating that transient popup result as a failed sign-in.
+        if (await waitForGoogleSession()) {
+          navigate({ to: "/" });
+          return;
+        }
         const msg = String((result.error as any)?.message ?? "");
         const cancelled = /cancel|closed|popup|denied/i.test(msg);
         console.error("Google sign-in error:", result.error);
