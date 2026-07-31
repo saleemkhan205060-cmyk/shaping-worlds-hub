@@ -72,6 +72,13 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   if (error) throw error;
   if (!data.session) throw new Error("Google session could not be restored");
 
+  // Revalidate the restored JWT with Auth before telling the UI that login is
+  // complete. This also guarantees the shared auth listener receives a usable
+  // identity rather than a storage-only session.
+  const { data: identity, error: identityError } = await supabase.auth.getUser();
+  if (identityError) throw identityError;
+  if (!identity.user) throw new Error("Google user could not be verified");
+
   localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
   return true;
 }

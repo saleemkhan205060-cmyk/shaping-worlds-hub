@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
+import { confirmAuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { restoreNativeGoogleSession, signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
@@ -30,22 +30,29 @@ function AuthPage() {
   };
 
   const waitForGoogleSession = async () => {
-    const existing = await supabase.auth.getSession();
-    if (existing.data.session) return true;
+    if (await confirmAuthenticatedUser()) return true;
 
     return new Promise<boolean>((resolve) => {
       let settled = false;
-      const finish = (authenticated: boolean) => {
+      const finish = async (authenticated: boolean) => {
         if (settled) return;
         settled = true;
         window.clearTimeout(timeoutId);
         subscription.unsubscribe();
-        resolve(authenticated);
+        if (!authenticated) {
+          resolve(false);
+          return;
+        }
+        try {
+          resolve(Boolean(await confirmAuthenticatedUser()));
+        } catch {
+          resolve(false);
+        }
       };
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (session) finish(true);
+        if (session) void finish(true);
       });
-      const timeoutId = window.setTimeout(() => finish(false), 10_000);
+      const timeoutId = window.setTimeout(() => void finish(false), 15_000);
     });
   };
 
@@ -76,21 +83,30 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await runAndroidAuth(supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
             data: { display_name: displayName || email.split("@")[0] },
           },
-        });
+        }));
         if (error) throw error;
-        toast.success("Account created! Check your email to confirm.");
+        if (data.session) {
+          if (!await confirmAuthenticatedUser()) throw new Error("Account session was not created");
+          toast.success("Account created!");
+          navigate({ to: "/" });
+        } else {
+          toast.success("Account created! Check your email to confirm.");
+        }
       } else {
-        const { error } = await runAndroidAuth(
+        const { data, error } = await runAndroidAuth(
           supabase.auth.signInWithPassword({ email, password }),
         );
         if (error) throw error;
+        if (!data.session || !await confirmAuthenticatedUser()) {
+          throw new Error("Sign-in completed without a valid session");
+        }
         toast.success("Welcome back!");
         navigate({ to: "/" });
       }
@@ -128,6 +144,9 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
+      if (!await waitForGoogleSession()) {
+        throw new Error("Google sign-in completed without a valid session");
+      }
       navigate({ to: "/" });
     } catch (error) {
       console.error("Google sign-in error:", error);

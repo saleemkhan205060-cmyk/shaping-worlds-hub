@@ -11,8 +11,10 @@ type AuthState = {
 let authState: AuthState = { session: null, user: null, loading: true };
 const listeners = new Set<(state: AuthState) => void>();
 let authInitialized = false;
+let authRevision = 0;
 
 function publishAuthState(next: AuthState) {
+  authRevision += 1;
   authState = next;
   listeners.forEach((listener) => listener(authState));
 }
@@ -39,11 +41,30 @@ function ensureAuthInitialized() {
     publishAuthState({ session: s, user: s?.user ?? null, loading: false });
   });
 
+  const initializationRevision = authRevision;
   supabase.auth.getSession()
-    .then(({ data }) => {
+    .then(async ({ data, error }) => {
+      if (error) throw error;
+
+      // An auth event may complete while this initial storage read is pending.
+      // Never let the older result overwrite a newer SIGNED_IN/USER_UPDATED event.
+      if (authRevision !== initializationRevision) return;
+
+      if (data.session) {
+        const { data: identity, error: identityError } = await supabase.auth.getUser();
+        if (identityError) throw identityError;
+        if (authRevision !== initializationRevision) return;
+        publishAuthState({
+          session: data.session,
+          user: identity.user,
+          loading: false,
+        });
+        return;
+      }
+
       publishAuthState({
-        session: data.session,
-        user: data.session?.user ?? null,
+        session: null,
+        user: null,
         loading: false,
       });
     })
@@ -83,4 +104,21 @@ export function useAuth() {
 export async function signOut() {
   await supabase.auth.signOut();
   publishAuthState({ session: null, user: null, loading: false });
+}
+
+export async function confirmAuthenticatedUser() {
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+  if (!sessionData.session) return null;
+
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError) throw userError;
+  if (!userData.user) return null;
+
+  publishAuthState({
+    session: sessionData.session,
+    user: userData.user,
+    loading: false,
+  });
+  return userData.user;
 }
