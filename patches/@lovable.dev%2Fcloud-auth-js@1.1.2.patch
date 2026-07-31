@@ -1,7 +1,16 @@
 diff --git a/dist/index.cjs b/dist/index.cjs
 --- a/dist/index.cjs
 +++ b/dist/index.cjs
-@@ -206,10 +206,14 @@
+@@ -67,7 +67,7 @@
+ var DEFAULT_MOBILE_DEEP_LINK_REDIRECT_URI = "lovable://oauth-callback";
+ var DEFAULT_DESKTOP_LOCALHOST_REDIRECT_URI = "http://127.0.0.1/iframe-oauth/callback";
+ var POPUP_CHECK_INTERVAL_MS = 500;
+-var POPUP_CLOSE_GRACE_MS = 3e3;
++var POPUP_CLOSE_GRACE_MS = 15e3;
+ var IFRAME_FALLBACK_TIMEOUT_MS = 12e4;
+ function startWebMessageListener(supportedOrigins) {
+   let resolvePromise;
+@@ -206,10 +206,12 @@
      let popupCheckInterval;
      const popupClosedPromise = new Promise((_, reject) => {
        popupCheckInterval = setInterval(() => {
@@ -17,7 +26,16 @@ diff --git a/dist/index.cjs b/dist/index.cjs
 diff --git a/dist/index.js b/dist/index.js
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -180,10 +180,14 @@
+@@ -41,7 +41,7 @@
+ var DEFAULT_MOBILE_DEEP_LINK_REDIRECT_URI = "lovable://oauth-callback";
+ var DEFAULT_DESKTOP_LOCALHOST_REDIRECT_URI = "http://127.0.0.1/iframe-oauth/callback";
+ var POPUP_CHECK_INTERVAL_MS = 500;
+-var POPUP_CLOSE_GRACE_MS = 3e3;
++var POPUP_CLOSE_GRACE_MS = 15e3;
+ var IFRAME_FALLBACK_TIMEOUT_MS = 12e4;
+ function startWebMessageListener(supportedOrigins) {
+   let resolvePromise;
+@@ -180,10 +180,12 @@
      let popupCheckInterval;
      const popupClosedPromise = new Promise((_, reject) => {
        popupCheckInterval = setInterval(() => {
