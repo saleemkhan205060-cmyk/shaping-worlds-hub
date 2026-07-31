@@ -25,6 +25,9 @@ const config: CapacitorConfig = {
     ],
   },
   android: {
+    // cloud-auth-js uses this marker to select its native app OAuth flow
+    // instead of waiting forever for a browser popup response in the WebView.
+    appendUserAgent: "LovableApp/VIPLife-Android",
     allowMixedContent: true,
     webContentsDebuggingEnabled: true,
     buildOptions: {

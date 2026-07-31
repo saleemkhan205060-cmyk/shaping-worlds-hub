@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
+import { isNativeCapacitorApp } from "@/lib/native-share";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -17,6 +18,16 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
+
+  const runAndroidAuth = async <T,>(operation: Promise<T>): Promise<T> => {
+    if (!isNativeCapacitorApp()) return operation;
+    return Promise.race([
+      operation,
+      new Promise<T>((_, reject) => {
+        window.setTimeout(() => reject(new Error("Android sign-in timed out")), 30_000);
+      }),
+    ]);
+  };
 
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/" });
@@ -42,7 +53,9 @@ function AuthPage() {
         if (error) throw error;
         toast.success("Account created! Check your email to confirm.");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await runAndroidAuth(
+          supabase.auth.signInWithPassword({ email, password }),
+        );
         if (error) throw error;
         toast.success("Welcome back!");
         navigate({ to: "/" });
@@ -61,19 +74,25 @@ function AuthPage() {
       return;
     }
     setBusy(true);
-    const result = await signInWithGoogle({
-      extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
-    });
-    if (result.error) {
-      const msg = String((result.error as any)?.message ?? "");
-      const cancelled = /cancel|closed|popup|denied/i.test(msg);
-      console.error("Google sign-in error:", result.error);
-      if (!cancelled) toast.error("Google sign-in failed. Please try again.");
+    try {
+      const result = await runAndroidAuth(signInWithGoogle({
+        extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
+      }));
+      if (result.error) {
+        const msg = String((result.error as any)?.message ?? "");
+        const cancelled = /cancel|closed|popup|denied/i.test(msg);
+        console.error("Google sign-in error:", result.error);
+        if (!cancelled) toast.error("Google sign-in failed. Please try again.");
+        setBusy(false);
+        return;
+      }
+      if (result.redirected) return;
+      navigate({ to: "/" });
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      toast.error("Google sign-in failed. Please try again.");
       setBusy(false);
-      return;
     }
-    if (result.redirected) return;
-    navigate({ to: "/" });
   };
 
   return (

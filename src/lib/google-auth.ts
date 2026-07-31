@@ -18,15 +18,13 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     });
   }
 
-  // Capacitor serves the bundled app from https://localhost. The default
-  // relative /~oauth/initiate URL would therefore hit the local TanStack
-  // router and render its 404 page. Start OAuth on the public app origin,
-  // but return to the WebView origin so the session is stored in the app.
+  // Capacitor serves the bundled app from https://localhost. Start OAuth on
+  // the public app origin and let cloud-auth-js use its native deep-link
+  // callback (enabled by the LovableApp user-agent marker in capacitor.config).
   const nativeAuth = createLovableAuth({
     oauthBrokerUrl: `${brokerOrigin}/~oauth/initiate`,
   });
   const result = await nativeAuth.signInWithOAuth("google", {
-    redirect_uri: window.location.origin,
     extraParams: options.extraParams,
   });
 
