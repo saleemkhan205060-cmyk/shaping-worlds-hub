@@ -27,42 +27,19 @@ function isInstalledNativeRuntime() {
   return window.location.hostname === "localhost";
 }
 
-function shouldUseSameTabWebFlow() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
-}
-
-function startSameTabWebFlow(options: GoogleSignInOptions) {
-  const state = crypto.randomUUID();
-  const redirectUri = `${window.location.origin}/auth/google-callback`;
-  const params = new URLSearchParams({
-    provider: "google",
-    redirect_uri: redirectUri,
-    state,
-    ...options.extraParams,
-  });
-
-  window.sessionStorage.setItem("vip-google-oauth-state", state);
-  window.location.assign(`${window.location.origin}/~oauth/initiate?${params.toString()}`);
-  return { redirected: true as const, error: null };
-}
-
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
-    // Mobile preview/browser popups can complete in an isolated browser tab,
-    // leaving the initiating tab without the returned session. A same-tab
-    // redirect keeps the OAuth callback and session storage in one context.
-    if (shouldUseSameTabWebFlow()) return startSameTabWebFlow(options);
-
+    // Let the managed SDK own the browser flow. It builds the signed broker
+    // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
+    // and falls back to a full-page redirect when popups are unavailable.
     return lovable.auth.signInWithOAuth("google", {
       // Preview, published, and custom-domain sessions must return to the
-      // exact origin that opened the OAuth popup. Sending preview users to a
-      // different published origin closes the popup before its web_message
-      // can deliver the session to this page.
+      // exact origin that opened the OAuth flow.
       redirect_uri: window.location.origin,
       extraParams: options.extraParams,
     });
   }
+
 
   // cloud-auth-js treats a top-level Capacitor WebView as a normal browser and
   // navigates the whole app away. Keep the WebView alive, complete OAuth in the
