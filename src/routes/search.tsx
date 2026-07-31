@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon } from "lucide-react";
 import { Layout } from "@/components/Layout";
@@ -50,7 +50,7 @@ const TABS = [
 
 function SearchPage() {
   const { q, tab } = Route.useSearch();
-  const navigate = useNavigate({ from: "/search" });
+  const navigate = Route.useNavigate();
   const [input, setInput] = useState(q);
   const [people, setPeople] = useState<Profile[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -69,11 +69,11 @@ function SearchPage() {
   useEffect(() => {
     const t = setTimeout(() => {
       if (input !== q) {
-        navigate({ search: (prev) => ({ ...prev, q: input }), replace: true });
+        navigate({ to: ".", search: { q: input, tab }, replace: true });
       }
     }, 250);
     return () => clearTimeout(t);
-  }, [input, q, navigate]);
+  }, [input, q, tab, navigate]);
 
   // Fetch results
   useEffect(() => {
@@ -118,7 +118,7 @@ function SearchPage() {
   const photos = useMemo(() => posts.filter((p) => p.media_type === "image"), [posts]);
 
   const setTab = (key: typeof TABS[number]["key"]) =>
-    navigate({ search: (prev) => ({ ...prev, tab: key }), replace: true });
+    navigate({ to: ".", search: { q, tab: key }, replace: true });
 
   return (
     <Layout hideMobileNav fullScreenMobile>
