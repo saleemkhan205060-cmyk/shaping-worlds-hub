@@ -23,15 +23,6 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
 
-  const runAuthRequest = async <T,>(operation: Promise<T>): Promise<T> => {
-    return Promise.race([
-      operation,
-      new Promise<T>((_, reject) => {
-        window.setTimeout(() => reject(new Error("Authentication request timed out")), 30_000);
-      }),
-    ]);
-  };
-
   const authErrorMessage = (error: unknown, action: "signin" | "signup" | "google") => {
     const authError = error as { code?: string; message?: string; status?: number };
     const message = String(authError?.message ?? "");
@@ -126,16 +117,14 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { data, error } = await runAuthRequest(
-          supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
               emailRedirectTo: `${getOAuthRedirectOrigin()}/`,
               data: { display_name: displayName || email.split("@")[0] },
             },
-          }),
-        );
+          });
         if (error) throw error;
         if (data.session) {
           // signUp has already created and returned a server-issued session.
@@ -147,9 +136,7 @@ function AuthPage() {
           toast.success("Account created! Check your email to confirm.");
         }
       } else {
-        const { data, error } = await runAuthRequest(
-          supabase.auth.signInWithPassword({ email, password }),
-        );
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         if (!data.session) {
           throw new Error("Sign-in completed without a valid session");
@@ -174,11 +161,9 @@ function AuthPage() {
     }
     setBusy(true);
     try {
-      const result = await runAuthRequest(
-        signInWithGoogle({
+      const result = await signInWithGoogle({
           extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
-        }),
-      );
+        });
       if (result.error) {
         const msg = String(result.error?.message ?? "");
         const cancelled = /cancel|closed|popup|denied/i.test(msg);

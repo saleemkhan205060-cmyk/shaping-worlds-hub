@@ -150,10 +150,6 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     });
     if (sessionError) return { error: sessionError };
 
-    const { data: identity, error: identityError } = await supabase.auth.getUser();
-    if (identityError) return { error: identityError };
-    if (!identity.user) return { error: new Error("Google user could not be verified") };
-
     return result;
   }
 
