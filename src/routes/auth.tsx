@@ -1,7 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { confirmAuthenticatedUser, useAuth } from "@/hooks/use-auth";
+import {
+  confirmAuthenticatedUser,
+  publishAuthenticatedSession,
+  useAuth,
+} from "@/hooks/use-auth";
 import {
   listenForNativeGoogleSession,
   restoreNativeGoogleSession,
@@ -130,6 +134,7 @@ function AuthPage() {
           // signUp has already created and returned a server-issued session.
           // The shared auth listener persists it; a second getUser request here
           // can time out in Android WebView and incorrectly report failure.
+          publishAuthenticatedSession(data.session);
           toast.success("Account created!");
           navigate({ to: "/" });
         } else {
@@ -143,6 +148,7 @@ function AuthPage() {
         }
         // The successful password response is the session source of truth and
         // onAuthStateChange publishes it to the rest of the app.
+        publishAuthenticatedSession(data.session);
         toast.success("Welcome back!");
         navigate({ to: "/" });
       }

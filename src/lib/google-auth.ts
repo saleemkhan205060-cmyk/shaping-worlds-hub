@@ -2,6 +2,7 @@ import { App } from "@capacitor/app";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
+import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
 import { PUBLISHED_ORIGIN } from "./oauth-origin";
 
@@ -56,14 +57,18 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   const refreshToken = values.get("refresh_token");
 
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) throw error;
+    if (!data.session) throw new Error("Google sign-in did not return a session");
+    publishAuthenticatedSession(data.session);
   } else if (accessToken && refreshToken) {
-    const { error } = await supabase.auth.setSession({
+    const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
       refresh_token: refreshToken,
     });
     if (error) throw error;
+    if (!data.session) throw new Error("Google sign-in did not return a session");
+    publishAuthenticatedSession(data.session);
   } else {
     throw new Error("Google sign-in did not return a session");
   }
@@ -136,9 +141,26 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
 
     if (result.error || result.redirected) return result;
 
-    // The generated managed-auth wrapper has already persisted the returned
-    // tokens. Calling setSession/getUser again here can contend for the same
-    // auth lock in mobile WebViews and turn a successful login into a timeout.
+    // cloud-auth-js returns the broker tokens, but its generated wrapper only
+    // catches thrown exceptions from setSession(). Auth failures are normally
+    // returned in the `error` field instead, so a failed handoff was previously
+    // reported as success while no session was stored in the app. Persist and
+    // validate the broker response here, using the session returned by the same
+    // call so there is no competing getSession/getUser lock in mobile WebViews.
+    const { data: sessionData, error: sessionError } = await supabase.auth.setSession(
+      result.tokens,
+    );
+    if (sessionError) {
+      return { error: sessionError, redirected: false as const };
+    }
+    if (!sessionData.session?.user) {
+      return {
+        error: new Error("Google sign-in completed without a valid app session"),
+        redirected: false as const,
+      };
+    }
+
+    publishAuthenticatedSession(sessionData.session);
     return result;
   }
 

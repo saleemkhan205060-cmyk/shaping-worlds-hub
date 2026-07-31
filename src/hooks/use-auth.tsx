@@ -36,6 +36,14 @@ function publishAuthState(next: AuthState) {
   listeners.forEach((listener) => listener(authState));
 }
 
+export function publishAuthenticatedSession(session: Session) {
+  publishAuthState({
+    session,
+    user: session.user,
+    loading: false,
+  });
+}
+
 function isInvalidRefreshSession(error: unknown) {
   const message = String((error as { message?: unknown })?.message ?? error ?? "");
   const code = String((error as { code?: unknown })?.code ?? "");
