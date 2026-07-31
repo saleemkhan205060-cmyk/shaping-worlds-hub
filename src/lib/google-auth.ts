@@ -136,20 +136,9 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
 
     if (result.error || result.redirected) return result;
 
-    // cloud-auth-js normally persists these tokens through the generated
-    // wrapper. Verify the returned auth result explicitly because setSession
-    // reports failures in its return value rather than throwing them.
-    const tokens = result.tokens;
-    if (!tokens?.access_token || !tokens.refresh_token) {
-      return { error: new Error("Google sign-in did not return a session") };
-    }
-
-    const { error: sessionError } = await supabase.auth.setSession({
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-    });
-    if (sessionError) return { error: sessionError };
-
+    // The generated managed-auth wrapper has already persisted the returned
+    // tokens. Calling setSession/getUser again here can contend for the same
+    // auth lock in mobile WebViews and turn a successful login into a timeout.
     return result;
   }
 

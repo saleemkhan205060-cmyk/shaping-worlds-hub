@@ -182,9 +182,8 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      if (!(await waitForGoogleSession())) {
-        throw new Error("Google sign-in completed without a valid session");
-      }
+      // A non-error managed OAuth result means its generated wrapper has
+      // already stored the session. The shared auth listener will publish it.
       navigate({ to: "/" });
     } catch (error) {
       console.error("Google sign-in error:", error);
