@@ -10,7 +10,7 @@ diff --git a/dist/index.cjs b/dist/index.cjs
  var IFRAME_FALLBACK_TIMEOUT_MS = 12e4;
  function startWebMessageListener(supportedOrigins) {
    let resolvePromise;
-@@ -206,10 +206,12 @@
+@@ -206,9 +206,11 @@
      let popupCheckInterval;
      const popupClosedPromise = new Promise((_, reject) => {
        popupCheckInterval = setInterval(() => {
@@ -35,7 +35,7 @@ diff --git a/dist/index.js b/dist/index.js
  var IFRAME_FALLBACK_TIMEOUT_MS = 12e4;
  function startWebMessageListener(supportedOrigins) {
    let resolvePromise;
-@@ -180,10 +180,12 @@
+@@ -180,9 +180,11 @@
      let popupCheckInterval;
      const popupClosedPromise = new Promise((_, reject) => {
        popupCheckInterval = setInterval(() => {
