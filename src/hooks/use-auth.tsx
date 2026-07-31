@@ -12,6 +12,23 @@ let authState: AuthState = { session: null, user: null, loading: true };
 const listeners = new Set<(state: AuthState) => void>();
 let authInitialized = false;
 let authRevision = 0;
+const AUTH_REQUEST_TIMEOUT_MS = 15_000;
+
+function withAuthTimeout<T>(operation: Promise<T>, message: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => reject(new Error(message)), AUTH_REQUEST_TIMEOUT_MS);
+    operation.then(
+      (result) => {
+        window.clearTimeout(timeoutId);
+        resolve(result);
+      },
+      (error) => {
+        window.clearTimeout(timeoutId);
+        reject(error);
+      },
+    );
+  });
+}
 
 function publishAuthState(next: AuthState) {
   authRevision += 1;
@@ -47,8 +64,7 @@ function ensureAuthInitialized() {
   });
 
   const initializationRevision = authRevision;
-  supabase.auth
-    .getSession()
+  withAuthTimeout(supabase.auth.getSession(), "Auth session initialization timed out")
     .then(async ({ data, error }) => {
       if (error) throw error;
 
@@ -57,7 +73,10 @@ function ensureAuthInitialized() {
       if (authRevision !== initializationRevision) return;
 
       if (data.session) {
-        const { data: identity, error: identityError } = await supabase.auth.getUser();
+        const { data: identity, error: identityError } = await withAuthTimeout(
+          supabase.auth.getUser(),
+          "Auth identity verification timed out",
+        );
         if (identityError) throw identityError;
         if (authRevision !== initializationRevision) return;
         publishAuthState({
@@ -113,11 +132,17 @@ export async function signOut() {
 }
 
 export async function confirmAuthenticatedUser() {
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  const { data: sessionData, error: sessionError } = await withAuthTimeout(
+    supabase.auth.getSession(),
+    "Auth session verification timed out",
+  );
   if (sessionError) throw sessionError;
   if (!sessionData.session) return null;
 
-  const { data: userData, error: userError } = await supabase.auth.getUser();
+  const { data: userData, error: userError } = await withAuthTimeout(
+    supabase.auth.getUser(),
+    "Auth identity verification timed out",
+  );
   if (userError) throw userError;
   if (!userData.user) return null;
 
