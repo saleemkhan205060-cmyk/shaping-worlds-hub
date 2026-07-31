@@ -55,12 +55,7 @@ function bootstrap() {
   );
 }
 
-// Register router for type safety
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: ReturnType<typeof createRouter<typeof routeTree, "never", true>>;
-  }
-}
+// Router type registration lives in src/router.tsx.
 
 // A blank screen during bootstrap is always a bug — report it instead of hiding it.
 const startupWatchdog = window.setTimeout(() => {
