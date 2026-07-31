@@ -84,7 +84,7 @@ function AuthPage() {
           <img
             src={vipLogoAsset.url}
             alt="VIP Life"
-            className="h-12 w-auto object-contain"
+            className="h-16 w-auto object-contain"
           />
           <div className="leading-tight">
             <div className="font-extrabold text-sm">VIP</div>
