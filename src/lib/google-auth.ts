@@ -95,12 +95,34 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     // Let the managed SDK own the browser flow. It builds the signed broker
     // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
     // and falls back to a full-page redirect when popups are unavailable.
-    return lovable.auth.signInWithOAuth("google", {
+    const result = await lovable.auth.signInWithOAuth("google", {
       // Preview, published, and custom-domain sessions must return to the
       // exact origin that opened the OAuth flow.
       redirect_uri: window.location.origin,
       extraParams: options.extraParams,
     });
+
+    if (result.error || result.redirected) return result;
+
+    // cloud-auth-js normally persists these tokens through the generated
+    // wrapper. Verify the returned auth result explicitly because setSession
+    // reports failures in its return value rather than throwing them.
+    const tokens = result.tokens;
+    if (!tokens?.access_token || !tokens.refresh_token) {
+      return { error: new Error("Google sign-in did not return a session") };
+    }
+
+    const { error: sessionError } = await supabase.auth.setSession({
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+    });
+    if (sessionError) return { error: sessionError };
+
+    const { data: identity, error: identityError } = await supabase.auth.getUser();
+    if (identityError) return { error: identityError };
+    if (!identity.user) return { error: new Error("Google user could not be verified") };
+
+    return result;
   }
 
   // cloud-auth-js treats a top-level Capacitor WebView as a normal browser and

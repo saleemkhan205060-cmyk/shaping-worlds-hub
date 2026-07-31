@@ -5,7 +5,6 @@ import { confirmAuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { restoreNativeGoogleSession, signInWithGoogle } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
-import { isNativeCapacitorApp } from "@/lib/native-share";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
@@ -20,14 +19,38 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
 
-  const runAndroidAuth = async <T,>(operation: Promise<T>): Promise<T> => {
-    if (!isNativeCapacitorApp()) return operation;
+  const runAuthRequest = async <T,>(operation: Promise<T>): Promise<T> => {
     return Promise.race([
       operation,
       new Promise<T>((_, reject) => {
-        window.setTimeout(() => reject(new Error("Android sign-in timed out")), 30_000);
+        window.setTimeout(() => reject(new Error("Authentication request timed out")), 30_000);
       }),
     ]);
+  };
+
+  const authErrorMessage = (error: unknown, action: "signin" | "signup" | "google") => {
+    const authError = error as { code?: string; message?: string; status?: number };
+    const message = String(authError?.message ?? "");
+    const code = String(authError?.code ?? "");
+
+    if (code === "weak_password" || /weak|easy to guess|pwned/i.test(message)) {
+      return "Please choose a stronger, unique password that you have not used before.";
+    }
+    if (code === "email_not_confirmed" || /email not confirmed/i.test(message)) {
+      return "Please confirm your email, then sign in.";
+    }
+    if (code === "user_already_exists" || /already registered|already exists/i.test(message)) {
+      return "An account with this email already exists. Please sign in.";
+    }
+    if (authError?.status === 429 || /rate limit|too many requests/i.test(message)) {
+      return "Too many attempts. Please wait a moment and try again.";
+    }
+    if (/timed out/i.test(message)) {
+      return "Authentication timed out. Check your connection and try again.";
+    }
+    if (action === "signin") return "Invalid email or password";
+    if (action === "google") return "Google sign-in failed. Please try again.";
+    return "Couldn't create your account. Please try again.";
   };
 
   const waitForGoogleSession = async () => {
@@ -86,7 +109,7 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { data, error } = await runAndroidAuth(
+        const { data, error } = await runAuthRequest(
           supabase.auth.signUp({
             email,
             password,
@@ -98,32 +121,30 @@ function AuthPage() {
         );
         if (error) throw error;
         if (data.session) {
-          if (!(await confirmAuthenticatedUser())) {
-            throw new Error("Account session was not created");
-          }
+          // signUp has already created and returned a server-issued session.
+          // The shared auth listener persists it; a second getUser request here
+          // can time out in Android WebView and incorrectly report failure.
           toast.success("Account created!");
           navigate({ to: "/" });
         } else {
           toast.success("Account created! Check your email to confirm.");
         }
       } else {
-        const { data, error } = await runAndroidAuth(
+        const { data, error } = await runAuthRequest(
           supabase.auth.signInWithPassword({ email, password }),
         );
         if (error) throw error;
-        if (!data.session || !(await confirmAuthenticatedUser())) {
+        if (!data.session) {
           throw new Error("Sign-in completed without a valid session");
         }
+        // The successful password response is the session source of truth and
+        // onAuthStateChange publishes it to the rest of the app.
         toast.success("Welcome back!");
         navigate({ to: "/" });
       }
     } catch (err: unknown) {
       console.error("Auth error:", err);
-      toast.error(
-        mode === "signin"
-          ? "Invalid email or password"
-          : "Couldn't create your account. Please try again.",
-      );
+      toast.error(authErrorMessage(err, mode));
     } finally {
       setBusy(false);
     }
@@ -136,21 +157,25 @@ function AuthPage() {
     }
     setBusy(true);
     try {
-      const result = await signInWithGoogle({
-        extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
-      });
+      const result = await runAuthRequest(
+        signInWithGoogle({
+          extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
+        }),
+      );
       if (result.error) {
+        const msg = String(result.error?.message ?? "");
+        const cancelled = /cancel|closed|popup|denied/i.test(msg);
+
         // The managed OAuth popup can report "cancelled" just before its
         // successful session handoff finishes. Confirm the actual auth state
-        // before treating that transient popup result as a failed sign-in.
-        if (await waitForGoogleSession()) {
+        // only for that known transient result. Real OAuth errors are shown
+        // immediately instead of looking like a 15-second hang.
+        if (cancelled && (await waitForGoogleSession())) {
           navigate({ to: "/" });
           return;
         }
-        const msg = String(result.error?.message ?? "");
-        const cancelled = /cancel|closed|popup|denied/i.test(msg);
         console.error("Google sign-in error:", result.error);
-        if (!cancelled) toast.error("Google sign-in failed. Please try again.");
+        if (!cancelled) toast.error(authErrorMessage(result.error, "google"));
         setBusy(false);
         return;
       }
@@ -161,7 +186,7 @@ function AuthPage() {
       navigate({ to: "/" });
     } catch (error) {
       console.error("Google sign-in error:", error);
-      toast.error("Google sign-in failed. Please try again.");
+      toast.error(authErrorMessage(error, "google"));
       setBusy(false);
     }
   };
