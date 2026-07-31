@@ -20,7 +20,7 @@ public class SafeBrowserPlugin extends Plugin {
     @PluginMethod
     public void open(PluginCall call) {
         String url = call.getString("url");
-        if (url == null || url.isBlank()) {
+        if (url == null || url.trim().isEmpty()) {
             call.reject("A URL is required");
             return;
         }
