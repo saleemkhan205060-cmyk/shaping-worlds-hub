@@ -27,7 +27,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="app.lovable.vip_life.twa" android:host="oauth-callback" />
+                <data android:scheme="lovable" android:host="oauth-callback" />
             </intent-filter>
 
         </activity>

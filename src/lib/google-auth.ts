@@ -14,7 +14,7 @@ type SafeBrowserPlugin = {
 };
 
 const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
-const NATIVE_REDIRECT_URI = "app.lovable.vip_life.twa://oauth-callback";
+const NATIVE_REDIRECT_URI = "lovable://oauth-callback";
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isNativeCapacitorApp()) {
