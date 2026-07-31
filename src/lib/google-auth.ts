@@ -13,7 +13,11 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
 
   if (!isNativeCapacitorApp()) {
     return lovable.auth.signInWithOAuth("google", {
-      redirect_uri: brokerOrigin,
+      // Preview, published, and custom-domain sessions must return to the
+      // exact origin that opened the OAuth popup. Sending preview users to a
+      // different published origin closes the popup before its web_message
+      // can deliver the session to this page.
+      redirect_uri: window.location.origin,
       extraParams: options.extraParams,
     });
   }
