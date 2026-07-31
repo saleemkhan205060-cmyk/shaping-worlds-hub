@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const Route = createFileRoute("/auth/native-callback")({
+export const Route = createFileRoute("/auth_/native-callback")({
   head: () => ({
     meta: [
       { title: "Completing sign-in — VIP Life" },
