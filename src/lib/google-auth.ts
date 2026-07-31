@@ -27,8 +27,33 @@ function isInstalledNativeRuntime() {
   return window.location.hostname === "localhost";
 }
 
+function shouldUseSameTabWebFlow() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
+}
+
+function startSameTabWebFlow(options: GoogleSignInOptions) {
+  const state = crypto.randomUUID();
+  const redirectUri = `${window.location.origin}/auth/google-callback`;
+  const params = new URLSearchParams({
+    provider: "google",
+    redirect_uri: redirectUri,
+    state,
+    ...options.extraParams,
+  });
+
+  window.sessionStorage.setItem("vip-google-oauth-state", state);
+  window.location.assign(`${window.location.origin}/~oauth/initiate?${params.toString()}`);
+  return { redirected: true as const, error: null };
+}
+
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
+    // Mobile preview/browser popups can complete in an isolated browser tab,
+    // leaving the initiating tab without the returned session. A same-tab
+    // redirect keeps the OAuth callback and session storage in one context.
+    if (shouldUseSameTabWebFlow()) return startSameTabWebFlow(options);
+
     return lovable.auth.signInWithOAuth("google", {
       // Preview, published, and custom-domain sessions must return to the
       // exact origin that opened the OAuth popup. Sending preview users to a
