@@ -22,7 +22,10 @@ function publishAuthState(next: AuthState) {
 function isInvalidRefreshSession(error: unknown) {
   const message = String((error as { message?: unknown })?.message ?? error ?? "");
   const code = String((error as { code?: unknown })?.code ?? "");
-  return code === "refresh_token_not_found" || /Invalid Refresh Token|Refresh Token Not Found/i.test(message);
+  return (
+    code === "refresh_token_not_found" ||
+    /Invalid Refresh Token|Refresh Token Not Found/i.test(message)
+  );
 }
 
 async function clearBrokenSession() {
@@ -37,12 +40,15 @@ function ensureAuthInitialized() {
   if (authInitialized) return;
   authInitialized = true;
 
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, s) => {
     publishAuthState({ session: s, user: s?.user ?? null, loading: false });
   });
 
   const initializationRevision = authRevision;
-  supabase.auth.getSession()
+  supabase.auth
+    .getSession()
     .then(async ({ data, error }) => {
       if (error) throw error;
 

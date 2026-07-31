@@ -50,7 +50,9 @@ function AuthPage() {
           resolve(false);
         }
       };
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
         if (session) void finish(true);
       });
       const timeoutId = window.setTimeout(() => void finish(false), 15_000);
@@ -84,17 +86,21 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { data, error } = await runAndroidAuth(supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${getOAuthRedirectOrigin()}/`,
-            data: { display_name: displayName || email.split("@")[0] },
-          },
-        }));
+        const { data, error } = await runAndroidAuth(
+          supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: `${getOAuthRedirectOrigin()}/`,
+              data: { display_name: displayName || email.split("@")[0] },
+            },
+          }),
+        );
         if (error) throw error;
         if (data.session) {
-          if (!await confirmAuthenticatedUser()) throw new Error("Account session was not created");
+          if (!(await confirmAuthenticatedUser())) {
+            throw new Error("Account session was not created");
+          }
           toast.success("Account created!");
           navigate({ to: "/" });
         } else {
@@ -105,15 +111,19 @@ function AuthPage() {
           supabase.auth.signInWithPassword({ email, password }),
         );
         if (error) throw error;
-        if (!data.session || !await confirmAuthenticatedUser()) {
+        if (!data.session || !(await confirmAuthenticatedUser())) {
           throw new Error("Sign-in completed without a valid session");
         }
         toast.success("Welcome back!");
         navigate({ to: "/" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Auth error:", err);
-      toast.error(mode === "signin" ? "Invalid email or password" : "Couldn't create your account. Please try again.");
+      toast.error(
+        mode === "signin"
+          ? "Invalid email or password"
+          : "Couldn't create your account. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -137,7 +147,7 @@ function AuthPage() {
           navigate({ to: "/" });
           return;
         }
-        const msg = String((result.error as any)?.message ?? "");
+        const msg = String(result.error?.message ?? "");
         const cancelled = /cancel|closed|popup|denied/i.test(msg);
         console.error("Google sign-in error:", result.error);
         if (!cancelled) toast.error("Google sign-in failed. Please try again.");
@@ -145,7 +155,7 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      if (!await waitForGoogleSession()) {
+      if (!(await waitForGoogleSession())) {
         throw new Error("Google sign-in completed without a valid session");
       }
       navigate({ to: "/" });
