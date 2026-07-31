@@ -27,7 +27,6 @@ import { Route as MarriageIndexRouteImport } from './routes/marriage.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
-import { Route as AuthNativeCallbackRouteImport } from './routes/auth_.native-callback'
 import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -135,11 +134,6 @@ const MarriageEditRoute = MarriageEditRouteImport.update({
   id: '/edit',
   path: '/edit',
   getParentRoute: () => MarriageRoute,
-} as any)
-const AuthNativeCallbackRoute = AuthNativeCallbackRouteImport.update({
-  id: '/auth_/native-callback',
-  path: '/auth/native-callback',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminVideosRoute = AdminVideosRouteImport.update({
   id: '/videos',
@@ -258,7 +252,6 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
-  '/auth/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -294,7 +287,6 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
-  '/auth/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
   '/admin': typeof AdminIndexRoute
@@ -333,7 +325,6 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
-  '/auth_/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -373,7 +364,6 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
-    | '/auth/native-callback'
     | '/marriage/edit'
     | '/u/$id'
     | '/admin/'
@@ -409,7 +399,6 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
-    | '/auth/native-callback'
     | '/marriage/edit'
     | '/u/$id'
     | '/admin'
@@ -447,7 +436,6 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
-    | '/auth_/native-callback'
     | '/marriage/edit'
     | '/u/$id'
     | '/admin/'
@@ -473,7 +461,6 @@ export interface RootRouteChildren {
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
   DotwellKnownAssetlinksDotjsonRoute: typeof DotwellKnownAssetlinksDotjsonRoute
-  AuthNativeCallbackRoute: typeof AuthNativeCallbackRoute
   UIdRoute: typeof UIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -607,13 +594,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/marriage/edit'
       preLoaderRoute: typeof MarriageEditRouteImport
       parentRoute: typeof MarriageRoute
-    }
-    '/auth_/native-callback': {
-      id: '/auth_/native-callback'
-      path: '/auth/native-callback'
-      fullPath: '/auth/native-callback'
-      preLoaderRoute: typeof AuthNativeCallbackRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/admin/videos': {
       id: '/admin/videos'
@@ -803,7 +783,6 @@ const rootRouteChildren: RootRouteChildren = {
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
   DotwellKnownAssetlinksDotjsonRoute: DotwellKnownAssetlinksDotjsonRoute,
-  AuthNativeCallbackRoute: AuthNativeCallbackRoute,
   UIdRoute: UIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
@@ -812,3 +791,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
