@@ -75,9 +75,9 @@ function AuthPage() {
     }
     setBusy(true);
     try {
-      const result = await runAndroidAuth(signInWithGoogle({
+      const result = await signInWithGoogle({
         extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
-      }));
+      });
       if (result.error) {
         const msg = String((result.error as any)?.message ?? "");
         const cancelled = /cancel|closed|popup|denied/i.test(msg);

@@ -23,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="lovable" android:host="oauth-callback" />
+            </intent-filter>
+
         </activity>
 
         <!-- FCM: default notification channel + icon/color so background pushes look right -->
