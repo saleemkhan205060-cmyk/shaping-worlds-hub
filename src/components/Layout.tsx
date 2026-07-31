@@ -21,7 +21,8 @@ import { toast } from "sonner";
 import { useI18n, LANGUAGES, type LangCode } from "@/lib/i18n";
 import { initNotificationSoundUnlock } from "@/lib/notification-sound";
 import { useGlobalPresence } from "@/lib/presence";
-import logoUrl from "@/assets/logo.png";
+import logoAsset from "@/assets/vip-logo-new.jpg.asset.json";
+const logoUrl = logoAsset.url;
 import chatIconUrl from "@/assets/chat-icon.png";
 import feedIconUrl from "@/assets/feed-icon.jpeg";
 
