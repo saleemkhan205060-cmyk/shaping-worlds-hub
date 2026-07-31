@@ -30,12 +30,23 @@ function AuthPage() {
   };
 
   const waitForGoogleSession = async () => {
-    for (let attempt = 0; attempt < 8; attempt += 1) {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) return true;
-      await new Promise<void>((resolve) => window.setTimeout(resolve, 250));
-    }
-    return false;
+    const existing = await supabase.auth.getSession();
+    if (existing.data.session) return true;
+
+    return new Promise<boolean>((resolve) => {
+      let settled = false;
+      const finish = (authenticated: boolean) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timeoutId);
+        subscription.unsubscribe();
+        resolve(authenticated);
+      };
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session) finish(true);
+      });
+      const timeoutId = window.setTimeout(() => finish(false), 10_000);
+    });
   };
 
   useEffect(() => {
