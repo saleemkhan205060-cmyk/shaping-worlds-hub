@@ -2,6 +2,7 @@ import { App } from "@capacitor/app";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
+import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
 import { PUBLISHED_ORIGIN } from "./oauth-origin";
 
@@ -56,14 +57,18 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   const refreshToken = values.get("refresh_token");
 
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) throw error;
+    if (!data.session) throw new Error("Google sign-in did not return a session");
+    publishAuthenticatedSession(data.session);
   } else if (accessToken && refreshToken) {
-    const { error } = await supabase.auth.setSession({
+    const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
       refresh_token: refreshToken,
     });
     if (error) throw error;
+    if (!data.session) throw new Error("Google sign-in did not return a session");
+    publishAuthenticatedSession(data.session);
   } else {
     throw new Error("Google sign-in did not return a session");
   }
@@ -155,6 +160,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
       };
     }
 
+    publishAuthenticatedSession(sessionData.session);
     return result;
   }
 
