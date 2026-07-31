@@ -148,12 +148,6 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
       void handleCallback(url);
     });
 
-    // Android can recreate the activity while the system browser is open. In
-    // that case appUrlOpen may fire before the WebView listener is restored,
-    // so also consume the launch URL after registering the listener.
-    const launch = await App.getLaunchUrl();
-    if (launch?.url) void handleCallback(launch.url);
-
     timeoutId = window.setTimeout(() => {
       finish({ error: new Error("Google sign-in timed out") });
     }, 120_000);
