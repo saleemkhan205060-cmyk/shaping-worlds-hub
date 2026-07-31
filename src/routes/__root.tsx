@@ -12,6 +12,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
 import { AutoTranslate } from "@/lib/auto-translate";
 import { AppMessageNotifications } from "@/components/AppMessageNotifications";
+import { NativeGoogleAuthBridge } from "@/components/NativeGoogleAuthBridge";
 
 import appCss from "../styles.css?url";
 
@@ -149,6 +150,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
         <AutoTranslate>
+          <NativeGoogleAuthBridge />
           <AppMessageNotifications />
           <Outlet />
           <Toaster position="top-center" richColors />

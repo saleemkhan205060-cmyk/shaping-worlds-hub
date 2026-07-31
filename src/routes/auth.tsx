@@ -7,8 +7,6 @@ import {
   useAuth,
 } from "@/hooks/use-auth";
 import {
-  listenForNativeGoogleSession,
-  restoreNativeGoogleSession,
   signInWithGoogle,
 } from "@/lib/google-auth";
 import { toast } from "sonner";
@@ -84,33 +82,6 @@ function AuthPage() {
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/" });
   }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    const stopListening = listenForNativeGoogleSession(
-      () => {
-        setBusy(false);
-        navigate({ to: "/" });
-      },
-      (error) => {
-        console.error("Google callback session restore failed:", error);
-        setBusy(false);
-        toast.error(authErrorMessage(error, "google"));
-      },
-    );
-
-    void restoreNativeGoogleSession()
-      .then((restored) => {
-        if (restored) {
-          setBusy(false);
-          navigate({ to: "/" });
-        }
-      })
-      .catch((error) => {
-        console.error("Google callback session restore failed:", error);
-        setBusy(false);
-      });
-    return stopListening;
-  }, [navigate]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
