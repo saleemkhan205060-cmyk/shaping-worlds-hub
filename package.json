@@ -119,5 +119,8 @@
     "tar": "^7.5.19",
     "seroval": "^1.5.6",
     "seroval-plugins": "^1.5.6"
+  },
+  "patchedDependencies": {
+    "@lovable.dev/cloud-auth-js@1.1.2": "patches/@lovable.dev%2Fcloud-auth-js@1.1.2.patch"
   }
 }
