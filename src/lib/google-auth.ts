@@ -1,5 +1,5 @@
 import { App } from "@capacitor/app";
-import { registerPlugin } from "@capacitor/core";
+import { Capacitor, registerPlugin } from "@capacitor/core";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { isNativeCapacitorApp } from "./native-share";
@@ -21,10 +21,9 @@ const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
 function isInstalledNativeRuntime() {
   if (!isNativeCapacitorApp() || typeof window === "undefined") return false;
 
-  // Lovable's mobile preview exposes a Capacitor bridge so native APIs can be
-  // previewed, but it still runs on an HTTPS project origin. Only packaged
-  // Android builds use Capacitor's local WebView origin.
-  return window.location.hostname === "localhost";
+  // The mobile preview exposes a Capacitor bridge but reports the web
+  // platform. Only the packaged Play Store app may use the native callback.
+  return Capacitor.getPlatform() === "android";
 }
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
