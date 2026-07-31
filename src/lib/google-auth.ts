@@ -115,7 +115,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     | { tokens?: undefined; error: Error; redirected?: false }
   >(async (resolve) => {
     let settled = false;
-    let timeoutId: ReturnType<typeof window.setTimeout> | undefined;
+    let timeoutId: number | undefined;
     let listener: Awaited<ReturnType<typeof App.addListener>> | undefined;
     const finish = (result: Parameters<typeof resolve>[0]) => {
       if (settled) return;
