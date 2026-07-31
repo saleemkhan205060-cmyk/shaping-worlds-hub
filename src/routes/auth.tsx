@@ -121,9 +121,9 @@ function AuthPage() {
         );
         if (error) throw error;
         if (data.session) {
-          if (!(await confirmAuthenticatedUser())) {
-            throw new Error("Account session was not created");
-          }
+          // signUp has already created and returned a server-issued session.
+          // The shared auth listener persists it; a second getUser request here
+          // can time out in Android WebView and incorrectly report failure.
           toast.success("Account created!");
           navigate({ to: "/" });
         } else {
@@ -134,9 +134,11 @@ function AuthPage() {
           supabase.auth.signInWithPassword({ email, password }),
         );
         if (error) throw error;
-        if (!data.session || !(await confirmAuthenticatedUser())) {
+        if (!data.session) {
           throw new Error("Sign-in completed without a valid session");
         }
+        // The successful password response is the session source of truth and
+        // onAuthStateChange publishes it to the rest of the app.
         toast.success("Welcome back!");
         navigate({ to: "/" });
       }
@@ -161,15 +163,17 @@ function AuthPage() {
         }),
       );
       if (result.error) {
+        const msg = String(result.error?.message ?? "");
+        const cancelled = /cancel|closed|popup|denied/i.test(msg);
+
         // The managed OAuth popup can report "cancelled" just before its
         // successful session handoff finishes. Confirm the actual auth state
-        // before treating that transient popup result as a failed sign-in.
-        if (await waitForGoogleSession()) {
+        // only for that known transient result. Real OAuth errors are shown
+        // immediately instead of looking like a 15-second hang.
+        if (cancelled && (await waitForGoogleSession())) {
           navigate({ to: "/" });
           return;
         }
-        const msg = String(result.error?.message ?? "");
-        const cancelled = /cancel|closed|popup|denied/i.test(msg);
         console.error("Google sign-in error:", result.error);
         if (!cancelled) toast.error(authErrorMessage(result.error, "google"));
         setBusy(false);
