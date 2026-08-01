@@ -7,6 +7,7 @@ import {
   useAuth,
 } from "@/hooks/use-auth";
 import {
+  describeGoogleAuthError,
   signInWithGoogle,
 } from "@/lib/google-auth";
 import { toast } from "sonner";
@@ -47,9 +48,8 @@ function AuthPage() {
     }
     if (action === "signin") return "Invalid email or password";
     if (action === "google") {
-      return message
-        ? `Google sign-in failed: ${message.slice(0, 140)}`
-        : "Google sign-in failed. Please try again.";
+      const detail = describeGoogleAuthError(error);
+      return detail ? `Google sign-in failed: ${detail}` : "Google sign-in failed. Please try again.";
     }
     return "Couldn't create your account. Please try again.";
   };
