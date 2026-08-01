@@ -22,8 +22,8 @@ android {
         applicationId "app.lovable.vip_life.twa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 21
-        versionName "1.0.17"
+        versionCode 22
+        versionName "1.0.18"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -54,6 +54,19 @@ repositories {
     flatDir{
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
     }
+}
+
+configurations.configureEach {
+    // No advertising in this app: keep ads/measurement SDKs (and their AD_ID
+    // permission) out of the merged manifest entirely.
+    exclude group: 'com.google.android.gms', module: 'play-services-ads'
+    exclude group: 'com.google.android.gms', module: 'play-services-ads-identifier'
+    exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement-api'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement-sdk'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement-sdk-api'
+    exclude group: 'com.google.firebase', module: 'firebase-analytics'
 }
 
 dependencies {
