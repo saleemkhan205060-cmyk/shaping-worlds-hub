@@ -46,7 +46,11 @@ function AuthPage() {
       return "Authentication timed out. Check your connection and try again.";
     }
     if (action === "signin") return "Invalid email or password";
-    if (action === "google") return "Google sign-in failed. Please try again.";
+    if (action === "google") {
+      return message
+        ? `Google sign-in failed: ${message.slice(0, 140)}`
+        : "Google sign-in failed. Please try again.";
+    }
     return "Couldn't create your account. Please try again.";
   };
 
