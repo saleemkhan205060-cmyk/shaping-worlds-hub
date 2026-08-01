@@ -52,23 +52,34 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x android/gradlew
 
+      - name: Verify release dependency tree
+        working-directory: android
+        run: |
+          ./gradlew :app:dependencies --configuration releaseRuntimeClasspath > release-runtime-dependencies.txt
+          if grep -qE 'com\.facebook\.android:facebook-(core|common|login)' release-runtime-dependencies.txt; then
+            echo "Facebook SDK is present in releaseRuntimeClasspath and may add advertising permissions"
+            grep 'com.facebook.android:facebook-' release-runtime-dependencies.txt
+            exit 1
+          fi
+
       - name: Build signed release AAB
         working-directory: android
         run: ./gradlew bundleRelease --stacktrace
 
       - name: Assert AAB contains no AD_ID permission
         run: |
-          MERGED=android/app/build/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml
-          [ -f "$MERGED" ] || MERGED=$(find android/app/build/intermediates -name AndroidManifest.xml -path '*merged_manifest*release*' | head -1)
+          MERGED=$(find android/app/build/intermediates -name AndroidManifest.xml \( -path '*merged_manifest*release*' -o -path '*merged_manifests*release*' \) | head -1)
+          [ -n "$MERGED" ] && [ -f "$MERGED" ] || { echo "Release merged manifest not found"; exit 1; }
           echo "Merged manifest: $MERGED"
-          if grep -q "com.google.android.gms.permission.AD_ID" "$MERGED"; then
-            echo "AD_ID permission present in merged manifest"; exit 1
+          if grep -qE 'com\.google\.android\.gms\.permission\.AD_ID|android\.permission\.ACCESS_ADSERVICES_AD_ID' "$MERGED"; then
+            echo "Advertising ID permission present in merged manifest"; exit 1
           fi
           AAB=$(ls android/app/build/outputs/bundle/release/*.aab | head -1)
-          if unzip -p "$AAB" base/manifest/AndroidManifest.xml | strings | grep -q "AD_ID"; then
-            echo "AD_ID permission present in AAB"; exit 1
+          [ -n "$AAB" ] && [ -f "$AAB" ] || { echo "Release AAB not found"; exit 1; }
+          if unzip -p "$AAB" base/manifest/AndroidManifest.xml | strings | grep -qE 'com\.google\.android\.gms\.permission\.AD_ID|android\.permission\.ACCESS_ADSERVICES_AD_ID'; then
+            echo "Advertising ID permission present in AAB"; exit 1
           fi
-          echo "Verified: no AD_ID permission in merged manifest or AAB"
+          echo "Verified: no Advertising ID permission in merged manifest or AAB"
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
