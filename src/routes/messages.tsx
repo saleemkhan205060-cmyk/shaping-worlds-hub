@@ -113,15 +113,7 @@ function Messages() {
       });
       if (to) ids.add(to);
       ids.delete(user.id);
-      if (ids.size) {
-        const { data: ps } = await supabase
-          .from("profiles")
-          .select("id, username, display_name, avatar_url")
-          .in("id", Array.from(ids));
-        const map: Record<string, Profile> = {};
-        (ps ?? []).forEach((p: any) => (map[p.id] = p));
-        setProfiles(map);
-      }
+      if (ids.size) ensureProfiles(Array.from(ids));
       setLoadingMsgs(false);
     })();
     return () => {
