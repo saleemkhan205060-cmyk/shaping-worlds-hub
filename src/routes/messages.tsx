@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import { playSoftChime } from "@/lib/notification-sound";
 import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2, Images, MapPin, FileText, User as UserIcon, MoreVertical } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -517,7 +518,7 @@ function Messages() {
                     <li key={p.id}>
                       <button
                         onClick={() => {
-                          setProfiles((map) => ({ ...map, [p.id]: p }));
+                          cacheProfile(p);
                           setActivePeer(p.id);
                           setSearchOpen(false);
                           setSearchQ("");
