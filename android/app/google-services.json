@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "393519087227-hi2qc9af26l75adriala9617hf41nc0p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.lovable.vip_life.twa",
+            "certificate_hash": "af7a76f66109058317628f787d36c0f49f54f0cb"
+          }
+        },
+        {
           "client_id": "393519087227-386njhjn53uprbj4evc7q758bhv5g6si.apps.googleusercontent.com",
           "client_type": 3
         }
