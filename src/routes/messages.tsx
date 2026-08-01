@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import { playSoftChime } from "@/lib/notification-sound";
 import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Camera, Mic, Trash2, Images, MapPin, FileText, User as UserIcon, MoreVertical } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -72,7 +73,7 @@ function Messages() {
   const { to } = Route.useSearch();
 
   const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const { profiles, cacheProfile, ensureProfiles } = useProfileDirectory<Profile>();
   const [activePeer, setActivePeer] = useState<string | null>(to ?? null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -113,21 +114,13 @@ function Messages() {
       });
       if (to) ids.add(to);
       ids.delete(user.id);
-      if (ids.size) {
-        const { data: ps } = await supabase
-          .from("profiles")
-          .select("id, username, display_name, avatar_url")
-          .in("id", Array.from(ids));
-        const map: Record<string, Profile> = {};
-        (ps ?? []).forEach((p: any) => (map[p.id] = p));
-        setProfiles(map);
-      }
+      if (ids.size) ensureProfiles(Array.from(ids));
       setLoadingMsgs(false);
     })();
     return () => {
       alive = false;
     };
-  }, [user, to]);
+  }, [user, to, ensureProfiles]);
 
   // realtime
   useEffect(() => {
@@ -138,14 +131,7 @@ function Messages() {
       if (m.recipient_id === user.id && m.sender_id !== user.id) playSoftChime(m.id);
       setMsgs((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
       const otherId = m.sender_id === user.id ? m.recipient_id : m.sender_id;
-      if (!profiles[otherId]) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("id, username, display_name, avatar_url")
-          .eq("id", otherId)
-          .maybeSingle();
-        if (data) setProfiles((p) => ({ ...p, [otherId]: data as Profile }));
-      }
+      ensureProfiles([otherId]);
     };
     const channel = supabase
       .channel(`messages-${user.id}`)
@@ -164,7 +150,7 @@ function Messages() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, profiles]);
+  }, [user, ensureProfiles]);
 
   // conversations list
   const conversations = useMemo(() => {
@@ -532,7 +518,7 @@ function Messages() {
                     <li key={p.id}>
                       <button
                         onClick={() => {
-                          setProfiles((map) => ({ ...map, [p.id]: p }));
+                          cacheProfile(p);
                           setActivePeer(p.id);
                           setSearchOpen(false);
                           setSearchQ("");

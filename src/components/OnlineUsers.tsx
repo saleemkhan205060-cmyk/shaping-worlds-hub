@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import {
   PRESENCE_STORAGE_KEY,
   setMyStatus as setMyStatusGlobal,
@@ -31,7 +32,7 @@ export function OnlineUsers() {
     return (localStorage.getItem(PRESENCE_STORAGE_KEY) as Status) || "online";
   });
   const statuses = usePresenceState();
-  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const { profiles, ensureProfiles } = useProfileDirectory<Profile>();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -50,25 +51,8 @@ export function OnlineUsers() {
   // Load profiles for currently online users
   const onlineIds = useMemo(() => Object.keys(statuses), [statuses]);
   useEffect(() => {
-    const missing = onlineIds.filter((id) => !profiles[id]);
-    if (missing.length === 0) return;
-    let cancelled = false;
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url")
-      .in("id", missing)
-      .then(({ data }) => {
-        if (cancelled || !data) return;
-        setProfiles((prev) => {
-          const next = { ...prev };
-          for (const p of data as Profile[]) next[p.id] = p;
-          return next;
-        });
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [onlineIds, profiles]);
+    ensureProfiles(onlineIds);
+  }, [onlineIds, ensureProfiles]);
 
   // Close menu on outside click
   useEffect(() => {

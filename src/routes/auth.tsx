@@ -7,6 +7,7 @@ import {
   useAuth,
 } from "@/hooks/use-auth";
 import {
+  describeGoogleAuthError,
   signInWithGoogle,
 } from "@/lib/google-auth";
 import { toast } from "sonner";
@@ -47,9 +48,8 @@ function AuthPage() {
     }
     if (action === "signin") return "Invalid email or password";
     if (action === "google") {
-      return message
-        ? `Google sign-in failed: ${message.slice(0, 140)}`
-        : "Google sign-in failed. Please try again.";
+      const detail = describeGoogleAuthError(error);
+      return detail ? `Google sign-in failed: ${detail}` : "Google sign-in failed. Please try again.";
     }
     return "Couldn't create your account. Please try again.";
   };
@@ -157,8 +157,16 @@ function AuthPage() {
           navigate({ to: "/" });
           return;
         }
-        console.error("Google sign-in error:", result.error);
-        if (!cancelled) toast.error(authErrorMessage(result.error, "google"));
+        console.error(
+          "Google sign-in error:",
+          describeGoogleAuthError(result.error),
+          (result.error as { stack?: string } | null)?.stack ?? "",
+          result.error,
+        );
+        // Show the real reason even for "cancelled"-looking results: on Android
+        // Credential Manager reports user-cancel and configuration failures
+        // with the same wording, so silence hides genuine setup errors.
+        toast.error(authErrorMessage(result.error, "google"));
         setBusy(false);
         return;
       }
@@ -167,7 +175,12 @@ function AuthPage() {
       // already stored the session. The shared auth listener will publish it.
       navigate({ to: "/" });
     } catch (error) {
-      console.error("Google sign-in error:", error);
+      console.error(
+        "Google sign-in error:",
+        describeGoogleAuthError(error),
+        (error as { stack?: string } | null)?.stack ?? "",
+        error,
+      );
       toast.error(authErrorMessage(error, "google"));
       setBusy(false);
     }

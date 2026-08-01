@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
+import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import {
   X,
   Heart,
@@ -102,7 +103,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
-  const [profiles, setProfiles] = useState<Record<string, UploaderProfile>>({});
+  const { profiles, ensureProfiles } = useProfileDirectory<UploaderProfile>();
 
   const playWithCurrentSoundPreference = useCallback((id: string, reset = false) => {
     const v = videoRefs.current[id];
@@ -175,25 +176,10 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     })();
   }, [items, user]);
 
-  // Load uploader profiles
+  // Load uploader profiles (deduplicated; missing rows can't cause a refetch loop)
   useEffect(() => {
-    const ids = Array.from(
-      new Set(items.map((i) => i.user_id).filter((x): x is string => !!x)),
-    ).filter((id) => !profiles[id]);
-    if (ids.length === 0) return;
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url")
-      .in("id", ids)
-      .then(({ data }) => {
-        if (!data) return;
-        setProfiles((prev) => {
-          const next = { ...prev };
-          for (const p of data as UploaderProfile[]) next[p.id] = p;
-          return next;
-        });
-      });
-  }, [items, profiles]);
+    ensureProfiles(items.map((i) => i.user_id));
+  }, [items, ensureProfiles]);
 
   // Observe which video is in view -> autoplay it, pause the rest
   useEffect(() => {
