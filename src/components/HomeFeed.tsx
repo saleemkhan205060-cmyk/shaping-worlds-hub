@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useContext } from "react";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
+import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import { Link } from "@tanstack/react-router";
 import {
   Image as ImageIcon,
@@ -118,7 +119,7 @@ export function HomeFeed() {
   const { user } = useAuth();
   const { query, setQuery } = useContext(SearchContext);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const { profiles, ensureProfiles } = useProfileDirectory<Profile>();
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<SearchTab>("all");
   const [marriage, setMarriage] = useState<MarriageProfile[]>([]);
@@ -191,25 +192,10 @@ export function HomeFeed() {
     return () => window.removeEventListener("home:refresh", handler);
   }, [loadPosts]);
 
-  // Load profiles
+  // Load profiles (deduplicated; never re-runs on its own results)
   useEffect(() => {
-    const ids = Array.from(new Set(posts.map((p) => p.user_id))).filter(
-      (id) => !profiles[id]
-    );
-    if (ids.length === 0) return;
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url")
-      .in("id", ids)
-      .then(({ data }) => {
-        if (!data) return;
-        setProfiles((prev) => {
-          const next = { ...prev };
-          for (const p of data as Profile[]) next[p.id] = p;
-          return next;
-        });
-      });
-  }, [posts, profiles]);
+    ensureProfiles(posts.map((p) => p.user_id));
+  }, [posts, ensureProfiles]);
 
   // Load like/comment counts whenever posts change
   useEffect(() => {
