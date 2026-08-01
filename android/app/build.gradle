@@ -56,6 +56,19 @@ repositories {
     }
 }
 
+configurations.configureEach {
+    // No advertising in this app: keep ads/measurement SDKs (and their AD_ID
+    // permission) out of the merged manifest entirely.
+    exclude group: 'com.google.android.gms', module: 'play-services-ads'
+    exclude group: 'com.google.android.gms', module: 'play-services-ads-identifier'
+    exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement-api'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement-sdk'
+    exclude group: 'com.google.android.gms', module: 'play-services-measurement-sdk-api'
+    exclude group: 'com.google.firebase', module: 'firebase-analytics'
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
