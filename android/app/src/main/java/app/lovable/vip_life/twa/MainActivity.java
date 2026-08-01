@@ -14,6 +14,10 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         registerPlugin(SafeBrowserPlugin.class);
+        registerPlugin(PushSupportPlugin.class);
+        // Initialize Firebase (when google-services.json is present) BEFORE any
+        // push code can reach FirebaseMessaging.getInstance().
+        PushSupportPlugin.ensureFirebase(this);
         super.onCreate(savedInstanceState);
         applyCleanFullscreen();
 

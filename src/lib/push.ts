@@ -14,7 +14,26 @@ export async function initNativePushNotifications(userId: string) {
   initialized = true;
 
   try {
+    const { registerPlugin } = await import("@capacitor/core");
+    // Firebase must be initialized natively (google-services.json present),
+    // otherwise PushNotifications.register() throws IllegalStateException and
+    // crashes the app.
+    try {
+      const PushSupport = registerPlugin<{ isAvailable(): Promise<{ available: boolean }> }>(
+        "PushSupport",
+      );
+      const { available } = await PushSupport.isAvailable();
+      if (!available) {
+        initialized = false;
+        return;
+      }
+    } catch {
+      initialized = false;
+      return;
+    }
+
     const { PushNotifications } = await import("@capacitor/push-notifications");
+
 
     // Ensure a "messages" channel exists with our custom sound (Android 8+)
     try {
