@@ -198,26 +198,23 @@ export function listenForNativeGoogleSession(
   };
 }
 
+async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
+  // Let the managed SDK own the browser flow. It builds the signed broker
+  // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
+  // and falls back to a full-page redirect when popups are unavailable.
+  return lovable.auth.signInWithOAuth("google", {
+    // Preview, published, and custom-domain sessions must return to the
+    // exact origin that opened the OAuth flow.
+    redirect_uri: window.location.origin,
+    extraParams: options.extraParams,
+  });
+}
+
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
-    // Let the managed SDK own the browser flow. It builds the signed broker
-    // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
-    // and falls back to a full-page redirect when popups are unavailable.
-    const result = await lovable.auth.signInWithOAuth("google", {
-      // Preview, published, and custom-domain sessions must return to the
-      // exact origin that opened the OAuth flow.
-      redirect_uri: window.location.origin,
-      extraParams: options.extraParams,
-    });
-
-    if (result.error || result.redirected) return result;
-
-    // The generated Lovable auth wrapper has already awaited setSession here.
-    // Writing the same tokens a second time races the auth-state listener in
-    // mobile WebViews and can leave the UI signed out even though OAuth itself
-    // succeeded. Let the single shared onAuthStateChange listener publish the
-    // session instead.
-    return result;
+    // The generated Lovable auth wrapper already awaited setSession, so the
+    // single shared onAuthStateChange listener publishes the session.
+    return signInWithBrowserGoogle(options);
   }
 
   try {
@@ -227,9 +224,19 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     // auth page waiting forever after account selection.
     return await signInWithNativeGoogle();
   } catch (error) {
-    return {
-      error: error instanceof Error ? error : new Error(String(error)),
-      redirected: false as const,
-    };
+    // Credential Manager can fail for reasons unrelated to the user (no Google
+    // account on device, Play Services mismatch, or the ID-token audience not
+    // being accepted yet). Fall back to the managed browser flow instead of
+    // dead-ending sign-in.
+    console.error("Native Google sign-in failed, falling back to browser:", error);
+    try {
+      return await signInWithBrowserGoogle(options);
+    } catch (fallbackError) {
+      return {
+        error: fallbackError instanceof Error ? fallbackError : new Error(String(fallbackError)),
+        redirected: false as const,
+      };
+    }
   }
 }
+
