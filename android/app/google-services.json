@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "393519087227",
+    "project_id": "shaping-world",
+    "storage_bucket": "shaping-world.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393519087227:android:68ffcacf33d43cadddacde",
+        "android_client_info": {
+          "package_name": "app.lovable.vip_life.twa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393519087227-386njhjn53uprbj4evc7q758bhv5g6si.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWjMCutyIxyb_tZTHH6rdIqv_gLWuHvd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393519087227-386njhjn53uprbj4evc7q758bhv5g6si.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
