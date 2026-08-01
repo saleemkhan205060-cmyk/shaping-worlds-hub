@@ -15,12 +15,18 @@ type SafeBrowserPlugin = {
 };
 
 const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
+// Google Credential Manager requires the Web OAuth client as the ID-token
+// audience. The Android OAuth client is selected automatically by Google from
+// this app's package name and Play signing SHA-1; it must not be passed here.
+const GOOGLE_WEB_CLIENT_ID =
+  "393519087227-386njhjn53uprbj4evc7q758bhv5g6si.apps.googleusercontent.com";
 // Use an allow-listed HTTPS App Link rather than a custom scheme. The managed
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
 const NATIVE_OAUTH_STATE_KEY = "vip-life-google-oauth-state";
 let nativeCallbackInFlight: Promise<boolean> | null = null;
 let completedNativeCallbackUrl: string | null = null;
+let nativeGoogleInitialization: Promise<void> | null = null;
 
 function isInstalledNativeRuntime() {
   if (!isNativeCapacitorApp() || typeof window === "undefined") return false;
@@ -36,6 +42,51 @@ function callbackValues(url: string) {
   const fragment = new URLSearchParams(callback.hash.replace(/^#/, ""));
   fragment.forEach((value, key) => values.set(key, value));
   return values;
+}
+
+async function sha256Hex(value: string) {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function signInWithNativeGoogle() {
+  const { SocialLogin } = await import("@capgo/capacitor-social-login");
+
+  nativeGoogleInitialization ??= SocialLogin.initialize({
+    google: {
+      webClientId: GOOGLE_WEB_CLIENT_ID,
+      mode: "online",
+    },
+  });
+  await nativeGoogleInitialization;
+
+  const rawNonce = crypto.randomUUID();
+  const nonceDigest = await sha256Hex(rawNonce);
+  const login = await SocialLogin.login({
+    provider: "google",
+    options: {
+      scopes: ["email", "profile"],
+      nonce: nonceDigest,
+      filterByAuthorizedAccounts: false,
+      autoSelectEnabled: false,
+    },
+  });
+
+  if (login.result.responseType !== "online" || !login.result.idToken) {
+    throw new Error("Google sign-in did not return an ID token");
+  }
+
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: "google",
+    token: login.result.idToken,
+    nonce: rawNonce,
+  });
+  if (error) throw error;
+  if (!data.session) throw new Error("Google sign-in did not create a session");
+
+  publishAuthenticatedSession(data.session);
+  return { error: null, redirected: false as const };
 }
 
 async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?: string) {
@@ -169,29 +220,12 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     return result;
   }
 
-  // cloud-auth-js treats a top-level Capacitor WebView as a normal browser and
-  // navigates the whole app away. Keep the WebView alive, complete OAuth in the
-  // system browser, and receive the session through an Android deep link.
-  const state = crypto.randomUUID();
-  localStorage.setItem(NATIVE_OAUTH_STATE_KEY, state);
-  const redirectUri = NATIVE_REDIRECT_URI;
-  const params = new URLSearchParams({
-    provider: "google",
-    redirect_uri: redirectUri,
-    state,
-    ...options.extraParams,
-  });
-
   try {
-    await SafeBrowser.open({
-      url: `${PUBLISHED_ORIGIN}/~oauth/initiate?${params.toString()}`,
-    });
-
-    // Opening the browser is the end of this request. The persistent
-    // appUrlOpen listener on the auth page exclusively owns callback parsing,
-    // PKCE/token restoration, and navigation. Waiting for that same auth event
-    // here left this promise pending behind the UI's 30-second request timeout.
-    return { error: null, redirected: true as const };
+    // Use Google's native Credential Manager in the installed Android app.
+    // This keeps the WebView alive and exchanges Google's ID token directly for
+    // an app session, avoiding the browser/App-Link handoff that could leave the
+    // auth page waiting forever after account selection.
+    return await signInWithNativeGoogle();
   } catch (error) {
     return {
       error: error instanceof Error ? error : new Error(String(error)),
