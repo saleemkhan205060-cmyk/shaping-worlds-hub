@@ -210,11 +210,66 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   });
 }
 
+/**
+ * Flattens whatever the native plugin / Supabase / the broker threw into a
+ * single readable string, keeping Google's own status codes (Credential
+ * Manager `errorCode`, `statusCode`, HTTP `status`) that are the only way to
+ * tell "no Google account on device" from "SHA-1 not registered".
+ */
+export function describeGoogleAuthError(error: unknown): string {
+  if (!error) return "Unknown error";
+  const e = error as Record<string, unknown> & { message?: string; name?: string };
+  const parts: string[] = [];
+  if (e.name && e.name !== "Error") parts.push(String(e.name));
+  const message =
+    typeof e.message === "string" && e.message ? e.message : typeof error === "string" ? error : "";
+  if (message) parts.push(message);
+  for (const key of ["code", "errorCode", "statusCode", "status", "error", "error_description"]) {
+    const value = e[key];
+    if (value !== undefined && value !== null && value !== "") parts.push(`${key}=${String(value)}`);
+  }
+  if (parts.length === 0) {
+    try {
+      parts.push(JSON.stringify(error));
+    } catch {
+      parts.push(String(error));
+    }
+  }
+  return parts.join(" | ");
+}
+
+function logGoogleAuthError(stage: string, error: unknown) {
+  const detail = describeGoogleAuthError(error);
+  const stack = (error as { stack?: string } | null)?.stack;
+  // Logged as separate lines so Android logcat / remote console keeps the
+  // full stack instead of collapsing the object into "[object Object]".
+  console.error(`[google-auth] ${stage} failed: ${detail}`);
+  if (stack) console.error(`[google-auth] ${stage} stack:\n${stack}`);
+  try {
+    console.error(`[google-auth] ${stage} raw:`, JSON.stringify(error, Object.getOwnPropertyNames(Object(error))));
+  } catch {
+    console.error(`[google-auth] ${stage} raw:`, error);
+  }
+}
+
+function toDetailedError(stage: string, error: unknown) {
+  const detailed = new Error(`${stage}: ${describeGoogleAuthError(error)}`);
+  const stack = (error as { stack?: string } | null)?.stack;
+  if (stack) detailed.stack = stack;
+  (detailed as Error & { cause?: unknown }).cause = error;
+  return detailed;
+}
+
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
     // The generated Lovable auth wrapper already awaited setSession, so the
     // single shared onAuthStateChange listener publishes the session.
-    return signInWithBrowserGoogle(options);
+    try {
+      return await signInWithBrowserGoogle(options);
+    } catch (error) {
+      logGoogleAuthError("browser sign-in", error);
+      return { error: toDetailedError("Browser Google sign-in", error), redirected: false as const };
+    }
   }
 
   try {
@@ -228,14 +283,15 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     // account on device, Play Services mismatch, or the ID-token audience not
     // being accepted yet). Fall back to the managed browser flow instead of
     // dead-ending sign-in.
-    console.error("Native Google sign-in failed, falling back to browser:", error);
+    logGoogleAuthError("native Credential Manager sign-in", error);
+    const nativeDetail = describeGoogleAuthError(error);
     try {
       return await signInWithBrowserGoogle(options);
     } catch (fallbackError) {
-      return {
-        error: fallbackError instanceof Error ? fallbackError : new Error(String(fallbackError)),
-        redirected: false as const,
-      };
+      logGoogleAuthError("browser fallback sign-in", fallbackError);
+      const detailed = toDetailedError("Google sign-in", fallbackError);
+      detailed.message = `${detailed.message} (native: ${nativeDetail})`;
+      return { error: detailed, redirected: false as const };
     }
   }
 }
