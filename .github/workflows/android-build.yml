@@ -56,6 +56,20 @@ jobs:
         working-directory: android
         run: ./gradlew bundleRelease --stacktrace
 
+      - name: Assert AAB contains no AD_ID permission
+        run: |
+          MERGED=android/app/build/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml
+          [ -f "$MERGED" ] || MERGED=$(find android/app/build/intermediates -name AndroidManifest.xml -path '*merged_manifest*release*' | head -1)
+          echo "Merged manifest: $MERGED"
+          if grep -q "com.google.android.gms.permission.AD_ID" "$MERGED"; then
+            echo "AD_ID permission present in merged manifest"; exit 1
+          fi
+          AAB=$(ls android/app/build/outputs/bundle/release/*.aab | head -1)
+          if unzip -p "$AAB" base/manifest/AndroidManifest.xml | strings | grep -q "AD_ID"; then
+            echo "AD_ID permission present in AAB"; exit 1
+          fi
+          echo "Verified: no AD_ID permission in merged manifest or AAB"
+
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
