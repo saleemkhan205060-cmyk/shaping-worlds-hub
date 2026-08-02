@@ -28,6 +28,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as MarriageEditRouteImport } from './routes/marriage.edit'
 import { Route as AuthNativeCallbackRouteImport } from './routes/auth_.native-callback'
+import { Route as AuthCallbackRouteImport } from './routes/auth_.callback'
 import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -139,6 +140,11 @@ const MarriageEditRoute = MarriageEditRouteImport.update({
 const AuthNativeCallbackRoute = AuthNativeCallbackRouteImport.update({
   id: '/auth_/native-callback',
   path: '/auth/native-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth_/callback',
+  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminVideosRoute = AdminVideosRouteImport.update({
@@ -258,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
@@ -294,6 +301,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
+  '/auth_/callback': typeof AuthCallbackRoute
   '/auth_/native-callback': typeof AuthNativeCallbackRoute
   '/marriage/edit': typeof MarriageEditRoute
   '/u/$id': typeof UIdRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
+    | '/auth/callback'
     | '/auth/native-callback'
     | '/marriage/edit'
     | '/u/$id'
@@ -409,6 +419,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
+    | '/auth/callback'
     | '/auth/native-callback'
     | '/marriage/edit'
     | '/u/$id'
@@ -447,6 +458,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/videos'
+    | '/auth_/callback'
     | '/auth_/native-callback'
     | '/marriage/edit'
     | '/u/$id'
@@ -473,6 +485,7 @@ export interface RootRouteChildren {
   UploadRoute: typeof UploadRoute
   VideosRoute: typeof VideosRoute
   DotwellKnownAssetlinksDotjsonRoute: typeof DotwellKnownAssetlinksDotjsonRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   AuthNativeCallbackRoute: typeof AuthNativeCallbackRoute
   UIdRoute: typeof UIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -613,6 +626,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/native-callback'
       fullPath: '/auth/native-callback'
       preLoaderRoute: typeof AuthNativeCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth_/callback': {
+      id: '/auth_/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/videos': {
@@ -803,6 +823,7 @@ const rootRouteChildren: RootRouteChildren = {
   UploadRoute: UploadRoute,
   VideosRoute: VideosRoute,
   DotwellKnownAssetlinksDotjsonRoute: DotwellKnownAssetlinksDotjsonRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   AuthNativeCallbackRoute: AuthNativeCallbackRoute,
   UIdRoute: UIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

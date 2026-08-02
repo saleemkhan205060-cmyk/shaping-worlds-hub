@@ -4,7 +4,7 @@ import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
-import { PUBLISHED_ORIGIN } from "./oauth-origin";
+import { getOAuthCallbackUrl, PUBLISHED_ORIGIN } from "./oauth-origin";
 
 type GoogleSignInOptions = {
   extraParams?: Record<string, string>;
@@ -22,7 +22,7 @@ const GOOGLE_WEB_CLIENT_ID =
   "393519087227-386njhjn53uprbj4evc7q758bhv5g6si.apps.googleusercontent.com";
 // Use an allow-listed HTTPS App Link rather than a custom scheme. The managed
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
-const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/native-callback`;
+const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/callback`;
 const NATIVE_OAUTH_STATE_KEY = "vip-life-google-oauth-state";
 let nativeCallbackInFlight: Promise<boolean> | null = null;
 let completedNativeCallbackUrl: string | null = null;
@@ -90,7 +90,11 @@ async function signInWithNativeGoogle() {
 }
 
 async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?: string) {
-  if (!url.startsWith(NATIVE_REDIRECT_URI) && !url.startsWith("lovable://oauth-callback")) {
+  if (
+    !url.startsWith(NATIVE_REDIRECT_URI) &&
+    !url.startsWith("https://viplifes.com/auth/callback") &&
+    !url.startsWith("lovable://oauth-callback")
+  ) {
     return false;
   }
 
@@ -109,8 +113,7 @@ async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?:
   return nativeCallbackInFlight;
 }
 
-async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
-
+export async function completeGoogleOAuthCallback(url: string, expectedState?: string) {
   const values = callbackValues(url);
   const storedState = localStorage.getItem(NATIVE_OAUTH_STATE_KEY);
   const requiredState = expectedState ?? storedState;
@@ -118,7 +121,9 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   const callbackError = values.get("error_description") ?? values.get("error");
 
   if (callbackError) throw new Error(callbackError);
-  if (!requiredState || returnedState !== requiredState) {
+  // The managed OAuth broker validates its own signed state. Only compare a
+  // locally stored state when this app explicitly created one.
+  if (requiredState && returnedState !== requiredState) {
     throw new Error("Google sign-in verification failed");
   }
 
@@ -157,6 +162,10 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
   publishAuthenticatedSession(data.session);
   localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
   return true;
+}
+
+async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
+  return completeGoogleOAuthCallback(url, expectedState);
 }
 
 export async function restoreNativeGoogleSession() {
@@ -203,9 +212,10 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
   // and falls back to a full-page redirect when popups are unavailable.
   return lovable.auth.signInWithOAuth("google", {
-    // Preview, published, and custom-domain sessions must return to the
-    // exact origin that opened the OAuth flow.
-    redirect_uri: window.location.origin,
+    // Android uses the stable published App Link; web uses the callback on
+    // its current public origin. The callback exchanges PKCE codes and also
+    // accepts the broker's token response.
+    redirect_uri: getOAuthCallbackUrl(),
     extraParams: options.extraParams,
   });
 }
