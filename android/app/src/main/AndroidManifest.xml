@@ -42,6 +42,21 @@
                     android:pathPrefix="/auth/native-callback" />
             </intent-filter>
 
+            <!-- Stable OAuth callback used by both the web app and Android. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="vip-life.lovable.app"
+                    android:pathPrefix="/auth/callback" />
+                <data
+                    android:scheme="https"
+                    android:host="viplifes.com"
+                    android:pathPrefix="/auth/callback" />
+            </intent-filter>
+
         </activity>
 
         <!-- FCM: default notification channel + icon/color so background pushes look right -->

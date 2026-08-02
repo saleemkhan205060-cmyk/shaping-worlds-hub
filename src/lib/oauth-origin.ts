@@ -8,7 +8,11 @@ import { isNativeCapacitorApp } from "./native-share";
  * registered redirect target — the OAuth broker answers with a 404 page.
  * Native builds therefore use the published https origin instead.
  */
-export const PUBLISHED_ORIGIN = "https://viplifes.com";
+export const PUBLISHED_ORIGIN = "https://vip-life.lovable.app";
+
+export function getOAuthCallbackUrl(): string {
+  return `${getOAuthRedirectOrigin()}/auth/callback`;
+}
 
 export function getOAuthRedirectOrigin(): string {
   if (typeof window === "undefined") return PUBLISHED_ORIGIN;
