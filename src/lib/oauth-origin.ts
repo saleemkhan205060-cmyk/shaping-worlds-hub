@@ -6,9 +6,11 @@ import { isNativeCapacitorApp } from "./native-share";
  * In the browser/PWA this is simply the current origin. Inside the Capacitor
  * Android app the page is served from `https://localhost`, which is NOT a
  * registered redirect target — the OAuth broker answers with a 404 page.
- * Native builds therefore use the published https origin instead.
+ * Native builds therefore use the canonical custom-domain origin instead.
+ * Do not use the lovable.app alias here: it redirects to this domain, and
+ * that cross-origin hop can lose the browser's PKCE verifier before exchange.
  */
-export const PUBLISHED_ORIGIN = "https://vip-life.lovable.app";
+export const PUBLISHED_ORIGIN = "https://viplifes.com";
 
 export function getOAuthCallbackUrl(): string {
   return `${getOAuthRedirectOrigin()}/auth/callback`;

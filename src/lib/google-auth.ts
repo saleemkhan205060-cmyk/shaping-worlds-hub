@@ -92,7 +92,8 @@ async function signInWithNativeGoogle() {
 async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?: string) {
   if (
     !url.startsWith(NATIVE_REDIRECT_URI) &&
-    !url.startsWith("https://viplifes.com/auth/callback") &&
+    !url.startsWith("https://www.viplifes.com/auth/callback") &&
+    !url.startsWith("https://vip-life.lovable.app/auth/callback") &&
     !url.startsWith("lovable://oauth-callback")
   ) {
     return false;
