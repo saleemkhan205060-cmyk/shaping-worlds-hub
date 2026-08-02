@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { completeGoogleOAuthCallback, describeGoogleAuthError } from "@/lib/google-auth";
 
-export const Route = createFileRoute("/auth/callback")({
+export const Route = createFileRoute("/auth_/callback")({
   head: () => ({
     meta: [
       { title: "Completing sign-in — VIP Life" },
