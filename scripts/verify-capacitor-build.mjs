@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const publicDir = join("android", "app", "src", "main", "assets", "public");
@@ -42,10 +42,14 @@ for (const ref of assetRefs) {
   assertFile(join(publicDir, ref));
 }
 
-const mainBundle = assetRefs.find((ref) => ref.endsWith(".js"));
-if (!mainBundle) fail("could not identify the JavaScript entry bundle");
+const javascriptAssets = readdirSync(join(publicDir, "assets"))
+  .filter((name) => name.endsWith(".js"))
+  .map((name) => join(publicDir, "assets", name));
+if (javascriptAssets.length === 0) fail("could not identify any JavaScript bundles");
 
-const bundle = readFileSync(join(publicDir, mainBundle), "utf8");
+// Vite code-splits route dependencies, so auth code is not guaranteed to be
+// present in the HTML entry chunk. Verify the complete packaged application.
+const bundle = javascriptAssets.map((path) => readFileSync(path, "utf8")).join("\n");
 const duplicateRouteStub = "/__capacitor_server_route_stub__";
 if (bundle.includes(duplicateRouteStub)) {
   fail("server routes were collapsed into one Route instance; the router will fail at startup");

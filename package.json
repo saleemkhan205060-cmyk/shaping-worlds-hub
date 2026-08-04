@@ -15,10 +15,11 @@
     "format": "prettier --write .",
     "build:capacitor": "vite build --config capacitor/vite.config.ts",
     "verify:capacitor": "node scripts/verify-capacitor-build.mjs",
+    "prepare:capacitor": "npm run build:capacitor && npx cap sync android && npm run verify:capacitor",
     "cap:sync": "npx cap sync",
     "cap:android": "npx cap open android",
     "cap:build:android": "npx cap build android",
-    "android:bundle": "bun run build:capacitor && npx cap sync android && npm run verify:capacitor && cd android && ./gradlew bundleRelease"
+    "android:bundle": "npm run prepare:capacitor && cd android && ./gradlew bundleRelease"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.4",
