@@ -20,19 +20,13 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Capacitor web
-        run: npm run build:capacitor
-
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Verify Capacitor bundle
-        run: npm run verify:capacitor
+      - name: Build, sync, and verify Capacitor bundle
+        run: npm run prepare:capacitor
 
       - name: Decode signing keystore
         env:

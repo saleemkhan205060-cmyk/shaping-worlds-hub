@@ -11,6 +11,7 @@ import { isNativeCapacitorApp } from "./native-share";
  * that cross-origin hop can lose the browser's PKCE verifier before exchange.
  */
 export const PUBLISHED_ORIGIN = "https://viplifes.com";
+export const ANDROID_OAUTH_BROKER_URL = "https://viplifes.com/~oauth/initiate";
 
 export function getOAuthCallbackUrl(): string {
   return `${getOAuthRedirectOrigin()}/auth/callback`;
