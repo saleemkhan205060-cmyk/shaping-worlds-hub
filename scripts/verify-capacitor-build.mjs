@@ -50,6 +50,12 @@ const duplicateRouteStub = "/__capacitor_server_route_stub__";
 if (bundle.includes(duplicateRouteStub)) {
   fail("server routes were collapsed into one Route instance; the router will fail at startup");
 }
+if (!bundle.includes("https://viplifes.com/~oauth/initiate")) {
+  fail("the absolute Android OAuth broker URL is missing from the packaged bundle");
+}
+if (!bundle.includes("https://viplifes.com") || !bundle.includes("/auth/callback")) {
+  fail("the canonical Android OAuth callback is missing from the packaged bundle");
+}
 
 const envPath = ".env";
 assertFile(envPath);
