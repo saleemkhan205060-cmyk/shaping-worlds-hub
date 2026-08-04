@@ -1,5 +1,6 @@
 import { App } from "@capacitor/app";
 import { Capacitor, registerPlugin } from "@capacitor/core";
+import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
@@ -20,6 +21,13 @@ const SafeBrowser = registerPlugin<SafeBrowserPlugin>("SafeBrowser");
 // this app's package name and Play signing SHA-1; it must not be passed here.
 const GOOGLE_WEB_CLIENT_ID =
   "393519087227-386njhjn53uprbj4evc7q758bhv5g6si.apps.googleusercontent.com";
+// The managed SDK defaults to the relative path `/~oauth/initiate`. In a
+// packaged Capacitor app that resolves to https://localhost/~oauth/initiate,
+// which is the WebView origin and has no OAuth broker route. Use the public
+// app origin explicitly for the Android browser fallback.
+const nativeBrowserAuth = createLovableAuth({
+  oauthBrokerUrl: `${PUBLISHED_ORIGIN}/~oauth/initiate`,
+});
 // Use an allow-listed HTTPS App Link rather than a custom scheme. The managed
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/callback`;
@@ -212,13 +220,19 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   // Let the managed SDK own the browser flow. It builds the signed broker
   // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
   // and falls back to a full-page redirect when popups are unavailable.
-  return lovable.auth.signInWithOAuth("google", {
+  const auth = isInstalledNativeRuntime() ? nativeBrowserAuth : lovable.auth;
+  const result = await auth.signInWithOAuth("google", {
     // Android uses the stable published App Link; web uses the callback on
     // its current public origin. The callback exchanges PKCE codes and also
     // accepts the broker's token response.
     redirect_uri: getOAuthCallbackUrl(),
     extraParams: options.extraParams,
   });
+  if (!result.redirected && !result.error && result.tokens) {
+    const { error } = await supabase.auth.setSession(result.tokens);
+    if (error) return { error, redirected: false as const };
+  }
+  return result;
 }
 
 /**
