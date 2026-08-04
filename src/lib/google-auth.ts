@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
-import { getOAuthCallbackUrl, PUBLISHED_ORIGIN } from "./oauth-origin";
+import { ANDROID_OAUTH_BROKER_URL, getOAuthCallbackUrl, PUBLISHED_ORIGIN } from "./oauth-origin";
 
 type GoogleSignInOptions = {
   extraParams?: Record<string, string>;
@@ -26,7 +26,7 @@ const GOOGLE_WEB_CLIENT_ID =
 // which is the WebView origin and has no OAuth broker route. Use the public
 // app origin explicitly for the Android browser fallback.
 const nativeBrowserAuth = createLovableAuth({
-  oauthBrokerUrl: `${PUBLISHED_ORIGIN}/~oauth/initiate`,
+  oauthBrokerUrl: ANDROID_OAUTH_BROKER_URL,
 });
 // Use an allow-listed HTTPS App Link rather than a custom scheme. The managed
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
