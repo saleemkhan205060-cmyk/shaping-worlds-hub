@@ -13,6 +13,8 @@ import {
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
+import logoImg from "@/assets/logo.png";
+
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
