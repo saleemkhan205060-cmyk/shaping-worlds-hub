@@ -62,8 +62,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     (async () => {
       setLoadingFriends(true);
       try {
-        const { data: auth } = await supabase.auth.getUser();
-        const uid = auth.user?.id;
+        const uid = user?.id;
         if (!uid) {
           if (!cancelled) setFriends([]);
           return;
