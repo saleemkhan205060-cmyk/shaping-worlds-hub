@@ -89,7 +89,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     return () => {
       cancelled = true;
     };
-  }, [open]);
+  }, [open, user?.id]);
 
   if (!open) return null;
 
