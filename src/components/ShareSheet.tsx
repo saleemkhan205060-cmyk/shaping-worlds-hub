@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 
 type ShareSheetProps = {
   open: boolean;
