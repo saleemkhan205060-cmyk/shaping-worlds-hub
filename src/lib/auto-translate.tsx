@@ -206,7 +206,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
     if (succeeded) applyAll(lng);
   }, [applyAll, applyNode, translate, translationOff]);
 
-  const flushRef = React.useRef<() => Promise<void>>();
+  const flushRef = React.useRef<(() => Promise<void>) | null>(null);
   flushRef.current = flush;
 
   // Handle lang changes: load cache, retranslate everything
