@@ -1,14 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { listenForNativeGoogleSession, restoreNativeGoogleSession } from "@/lib/google-auth";
 
 /** Keeps the Android OAuth callback alive regardless of the current route. */
 export function NativeGoogleAuthBridge() {
+  const navigate = useNavigate();
+  const completedRef = useRef(false);
+
   useEffect(() => {
     const finishSignIn = () => {
-      // The OAuth browser returns to the existing Android activity, so the
-      // pending click handler on /auth never resumes. Leave that stale page
-      // after the callback has restored and verified the persisted session.
-      window.location.replace("/");
+      if (completedRef.current) return;
+      completedRef.current = true;
+      // App.getLaunchUrl() continues returning the OAuth callback for the
+      // lifetime of the Android activity. A hard location.replace() remounted
+      // this bridge, processed that same URL again, and created a reload loop.
+      // Replace through TanStack Router so the activity and auth singleton stay
+      // alive and the callback can only complete once per mounted app.
+      void navigate({ to: "/", replace: true });
     };
 
     const stopListening = listenForNativeGoogleSession(
@@ -25,7 +33,7 @@ export function NativeGoogleAuthBridge() {
       });
 
     return stopListening;
-  }, []);
+  }, [navigate]);
 
   return null;
 }

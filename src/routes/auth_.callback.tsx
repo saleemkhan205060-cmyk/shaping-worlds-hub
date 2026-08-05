@@ -18,12 +18,6 @@ export const Route = createFileRoute("/auth_/callback")({
   component: AuthCallbackPage,
 });
 
-function safeDestination() {
-  const saved = window.sessionStorage.getItem("vip-life-auth-return-to");
-  window.sessionStorage.removeItem("vip-life-auth-return-to");
-  return saved?.startsWith("/") && !saved.startsWith("//") ? saved : "/";
-}
-
 function AuthCallbackPage() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -34,8 +28,8 @@ function AuthCallbackPage() {
     void completeGoogleOAuthCallback(window.location.href)
       .then(() => {
         if (!active) return;
-        window.history.replaceState({}, document.title, "/auth/callback");
-        window.location.replace(safeDestination());
+        window.sessionStorage.removeItem("vip-life-auth-return-to");
+        void navigate({ to: "/", replace: true });
       })
       .catch((error) => {
         console.error(
@@ -50,7 +44,7 @@ function AuthCallbackPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6 text-center">

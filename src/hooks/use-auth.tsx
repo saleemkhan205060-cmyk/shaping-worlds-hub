@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,7 +9,8 @@ type AuthState = {
 };
 
 let authState: AuthState = { session: null, user: null, loading: true };
-const listeners = new Set<(state: AuthState) => void>();
+const serverAuthState: AuthState = { session: null, user: null, loading: true };
+const listeners = new Set<() => void>();
 let authInitialized = false;
 let authRevision = 0;
 const AUTH_REQUEST_TIMEOUT_MS = 15_000;
@@ -31,9 +32,16 @@ function withAuthTimeout<T>(operation: Promise<T>, message: string): Promise<T> 
 }
 
 function publishAuthState(next: AuthState) {
+  if (
+    authState.loading === next.loading &&
+    authState.user?.id === next.user?.id &&
+    authState.session?.access_token === next.session?.access_token
+  ) {
+    return;
+  }
   authRevision += 1;
   authState = next;
-  listeners.forEach((listener) => listener(authState));
+  listeners.forEach((listener) => listener());
 }
 
 export function publishAuthenticatedSession(session: Session) {
@@ -118,27 +126,18 @@ function ensureAuthInitialized() {
 }
 
 export function useAuth() {
-  // Keep the server and first client render identical. The live singleton may
-  // already contain a browser session after HMR or an OAuth callback.
-  const [state, setState] = useState<AuthState>({
-    session: null,
-    user: null,
-    loading: true,
-  });
-
   useEffect(() => {
     ensureAuthInitialized();
-    // Subscribe before copying the singleton snapshot. An OAuth callback can
-    // publish between these two operations; subscribing first guarantees that
-    // successful SIGNED_IN state cannot be missed by this component.
-    listeners.add(setState);
-    setState(authState);
-    return () => {
-      listeners.delete(setState);
-    };
   }, []);
 
-  return state;
+  return useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => authState,
+    () => serverAuthState,
+  );
 }
 
 export async function signOut() {
