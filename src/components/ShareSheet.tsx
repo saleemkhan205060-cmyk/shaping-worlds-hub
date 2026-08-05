@@ -35,6 +35,9 @@ type Friend = {
 };
 
 export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps) {
+  // Read the identity from the shared in-memory session instead of a network
+  // getUser() call, which blocks on the Supabase auth lock and can hang.
+  const { user } = useAuth();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [sentTo, setSentTo] = useState<Record<string, boolean>>({});
