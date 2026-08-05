@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   confirmAuthenticatedUser,
@@ -25,6 +25,13 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
+  const leavingAuthRef = useRef(false);
+
+  const leaveAuth = useCallback(() => {
+    if (leavingAuthRef.current) return;
+    leavingAuthRef.current = true;
+    void navigate({ to: "/", replace: true });
+  }, [navigate]);
 
   const authErrorMessage = (error: unknown, action: "signin" | "signup" | "google") => {
     const authError = error as { code?: string; message?: string; status?: number };
@@ -84,8 +91,8 @@ function AuthPage() {
   };
 
   useEffect(() => {
-    if (!authLoading && user) navigate({ to: "/" });
-  }, [user, authLoading, navigate]);
+    if (!authLoading && user) leaveAuth();
+  }, [user, authLoading, leaveAuth]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +118,7 @@ function AuthPage() {
           // can time out in Android WebView and incorrectly report failure.
           publishAuthenticatedSession(data.session);
           toast.success("Account created!");
-          navigate({ to: "/" });
+          leaveAuth();
         } else {
           toast.success("Account created! Check your email to confirm.");
         }
@@ -125,7 +132,7 @@ function AuthPage() {
         // onAuthStateChange publishes it to the rest of the app.
         publishAuthenticatedSession(data.session);
         toast.success("Welcome back!");
-        navigate({ to: "/" });
+        leaveAuth();
       }
     } catch (err: unknown) {
       console.error("Auth error:", err);
@@ -154,7 +161,7 @@ function AuthPage() {
         // only for that known transient result. Real OAuth errors are shown
         // immediately instead of looking like a 15-second hang.
         if (cancelled && (await waitForGoogleSession())) {
-          navigate({ to: "/" });
+          leaveAuth();
           return;
         }
         console.error(
@@ -173,7 +180,7 @@ function AuthPage() {
       if (result.redirected) return;
       // A non-error managed OAuth result means its generated wrapper has
       // already stored the session. The shared auth listener will publish it.
-      navigate({ to: "/" });
+      leaveAuth();
     } catch (error) {
       console.error(
         "Google sign-in error:",

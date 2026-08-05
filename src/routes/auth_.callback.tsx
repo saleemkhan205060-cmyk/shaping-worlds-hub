@@ -34,8 +34,8 @@ function AuthCallbackPage() {
     void completeGoogleOAuthCallback(window.location.href)
       .then(() => {
         if (!active) return;
-        window.history.replaceState({}, document.title, "/auth/callback");
-        window.location.replace(safeDestination());
+        const destination = safeDestination();
+        void navigate({ to: destination, replace: true });
       })
       .catch((error) => {
         console.error(
@@ -50,7 +50,7 @@ function AuthCallbackPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6 text-center">
