@@ -126,8 +126,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     if (sendingTo[friend.id] || sentTo[friend.id]) return;
     setSendingTo((s) => ({ ...s, [friend.id]: true }));
     try {
-      const { data: auth } = await supabase.auth.getUser();
-      const uid = auth.user?.id;
+      const uid = user?.id;
       if (!uid) {
         toast.error("Please sign in to share");
         return;
