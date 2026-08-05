@@ -68,6 +68,25 @@ function saveCache(lang: string, cache: Record<string, string>) {
   }
 }
 
+/**
+ * Inside the Android (Capacitor) WebView the page origin is `https://localhost`,
+ * so server-function requests never reach the hosted app. Every failed batch
+ * used to leave its text nodes "pending", so each tap re-queued a full-document
+ * walk plus a doomed network round-trip and the UI locked up. Auto-translation
+ * is therefore skipped on native shells.
+ */
+function isNativeShell() {
+  if (typeof window === "undefined") return false;
+  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+  try {
+    return Boolean(cap?.isNativePlatform?.());
+  } catch {
+    return false;
+  }
+}
+
+const MAX_CONSECUTIVE_FAILURES = 2;
+
 export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const { lang } = useI18n();
   const { user } = useAuth();
@@ -78,7 +97,21 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const cacheRef = React.useRef<Record<string, string>>({});
   const pendingRef = React.useRef<Set<Text>>(new Set());
   const inflightRef = React.useRef<Set<string>>(new Set());
+  // Keys the translator could not resolve. They must never be retried in a
+  // loop, otherwise every DOM mutation reschedules the same failing batch.
+  const failedRef = React.useRef<Set<string>>(new Set());
+  const failureCountRef = React.useRef(0);
+  const disabledRef = React.useRef(false);
   const scheduledRef = React.useRef(false);
+  const timerRef = React.useRef<number | null>(null);
+  const observerRef = React.useRef<MutationObserver | null>(null);
+  // Guards against the observer reacting to our own text writes.
+  const applyingRef = React.useRef(false);
+
+  const translationOff = React.useCallback(
+    () => disabledRef.current || !authedRef.current || langRef.current === "en",
+    [],
+  );
 
   // Apply translation to a single node based on current lang/cache.
   const applyNode = React.useCallback((node: Text, lng: string) => {
@@ -96,16 +129,39 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       const lead = original.match(/^\s*/)?.[0] ?? "";
       const trail = original.match(/\s*$/)?.[0] ?? "";
       const next = lead + translated + trail;
-      if (node.nodeValue !== next) node.nodeValue = next;
-    } else {
+      if (node.nodeValue !== next) {
+        applyingRef.current = true;
+        node.nodeValue = next;
+        applyingRef.current = false;
+      }
+    } else if (!failedRef.current.has(key) && !disabledRef.current) {
       pendingRef.current.add(node);
     }
+  }, []);
+
+  const applyAll = React.useCallback(
+    (lng: string) => {
+      if (!document.body) return;
+      const nodes: Text[] = [];
+      collectTextNodes(document.body, nodes);
+      for (const n of nodes) applyNode(n, lng);
+    },
+    [applyNode],
+  );
+
+  const schedule = React.useCallback(() => {
+    if (scheduledRef.current || disabledRef.current) return;
+    scheduledRef.current = true;
+    timerRef.current = window.setTimeout(() => void flushRef.current?.(), 400);
   }, []);
 
   const flush = React.useCallback(async () => {
     scheduledRef.current = false;
     const lng = langRef.current;
-    if (lng === "en" || !authedRef.current) return;
+    if (translationOff()) {
+      pendingRef.current.clear();
+      return;
+    }
     const nodes = Array.from(pendingRef.current);
     pendingRef.current.clear();
 
@@ -115,15 +171,16 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       if (!key) continue;
       if (cacheRef.current[key]) continue;
       if (inflightRef.current.has(key)) continue;
+      if (failedRef.current.has(key)) continue;
       uniqueKeys.add(key);
     }
     const toTranslate = Array.from(uniqueKeys).slice(0, 80);
     if (!toTranslate.length) {
-      // Re-apply for any nodes whose strings were already in flight/cache
       for (const n of nodes) applyNode(n, lng);
       return;
     }
     toTranslate.forEach((k) => inflightRef.current.add(k));
+    let succeeded = false;
     try {
       const result = await translate({ data: { texts: toTranslate, target: lng } });
       const translations = result?.translations ?? toTranslate;
@@ -131,30 +188,26 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
         cacheRef.current[k] = translations[i] ?? k;
       });
       saveCache(lng, cacheRef.current);
+      succeeded = true;
+      failureCountRef.current = 0;
     } catch {
-      // ignore; nodes stay as original
+      // Never retry these strings: a repeating failure would spin the UI.
+      toTranslate.forEach((k) => failedRef.current.add(k));
+      failureCountRef.current += 1;
+      if (failureCountRef.current >= MAX_CONSECUTIVE_FAILURES) {
+        disabledRef.current = true;
+        pendingRef.current.clear();
+        observerRef.current?.disconnect();
+      }
     } finally {
       toTranslate.forEach((k) => inflightRef.current.delete(k));
     }
-    // Re-apply to all visible matching nodes (not only those queued)
-    const all: Text[] = [];
-    if (document.body) collectTextNodes(document.body, all);
-    for (const n of all) applyNode(n, lng);
-  }, [applyNode, translate]);
+    // Only walk the whole document when new translations actually arrived.
+    if (succeeded) applyAll(lng);
+  }, [applyAll, applyNode, translate, translationOff]);
 
-  const schedule = React.useCallback(() => {
-    if (scheduledRef.current) return;
-    scheduledRef.current = true;
-    setTimeout(flush, 250);
-  }, [flush]);
-
-  const processAll = React.useCallback((lng: string) => {
-    if (!document.body) return;
-    const nodes: Text[] = [];
-    collectTextNodes(document.body, nodes);
-    for (const n of nodes) applyNode(n, lng);
-    if (lng !== "en" && pendingRef.current.size) schedule();
-  }, [applyNode, schedule]);
+  const flushRef = React.useRef<(() => Promise<void>) | null>(null);
+  flushRef.current = flush;
 
   // Handle lang changes: load cache, retranslate everything
   React.useEffect(() => {
@@ -162,23 +215,29 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
     langRef.current = lang;
     authedRef.current = !!user;
     cacheRef.current = loadCache(lang);
-    processAll(lang);
-  }, [lang, user, processAll]);
-
+    failedRef.current.clear();
+    failureCountRef.current = 0;
+    if (isNativeShell()) {
+      disabledRef.current = true;
+      return;
+    }
+    applyAll(lang);
+    if (lang !== "en" && pendingRef.current.size) schedule();
+  }, [lang, user, applyAll, schedule]);
 
   // Observe DOM mutations to translate newly added text
   React.useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isNativeShell()) return;
     const observer = new MutationObserver((mutations) => {
+      if (disabledRef.current || applyingRef.current) return;
       const lng = langRef.current;
       for (const m of mutations) {
         if (m.type === "characterData" && m.target.nodeType === 3) {
           const t = m.target as Text;
-          // Update stored original if user/app legitimately changed text in English
           if (lng === "en") {
             originals.set(t, t.nodeValue ?? "");
           } else {
-            // Only update original if value isn't the cached translation
             const prevOrig = originals.get(t);
             const currentTranslation = prevOrig
               ? cacheRef.current[prevOrig.trim()]
@@ -203,12 +262,18 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       }
       if (langRef.current !== "en" && pendingRef.current.size) schedule();
     });
+    observerRef.current = observer;
     observer.observe(document.body, {
       childList: true,
       subtree: true,
       characterData: true,
     });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      observerRef.current = null;
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      scheduledRef.current = false;
+    };
   }, [applyNode, schedule]);
 
   return <>{children}</>;
