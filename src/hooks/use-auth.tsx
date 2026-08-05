@@ -76,7 +76,15 @@ function ensureAuthInitialized() {
   const {
     data: { subscription },
   } = supabase.auth.onAuthStateChange((_event, s) => {
-    publishAuthState({ session: s, user: s?.user ?? null, loading: false });
+    // NEVER do work synchronously inside this callback. Supabase runs auth
+    // listeners while holding its internal auth lock; any React render started
+    // here can fire effects that call supabase.auth.getUser()/getSession() or
+    // PostgREST queries, which then wait on the very lock that is waiting on
+    // this callback. That deadlock is what left the post-login Home screen
+    // stuck on "Loading…" with an unresponsive UI and a dead Share button.
+    setTimeout(() => {
+      publishAuthState({ session: s, user: s?.user ?? null, loading: false });
+    }, 0);
   });
 
   const initializationRevision = authRevision;

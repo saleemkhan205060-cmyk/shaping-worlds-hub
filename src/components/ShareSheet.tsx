@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 
 type ShareSheetProps = {
   open: boolean;
@@ -34,6 +35,9 @@ type Friend = {
 };
 
 export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps) {
+  // Read the identity from the shared in-memory session instead of a network
+  // getUser() call, which blocks on the Supabase auth lock and can hang.
+  const { user } = useAuth();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [sentTo, setSentTo] = useState<Record<string, boolean>>({});
@@ -58,8 +62,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     (async () => {
       setLoadingFriends(true);
       try {
-        const { data: auth } = await supabase.auth.getUser();
-        const uid = auth.user?.id;
+        const uid = user?.id;
         if (!uid) {
           if (!cancelled) setFriends([]);
           return;
@@ -86,7 +89,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     return () => {
       cancelled = true;
     };
-  }, [open]);
+  }, [open, user?.id]);
 
   if (!open) return null;
 
@@ -123,8 +126,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     if (sendingTo[friend.id] || sentTo[friend.id]) return;
     setSendingTo((s) => ({ ...s, [friend.id]: true }));
     try {
-      const { data: auth } = await supabase.auth.getUser();
-      const uid = auth.user?.id;
+      const uid = user?.id;
       if (!uid) {
         toast.error("Please sign in to share");
         return;

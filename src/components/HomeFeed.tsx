@@ -170,15 +170,23 @@ export function HomeFeed() {
   // Load posts
   const loadPosts = useRef(() => {
     setLoading(true);
+    // Always clear the spinner, even if the request errors or is rejected —
+    // otherwise Home stays on "Loading…" forever.
     supabase
       .from("posts")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(100)
-      .then(({ data }) => {
-        setPosts(((data ?? []) as Post[]));
-        setLoading(false);
-      });
+      .then(
+        ({ data }) => {
+          setPosts(((data ?? []) as Post[]));
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Feed load failed:", error);
+          setLoading(false);
+        },
+      );
   }).current;
 
   useEffect(() => {

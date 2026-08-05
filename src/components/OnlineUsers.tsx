@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import {
   PRESENCE_STORAGE_KEY,
@@ -38,15 +39,12 @@ export function OnlineUsers() {
   const menuRef = useRef<HTMLDivElement>(null);
   const dotBtnRef = useRef<HTMLButtonElement | null>(null);
 
+  // The shared in-memory session is the identity source. A network getUser()
+  // here waits on the Supabase auth lock and could hang right after sign-in.
+  const { user: authUser } = useAuth();
   useEffect(() => {
-    let cancelled = false;
-    supabase.auth.getUser().then(({ data }) => {
-      if (!cancelled) setMe(data.user?.id ?? null);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    setMe(authUser?.id ?? null);
+  }, [authUser?.id]);
 
   // Load profiles for currently online users
   const onlineIds = useMemo(() => Object.keys(statuses), [statuses]);
