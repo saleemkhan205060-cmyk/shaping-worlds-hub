@@ -13,6 +13,8 @@ import {
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
+import logoImg from "@/assets/logo.png";
+
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -187,39 +189,35 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
-        <Link to="/" className="flex items-center gap-2 justify-center mb-6">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
-            <Globe className="h-5 w-5" />
-          </div>
-          <div className="leading-tight">
-            <div className="font-extrabold text-sm">SHAPING</div>
-            <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-              WORLD
-            </div>
+    <div className="min-h-screen bg-white flex items-start justify-center px-6 py-10">
+      <div className="w-full max-w-sm">
+        <Link to="/" className="flex flex-col items-center">
+          <img src={logoImg} alt="VIP Life logo" className="h-28 w-28 object-contain" />
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-4xl font-extrabold tracking-tight text-emerald-900">VIP</span>
+            <span className="text-3xl font-semibold tracking-wide text-emerald-500">LIFE</span>
           </div>
         </Link>
 
-        <h1 className="text-2xl font-extrabold text-center">
-          {mode === "signin" ? "Welcome back" : "Create your account"}
+        <h1 className="mt-6 text-center text-4xl font-extrabold tracking-tight text-slate-900">
+          {mode === "signin" ? "Welcome back" : "Create account"}
         </h1>
-        <p className="text-sm text-slate-500 text-center mt-1">
+        <p className="mt-3 text-center text-lg text-slate-400">
           {mode === "signin" ? "Sign in to VIP Life" : "Join the VIP Life community"}
         </p>
 
         {mode === "signup" && (
-          <div className="mt-5">
-            <label className="flex items-start gap-2 text-sm text-slate-800 select-none cursor-pointer bg-amber-50 border-2 border-amber-300 rounded-xl p-3 shadow-sm">
+          <div className="mt-6">
+            <label className="flex items-start gap-2 text-sm text-slate-800 select-none cursor-pointer bg-emerald-50 border border-emerald-200 rounded-2xl p-3">
               <input
                 type="checkbox"
                 checked={agreedTerms}
                 onChange={(e) => setAgreedTerms(e.target.checked)}
-                className="mt-0.5 h-5 w-5 rounded border-slate-400 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0"
+                className="mt-0.5 h-5 w-5 rounded border-slate-400 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0"
               />
               <span className="leading-snug">
                 I have read and agree to the{" "}
-                <Link to="/terms" target="_blank" className="text-indigo-600 font-bold underline">
+                <Link to="/terms" target="_blank" className="text-emerald-700 font-bold underline">
                   Terms &amp; Conditions
                 </Link>
               </span>
@@ -227,42 +225,40 @@ function AuthPage() {
           </div>
         )}
 
-        <div
-          className={`${mode === "signup" ? "mt-3" : "mt-6"} flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50`}
-        >
+        <div className="mt-8 flex items-center rounded-full border border-slate-200 shadow-sm overflow-hidden">
           <button
             type="button"
             onClick={() => onGoogle(false)}
             disabled={busy || (mode === "signup" && !agreedTerms)}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-4 py-4 text-lg font-medium text-slate-800 disabled:opacity-50"
           >
             <GoogleIcon /> Continue with Google
           </button>
-          <div className="w-px h-6 bg-slate-200" />
+          <div className="w-px h-7 bg-slate-200" />
           <button
             type="button"
             onClick={() => onGoogle(true)}
             disabled={busy || (mode === "signup" && !agreedTerms)}
             title="Choose a different Google account"
             aria-label="Choose a different Google account"
-            className="px-3 flex items-center justify-center disabled:opacity-50"
+            className="px-5 py-4 flex items-center justify-center disabled:opacity-50"
           >
-            <ChevronDown className="h-4 w-4 text-slate-600" />
+            <ChevronDown className="h-5 w-5 text-slate-500" />
           </button>
         </div>
 
-        <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
+        <div className="my-7 flex items-center gap-4 text-base text-slate-400">
           <div className="flex-1 h-px bg-slate-200" /> OR{" "}
           <div className="flex-1 h-px bg-slate-200" />
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-3">
+        <form onSubmit={onSubmit} className="space-y-4">
           {mode === "signup" && (
             <input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Display name"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full px-5 py-4 rounded-2xl border border-slate-200 text-lg placeholder:text-slate-400 focus:outline-none focus:border-emerald-500"
             />
           )}
           <input
@@ -271,7 +267,7 @@ function AuthPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full px-5 py-4 rounded-2xl border border-slate-200 text-lg placeholder:text-slate-400 focus:outline-none focus:border-emerald-500"
           />
           <input
             type="password"
@@ -280,24 +276,24 @@ function AuthPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password (min 6 chars)"
-            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full px-5 py-4 rounded-2xl border border-slate-200 text-lg placeholder:text-slate-400 focus:outline-none focus:border-emerald-500"
           />
           <button
             type="submit"
             disabled={busy || (mode === "signup" && !agreedTerms)}
-            className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white text-xl font-bold disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
           >
-            {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+            {busy && <Loader2 className="h-5 w-5 animate-spin" />}
             {mode === "signin" ? "Sign in" : "Create account"}
           </button>
         </form>
 
-        <p className="mt-5 text-center text-sm text-slate-500">
+        <p className="mt-6 text-center text-base text-slate-400">
           {mode === "signin" ? "New here? " : "Already have an account? "}
           <button
             type="button"
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="text-indigo-600 font-semibold hover:underline"
+            className="text-emerald-600 font-bold hover:underline"
           >
             {mode === "signin" ? "Create an account" : "Sign in"}
           </button>
@@ -307,9 +303,10 @@ function AuthPage() {
   );
 }
 
+
 function GoogleIcon() {
   return (
-    <svg className="h-4 w-4" viewBox="0 0 24 24">
+    <svg className="h-6 w-6" viewBox="0 0 24 24">
       <path
         fill="#4285F4"
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
