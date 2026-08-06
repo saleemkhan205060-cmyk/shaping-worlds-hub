@@ -89,14 +89,20 @@ function saveCache(lang: string, cache: Record<string, string>) {
  * walk plus a doomed network round-trip and the UI locked up. Auto-translation
  * is therefore skipped on native shells.
  */
-function isNativeShell() {
+function isMobileOrNativeRuntime() {
   if (typeof window === "undefined") return false;
   const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
   try {
-    return Boolean(cap?.isNativePlatform?.());
+    if (cap?.isNativePlatform?.()) return true;
   } catch {
-    return false;
+    // Fall through to capability-based mobile detection.
   }
+  // This translator walks and mutates every text node in the feed. On mobile
+  // Chrome, activating it after sign-in for a non-English device locale blocks
+  // the main thread while the full feed mounts. Use media capabilities rather
+  // than user-agent sniffing so Android Chrome and embedded WebViews follow the
+  // same safe path. Static interface translations from useI18n still work.
+  return window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 }
 
 const MAX_CONSECUTIVE_FAILURES = 2;
@@ -239,7 +245,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
     cacheRef.current = loadCache(lang);
     failedRef.current.clear();
     failureCountRef.current = 0;
-    if (isNativeShell()) {
+    if (isMobileOrNativeRuntime()) {
       disabledRef.current = true;
       return;
     }
@@ -254,7 +260,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
   const observeActive = !!user && lang !== "en";
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    if (isNativeShell()) return;
+    if (isMobileOrNativeRuntime()) return;
     if (!observeActive) return;
     const observer = new MutationObserver((mutations) => {
       if (disabledRef.current || applyingRef.current) return;
