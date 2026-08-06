@@ -233,8 +233,13 @@ function detectInitial(): LangCode {
   if (typeof window === "undefined") return "en";
   const saved = localStorage.getItem(STORAGE_KEY) as LangCode | null;
   if (saved && TRANSLATIONS[saved]) return saved;
-  const nav = navigator.language?.slice(0, 2).toLowerCase() as LangCode;
-  return TRANSLATIONS[nav] ? nav : "en";
+  // Keep the initial language deterministic until the user chooses one.
+  // Mobile Chrome commonly reports a non-English device locale; that used to
+  // activate the signed-in DOM auto-translator over the entire 100-post feed
+  // immediately after OAuth, causing a large synchronous walk and mutation
+  // burst that looked like a frozen page. Explicit language choices are still
+  // persisted and restored normally.
+  return "en";
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {

@@ -1076,7 +1076,11 @@ export function HomeFeed() {
                       playsInline
                       muted
                       loop
-                      preload="metadata"
+                      // Loading metadata for every video in a 100-post feed
+                      // starts dozens of range requests at once on mobile.
+                      // IntersectionObserver calls play() only for the visible
+                      // item, so off-screen videos must remain network-idle.
+                      preload="none"
                       className="w-full h-full object-cover cursor-pointer"
                       onClick={() => openFullscreen(p.id)}
                     />
