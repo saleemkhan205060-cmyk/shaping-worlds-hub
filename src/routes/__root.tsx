@@ -27,7 +27,18 @@ function useRegisterServiceWorker() {
 
       getRegistrations.call(navigator.serviceWorker)
         .then((registrations) => {
-          registrations.forEach((registration) => registration.unregister());
+          // Temporarily disable only VIP Life's old app-shell worker. Do not
+          // remove unrelated messaging workers that may share this origin.
+          registrations.forEach((registration) => {
+            const workerUrl =
+              registration.active?.scriptURL ??
+              registration.waiting?.scriptURL ??
+              registration.installing?.scriptURL ??
+              "";
+            if (new URL(workerUrl, window.location.origin).pathname === "/sw.js") {
+              void registration.unregister();
+            }
+          });
         })
         .catch(() => {
           // Service worker cleanup should never block the app from opening.
