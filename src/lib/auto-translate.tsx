@@ -247,10 +247,15 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
     if (lang !== "en" && pendingRef.current.size) schedule();
   }, [lang, user, applyAll, schedule]);
 
-  // Observe DOM mutations to translate newly added text
+  // Observe DOM mutations to translate newly added text.
+  // Only attach while translation is actually active: with English (or a
+  // signed-out visitor) the observer used to walk every subtree React added
+  // for no benefit, which is pure main-thread cost on every feed update.
+  const observeActive = !!user && lang !== "en";
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     if (isNativeShell()) return;
+    if (!observeActive) return;
     const observer = new MutationObserver((mutations) => {
       if (disabledRef.current || applyingRef.current) return;
       const lng = langRef.current;
