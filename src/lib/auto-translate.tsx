@@ -14,6 +14,20 @@ const SKIP_TAGS = new Set([
 // Original text per Text node so we can restore / re-translate.
 const originals = new WeakMap<Text, string>();
 
+/**
+ * React owns the text nodes this translator rewrites. Every re-render puts the
+ * English source back, the MutationObserver sees that, translates it again, and
+ * React overwrites it on the next render — an endless write/observe ping-pong
+ * that pegs the main thread. Because translation only runs for signed-in users,
+ * that thrash is exactly what made the app freeze right after sign-in.
+ *
+ * Nodes are therefore allowed a small number of rewrites; after that they are
+ * left alone permanently so the loop can never sustain itself.
+ */
+const writeCounts = new WeakMap<Text, number>();
+const volatileNodes = new WeakSet<Text>();
+const MAX_NODE_WRITES = 4;
+
 function shouldSkipNode(node: Node): boolean {
   let p: Node | null = node.parentNode;
   while (p) {
@@ -115,6 +129,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
 
   // Apply translation to a single node based on current lang/cache.
   const applyNode = React.useCallback((node: Text, lng: string) => {
+    if (volatileNodes.has(node)) return;
     const original = originals.get(node) ?? node.nodeValue ?? "";
     if (!originals.has(node)) originals.set(node, original);
     const key = original.trim();
@@ -130,6 +145,13 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       const trail = original.match(/\s*$/)?.[0] ?? "";
       const next = lead + translated + trail;
       if (node.nodeValue !== next) {
+        const writes = (writeCounts.get(node) ?? 0) + 1;
+        writeCounts.set(node, writes);
+        if (writes > MAX_NODE_WRITES) {
+          // React keeps rewriting this node; stop fighting it.
+          volatileNodes.add(node);
+          return;
+        }
         applyingRef.current = true;
         node.nodeValue = next;
         applyingRef.current = false;
@@ -225,10 +247,15 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
     if (lang !== "en" && pendingRef.current.size) schedule();
   }, [lang, user, applyAll, schedule]);
 
-  // Observe DOM mutations to translate newly added text
+  // Observe DOM mutations to translate newly added text.
+  // Only attach while translation is actually active: with English (or a
+  // signed-out visitor) the observer used to walk every subtree React added
+  // for no benefit, which is pure main-thread cost on every feed update.
+  const observeActive = !!user && lang !== "en";
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     if (isNativeShell()) return;
+    if (!observeActive) return;
     const observer = new MutationObserver((mutations) => {
       if (disabledRef.current || applyingRef.current) return;
       const lng = langRef.current;
@@ -274,7 +301,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
       scheduledRef.current = false;
     };
-  }, [applyNode, schedule]);
+  }, [applyNode, schedule, observeActive]);
 
   return <>{children}</>;
 }

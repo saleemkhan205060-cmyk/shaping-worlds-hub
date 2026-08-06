@@ -59,6 +59,7 @@ export function Layout({
   const navigate = useNavigate();
   const router = useRouter();
   const { user } = useAuth();
+  const userId = user?.id ?? null;
   const [unreadMsgs, setUnreadMsgs] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [homeReloading, setHomeReloading] = useState(false);
@@ -66,41 +67,41 @@ export function Layout({
   useEffect(() => setMounted(true), []);
 
   const refreshUnreadMsgs = useCallback(async () => {
-    if (!user) return setUnreadMsgs(0);
+    if (!userId) return setUnreadMsgs(0);
     const { count } = await supabase
       .from("messages")
       .select("id", { count: "exact", head: true })
-      .eq("recipient_id", user.id)
+      .eq("recipient_id", userId)
       .is("read_at", null);
     setUnreadMsgs(count ?? 0);
-  }, [user]);
+  }, [userId]);
 
   const refreshUnreadNotifs = useCallback(async () => {
-    if (!user) return setUnreadNotifs(0);
+    if (!userId) return setUnreadNotifs(0);
     const seen = localStorage.getItem(NOTIF_SEEN_KEY) ?? new Date(0).toISOString();
     // followers (new)
     const followsP = supabase
       .from("follows")
       .select("id", { count: "exact", head: true })
-      .eq("following_id", user.id)
+      .eq("following_id", userId)
       .gt("created_at", seen);
     // likes & comments on my posts
-    const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", user.id);
+    const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", userId);
     const ids = (myPosts ?? []).map((p) => p.id);
     let likes = 0, comments = 0;
     if (ids.length) {
       const [lk, cm] = await Promise.all([
         supabase.from("post_likes").select("id", { count: "exact", head: true })
-          .in("post_id", ids).neq("user_id", user.id).gt("created_at", seen),
+          .in("post_id", ids).neq("user_id", userId).gt("created_at", seen),
         supabase.from("post_comments").select("id", { count: "exact", head: true })
-          .in("post_id", ids).neq("user_id", user.id).gt("created_at", seen),
+          .in("post_id", ids).neq("user_id", userId).gt("created_at", seen),
       ]);
       likes = lk.count ?? 0;
       comments = cm.count ?? 0;
     }
     const { count: foll } = await followsP;
     setUnreadNotifs((foll ?? 0) + likes + comments);
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
     initNotificationSoundUnlock();
@@ -112,23 +113,23 @@ export function Layout({
   useEffect(() => {
     refreshUnreadMsgs();
     refreshUnreadNotifs();
-    if (!user) return;
+    if (!userId) return;
     const ch = supabase
       .channel("layout-unread")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        { event: "*", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
         refreshUnreadMsgs,
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages", filter: `sender_id=eq.${user.id}` },
+        { event: "*", schema: "public", table: "messages", filter: `sender_id=eq.${userId}` },
         refreshUnreadMsgs,
       )
 
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${user.id}` },
+        { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${userId}` },
         refreshUnreadNotifs,
       )
       .on(
@@ -145,7 +146,7 @@ export function Layout({
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [user, refreshUnreadMsgs, refreshUnreadNotifs]);
+  }, [userId, refreshUnreadMsgs, refreshUnreadNotifs]);
 
   // Reset notif badge when visiting the notifications page
   useEffect(() => {
