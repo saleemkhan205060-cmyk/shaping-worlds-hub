@@ -14,6 +14,20 @@ const SKIP_TAGS = new Set([
 // Original text per Text node so we can restore / re-translate.
 const originals = new WeakMap<Text, string>();
 
+/**
+ * React owns the text nodes this translator rewrites. Every re-render puts the
+ * English source back, the MutationObserver sees that, translates it again, and
+ * React overwrites it on the next render — an endless write/observe ping-pong
+ * that pegs the main thread. Because translation only runs for signed-in users,
+ * that thrash is exactly what made the app freeze right after sign-in.
+ *
+ * Nodes are therefore allowed a small number of rewrites; after that they are
+ * left alone permanently so the loop can never sustain itself.
+ */
+const writeCounts = new WeakMap<Text, number>();
+const volatileNodes = new WeakSet<Text>();
+const MAX_NODE_WRITES = 4;
+
 function shouldSkipNode(node: Node): boolean {
   let p: Node | null = node.parentNode;
   while (p) {
