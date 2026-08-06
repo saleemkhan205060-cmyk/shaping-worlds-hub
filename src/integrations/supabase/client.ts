@@ -18,9 +18,28 @@ function createSupabaseClient() {
     throw new Error(message);
   }
 
+  // Detect whether localStorage is actually usable (some browsers / WebViews
+  // disable or throw on access). If unavailable, fall back to undefined so
+  // the Supabase client doesn't attempt to read/write a broken storage and
+  // cause getSession()/auth operations to stall.
+  let authStorage: Storage | undefined = undefined;
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      // Test access
+      const testKey = '__supabase_storage_test__';
+      window.localStorage.setItem(testKey, '1');
+      window.localStorage.removeItem(testKey);
+      authStorage = window.localStorage;
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('[Supabase] localStorage not available — falling back to no persistent storage', e);
+    authStorage = undefined;
+  }
+
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     auth: {
-      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      storage: authStorage,
       persistSession: true,
       autoRefreshToken: true,
     }
@@ -37,4 +56,3 @@ export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>,
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-
