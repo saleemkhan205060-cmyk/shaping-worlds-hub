@@ -15,8 +15,13 @@ function ResetPasswordPage() {
 
   useEffect(() => {
     // Supabase puts recovery tokens in the URL hash and auto-creates a recovery session
+    // Defer React work inside the auth listener to avoid running synchronous
+    // state updates while Supabase holds its internal auth lock (this can
+    // deadlock other auth/getSession requests and hang the UI after sign-in).
     const sub = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+      setTimeout(() => {
+        if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+      }, 0);
     });
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setReady(true);
