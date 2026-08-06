@@ -32,7 +32,7 @@ function Index() {
 
 
       {/* Live feed + search + composer */}
-      <HomeFeed />
+      {/* <HomeFeed /> */}
 
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 md:p-14">
