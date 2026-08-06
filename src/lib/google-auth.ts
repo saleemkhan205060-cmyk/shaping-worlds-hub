@@ -1,6 +1,7 @@
 import { App } from "@capacitor/app";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
+import type { Session } from "@supabase/supabase-js";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
@@ -139,11 +140,13 @@ export async function completeGoogleOAuthCallback(url: string, expectedState?: s
   const code = values.get("code");
   const accessToken = values.get("access_token");
   const refreshToken = values.get("refresh_token");
+  let restoredSession: Session;
 
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) throw error;
     if (!data.session) throw new Error("Google sign-in did not return a session");
+    restoredSession = data.session;
   } else if (accessToken && refreshToken) {
     const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
@@ -151,24 +154,16 @@ export async function completeGoogleOAuthCallback(url: string, expectedState?: s
     });
     if (error) throw error;
     if (!data.session) throw new Error("Google sign-in did not return a session");
+    restoredSession = data.session;
   } else {
     throw new Error("Google sign-in did not return a session");
   }
 
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
-  if (!data.session) throw new Error("Google session could not be restored");
-
-  // Revalidate the restored JWT with Auth before telling the UI that login is
-  // complete. This also guarantees the shared auth listener receives a usable
-  // identity rather than a storage-only session.
-  const { data: identity, error: identityError } = await supabase.auth.getUser();
-  if (identityError) throw identityError;
-  if (!identity.user) throw new Error("Google user could not be verified");
-
-  // Publish only after both persisted-session recovery and server identity
-  // validation succeed, so the app never observes a half-restored login.
-  publishAuthenticatedSession(data.session);
+  // exchangeCodeForSession/setSession has already validated and persisted this
+  // server-issued session. Calling getSession() and getUser() again here can
+  // wait behind the auth-state listener's internal lock in Android WebView,
+  // leaving the callback and every loading-gated screen stuck indefinitely.
+  publishAuthenticatedSession(restoredSession);
   localStorage.removeItem(NATIVE_OAUTH_STATE_KEY);
   return true;
 }

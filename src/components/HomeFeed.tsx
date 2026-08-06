@@ -170,23 +170,26 @@ export function HomeFeed() {
   // Load posts
   const loadPosts = useRef(() => {
     setLoading(true);
-    // Always clear the spinner, even if the request errors or is rejected —
-    // otherwise Home stays on "Loading…" forever.
-    supabase
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(100)
-      .then(
-        ({ data }) => {
-          setPosts(((data ?? []) as Post[]));
-          setLoading(false);
-        },
-        (error) => {
-          console.error("Feed load failed:", error);
-          setLoading(false);
-        },
-      );
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
+
+    void (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100)
+          .abortSignal(controller.signal);
+        if (error) throw error;
+        setPosts((data ?? []) as Post[]);
+      } catch (error) {
+        console.error("Feed load failed:", error);
+      } finally {
+        window.clearTimeout(timeoutId);
+        setLoading(false);
+      }
+    })();
   }).current;
 
   useEffect(() => {
@@ -234,7 +237,7 @@ export function HomeFeed() {
       setCommentCounts(cc);
       setShareCounts(sc);
     })();
-  }, [posts, user]);
+  }, [posts, user?.id]);
 
   // Realtime posts
   useEffect(() => {
