@@ -66,27 +66,31 @@ function AuthPage() {
 
     return new Promise<boolean>((resolve) => {
       let settled = false;
-      const finish = async (authenticated: boolean) => {
+      const finish = (session: Parameters<typeof publishAuthenticatedSession>[0] | null) => {
         if (settled) return;
         settled = true;
         window.clearTimeout(timeoutId);
         subscription.unsubscribe();
-        if (!authenticated) {
+        if (!session) {
           resolve(false);
           return;
         }
-        try {
-          resolve(Boolean(await confirmAuthenticatedUser()));
-        } catch {
-          resolve(false);
-        }
+        // Never call getSession()/getUser() from inside onAuthStateChange.
+        // The auth client invokes listeners while its internal lock is held;
+        // re-entering auth here blocks that lock, which also leaves every feed
+        // request waiting forever after sign-in. The callback session is the
+        // already-validated result, so publish it after the listener returns.
+        window.setTimeout(() => {
+          publishAuthenticatedSession(session);
+          resolve(true);
+        }, 0);
       };
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (session) void finish(true);
+        if (session) finish(session);
       });
-      const timeoutId = window.setTimeout(() => void finish(false), 15_000);
+      const timeoutId = window.setTimeout(() => finish(null), 15_000);
     });
   };
 
