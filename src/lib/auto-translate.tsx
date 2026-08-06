@@ -301,7 +301,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
       scheduledRef.current = false;
     };
-  }, [applyNode, schedule]);
+  }, [applyNode, schedule, observeActive]);
 
   return <>{children}</>;
 }
