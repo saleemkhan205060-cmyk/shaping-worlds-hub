@@ -129,6 +129,7 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
 
   // Apply translation to a single node based on current lang/cache.
   const applyNode = React.useCallback((node: Text, lng: string) => {
+    if (volatileNodes.has(node)) return;
     const original = originals.get(node) ?? node.nodeValue ?? "";
     if (!originals.has(node)) originals.set(node, original);
     const key = original.trim();
@@ -144,6 +145,13 @@ export function AutoTranslate({ children }: { children: React.ReactNode }) {
       const trail = original.match(/\s*$/)?.[0] ?? "";
       const next = lead + translated + trail;
       if (node.nodeValue !== next) {
+        const writes = (writeCounts.get(node) ?? 0) + 1;
+        writeCounts.set(node, writes);
+        if (writes > MAX_NODE_WRITES) {
+          // React keeps rewriting this node; stop fighting it.
+          volatileNodes.add(node);
+          return;
+        }
         applyingRef.current = true;
         node.nodeValue = next;
         applyingRef.current = false;
