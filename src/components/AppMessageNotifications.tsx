@@ -30,26 +30,27 @@ function previewText(content?: string | null) {
 
 export function AppMessageNotifications() {
   const { user } = useAuth();
+  const userId = user?.id ?? null;
 
   useEffect(() => {
     initNotificationSoundUnlock();
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
 
     initNotificationSoundUnlock();
     initBackgroundMessageNotifications();
-    void initNativePushNotifications(user.id);
+    void initNativePushNotifications(userId);
 
     const channel = supabase
-      .channel(`app-message-notifications-${user.id}`)
+      .channel(`app-message-notifications-${userId}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
         async (payload) => {
           const message = payload.new as MessagePayload;
-          if (message.sender_id === user.id) return;
+          if (message.sender_id === userId) return;
 
 
           playSoftChime(message.id);
@@ -81,7 +82,7 @@ export function AppMessageNotifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [userId]);
 
   return null;
 }
