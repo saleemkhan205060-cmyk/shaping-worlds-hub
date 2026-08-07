@@ -215,12 +215,15 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   // Let the managed SDK own the browser flow. It builds the signed broker
   // request (a hand-built /~oauth/initiate URL is rejected with a Google 403)
   // and falls back to a full-page redirect when popups are unavailable.
-  const auth = isInstalledNativeRuntime() ? nativeBrowserAuth : lovable.auth;
+  const native = isInstalledNativeRuntime();
+  const auth = native ? nativeBrowserAuth : lovable.auth;
   const result = await auth.signInWithOAuth("google", {
-    // Android uses the stable published App Link; web uses the callback on
-    // its current public origin. The callback exchanges PKCE codes and also
-    // accepts the broker's token response.
-    redirect_uri: getOAuthCallbackUrl(),
+    // Android needs the stable published App Link so the external browser can
+    // hand the callback back to the app. On the web the redirect target must
+    // stay on the CURRENT origin: pointing it at another origin (or a route the
+    // SDK does not own) breaks the popup's web_message handoff and surfaces as
+    // "Authentication was cancelled" in the editor preview.
+    redirect_uri: native ? getOAuthCallbackUrl() : window.location.origin,
     extraParams: options.extraParams,
   });
   if (!result.redirected && !result.error && result.tokens) {
@@ -229,6 +232,7 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   }
   return result;
 }
+
 
 /**
  * Flattens whatever the native plugin / Supabase / the broker threw into a
