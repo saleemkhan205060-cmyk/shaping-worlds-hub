@@ -45,6 +45,7 @@ const navItems = [
 ] as const;
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
+const NOTIFICATION_POST_LIMIT = 200;
 
 export function Layout({
   children,
@@ -78,28 +79,40 @@ export function Layout({
   const refreshUnreadNotifs = useCallback(async () => {
     if (!userId) return setUnreadNotifs(0);
     const seen = localStorage.getItem(NOTIF_SEEN_KEY) ?? new Date(0).toISOString();
-    // followers (new)
-    const followsP = supabase
-      .from("follows")
-      .select("id", { count: "exact", head: true })
-      .eq("following_id", userId)
-      .gt("created_at", seen);
-    // likes & comments on my posts
-    const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", userId);
-    const ids = (myPosts ?? []).map((p) => p.id);
-    let likes = 0, comments = 0;
-    if (ids.length) {
-      const [lk, cm] = await Promise.all([
-        supabase.from("post_likes").select("id", { count: "exact", head: true })
-          .in("post_id", ids).neq("user_id", userId).gt("created_at", seen),
-        supabase.from("post_comments").select("id", { count: "exact", head: true })
-          .in("post_id", ids).neq("user_id", userId).gt("created_at", seen),
+    try {
+      // Keep this badge refresh bounded. The old query loaded every post the
+      // account had ever created and expanded all IDs into two request URLs
+      // immediately after login, which could stall mobile browsers.
+      const [followsResult, postsResult] = await Promise.all([
+        supabase
+          .from("follows")
+          .select("id", { count: "exact", head: true })
+          .eq("following_id", userId)
+          .gt("created_at", seen),
+        supabase
+          .from("posts")
+          .select("id")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(NOTIFICATION_POST_LIMIT),
       ]);
-      likes = lk.count ?? 0;
-      comments = cm.count ?? 0;
+      const ids = (postsResult.data ?? []).map((post) => post.id);
+      let likes = 0;
+      let comments = 0;
+      if (ids.length) {
+        const [likesResult, commentsResult] = await Promise.all([
+          supabase.from("post_likes").select("id", { count: "exact", head: true })
+            .in("post_id", ids).neq("user_id", userId).gt("created_at", seen),
+          supabase.from("post_comments").select("id", { count: "exact", head: true })
+            .in("post_id", ids).neq("user_id", userId).gt("created_at", seen),
+        ]);
+        likes = likesResult.count ?? 0;
+        comments = commentsResult.count ?? 0;
+      }
+      setUnreadNotifs((followsResult.count ?? 0) + likes + comments);
+    } catch (error) {
+      console.error("Notification badge refresh failed:", error);
     }
-    const { count: foll } = await followsP;
-    setUnreadNotifs((foll ?? 0) + likes + comments);
   }, [userId]);
 
   useEffect(() => {
@@ -110,9 +123,17 @@ export function Layout({
   useGlobalPresence(user?.id ?? null);
 
   useEffect(() => {
-    refreshUnreadMsgs();
-    refreshUnreadNotifs();
-    if (!userId) return;
+    if (!userId) {
+      setUnreadMsgs(0);
+      setUnreadNotifs(0);
+      return;
+    }
+    // Feed rendering and navigation are the critical post-login path. Start
+    // badge reads on the next task so they cannot hold up the first usable UI.
+    const startId = window.setTimeout(() => {
+      void refreshUnreadMsgs();
+      void refreshUnreadNotifs();
+    }, 250);
     const ch = supabase
       .channel("layout-unread")
       .on(
@@ -143,6 +164,7 @@ export function Layout({
       )
       .subscribe();
     return () => {
+      window.clearTimeout(startId);
       supabase.removeChannel(ch);
     };
   }, [userId, refreshUnreadMsgs, refreshUnreadNotifs]);

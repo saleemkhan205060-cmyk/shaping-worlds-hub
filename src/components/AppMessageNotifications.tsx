@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  initBackgroundMessageNotifications,
   initNotificationSoundUnlock,
   playSoftChime,
   showNewMessageNotification,
@@ -39,9 +38,11 @@ export function AppMessageNotifications() {
   useEffect(() => {
     if (!userId) return;
 
-    initNotificationSoundUnlock();
-    initBackgroundMessageNotifications();
-    void initNativePushNotifications(userId);
+    // Push setup can request OS services and permissions. Defer it until after
+    // the signed-in screen is interactive instead of competing with feed mount.
+    const pushTimer = window.setTimeout(() => {
+      void initNativePushNotifications(userId);
+    }, 1_000);
 
     const channel = supabase
       .channel(`app-message-notifications-${userId}`)
@@ -80,6 +81,7 @@ export function AppMessageNotifications() {
       .subscribe();
 
     return () => {
+      window.clearTimeout(pushTimer);
       supabase.removeChannel(channel);
     };
   }, [userId]);
