@@ -312,15 +312,36 @@ function toDetailedError(stage: string, error: unknown) {
   return detailed;
 }
 
+type GoogleSignInResult = { error: Error | null; redirected: boolean };
+
+/**
+ * Treats a "cancelled"-looking failure as success when the callback route or the
+ * native bridge has already persisted a session. Only that transient family is
+ * retried, so genuine configuration errors still surface immediately.
+ */
+async function resolveWithPersistedSession(
+  result: GoogleSignInResult,
+  timeoutMs: number,
+): Promise<GoogleSignInResult> {
+  if (!result.error || !looksCancelled(result.error)) return result;
+  const session = await waitForAuthSession(timeoutMs);
+  if (!session) return result;
+  publishAuthenticatedSession(session);
+  return { error: null, redirected: false };
+}
+
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
     // The generated Lovable auth wrapper already awaited setSession, so the
     // single shared onAuthStateChange listener publishes the session.
     try {
-      return await signInWithBrowserGoogle(options);
+      return await resolveWithPersistedSession(await signInWithBrowserGoogle(options), 15_000);
     } catch (error) {
       logGoogleAuthError("browser sign-in", error);
-      return { error: toDetailedError("Browser Google sign-in", error), redirected: false as const };
+      return await resolveWithPersistedSession(
+        { error: toDetailedError("Browser Google sign-in", error), redirected: false },
+        15_000,
+      );
     }
   }
 
@@ -338,13 +359,16 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     logGoogleAuthError("native Credential Manager sign-in", error);
     const nativeDetail = describeGoogleAuthError(error);
     try {
-      return await signInWithBrowserGoogle(options);
+      // The Android fallback finishes in an external browser and hands the
+      // session back through the App Link, so allow a longer window than web.
+      return await resolveWithPersistedSession(await signInWithBrowserGoogle(options), 45_000);
     } catch (fallbackError) {
       logGoogleAuthError("browser fallback sign-in", fallbackError);
       const detailed = toDetailedError("Google sign-in", fallbackError);
       detailed.message = `${detailed.message} (native: ${nativeDetail})`;
-      return { error: detailed, redirected: false as const };
+      return await resolveWithPersistedSession({ error: detailed, redirected: false }, 45_000);
     }
   }
+
 }
 
