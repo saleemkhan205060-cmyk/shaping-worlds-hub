@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { persistSession, restorePersistedSession } from "@/lib/session-persistence";
 
 type AuthState = {
   session: Session | null;
@@ -62,6 +63,7 @@ function isInvalidRefreshSession(error: unknown) {
 }
 
 async function clearBrokenSession() {
+  persistSession(null);
   try {
     await supabase.auth.signOut({ scope: "local" });
   } catch {
@@ -83,6 +85,7 @@ function ensureAuthInitialized() {
     // this callback. That deadlock is what left the post-login Home screen
     // stuck on "Loading…" with an unresponsive UI and a dead Share button.
     setTimeout(() => {
+      persistSession(s ?? null);
       publishAuthState({ session: s, user: s?.user ?? null, loading: false });
     }, 0);
   });
@@ -97,6 +100,7 @@ function ensureAuthInitialized() {
       if (authRevision !== initializationRevision) return;
 
       if (data.session) {
+        persistSession(data.session);
         publishAuthState({
           session: data.session,
           user: data.session.user,
@@ -105,10 +109,16 @@ function ensureAuthInitialized() {
         return;
       }
 
-      publishAuthState({
-        session: null,
-        user: null,
-        loading: false,
+      // Nothing in Supabase storage: the WebView may have dropped localStorage
+      // between app launches. Try the natively persisted session before
+      // sending the user back to the sign-in screen.
+      return restorePersistedSession().then((restored) => {
+        if (authRevision !== initializationRevision) return;
+        publishAuthState({
+          session: restored,
+          user: restored?.user ?? null,
+          loading: false,
+        });
       });
     })
     .catch(async (error) => {
@@ -149,6 +159,7 @@ export function useAuth() {
 }
 
 export async function signOut() {
+  persistSession(null);
   await supabase.auth.signOut();
   publishAuthState({ session: null, user: null, loading: false });
 }
