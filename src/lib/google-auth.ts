@@ -226,10 +226,12 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
     redirect_uri: native ? getOAuthCallbackUrl() : window.location.origin,
     extraParams: options.extraParams,
   });
-  if (!result.redirected && !result.error && result.tokens) {
-    const { error } = await supabase.auth.setSession(result.tokens);
-    if (error) return { error, redirected: false as const };
-  }
+  // `lovable.auth` persists the returned tokens before resolving. Setting the
+  // same session a second time here re-enters the auth lock and can delay the
+  // SIGNED_IN event until after the popup-close grace period, incorrectly
+  // surfacing a successful mobile sign-in as "Authentication was cancelled".
+  // `nativeBrowserAuth` is only used by the installed app's fallback, whose
+  // successful callback is restored by NativeGoogleAuthBridge.
   return result;
 }
 
