@@ -1119,13 +1119,33 @@ export function HomeFeed() {
                     <span className="text-[11px] font-semibold tabular-nums">{commentCounts[p.id] ?? 0}</span>
                   </button>
                   <button
-                    onClick={async () => {
+                    onClick={() => {
+                      const shareUrl = p.media_url || `${window.location.origin}/u/${p.user_id}`;
+                      const data = {
+                        title: p.caption ?? "VIP Life post",
+                        text: p.caption ?? "Check out this post on VIP Life",
+                        url: shareUrl,
+                        dialogTitle: "Share post",
+                      };
+                      const nativeShare = shareWithSystemShare(data);
+
+                      // Analytics must never delay or block the device share UI.
                       if (user) {
-                        await supabase.from("post_shares").insert({ post_id: p.id, user_id: user.id });
+                        void supabase.from("post_shares").insert({ post_id: p.id, user_id: user.id });
                         setShareCounts((c) => ({ ...c, [p.id]: (c[p.id] ?? 0) + 1 }));
                       }
-                      setSharePost(p);
-                      setShareOpen(true);
+
+                      if (!nativeShare) {
+                        setSharePost(p);
+                        setShareOpen(true);
+                        return;
+                      }
+                      void nativeShare.then((result) => {
+                        if (result === "failed" || result === "unavailable") {
+                          setSharePost(p);
+                          setShareOpen(true);
+                        }
+                      });
                     }}
                     className="flex flex-col items-center gap-0.5 hover:text-indigo-600"
                     aria-label="Share"

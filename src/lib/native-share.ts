@@ -49,18 +49,29 @@ export function shareWithWebShare(data: NativeShareData): Promise<NativeShareRes
   if (!canUseWebShare()) return null;
 
   const shareData = buildWebShareData(data);
-  const webNavigator = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
-  if (webNavigator.canShare && !webNavigator.canShare(shareData)) {
-    return Promise.resolve("unavailable");
-  }
+  return shareWithWebFallback(shareData);
+}
 
+async function shareWithWebFallback(shareData: ShareData): Promise<NativeShareResult> {
   try {
-    return navigator
-      .share(shareData)
-      .then(() => "shared" as const)
-      .catch((error) => (isShareCancel(error) ? "cancelled" : "failed"));
+    await navigator.share(shareData);
+    return "shared";
   } catch (error) {
-    return Promise.resolve(isShareCancel(error) ? "cancelled" : "failed");
+    if (isShareCancel(error)) return "cancelled";
+    // Some Android browsers advertise Web Share but reject a URL payload.
+    // Retry as plain text while this click still has user activation.
+    if (shareData.url) {
+      try {
+        await navigator.share({
+          title: shareData.title,
+          text: [shareData.text, shareData.url].filter(Boolean).join("\n"),
+        });
+        return "shared";
+      } catch (fallbackError) {
+        return isShareCancel(fallbackError) ? "cancelled" : "failed";
+      }
+    }
+    return "failed";
   }
 }
 
@@ -98,7 +109,7 @@ function getAbsoluteShareUrl(url?: string) {
       url,
       typeof window !== "undefined" ? window.location.href : undefined,
     );
-    return /^(https?:|file:)$/.test(absoluteUrl.protocol) ? absoluteUrl.href : undefined;
+    return /^https?:$/.test(absoluteUrl.protocol) ? absoluteUrl.href : undefined;
   } catch {
     return undefined;
   }

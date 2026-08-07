@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useServerFn } from "@tanstack/react-start";
 import { moderateUploadedMedia } from "@/lib/moderate.functions";
+import { ShareSheet } from "@/components/ShareSheet";
+import { shareWithSystemShare } from "@/lib/native-share";
 
 
 
@@ -70,6 +72,7 @@ function Profile() {
   const [nameText, setNameText] = useState("");
   const [bioText, setBioText] = useState("");
   const [savingBio, setSavingBio] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const BIO_CHAR_LIMIT = 80;
   const bioCharCount = bioText.length;
@@ -422,6 +425,23 @@ function Profile() {
   const joined = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" })
     : "Recently";
+  const profileUrl = `${window.location.origin}/u/${user.id}`;
+  const shareProfile = () => {
+    const data = {
+      title: `${displayName} on VIP Life`,
+      text: profile?.bio || `View ${displayName}'s profile on VIP Life`,
+      url: profileUrl,
+      dialogTitle: "Share profile",
+    };
+    const nativeShare = shareWithSystemShare(data);
+    if (!nativeShare) {
+      setShareOpen(true);
+      return;
+    }
+    void nativeShare.then((result) => {
+      if (result === "failed" || result === "unavailable") setShareOpen(true);
+    });
+  };
 
   return (
     <Layout>
@@ -432,7 +452,7 @@ function Profile() {
             <UserPlus className="h-7 w-7 text-slate-900" strokeWidth={2} />
           </button>
           <div className="flex items-center gap-4">
-          <button type="button" aria-label="Share" className="p-1">
+          <button type="button" aria-label="Share profile" className="p-1" onClick={shareProfile}>
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
             </button>
           </div>
@@ -997,6 +1017,13 @@ function Profile() {
           onClose={() => setFs(null)}
         />
       )}
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        title={`${displayName} on VIP Life`}
+        text={profile?.bio || `View ${displayName}'s profile on VIP Life`}
+        url={profileUrl}
+      />
     </Layout>
   );
 }
