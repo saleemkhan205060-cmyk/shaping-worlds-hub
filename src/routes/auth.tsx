@@ -62,15 +62,16 @@ function AuthPage() {
   };
 
   const waitForGoogleSession = async () => {
-    if (await confirmAuthenticatedUser()) return true;
-
     return new Promise<boolean>((resolve) => {
       let settled = false;
+      let checking = false;
+      let subscription: ReturnType<typeof supabase.auth.onAuthStateChange>["data"]["subscription"] | null = null;
       const finish = (session: Parameters<typeof publishAuthenticatedSession>[0] | null) => {
         if (settled) return;
         settled = true;
         window.clearTimeout(timeoutId);
-        subscription.unsubscribe();
+        window.clearInterval(pollId);
+        subscription?.unsubscribe();
         if (!session) {
           resolve(false);
           return;
@@ -85,12 +86,35 @@ function AuthPage() {
           resolve(true);
         }, 0);
       };
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      const authListener = supabase.auth.onAuthStateChange((_event, session) => {
         if (session) finish(session);
       });
-      const timeoutId = window.setTimeout(() => finish(null), 15_000);
+      subscription = authListener.data.subscription;
+
+      // Popup close and session persistence happen in separate tasks on mobile
+      // browsers. The SIGNED_IN event can land in the tiny gap before this
+      // listener is attached, so also poll persisted auth state until the handoff
+      // finishes. Polling happens outside onAuthStateChange and cannot re-enter
+      // the listener's internal auth lock.
+      const checkPersistedSession = async () => {
+        if (settled || checking) return;
+        checking = true;
+        try {
+          const user = await confirmAuthenticatedUser();
+          if (user) {
+            const { data } = await supabase.auth.getSession();
+            if (data.session) finish(data.session);
+          }
+        } catch {
+          // The popup may still be completing its token handoff; retry until the
+          // bounded timeout rather than turning a transient lock into an error.
+        } finally {
+          checking = false;
+        }
+      };
+      const pollId = window.setInterval(() => void checkPersistedSession(), 400);
+      const timeoutId = window.setTimeout(() => finish(null), 20_000);
+      void checkPersistedSession();
     });
   };
 
