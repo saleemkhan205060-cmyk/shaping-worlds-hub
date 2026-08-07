@@ -179,7 +179,10 @@ export function HomeFeed() {
           .from("posts")
           .select("*")
           .order("created_at", { ascending: false })
-          .limit(100)
+          // Keep the first mobile render bounded. Rendering 100 media cards at
+          // once after auth monopolizes the Android main thread and makes taps
+          // look frozen while the feed is mounting.
+          .limit(30)
           .abortSignal(controller.signal);
         if (error) throw error;
         setPosts((data ?? []) as Post[]);

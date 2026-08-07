@@ -1,4 +1,4 @@
-import { Link, useRouterState, useNavigate, useRouter } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
 import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search, Plus } from "lucide-react";
 import {
@@ -57,7 +57,6 @@ export function Layout({
 }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const router = useRouter();
   const { user } = useAuth();
   const userId = user?.id ?? null;
   const [unreadMsgs, setUnreadMsgs] = useState(0);
@@ -354,15 +353,13 @@ export function Layout({
                     try {
                       if (path !== "/") {
                         await navigate({ to: "/" });
+                      } else {
+                        window.dispatchEvent(new CustomEvent("home:refresh"));
                       }
                       scrollTop();
-                      window.dispatchEvent(new CustomEvent("home:refresh"));
-                      await router.invalidate();
-                      scrollTop();
                       requestAnimationFrame(scrollTop);
-                      setTimeout(scrollTop, 100);
                     } finally {
-                      setTimeout(() => setHomeReloading(false), 600);
+                      setTimeout(() => setHomeReloading(false), 400);
                     }
                   }
                 }}

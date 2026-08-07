@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
+import { useAuth } from "@/hooks/use-auth";
 
 import {
   Play,
@@ -22,17 +23,37 @@ import {
 } from "lucide-react";
 
 
-export const Route = createFileRoute("/")({ component: Index });
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "VIP Life — Community Feed" },
+      { name: "description", content: "Connect, share, and explore the VIP Life community feed." },
+      { property: "og:title", content: "VIP Life — Community Feed" },
+      { property: "og:description", content: "Connect, share, and explore the VIP Life community feed." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Index,
+});
 
 function Index() {
+  const { user } = useAuth();
+
+  if (user) {
+    return (
+      <Layout>
+        <OnlineUsers />
+        <HomeFeed />
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       {/* Online users */}
       <OnlineUsers />
 
-
-      {/* Live feed + search + composer */}
-      {/* <HomeFeed /> */}
 
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 md:p-14">
