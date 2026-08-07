@@ -65,7 +65,7 @@ export function MediaActions({
   };
 
   const handleShare = () => {
-    const url = mediaUrl || window.location.href;
+    const url = ownerId ? `${window.location.origin}/u/${ownerId}` : window.location.href;
     const data = {
       title: caption ?? "Post",
       text: caption ?? "Check this out",
@@ -179,7 +179,7 @@ export function MediaActions({
         onClose={() => setShareOpen(false)}
         title={caption ?? "Post"}
         text={caption ?? "Check this out"}
-        url={mediaUrl || window.location.href}
+        url={ownerId ? `${window.location.origin}/u/${ownerId}` : window.location.href}
       />
       <EditPostDialog
         postId={postId}

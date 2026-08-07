@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  confirmAuthenticatedUser,
   publishAuthenticatedSession,
   useAuth,
 } from "@/hooks/use-auth";
@@ -59,63 +58,6 @@ function AuthPage() {
       return detail ? `Google sign-in failed: ${detail}` : "Google sign-in failed. Please try again.";
     }
     return "Couldn't create your account. Please try again.";
-  };
-
-  const waitForGoogleSession = async () => {
-    return new Promise<boolean>((resolve) => {
-      let settled = false;
-      let checking = false;
-      let subscription: ReturnType<typeof supabase.auth.onAuthStateChange>["data"]["subscription"] | null = null;
-      const finish = (session: Parameters<typeof publishAuthenticatedSession>[0] | null) => {
-        if (settled) return;
-        settled = true;
-        window.clearTimeout(timeoutId);
-        window.clearInterval(pollId);
-        subscription?.unsubscribe();
-        if (!session) {
-          resolve(false);
-          return;
-        }
-        // Never call getSession()/getUser() from inside onAuthStateChange.
-        // The auth client invokes listeners while its internal lock is held;
-        // re-entering auth here blocks that lock, which also leaves every feed
-        // request waiting forever after sign-in. The callback session is the
-        // already-validated result, so publish it after the listener returns.
-        window.setTimeout(() => {
-          publishAuthenticatedSession(session);
-          resolve(true);
-        }, 0);
-      };
-      const authListener = supabase.auth.onAuthStateChange((_event, session) => {
-        if (session) finish(session);
-      });
-      subscription = authListener.data.subscription;
-
-      // Popup close and session persistence happen in separate tasks on mobile
-      // browsers. The SIGNED_IN event can land in the tiny gap before this
-      // listener is attached, so also poll persisted auth state until the handoff
-      // finishes. Polling happens outside onAuthStateChange and cannot re-enter
-      // the listener's internal auth lock.
-      const checkPersistedSession = async () => {
-        if (settled || checking) return;
-        checking = true;
-        try {
-          const user = await confirmAuthenticatedUser();
-          if (user) {
-            const { data } = await supabase.auth.getSession();
-            if (data.session) finish(data.session);
-          }
-        } catch {
-          // The popup may still be completing its token handoff; retry until the
-          // bounded timeout rather than turning a transient lock into an error.
-        } finally {
-          checking = false;
-        }
-      };
-      const pollId = window.setInterval(() => void checkPersistedSession(), 400);
-      const timeoutId = window.setTimeout(() => finish(null), 20_000);
-      void checkPersistedSession();
-    });
   };
 
   useEffect(() => {
@@ -181,17 +123,10 @@ function AuthPage() {
           extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
         });
       if (result.error) {
-        const msg = String(result.error?.message ?? "");
-        const cancelled = /cancel|closed|popup|denied/i.test(msg);
-
-        // The managed OAuth popup can report "cancelled" just before its
-        // successful session handoff finishes. Confirm the actual auth state
-        // only for that known transient result. Real OAuth errors are shown
-        // immediately instead of looking like a 15-second hang.
-        if (cancelled && (await waitForGoogleSession())) {
-          leaveAuth();
-          return;
-        }
+        // signInWithGoogle already performs the one bounded persisted-session
+        // check for transient popup-close results. Do not attach another auth
+        // listener and polling loop here: both the root callback bridge and the
+        // shared auth store already own session completion.
         console.error(
           "Google sign-in error:",
           describeGoogleAuthError(result.error),
