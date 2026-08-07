@@ -312,7 +312,7 @@ function toDetailedError(stage: string, error: unknown) {
   return detailed;
 }
 
-type GoogleSignInResult = { error: Error | null; redirected: boolean };
+type GoogleSignInResult = { error?: Error | null; redirected?: boolean };
 
 /**
  * Treats a "cancelled"-looking failure as success when the callback route or the
