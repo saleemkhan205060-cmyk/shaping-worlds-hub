@@ -259,55 +259,7 @@ function looksCancelled(error: unknown) {
   return /cancel|closed|popup|no tokens|timed out/i.test(describeGoogleAuthError(error));
 }
 
-function isInIframe() {
-  try {
-    return window.self !== window.top;
-  } catch {
-    return true;
-  }
-}
 
-function isMobileBrowser() {
-  if (typeof navigator === "undefined") return false;
-  const ua = navigator.userAgent;
-  return /iPhone|iPad|iPod|Android/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
-}
-
-/**
- * Mobile browsers inside the editor preview cannot complete the SDK's popup
- * `web_message` handoff: the OAuth tab is a separate top-level tab, so when the
- * user returns the popup is reported closed and the SDK surfaces
- * "Sign in was cancelled" even though Google succeeded.
- *
- * Fallback: run the plain redirect flow (the exact shape the SDK itself uses
- * outside an iframe) in a new tab that lands on our SAME-ORIGIN
- * `/auth/callback`. That tab persists the Supabase session in localStorage,
- * which this tab then picks up by polling `getSession()`.
- */
-async function signInWithRedirectTabGoogle(options: GoogleSignInOptions) {
-  const origin = window.location.origin;
-  const params = new URLSearchParams({
-    ...options.extraParams,
-    provider: "google",
-    redirect_uri: `${origin}/auth/callback`,
-    state: crypto.randomUUID(),
-  });
-  // Opened synchronously from the click handler so mobile popup blockers allow it.
-  const tab = window.open(`${origin}/~oauth/initiate?${params.toString()}`, "_blank");
-  if (!tab) return { error: new Error("Popup was blocked"), redirected: false as const };
-
-  const session = await waitForAuthSession(120_000);
-  try {
-    tab.close();
-  } catch {
-    // the OAuth tab may already be gone
-  }
-  if (!session) {
-    return { error: new Error("Google sign-in did not complete"), redirected: false as const };
-  }
-  publishAuthenticatedSession(session);
-  return { error: null, redirected: false as const };
-}
 
 
 
