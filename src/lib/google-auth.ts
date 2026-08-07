@@ -235,6 +235,32 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   return result;
 }
 
+/**
+ * The OAuth popup / App-Link handoff can report "cancelled" while the session is
+ * still being persisted by the callback route or the native bridge. Poll the
+ * already-persisted auth state (never re-entering the auth lock from inside a
+ * listener) before treating that result as a real failure.
+ */
+export async function waitForAuthSession(timeoutMs = 20_000): Promise<Session | null> {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) return data.session;
+    } catch {
+      // transient auth lock contention — retry until the deadline
+    }
+    if (Date.now() >= deadline) return null;
+    await new Promise((resolve) => setTimeout(resolve, 400));
+  }
+}
+
+function looksCancelled(error: unknown) {
+  return /cancel|closed|popup|no tokens|timed out/i.test(describeGoogleAuthError(error));
+}
+
+
+
 
 /**
  * Flattens whatever the native plugin / Supabase / the broker threw into a
