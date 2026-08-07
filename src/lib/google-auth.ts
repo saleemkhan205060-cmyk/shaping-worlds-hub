@@ -336,17 +336,10 @@ async function resolveWithPersistedSession(
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
-    // In the editor preview on a phone the popup handoff cannot survive the
-    // browser's tab switch, so use the same-origin redirect tab directly. It
-    // must be opened from the click gesture, before any await.
-    if (isInIframe() && isMobileBrowser()) {
-      try {
-        return await signInWithRedirectTabGoogle(options);
-      } catch (error) {
-        logGoogleAuthError("redirect-tab sign-in", error);
-        return { error: toDetailedError("Google sign-in", error), redirected: false };
-      }
-    }
+    // Sign-in must complete in place: the managed SDK's popup `web_message`
+    // handoff keeps the user on the current page/route. Never open a separate
+    // redirect tab or navigate the app away to finish OAuth.
+
     // The generated Lovable auth wrapper already awaited setSession, so the
     // single shared onAuthStateChange listener publishes the session.
     try {
