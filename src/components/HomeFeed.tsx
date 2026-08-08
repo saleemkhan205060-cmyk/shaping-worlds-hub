@@ -119,7 +119,7 @@ export function HomeFeed() {
   const { user } = useAuth();
   const { query, setQuery } = useContext(SearchContext);
   const [posts, setPosts] = useState<Post[]>([]);
-  const { profiles, ensureProfiles } = useProfileDirectory<Profile>();
+  const { profiles, ensureProfiles } = useProfileDirectory();
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<SearchTab>("all");
   const [marriage, setMarriage] = useState<MarriageProfile[]>([]);

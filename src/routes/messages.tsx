@@ -73,7 +73,7 @@ function Messages() {
   const { to } = Route.useSearch();
 
   const [msgs, setMsgs] = useState<Msg[]>([]);
-  const { profiles, cacheProfile, ensureProfiles } = useProfileDirectory<Profile>();
+  const { profiles, cacheProfile, ensureProfiles } = useProfileDirectory();
   const [activePeer, setActivePeer] = useState<string | null>(to ?? null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);

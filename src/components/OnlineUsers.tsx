@@ -33,7 +33,7 @@ export function OnlineUsers() {
     return (localStorage.getItem(PRESENCE_STORAGE_KEY) as Status) || "online";
   });
   const statuses = usePresenceState();
-  const { profiles, ensureProfiles } = useProfileDirectory<Profile>();
+  const { profiles, ensureProfiles } = useProfileDirectory();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);

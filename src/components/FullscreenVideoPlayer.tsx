@@ -103,7 +103,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [commentsOpenFor, setCommentsOpenFor] = useState<string | null>(null);
-  const { profiles, ensureProfiles } = useProfileDirectory<UploaderProfile>();
+  const { profiles, ensureProfiles } = useProfileDirectory();
 
   const playWithCurrentSoundPreference = useCallback((id: string, reset = false) => {
     const v = videoRefs.current[id];
