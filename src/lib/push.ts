@@ -84,6 +84,13 @@ export async function initNativePushNotifications(userId: string) {
       /* surfaced to user via OS UI; nothing actionable here */
     });
 
+    // Re-verify after the permission prompt: register() is a native call that
+    // cannot be caught from JS if Firebase is missing.
+    if (!(await isFirebaseReady())) {
+      initialized = false;
+      return;
+    }
+
     await PushNotifications.register();
   } catch {
     initialized = false;
