@@ -15,7 +15,7 @@ import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVide
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 
 type Post = {
