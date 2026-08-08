@@ -67,7 +67,7 @@ function isInvalidRefreshSession(error: unknown) {
 }
 
 async function clearBrokenSession() {
-  persistSession(null);
+  await clearPersistedSession();
   try {
     await supabase.auth.signOut({ scope: "local" });
   } catch {
