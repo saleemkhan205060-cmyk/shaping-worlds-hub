@@ -173,7 +173,7 @@ export function useAuth() {
 }
 
 export async function signOut() {
-  persistSession(null);
+  await clearPersistedSession();
   await supabase.auth.signOut();
   publishAuthState({ session: null, user: null, loading: false });
 }
