@@ -292,7 +292,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   };
 
   const openShareSheet = (it: FsItem) => {
-    const url = it.user_id ? `${window.location.origin}/u/${it.user_id}` : window.location.href;
+    const url = it.user_id ? buildShareUrl(`/u/${it.user_id}`) : buildShareUrl("/");
     const data = {
       title: it.caption ?? "Post",
       text: it.caption ?? "Check this out",
@@ -543,7 +543,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           onClose={() => setShareItem(null)}
           title={shareItem.caption ?? "Post"}
           text={shareItem.caption ?? "Check this out"}
-          url={shareItem.user_id ? `${window.location.origin}/u/${shareItem.user_id}` : window.location.href}
+          url={shareItem.user_id ? buildShareUrl(`/u/${shareItem.user_id}`) : buildShareUrl("/")}
         />
       )}
       {thumbPickFor && (
