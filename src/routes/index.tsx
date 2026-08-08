@@ -50,22 +50,20 @@ function Index() {
     );
   }
 
-  if (user) {
-    return (
-      <Layout>
-        <OnlineUsers />
-        <HomeFeed />
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <OnlineUsers />
+      <HomeFeed />
+    </Layout>
+  );
+}
 
-
-  
-
+function LandingUnused() {
   return (
     <Layout>
       {/* Online users */}
       <OnlineUsers />
+
 
 
       {/* Hero */}
