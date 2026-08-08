@@ -1,0 +1,1 @@
+CREATE POLICY "Profiles are viewable by visitors" ON public.profiles FOR SELECT TO anon USING (is_banned = false AND is_suspended = false);
