@@ -102,18 +102,49 @@ function buildWebShareData(data: NativeShareData): ShareData {
   return shareData;
 }
 
+/**
+ * Public origin every shared link must use.
+ *
+ * The Capacitor WebView serves the app from `https://localhost`, so any link
+ * built from `window.location.origin` inside the Android app points at a host
+ * nobody can open — share targets reject it and the Share button looks broken.
+ */
+export const PUBLIC_SHARE_ORIGIN = "https://viplifes.com";
+
+export function getShareOrigin() {
+  if (typeof window === "undefined") return PUBLIC_SHARE_ORIGIN;
+  if (isNativeCapacitorApp()) return PUBLIC_SHARE_ORIGIN;
+  const origin = window.location.origin;
+  if (!origin || /^https?:\/\/localhost(:\d+)?$/.test(origin) || /^https?:\/\/127\./.test(origin)) {
+    return PUBLIC_SHARE_ORIGIN;
+  }
+  return origin;
+}
+
+/** Builds an absolute, publicly reachable share link from an app path. */
+export function buildShareUrl(path: string) {
+  const suffix = path.startsWith("/") ? path : `/${path}`;
+  return `${getShareOrigin()}${suffix}`;
+}
+
 function getAbsoluteShareUrl(url?: string) {
-  if (!url) return typeof window !== "undefined" ? window.location.href : undefined;
+  const base = getShareOrigin();
+  const candidate =
+    url ??
+    (typeof window !== "undefined" ? `${window.location.pathname}${window.location.search}` : "/");
   try {
-    const absoluteUrl = new URL(
-      url,
-      typeof window !== "undefined" ? window.location.href : undefined,
-    );
-    return /^https?:$/.test(absoluteUrl.protocol) ? absoluteUrl.href : undefined;
+    const absoluteUrl = new URL(candidate, base);
+    if (!/^https?:$/.test(absoluteUrl.protocol)) return undefined;
+    // Never hand a localhost URL to the OS share sheet.
+    if (/^localhost$|^127\./.test(absoluteUrl.hostname)) {
+      return `${base}${absoluteUrl.pathname}${absoluteUrl.search}`;
+    }
+    return absoluteUrl.href;
   } catch {
     return undefined;
   }
 }
+
 
 export function isShareCancel(error: unknown) {
   const message = error instanceof Error ? error.message : String(error ?? "");
