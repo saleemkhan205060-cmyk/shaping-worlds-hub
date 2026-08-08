@@ -1120,13 +1120,17 @@ export function HomeFeed() {
                   </button>
                   <button
                     onClick={() => {
-                      const shareUrl = p.media_url || `${window.location.origin}/u/${p.user_id}`;
+                      // Always share a VIP Life link. Raw storage/media URLs are
+                      // rejected by several mobile share targets and made the
+                      // Share button look broken.
+                      const shareUrl = `${window.location.origin}/u/${p.user_id}`;
                       const data = {
                         title: p.caption ?? "VIP Life post",
                         text: p.caption ?? "Check out this post on VIP Life",
                         url: shareUrl,
                         dialogTitle: "Share post",
                       };
+
                       const nativeShare = shareWithSystemShare(data);
 
                       // Analytics must never delay or block the device share UI.
