@@ -25,13 +25,21 @@ public class PushSupportPlugin extends Plugin {
             Object apps = firebaseApp
                 .getMethod("getApps", android.content.Context.class)
                 .invoke(null, context.getApplicationContext());
-            if (apps instanceof java.util.List && !((java.util.List<?>) apps).isEmpty()) {
-                return true;
+            boolean hasApp = apps instanceof java.util.List && !((java.util.List<?>) apps).isEmpty();
+            if (!hasApp) {
+                Object app = firebaseApp
+                    .getMethod("initializeApp", android.content.Context.class)
+                    .invoke(null, context.getApplicationContext());
+                hasApp = app != null;
             }
-            Object app = firebaseApp
-                .getMethod("initializeApp", android.content.Context.class)
-                .invoke(null, context.getApplicationContext());
-            return app != null;
+            if (!hasApp) {
+                return false;
+            }
+            // FirebaseApp alone is not enough: PushNotificationsPlugin.register()
+            // goes straight to FirebaseMessaging.getInstance(), which throws
+            // IllegalStateException when messaging cannot resolve a default app.
+            Class<?> messaging = Class.forName("com.google.firebase.messaging.FirebaseMessaging");
+            return messaging.getMethod("getInstance").invoke(null) != null;
         } catch (Throwable error) {
             return false;
         }
@@ -40,7 +48,14 @@ public class PushSupportPlugin extends Plugin {
     @PluginMethod
     public void isAvailable(PluginCall call) {
         JSObject result = new JSObject();
-        result.put("available", ensureFirebase(getContext()));
+        boolean available;
+        try {
+            available = ensureFirebase(getContext());
+        } catch (Throwable error) {
+            available = false;
+        }
+        result.put("available", available);
         call.resolve(result);
     }
+
 }
