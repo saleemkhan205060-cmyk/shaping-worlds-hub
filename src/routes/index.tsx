@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
-import { useAuth } from "@/hooks/use-auth";
+
 
 import {
   Play,
