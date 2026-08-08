@@ -21,7 +21,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { moderateUploadedMedia } from "@/lib/moderate.functions";
 import { ShareSheet } from "@/components/ShareSheet";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 
 

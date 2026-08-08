@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
 import { EditPostDialog } from "@/components/EditPostDialog";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 type Props = {
   postId: string;

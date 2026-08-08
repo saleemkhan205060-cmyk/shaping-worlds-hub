@@ -25,7 +25,7 @@ import { CommentsSheet } from "@/components/CommentsSheet";
 import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 import { ShareSheet } from "@/components/ShareSheet";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 type UploaderProfile = {
   id: string;
