@@ -1,7 +1,11 @@
 import { useEffect, useSyncExternalStore } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { persistSession, restorePersistedSession } from "@/lib/session-persistence";
+import {
+  clearPersistedSession,
+  persistSession,
+  restorePersistedSession,
+} from "@/lib/session-persistence";
 
 type AuthState = {
   session: Session | null;
