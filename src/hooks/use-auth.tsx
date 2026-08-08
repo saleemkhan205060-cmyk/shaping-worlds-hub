@@ -104,6 +104,15 @@ function ensureAuthInitialized() {
     }, 0);
   });
 
+  // Absolute safety net: whatever happens to storage or the network, the app
+  // must stop showing the startup spinner and become interactive.
+  const loadingFallbackRevision = authRevision;
+  window.setTimeout(() => {
+    if (authRevision === loadingFallbackRevision && authState.loading) {
+      publishAuthState({ session: null, user: null, loading: false });
+    }
+  }, AUTH_REQUEST_TIMEOUT_MS + 2_000);
+
   const initializationRevision = authRevision;
   withAuthTimeout(supabase.auth.getSession(), "Auth session initialization timed out")
     .then(({ data, error }) => {
@@ -125,8 +134,13 @@ function ensureAuthInitialized() {
 
       // Nothing in Supabase storage: the WebView may have dropped localStorage
       // between app launches. Try the natively persisted session before
-      // sending the user back to the sign-in screen.
-      return restorePersistedSession().then((restored) => {
+      // sending the user back to the sign-in screen. This network call must be
+      // bounded — an unanswered restore used to leave the app stuck on the
+      // startup spinner with every tap looking frozen.
+      return withAuthTimeout(
+        restorePersistedSession(),
+        "Auth session restore timed out",
+      ).then((restored) => {
         if (authRevision !== initializationRevision) return;
         publishAuthState({
           session: restored,

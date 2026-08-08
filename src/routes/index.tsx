@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
-import { useAuth } from "@/hooks/use-auth";
+
 
 import {
   Play,
@@ -38,18 +38,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { loading } = useAuth();
-
-  if (loading) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center py-24">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      </Layout>
-    );
-  }
-
+  // The feed is readable by signed-out visitors, so it must never wait on auth
+  // initialization — a slow session restore used to leave the whole screen on
+  // a spinner and made every tap feel frozen before sign-in.
   return (
     <Layout>
       <OnlineUsers />
