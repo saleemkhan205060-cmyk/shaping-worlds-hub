@@ -125,8 +125,13 @@ function ensureAuthInitialized() {
 
       // Nothing in Supabase storage: the WebView may have dropped localStorage
       // between app launches. Try the natively persisted session before
-      // sending the user back to the sign-in screen.
-      return restorePersistedSession().then((restored) => {
+      // sending the user back to the sign-in screen. This network call must be
+      // bounded — an unanswered restore used to leave the app stuck on the
+      // startup spinner with every tap looking frozen.
+      return withAuthTimeout(
+        restorePersistedSession(),
+        "Auth session restore timed out",
+      ).then((restored) => {
         if (authRevision !== initializationRevision) return;
         publishAuthState({
           session: restored,
