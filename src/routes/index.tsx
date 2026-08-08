@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   if (loading) {
     return (
@@ -50,22 +50,20 @@ function Index() {
     );
   }
 
-  if (user) {
-    return (
-      <Layout>
-        <OnlineUsers />
-        <HomeFeed />
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <OnlineUsers />
+      <HomeFeed />
+    </Layout>
+  );
+}
 
-
-  
-
+function LandingUnused() {
   return (
     <Layout>
       {/* Online users */}
       <OnlineUsers />
+
 
 
       {/* Hero */}
