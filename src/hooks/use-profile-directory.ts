@@ -30,9 +30,9 @@ export function useProfileDirectory() {
   const [profiles, setProfiles] = useState<Record<string, DirectoryProfile>>({});
   const requestedRef = useRef<Set<string>>(new Set());
 
-  const ensureProfiles = useCallback((ids: Iterable<string | null | undefined>) => {
+  const ensureProfiles = useCallback((ids: Array<string | null | undefined>) => {
     const missing = Array.from(
-      new Set(Array.from(ids).filter((id): id is string => Boolean(id))),
+      new Set(ids.filter((id): id is string => Boolean(id))),
     ).filter((id) => !requestedRef.current.has(id));
     if (missing.length === 0) return;
     missing.forEach((id) => requestedRef.current.add(id));
