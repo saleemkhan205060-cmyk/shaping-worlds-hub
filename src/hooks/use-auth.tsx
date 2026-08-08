@@ -104,6 +104,15 @@ function ensureAuthInitialized() {
     }, 0);
   });
 
+  // Absolute safety net: whatever happens to storage or the network, the app
+  // must stop showing the startup spinner and become interactive.
+  const loadingFallbackRevision = authRevision;
+  window.setTimeout(() => {
+    if (authRevision === loadingFallbackRevision && authState.loading) {
+      publishAuthState({ session: null, user: null, loading: false });
+    }
+  }, AUTH_REQUEST_TIMEOUT_MS + 2_000);
+
   const initializationRevision = authRevision;
   withAuthTimeout(supabase.auth.getSession(), "Auth session initialization timed out")
     .then(({ data, error }) => {
