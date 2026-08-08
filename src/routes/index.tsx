@@ -50,13 +50,16 @@ function Index() {
     );
   }
 
-  
+  if (user) {
     return (
       <Layout>
         <OnlineUsers />
         <HomeFeed />
       </Layout>
     );
+  }
+
+
   
 
   return (
