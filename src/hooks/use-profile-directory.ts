@@ -26,13 +26,13 @@ export type DirectoryProfile = {
   avatar_url: string | null;
 };
 
-export function useProfileDirectory<T extends DirectoryProfile = DirectoryProfile>() {
-  const [profiles, setProfiles] = useState<Record<string, T>>({});
+export function useProfileDirectory() {
+  const [profiles, setProfiles] = useState<Record<string, DirectoryProfile>>({});
   const requestedRef = useRef<Set<string>>(new Set());
 
-  const ensureProfiles = useCallback((ids: Array<string | null | undefined>) => {
+  const ensureProfiles = useCallback((ids: Iterable<string | null | undefined>) => {
     const missing = Array.from(
-      new Set(ids.filter((id): id is string => Boolean(id))),
+      new Set(Array.from(ids).filter((id): id is string => Boolean(id))),
     ).filter((id) => !requestedRef.current.has(id));
     if (missing.length === 0) return;
     missing.forEach((id) => requestedRef.current.add(id));
@@ -50,13 +50,13 @@ export function useProfileDirectory<T extends DirectoryProfile = DirectoryProfil
         if (!data || data.length === 0) return;
         setProfiles((prev) => {
           const next = { ...prev };
-          for (const p of data as T[]) next[p.id] = p;
+          for (const p of data as DirectoryProfile[]) next[p.id] = p;
           return next;
         });
       });
   }, []);
 
-  const cacheProfile = useCallback((profile: T) => {
+  const cacheProfile = useCallback((profile: DirectoryProfile) => {
     requestedRef.current.add(profile.id);
     setProfiles((prev) => (prev[profile.id] ? prev : { ...prev, [profile.id]: profile }));
   }, []);
