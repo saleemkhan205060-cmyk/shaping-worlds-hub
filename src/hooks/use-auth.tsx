@@ -1,7 +1,11 @@
 import { useEffect, useSyncExternalStore } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { persistSession, restorePersistedSession } from "@/lib/session-persistence";
+import {
+  clearPersistedSession,
+  persistSession,
+  restorePersistedSession,
+} from "@/lib/session-persistence";
 
 type AuthState = {
   session: Session | null;
@@ -63,7 +67,7 @@ function isInvalidRefreshSession(error: unknown) {
 }
 
 async function clearBrokenSession() {
-  persistSession(null);
+  await clearPersistedSession();
   try {
     await supabase.auth.signOut({ scope: "local" });
   } catch {
@@ -77,7 +81,7 @@ function ensureAuthInitialized() {
 
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange((_event, s) => {
+  } = supabase.auth.onAuthStateChange((event, s) => {
     // NEVER do work synchronously inside this callback. Supabase runs auth
     // listeners while holding its internal auth lock; any React render started
     // here can fire effects that call supabase.auth.getUser()/getSession() or
@@ -85,7 +89,17 @@ function ensureAuthInitialized() {
     // this callback. That deadlock is what left the post-login Home screen
     // stuck on "Loading…" with an unresponsive UI and a dead Share button.
     setTimeout(() => {
-      persistSession(s ?? null);
+      if (s) {
+        // Also covers TOKEN_REFRESHED, so the native backup always holds the
+        // latest rotated refresh token.
+        persistSession(s);
+      } else if (event === "SIGNED_OUT") {
+        void clearPersistedSession();
+      }
+      // A null INITIAL_SESSION means Supabase storage is empty (the WebView
+      // dropped localStorage between launches) — never treat that as a
+      // sign-out or the native backup gets wiped before it can be restored.
+      if (!s && event === "INITIAL_SESSION") return;
       publishAuthState({ session: s, user: s?.user ?? null, loading: false });
     }, 0);
   });
@@ -159,7 +173,7 @@ export function useAuth() {
 }
 
 export async function signOut() {
-  persistSession(null);
+  await clearPersistedSession();
   await supabase.auth.signOut();
   publishAuthState({ session: null, user: null, loading: false });
 }
