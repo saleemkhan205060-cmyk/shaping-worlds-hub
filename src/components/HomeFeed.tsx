@@ -1418,7 +1418,7 @@ export function HomeFeed() {
           onClose={() => { setShareOpen(false); setSharePost(null); }}
           title={sharePost.caption ?? "Post"}
           text={sharePost.caption ?? "Check this out"}
-          url={sharePost.media_url || `${window.location.origin}/u/${sharePost.user_id}`}
+          url={`${window.location.origin}/u/${sharePost.user_id}`}
         />
       )}
 
