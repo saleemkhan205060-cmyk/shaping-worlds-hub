@@ -112,7 +112,7 @@ function Videos() {
     const data = {
       title,
       text: `Check out ${title}`,
-      url: `${window.location.origin}/u/${post.user_id}`,
+      url: buildShareUrl(`/u/${post.user_id}`),
       dialogTitle: "Share post",
     };
 
@@ -345,7 +345,7 @@ function Videos() {
           onClose={() => setSharePost(null)}
           title={sharePost.caption ?? sharePost.title ?? "Post"}
           text={sharePost.caption ?? sharePost.title ?? "Check this out"}
-          url={`${window.location.origin}/u/${sharePost.user_id}`}
+          url={buildShareUrl(`/u/${sharePost.user_id}`)}
         />
       )}
     </Layout>
