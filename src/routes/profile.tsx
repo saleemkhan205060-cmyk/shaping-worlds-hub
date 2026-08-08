@@ -21,7 +21,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { moderateUploadedMedia } from "@/lib/moderate.functions";
 import { ShareSheet } from "@/components/ShareSheet";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 
 
@@ -425,7 +425,7 @@ function Profile() {
   const joined = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" })
     : "Recently";
-  const profileUrl = `${window.location.origin}/u/${user.id}`;
+  const profileUrl = buildShareUrl(`/u/${user.id}`);
   const shareProfile = () => {
     const data = {
       title: `${displayName} on VIP Life`,

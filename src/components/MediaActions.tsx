@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
 import { EditPostDialog } from "@/components/EditPostDialog";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 type Props = {
   postId: string;
@@ -65,7 +65,7 @@ export function MediaActions({
   };
 
   const handleShare = () => {
-    const url = ownerId ? `${window.location.origin}/u/${ownerId}` : window.location.href;
+    const url = ownerId ? buildShareUrl(`/u/${ownerId}`) : buildShareUrl("/");
     const data = {
       title: caption ?? "Post",
       text: caption ?? "Check this out",
@@ -179,7 +179,7 @@ export function MediaActions({
         onClose={() => setShareOpen(false)}
         title={caption ?? "Post"}
         text={caption ?? "Check this out"}
-        url={ownerId ? `${window.location.origin}/u/${ownerId}` : window.location.href}
+        url={ownerId ? buildShareUrl(`/u/${ownerId}`) : buildShareUrl("/")}
       />
       <EditPostDialog
         postId={postId}

@@ -15,7 +15,7 @@ import { FullscreenVideoPlayer, type FsItem } from "../components/FullscreenVide
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 
 type Post = {
@@ -112,7 +112,7 @@ function Videos() {
     const data = {
       title,
       text: `Check out ${title}`,
-      url: `${window.location.origin}/u/${post.user_id}`,
+      url: buildShareUrl(`/u/${post.user_id}`),
       dialogTitle: "Share post",
     };
 
@@ -345,7 +345,7 @@ function Videos() {
           onClose={() => setSharePost(null)}
           title={sharePost.caption ?? sharePost.title ?? "Post"}
           text={sharePost.caption ?? sharePost.title ?? "Check this out"}
-          url={`${window.location.origin}/u/${sharePost.user_id}`}
+          url={buildShareUrl(`/u/${sharePost.user_id}`)}
         />
       )}
     </Layout>

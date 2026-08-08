@@ -15,24 +15,30 @@ export async function initNativePushNotifications(userId: string) {
 
   try {
     const { registerPlugin } = await import("@capacitor/core");
-    // Firebase must be initialized natively (google-services.json present),
-    // otherwise PushNotifications.register() throws IllegalStateException and
-    // crashes the app.
-    try {
-      const PushSupport = registerPlugin<{ isAvailable(): Promise<{ available: boolean }> }>(
-        "PushSupport",
-      );
-      const { available } = await PushSupport.isAvailable();
-      if (!available) {
-        initialized = false;
-        return;
+    // Firebase must be initialized natively (google-services.json present) AND
+    // FirebaseMessaging must resolve, otherwise PushNotifications.register()
+    // throws IllegalStateException inside FirebaseApp.getInstance() and the
+    // whole app crashes. Never call register() without this gate.
+    const PushSupport = registerPlugin<{ isAvailable(): Promise<{ available: boolean }> }>(
+      "PushSupport",
+    );
+    const isFirebaseReady = async () => {
+      try {
+        const { available } = await PushSupport.isAvailable();
+        return available === true;
+      } catch {
+        return false;
       }
-    } catch {
+    };
+
+    if (!Capacitor.isPluginAvailable("PushNotifications") || !(await isFirebaseReady())) {
       initialized = false;
       return;
     }
 
     const { PushNotifications } = await import("@capacitor/push-notifications");
+
+
 
 
     // Ensure a "messages" channel exists with our custom sound (Android 8+)
@@ -77,6 +83,13 @@ export async function initNativePushNotifications(userId: string) {
     PushNotifications.addListener("registrationError", () => {
       /* surfaced to user via OS UI; nothing actionable here */
     });
+
+    // Re-verify after the permission prompt: register() is a native call that
+    // cannot be caught from JS if Firebase is missing.
+    if (!(await isFirebaseReady())) {
+      initialized = false;
+      return;
+    }
 
     await PushNotifications.register();
   } catch {

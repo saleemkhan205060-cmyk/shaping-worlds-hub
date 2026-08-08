@@ -43,7 +43,7 @@ import { Progress } from "@/components/ui/progress";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import likeSoundAsset from "@/assets/like.mp3.asset.json";
 import shareIconAsset from "@/assets/share-icon.png.asset.json";
-import { shareWithSystemShare } from "@/lib/native-share";
+import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 let likeAudio: HTMLAudioElement | null = null;
 const playLikeSound = () => {
@@ -1123,7 +1123,7 @@ export function HomeFeed() {
                       // Always share a VIP Life link. Raw storage/media URLs are
                       // rejected by several mobile share targets and made the
                       // Share button look broken.
-                      const shareUrl = `${window.location.origin}/u/${p.user_id}`;
+                      const shareUrl = buildShareUrl(`/u/${p.user_id}`);
                       const data = {
                         title: p.caption ?? "VIP Life post",
                         text: p.caption ?? "Check out this post on VIP Life",
@@ -1418,7 +1418,7 @@ export function HomeFeed() {
           onClose={() => { setShareOpen(false); setSharePost(null); }}
           title={sharePost.caption ?? "Post"}
           text={sharePost.caption ?? "Check this out"}
-          url={`${window.location.origin}/u/${sharePost.user_id}`}
+          url={buildShareUrl(`/u/${sharePost.user_id}`)}
         />
       )}
 
