@@ -60,6 +60,7 @@
         "embla-carousel-react": "^8.6.0",
         "fix-webm-duration": "^1.0.6",
         "input-otp": "^1.4.2",
+        "logrocket": "^12.1.1",
         "lucide-react": "^0.575.0",
         "nitro": "3.0.260603-beta",
         "react": "^19.2.0",
@@ -1264,6 +1265,8 @@
     "lodash.uniqby": ["lodash.uniqby@4.5.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/lodash.uniqby/-/lodash.uniqby-4.5.0.tgz", { "dependencies": { "lodash._baseiteratee": "~4.7.0", "lodash._baseuniq": "~4.6.0" } }, "sha512-IRt7cfTtHy6f1aRVA5n7kT8rgN3N1nH6MOWLcHfpWG2SH19E3JksLK38MktLxZDhlAjCP9jpIXkOnRXlu6oByQ=="],
 
     "log-symbols": ["log-symbols@7.0.1", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/log-symbols/-/log-symbols-7.0.1.tgz", { "dependencies": { "is-unicode-supported": "^2.0.0", "yoctocolors": "^2.1.1" } }, "sha512-ja1E3yCr9i/0hmBVaM0bfwDjnGy8I/s6PP4DFp+yP+a+mrHO4Rm7DtmnqROTUkHIkqffC84YY7AeqX6oFk0WFg=="],
+
+    "logrocket": ["logrocket@12.1.1", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/logrocket/-/logrocket-12.1.1.tgz", {}, "sha512-l7z9ii5nNV6NZ3nzEqbB3xJAqFJC6QdRYDK8DeCC6JKwzuI8nyUezUJAotgMyClrqB6eV/Bo0i/KihQlXSRDKw=="],
 
     "loose-envify": ["loose-envify@1.4.0", "", { "dependencies": { "js-tokens": "^3.0.0 || ^4.0.0" }, "bin": { "loose-envify": "cli.js" } }, "sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q=="],
 
