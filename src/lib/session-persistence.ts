@@ -149,7 +149,7 @@ export async function clearPersistedSession() {
   const prefs = await preferences();
   if (!prefs) return;
   try {
-    await prefs.remove({ key: STORAGE_KEY });
+    await prefs.plugin.remove({ key: STORAGE_KEY });
   } catch {
     // ignore
   }
