@@ -49,7 +49,7 @@ async function writeSession(session: Session) {
   const prefs = await preferences();
   if (!prefs || !session.refresh_token) return;
   try {
-    await prefs.set({
+    await prefs.plugin.set({
       key: STORAGE_KEY,
       value: JSON.stringify({
         access_token: session.access_token,
@@ -66,7 +66,7 @@ async function readSession(): Promise<StoredSession | null> {
   const prefs = await preferences();
   if (!prefs) return null;
   try {
-    const { value } = await prefs.get({ key: STORAGE_KEY });
+    const { value } = await prefs.plugin.get({ key: STORAGE_KEY });
     if (!value) return null;
     const parsed = JSON.parse(value) as Partial<StoredSession>;
     if (!parsed?.refresh_token || !parsed?.access_token) return null;
