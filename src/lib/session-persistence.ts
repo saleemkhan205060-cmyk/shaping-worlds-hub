@@ -22,21 +22,34 @@ function isNative(): boolean {
   }
 }
 
-async function preferences() {
+type PreferencesPlugin = {
+  get: (options: { key: string }) => Promise<{ value: string | null }>;
+  set: (options: { key: string; value: string }) => Promise<void>;
+  remove: (options: { key: string }) => Promise<void>;
+};
+
+// IMPORTANT: never return the Capacitor plugin proxy directly from an async
+// function. The proxy responds to *every* property lookup, so the JS runtime
+// finds a `then` on it, treats it as a thenable and calls `Preferences.then()`
+// — which fails with "not implemented on android" and leaves startup hanging.
+// Wrapping it in a plain object keeps the plugin out of promise resolution.
+async function preferences(): Promise<{ plugin: PreferencesPlugin } | null> {
   if (!isNative()) return null;
   try {
-    const { Preferences } = await import("@capacitor/preferences");
-    return Preferences;
+    const mod = await import("@capacitor/preferences");
+    const plugin = mod.Preferences as unknown as PreferencesPlugin;
+    return plugin ? { plugin } : null;
   } catch {
     return null;
   }
 }
 
+
 async function writeSession(session: Session) {
   const prefs = await preferences();
   if (!prefs || !session.refresh_token) return;
   try {
-    await prefs.set({
+    await prefs.plugin.set({
       key: STORAGE_KEY,
       value: JSON.stringify({
         access_token: session.access_token,
@@ -53,7 +66,7 @@ async function readSession(): Promise<StoredSession | null> {
   const prefs = await preferences();
   if (!prefs) return null;
   try {
-    const { value } = await prefs.get({ key: STORAGE_KEY });
+    const { value } = await prefs.plugin.get({ key: STORAGE_KEY });
     if (!value) return null;
     const parsed = JSON.parse(value) as Partial<StoredSession>;
     if (!parsed?.refresh_token || !parsed?.access_token) return null;
@@ -136,7 +149,7 @@ export async function clearPersistedSession() {
   const prefs = await preferences();
   if (!prefs) return;
   try {
-    await prefs.remove({ key: STORAGE_KEY });
+    await prefs.plugin.remove({ key: STORAGE_KEY });
   } catch {
     // ignore
   }
