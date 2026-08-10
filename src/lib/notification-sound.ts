@@ -7,7 +7,6 @@ import notificationAsset from "@/assets/notification.mp3.asset.json";
 let audioCtx: AudioContext | null = null;
 let htmlAudio: HTMLAudioElement | null = null;
 let unlockBound = false;
-let unlockInFlight = false;
 let unlocked = false;
 let pendingChimes = 0;
 let queueRunning = false;
@@ -20,12 +19,16 @@ const CHIME_PREF_EVENT = "vip:notification-chime-changed";
 const MAX_PENDING_CHIMES = 6;
 const NOTIFICATION_ICON = "/logo.png";
 
-// One physical tap produces pointer, touch, mouse and click events in Android
-// WebView. Binding all of them on both window and document used to run several
-// overlapping audio.play()/permission operations for a single tap. That
-// saturated the WebView UI thread and made whichever screen was active appear
-// frozen. A single capture listener is enough to unlock audio.
-const unlockEvents: (keyof WindowEventMap)[] = ["pointerdown", "keydown"];
+const unlockEvents: (keyof WindowEventMap)[] = [
+  "pointerdown",
+  "pointerup",
+  "touchstart",
+  "touchend",
+  "mousedown",
+  "mouseup",
+  "keydown",
+  "click",
+];
 
 function getAudioElement(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
@@ -61,6 +64,7 @@ function removeUnlockListeners() {
   if (!unlockBound || typeof window === "undefined") return;
   unlockEvents.forEach((e) => {
     window.removeEventListener(e, unlockFromGesture, true);
+    document.removeEventListener(e, unlockFromGesture, true);
   });
   unlockBound = false;
 }
@@ -159,11 +163,6 @@ function drainChimeQueue() {
 }
 
 function unlockFromGesture() {
-  if (unlocked || unlockInFlight) return;
-  unlockInFlight = true;
-  // Remove listeners synchronously. Waiting for play() to settle allowed the
-  // rest of the same tap's synthetic events to start duplicate native work.
-  removeUnlockListeners();
   requestNotificationPermissionFromGesture();
 
   // Prime HTMLAudio inside the gesture so future programmatic plays work
@@ -185,28 +184,23 @@ function unlockFromGesture() {
             el.muted = false;
             el.volume = prevVol;
             unlocked = true;
-            unlockInFlight = false;
+            removeUnlockListeners();
             drainChimeQueue();
           })
           .catch(() => {
             el.muted = false;
             el.volume = prevVol;
-            unlockInFlight = false;
-            initNotificationSoundUnlock();
           });
       } else {
         el.pause();
         el.muted = false;
         unlocked = true;
-        unlockInFlight = false;
+        removeUnlockListeners();
         drainChimeQueue();
       }
     } catch {
-      unlockInFlight = false;
-      initNotificationSoundUnlock();
+      /* ignore */
     }
-  } else {
-    unlockInFlight = false;
   }
 
   // Also resume AudioContext as a fallback
@@ -223,6 +217,7 @@ export function initNotificationSoundUnlock() {
   unlockBound = true;
   unlockEvents.forEach((e) => {
     window.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
+    document.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
   });
   // Start loading the audio file
   getAudioElement();

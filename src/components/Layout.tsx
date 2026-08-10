@@ -152,22 +152,25 @@ export function Layout({
         { event: "INSERT", schema: "public", table: "follows", filter: `following_id=eq.${userId}` },
         refreshUnreadNotifs,
       )
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "post_likes" },
-        refreshUnreadNotifs,
-      )
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "post_comments" },
-        refreshUnreadNotifs,
-      )
       .subscribe();
     return () => {
       window.clearTimeout(startId);
       supabase.removeChannel(ch);
     };
   }, [userId, refreshUnreadMsgs, refreshUnreadNotifs]);
+
+  // Likes/comments cannot be filtered by post ownership at the Realtime
+  // subscription level. Listening to those tables globally made every client
+  // refresh its badge for every user's activity, creating an app-wide query
+  // storm. Refresh once when the app returns to the foreground instead.
+  useEffect(() => {
+    if (!userId) return;
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") void refreshUnreadNotifs();
+    };
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    return () => document.removeEventListener("visibilitychange", refreshWhenVisible);
+  }, [userId, refreshUnreadNotifs]);
 
   // Reset notif badge when visiting the notifications page
   useEffect(() => {
