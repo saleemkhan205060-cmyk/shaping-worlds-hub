@@ -159,12 +159,28 @@ function ensureAuthInitialized() {
       // initialization timeout or verification failure.
       if (authRevision !== initializationRevision) return;
       if (isInvalidRefreshSession(error)) {
-        await clearBrokenSession();
+        // Only the WebView copy is broken — try the native backup before
+        // sending the user back to the sign-in screen.
+        await clearBrokenLocalSession();
+        try {
+          const restored = await withAuthTimeout(
+            restorePersistedSession(),
+            "Auth session restore timed out",
+          );
+          if (authRevision !== initializationRevision) return;
+          if (restored) {
+            publishAuthState({ session: restored, user: restored.user, loading: false });
+            return;
+          }
+        } catch (restoreError) {
+          console.error("Auth session restore failed:", restoreError);
+        }
       } else {
         console.error("Auth session load failed:", error);
       }
       publishAuthState({ session: null, user: null, loading: false });
     });
+
 
   if (import.meta.hot) {
     import.meta.hot.dispose(() => {
