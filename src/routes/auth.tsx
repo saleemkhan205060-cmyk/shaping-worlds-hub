@@ -9,6 +9,8 @@ import {
   describeGoogleAuthError,
   signInWithGoogle,
 } from "@/lib/google-auth";
+import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
+
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
