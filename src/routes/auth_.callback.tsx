@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { completeGoogleOAuthCallback, describeGoogleAuthError } from "@/lib/google-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { publishAuthenticatedSession } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth_/callback")({
   head: () => ({
@@ -24,12 +26,30 @@ function AuthCallbackPage() {
 
   useEffect(() => {
     let active = true;
+    let settled = false;
+
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.sessionStorage.removeItem("vip-life-auth-return-to");
+      void navigate({ to: "/", replace: true });
+    };
+
+    // Safety net: the Supabase client's detectSessionInUrl may auto-exchange
+    // the PKCE code and fire SIGNED_IN before the manual exchangeCodeForSession
+    // call in completeGoogleOAuthCallback finishes. Listen for it so the user
+    // is redirected immediately instead of waiting for the poll.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (active && event === "SIGNED_IN" && session) {
+        publishAuthenticatedSession(session);
+        finish();
+      }
+    });
 
     void completeGoogleOAuthCallback(window.location.href)
       .then(() => {
         if (!active) return;
-        window.sessionStorage.removeItem("vip-life-auth-return-to");
-        void navigate({ to: "/", replace: true });
+        finish();
       })
       .catch((error) => {
         console.error(
@@ -38,11 +58,12 @@ function AuthCallbackPage() {
           (error as { stack?: string } | null)?.stack ?? "",
           error,
         );
-        if (active) setErrorMessage(describeGoogleAuthError(error));
+        if (active && !settled) setErrorMessage(describeGoogleAuthError(error));
       });
 
     return () => {
       active = false;
+      subscription.unsubscribe();
     };
   }, [navigate]);
 
