@@ -27,6 +27,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const leavingAuthRef = useRef(false);
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const [gsiReady, setGsiReady] = useState(false);
 
   const leaveAuth = useCallback(() => {
     if (leavingAuthRef.current) return;
