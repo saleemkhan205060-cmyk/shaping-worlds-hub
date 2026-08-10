@@ -224,8 +224,9 @@ function AuthPage() {
         )}
 
         <div className={mode === "signup" ? "mt-3" : "mt-6"}>
-          {/* Google's own button: opens the account chooser as a popup over
-              this screen, so the user never lands on another page. */}
+          {/* Google's own button (when GSI is available): opens the account
+              chooser as a popup over this screen, so the user never lands on
+              another page. */}
           <div
             className={`flex items-center justify-center gap-2 ${gsiReady ? "" : "hidden"} ${
               mode === "signup" && !agreedTerms ? "pointer-events-none opacity-50" : ""
@@ -248,14 +249,34 @@ function AuthPage() {
             </button>
           </div>
           {!gsiReady && (
-            <button
-              type="button"
-              onClick={onGoogle}
-              disabled={busy || (mode === "signup" && !agreedTerms)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+            <div
+              className={`flex items-center gap-2 ${
+                mode === "signup" && !agreedTerms ? "opacity-50 pointer-events-none" : ""
+              }`}
             >
-              <GoogleIcon /> Continue with Google
-            </button>
+              <button
+                type="button"
+                onClick={onGoogle}
+                disabled={busy}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+              >
+                <GoogleIcon /> Continue with Google
+              </button>
+              {/* Arrow: opens the same in-page Google account list overlay */}
+              <button
+                type="button"
+                aria-label="Choose a Google account"
+                onClick={onGoogle}
+                disabled={busy}
+                className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
+              >
+                {busy ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                ) : (
+                  <ChevronRight className="h-5 w-5 text-slate-600" />
+                )}
+              </button>
+            </div>
           )}
         </div>
 
