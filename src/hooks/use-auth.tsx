@@ -66,14 +66,18 @@ function isInvalidRefreshSession(error: unknown) {
   );
 }
 
-async function clearBrokenSession() {
-  await clearPersistedSession();
+// Clears ONLY the Supabase (localStorage) copy of a broken session. The native
+// backup is deliberately kept: on Android the WebView copy is the one that goes
+// stale between launches, and wiping the backup here is what forced users to
+// sign in again after reopening the app.
+async function clearBrokenLocalSession() {
   try {
     await supabase.auth.signOut({ scope: "local" });
   } catch {
     // The session is already unusable; make sure the UI can recover.
   }
 }
+
 
 function ensureAuthInitialized() {
   if (authInitialized) return;
@@ -93,9 +97,12 @@ function ensureAuthInitialized() {
         // Also covers TOKEN_REFRESHED, so the native backup always holds the
         // latest rotated refresh token.
         persistSession(s);
-      } else if (event === "SIGNED_OUT") {
-        void clearPersistedSession();
       }
+      // NOTE: SIGNED_OUT is NOT allowed to wipe the native backup. Supabase
+      // also emits it after a transient refresh failure (offline launch, token
+      // rotation race), which used to log Android users out permanently.
+      // Explicit sign-out clears the backup in signOut() below.
+
       // A null INITIAL_SESSION means Supabase storage is empty (the WebView
       // dropped localStorage between launches) — never treat that as a
       // sign-out or the native backup gets wiped before it can be restored.
@@ -155,12 +162,28 @@ function ensureAuthInitialized() {
       // initialization timeout or verification failure.
       if (authRevision !== initializationRevision) return;
       if (isInvalidRefreshSession(error)) {
-        await clearBrokenSession();
+        // Only the WebView copy is broken — try the native backup before
+        // sending the user back to the sign-in screen.
+        await clearBrokenLocalSession();
+        try {
+          const restored = await withAuthTimeout(
+            restorePersistedSession(),
+            "Auth session restore timed out",
+          );
+          if (authRevision !== initializationRevision) return;
+          if (restored) {
+            publishAuthState({ session: restored, user: restored.user, loading: false });
+            return;
+          }
+        } catch (restoreError) {
+          console.error("Auth session restore failed:", restoreError);
+        }
       } else {
         console.error("Auth session load failed:", error);
       }
       publishAuthState({ session: null, user: null, loading: false });
     });
+
 
   if (import.meta.hot) {
     import.meta.hot.dispose(() => {
