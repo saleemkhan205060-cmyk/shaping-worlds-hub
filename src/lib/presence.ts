@@ -11,6 +11,7 @@ let channel: ReturnType<typeof supabase.channel> | null = null;
 let currentUid: string | null = null;
 let currentStatus: Status = "online";
 let cachedState: Record<string, Status> = {};
+let disconnectTimer: ReturnType<typeof setTimeout> | null = null;
 const listeners = new Set<Listener>();
 
 function notify() {
@@ -58,12 +59,31 @@ async function ensureChannel(uid: string) {
  *  drops only when the tab/app is fully closed. */
 export function useGlobalPresence(userId: string | null | undefined) {
   useEffect(() => {
+    if (disconnectTimer) {
+      clearTimeout(disconnectTimer);
+      disconnectTimer = null;
+    }
     if (!userId) return;
     const stored = (typeof window !== "undefined"
       ? (localStorage.getItem(PRESENCE_STORAGE_KEY) as Status | null)
       : null) || "online";
     currentStatus = stored;
-    ensureChannel(userId);
+    void ensureChannel(userId);
+    return () => {
+      // Defer teardown by one task so React Strict Mode's development-only
+      // effect remount can retain the same singleton connection.
+      disconnectTimer = setTimeout(() => {
+        disconnectTimer = null;
+        if (!channel || currentUid !== userId) return;
+        const staleChannel = channel;
+        channel = null;
+        currentUid = null;
+        cachedState = {};
+        notify();
+        void staleChannel.untrack().catch(() => {});
+        void supabase.removeChannel(staleChannel);
+      }, 0);
+    };
   }, [userId]);
 }
 
