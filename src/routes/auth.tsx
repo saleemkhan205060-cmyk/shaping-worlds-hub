@@ -139,12 +139,20 @@ function AuthPage() {
         return;
       }
       // GSI prompt was not shown (blocked, no Google session, or unsupported
-      // browser). Fall back to the managed broker flow, which works on the
-      // published site and in top-level windows but may surface
-      // "Authentication was cancelled" inside the preview iframe.
+      // browser). Inside the editor preview iframe the broker's popup handoff
+      // is dropped and always surfaces "Authentication was cancelled", so open
+      // the published sign-in page in a real top-level tab instead.
+      const inIframe = typeof window !== "undefined" && window.self !== window.top;
+      if (inIframe) {
+        window.open(`${PUBLISHED_ORIGIN}/auth`, "_blank", "noopener");
+        toast.info("Google sign-in opened in a new tab.");
+        setBusy(false);
+        return;
+      }
       const result = await signInWithGoogle({
           extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
         });
+
 
       if (result.error) {
         // signInWithGoogle already performs the one bounded persisted-session
