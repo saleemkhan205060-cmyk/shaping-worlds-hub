@@ -180,7 +180,18 @@ function AuthPage() {
           },
         });
         if (!ok) {
-          toast.error("Google sign-in is loading. Please wait and try again.");
+          // Google's script is blocked in this context (e.g. embedded
+          // preview iframes / strict browsers). Fall back to the managed
+          // OAuth popup, which shows the same Google account list.
+          await signInWithGoogle({ extraParams: { prompt: "select_account" } });
+          const session = await waitForAuthSession(20_000);
+          if (session) {
+            publishAuthenticatedSession(session);
+            toast.success("Welcome back!");
+            leaveAuth();
+            return;
+          }
+          toast.error("Google sign-in was not completed. Please try again.");
           setBusy(false);
         }
       } catch (error) {
