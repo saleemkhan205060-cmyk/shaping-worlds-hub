@@ -6,6 +6,7 @@ import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
+import { hasNativePlugin } from "./native-plugins";
 import { ANDROID_OAUTH_BROKER_URL, getOAuthCallbackUrl, PUBLISHED_ORIGIN } from "./oauth-origin";
 
 type GoogleSignInOptions = {

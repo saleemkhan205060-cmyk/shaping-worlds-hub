@@ -1,5 +1,6 @@
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { hasNativePlugin } from "./native-plugins";
 
 // Mirrors the Supabase session into native storage (Android SharedPreferences via
 // Capacitor Preferences) so the user stays signed in after the app is closed and
@@ -35,6 +36,7 @@ type PreferencesPlugin = {
 // Wrapping it in a plain object keeps the plugin out of promise resolution.
 async function preferences(): Promise<{ plugin: PreferencesPlugin } | null> {
   if (!isNative()) return null;
+  if (!hasNativePlugin("Preferences")) return null;
   try {
     const mod = await import("@capacitor/preferences");
     const plugin = mod.Preferences as unknown as PreferencesPlugin;

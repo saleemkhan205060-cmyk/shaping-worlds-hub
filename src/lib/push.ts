@@ -4,6 +4,7 @@
 
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
+import { hasNativePlugin } from "./native-plugins";
 
 let initialized = false;
 
@@ -31,7 +32,7 @@ export async function initNativePushNotifications(userId: string) {
       }
     };
 
-    if (!Capacitor.isPluginAvailable("PushNotifications") || !(await isFirebaseReady())) {
+    if (!hasNativePlugin("PushNotifications") || !(await isFirebaseReady())) {
       initialized = false;
       return;
     }
