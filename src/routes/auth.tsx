@@ -119,9 +119,25 @@ function AuthPage() {
     }
     setBusy(true);
     try {
+      if (chooseAccount) {
+        // Google's in-page account chooser: the user picks one of their signed-in
+        // Google emails without ever leaving this screen.
+        const chooser = await openGoogleAccountChooser();
+        if (chooser.signedIn) {
+          leaveAuth();
+          return;
+        }
+        if (chooser.shown) {
+          // Overlay was dismissed without picking an account.
+          setBusy(false);
+          return;
+        }
+        // Chooser unavailable (blocked/unsupported) — fall through to OAuth.
+      }
       const result = await signInWithGoogle({
           extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
         });
+
       if (result.error) {
         // signInWithGoogle already performs the one bounded persisted-session
         // check for transient popup-close results. Do not attach another auth
