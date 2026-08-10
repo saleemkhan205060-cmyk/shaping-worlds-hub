@@ -5,7 +5,7 @@ import {
   publishAuthenticatedSession,
   useAuth,
 } from "@/hooks/use-auth";
-import { describeGoogleAuthError } from "@/lib/google-auth";
+import { describeGoogleAuthError, signInWithGoogle } from "@/lib/google-auth";
 import {
   mountGoogleSignInButton,
   openGoogleAccountChooser,
@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
+import { isNativeCapacitorApp } from "@/lib/native-share";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -69,6 +70,13 @@ function AuthPage() {
   }, [user, authLoading, leaveAuth]);
 
   useEffect(() => {
+    // The installed Android app must use Credential Manager, which reads the
+    // Google accounts already present on the device. GSI is a browser-only
+    // chooser and is unreliable inside an Android WebView.
+    if (isNativeCapacitorApp()) {
+      setGsiReady(false);
+      return;
+    }
     const container = googleBtnRef.current;
     if (!container) return;
     let cancelled = false;
@@ -150,6 +158,18 @@ function AuthPage() {
     }
     setBusy(true);
     try {
+      if (isNativeCapacitorApp()) {
+        const result = await signInWithGoogle({
+          extraParams: { prompt: "select_account" },
+        });
+        if (result.error) throw result.error;
+        if (!result.redirected) {
+          toast.success("Welcome back!");
+          leaveAuth();
+        }
+        return;
+      }
+
       const result = await openGoogleAccountChooser();
       if (result.signedIn) {
         toast.success("Welcome back!");
