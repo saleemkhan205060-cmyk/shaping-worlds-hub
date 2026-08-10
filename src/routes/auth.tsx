@@ -121,21 +121,27 @@ function AuthPage() {
     }
     setBusy(true);
     try {
-      if (chooseAccount) {
-        // Google's in-page account chooser: the user picks one of their signed-in
-        // Google emails without ever leaving this screen.
-        const chooser = await openGoogleAccountChooser();
-        if (chooser.signedIn) {
-          leaveAuth();
-          return;
-        }
-        if (chooser.shown) {
-          // Overlay was dismissed without picking an account.
-          setBusy(false);
-          return;
-        }
-        // Chooser unavailable (blocked/unsupported) — fall through to OAuth.
+      // Always try Google Identity Services (GSI) first. GSI uses
+      // signInWithIdToken — no redirect URI is needed, so it works inside
+      // the editor preview iframe where the broker's popup handoff fails
+      // and the Supabase redirect flow gets redirect_uri_mismatch. The
+      // One Tap prompt appears as an overlay on this screen; the user
+      // picks a Google account without ever leaving the page.
+      const chooser = await openGoogleAccountChooser();
+      if (chooser.signedIn) {
+        leaveAuth();
+        return;
       }
+      if (chooser.shown) {
+        // GSI prompt was shown but the user dismissed it. Don't fall back
+        // to the broker — the user actively chose not to sign in.
+        setBusy(false);
+        return;
+      }
+      // GSI prompt was not shown (blocked, no Google session, or unsupported
+      // browser). Fall back to the managed broker flow, which works on the
+      // published site and in top-level windows but may surface
+      // "Authentication was cancelled" inside the preview iframe.
       const result = await signInWithGoogle({
           extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
         });

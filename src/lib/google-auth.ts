@@ -166,9 +166,20 @@ export async function completeGoogleOAuthCallback(url: string, expectedState?: s
 
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) throw error;
-    if (!data.session) throw new Error("Google sign-in did not return a session");
-    restoredSession = data.session;
+    if (!error && data.session) {
+      restoredSession = data.session;
+    } else if (error) {
+      // The Supabase client's detectSessionInUrl feature may have already
+      // exchanged the PKCE code during initialization (it runs automatically
+      // when the page loads with ?code= in the URL). If so, the manual
+      // exchangeCodeForSession call fails with a "code already used" error.
+      // Poll for the already-persisted session before surfacing a failure.
+      const existing = await waitForAuthSession(10_000);
+      if (!existing) throw error;
+      restoredSession = existing;
+    } else {
+      throw new Error("Google sign-in did not return a session");
+    }
   } else if (accessToken && refreshToken) {
     const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
