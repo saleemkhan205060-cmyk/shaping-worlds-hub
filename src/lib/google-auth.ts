@@ -6,6 +6,7 @@ import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
+import { hasNativePlugin } from "./native-plugins";
 import { ANDROID_OAUTH_BROKER_URL, getOAuthCallbackUrl, PUBLISHED_ORIGIN } from "./oauth-origin";
 
 type GoogleSignInOptions = {
@@ -53,7 +54,10 @@ function isInstalledNativeRuntime() {
 // App.then(), which also fails on Android.
 async function appPlugin(): Promise<{ plugin: typeof CapacitorApp } | null> {
   if (!isInstalledNativeRuntime()) return null;
-  if (!Capacitor.isPluginAvailable?.("App")) return null;
+  // Must check the native plugin list, not Capacitor.isPluginAvailable():
+  // the latter is true for the JS web fallback too, and calling that fallback
+  // on Android throws `"App" plugin is not implemented on android`.
+  if (!hasNativePlugin("App")) return null;
   try {
     const mod = await import("@capacitor/app");
     return mod.App ? { plugin: mod.App } : null;

@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
+import { hasNativePlugin } from "./native-plugins";
 
 export type NativeShareData = {
   title?: string;
@@ -77,6 +78,12 @@ async function shareWithWebFallback(shareData: ShareData): Promise<NativeShareRe
 
 export function shareWithCapacitor(data: NativeShareData): Promise<NativeShareResult> {
   if (!isNativeCapacitorApp()) return Promise.resolve("unavailable");
+  // An installed shell without the native Share plugin would otherwise hit the
+  // JS fallback and throw `"Share" plugin is not implemented on android`.
+  if (!hasNativePlugin("Share")) {
+    return shareWithWebShare(data) ?? Promise.resolve("unavailable" as const);
+  }
+
 
   try {
     return Share.share({
