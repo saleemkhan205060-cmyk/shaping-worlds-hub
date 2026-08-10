@@ -136,3 +136,60 @@ export async function openGoogleAccountChooser(): Promise<{
     });
   });
 }
+
+/**
+ * Renders Google's official sign-in button inside `container`. Clicking it
+ * opens Google's account chooser as a POPUP on top of the current screen —
+ * the user is never navigated to another page. On success the returned ID
+ * token is exchanged for an app session.
+ */
+export async function mountGoogleSignInButton(
+  container: HTMLElement,
+  handlers: {
+    onSignedIn: () => void;
+    onError: (error: unknown) => void;
+    width?: number;
+  },
+): Promise<boolean> {
+  const google = await loadGsi();
+  if (!google?.accounts?.id) return false;
+
+  const rawNonce = crypto.randomUUID();
+  const hashedNonce = await sha256Hex(rawNonce);
+
+  google.accounts.id.initialize({
+    client_id: GOOGLE_WEB_CLIENT_ID,
+    nonce: hashedNonce,
+    ux_mode: "popup",
+    auto_select: false,
+    itp_support: true,
+    callback: (response: GsiCredentialResponse) => {
+      if (!response.credential) return;
+      void supabase.auth
+        .signInWithIdToken({
+          provider: "google",
+          token: response.credential,
+          nonce: rawNonce,
+        })
+        .then(({ data, error }) => {
+          if (error) throw error;
+          if (!data.session) throw new Error("Google sign-in did not create a session");
+          publishAuthenticatedSession(data.session);
+          handlers.onSignedIn();
+        })
+        .catch(handlers.onError);
+    },
+  });
+
+  container.innerHTML = "";
+  google.accounts.id.renderButton(container, {
+    type: "standard",
+    theme: "outline",
+    size: "large",
+    text: "continue_with",
+    shape: "pill",
+    logo_alignment: "center",
+    width: handlers.width ?? 320,
+  });
+  return true;
+}
