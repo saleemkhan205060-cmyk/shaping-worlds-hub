@@ -8,11 +8,11 @@ import {
 import { describeGoogleAuthError } from "@/lib/google-auth";
 import {
   mountGoogleSignInButton,
-  openGoogleAccountChooser,
+  triggerGooglePopup,
 } from "@/lib/google-account-chooser";
 
 import { toast } from "sonner";
-import { ChevronRight, Globe, Loader2 } from "lucide-react";
+import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
@@ -81,6 +81,7 @@ function AuthPage() {
       onError: (error) => {
         console.error("Google sign-in error:", error);
         toast.error("Google sign-in failed. Please try again.");
+        setBusy(false);
       },
     })
       .then((ok) => {
@@ -142,44 +143,52 @@ function AuthPage() {
     }
   };
 
-  const onGoogle = async () => {
+  const onGoogle = () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
       return;
     }
     setBusy(true);
-    try {
-      // Always try Google Identity Services (GSI) first. GSI uses
-      // signInWithIdToken — no redirect URI is needed, so it works inside
-      // the editor preview iframe where the broker's popup handoff fails
-      // and the Supabase redirect flow gets redirect_uri_mismatch. The
-      // One Tap prompt appears as an overlay on this screen; the user
-      // picks a Google account without ever leaving the page.
-      const chooser = await openGoogleAccountChooser();
-      if (chooser.signedIn) {
-        leaveAuth();
+
+    // If the Google button is already rendered (GSI loaded), click it
+    // synchronously — this stays within the user gesture so popup blockers
+    // don't interfere. The button uses ux_mode:"popup" which opens a proper
+    // popup window (more reliable in iframes than the One Tap prompt).
+    if (gsiReady && googleBtnRef.current) {
+      const btn = googleBtnRef.current.querySelector(
+        '[role="button"], button, a[role="button"]',
+      ) as HTMLElement | null;
+      if (btn) {
+        btn.click();
+        // onSignedIn / onError from mountGoogleSignInButton handle the rest.
         return;
       }
-      if (chooser.shown) {
-        // GSI prompt was shown but the user dismissed it. Don't fall back
-        // to the broker — the user actively chose not to sign in.
-        setBusy(false);
-        return;
-      }
-      // Never fall back to redirect-based OAuth from this control. If Google's
-      // in-page chooser is unavailable, keep the user on this screen.
-      toast.error("Google account chooser is unavailable. Please try again.");
-      setBusy(false);
-    } catch (error) {
-      console.error(
-        "Google sign-in error:",
-        describeGoogleAuthError(error),
-        (error as { stack?: string } | null)?.stack ?? "",
-        error,
-      );
-      toast.error(authErrorMessage(error, "google"));
-      setBusy(false);
     }
+
+    // GSI button not rendered yet — try loading GSI and triggering a popup.
+    void (async () => {
+      try {
+        const ok = await triggerGooglePopup({
+          onSignedIn: () => {
+            toast.success("Welcome back!");
+            leaveAuth();
+          },
+          onError: (error) => {
+            console.error("Google sign-in error:", describeGoogleAuthError(error), error);
+            toast.error(authErrorMessage(error, "google"));
+            setBusy(false);
+          },
+        });
+        if (!ok) {
+          toast.error("Google sign-in is loading. Please wait and try again.");
+          setBusy(false);
+        }
+      } catch (error) {
+        console.error("Google sign-in error:", describeGoogleAuthError(error), error);
+        toast.error(authErrorMessage(error, "google"));
+        setBusy(false);
+      }
+    })();
   };
 
   return (
