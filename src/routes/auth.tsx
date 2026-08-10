@@ -12,7 +12,7 @@ import {
 } from "@/lib/google-account-chooser";
 
 import { toast } from "sonner";
-import { Globe, Loader2 } from "lucide-react";
+import { ChevronRight, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
@@ -227,11 +227,26 @@ function AuthPage() {
           {/* Google's own button: opens the account chooser as a popup over
               this screen, so the user never lands on another page. */}
           <div
-            ref={googleBtnRef}
-            className={`flex justify-center ${gsiReady ? "" : "hidden"} ${
+            className={`flex items-center justify-center gap-2 ${gsiReady ? "" : "hidden"} ${
               mode === "signup" && !agreedTerms ? "pointer-events-none opacity-50" : ""
             }`}
-          />
+          >
+            <div ref={googleBtnRef} className="flex justify-center" />
+            {/* Arrow: opens the same in-page Google account list overlay */}
+            <button
+              type="button"
+              aria-label="Choose a Google account"
+              onClick={onGoogle}
+              disabled={busy}
+              className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
+            >
+              {busy ? (
+                <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+              ) : (
+                <ChevronRight className="h-5 w-5 text-slate-600" />
+              )}
+            </button>
+          </div>
           {!gsiReady && (
             <button
               type="button"
@@ -243,6 +258,8 @@ function AuthPage() {
             </button>
           )}
         </div>
+
+
 
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
