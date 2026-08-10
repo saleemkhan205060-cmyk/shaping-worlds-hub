@@ -1,4 +1,4 @@
-import { App } from "@capacitor/app";
+import type { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
 import type { Session } from "@supabase/supabase-js";
