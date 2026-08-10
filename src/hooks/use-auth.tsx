@@ -66,14 +66,18 @@ function isInvalidRefreshSession(error: unknown) {
   );
 }
 
-async function clearBrokenSession() {
-  await clearPersistedSession();
+// Clears ONLY the Supabase (localStorage) copy of a broken session. The native
+// backup is deliberately kept: on Android the WebView copy is the one that goes
+// stale between launches, and wiping the backup here is what forced users to
+// sign in again after reopening the app.
+async function clearBrokenLocalSession() {
   try {
     await supabase.auth.signOut({ scope: "local" });
   } catch {
     // The session is already unusable; make sure the UI can recover.
   }
 }
+
 
 function ensureAuthInitialized() {
   if (authInitialized) return;
