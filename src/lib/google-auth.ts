@@ -45,6 +45,24 @@ function isInstalledNativeRuntime() {
   return Capacitor.getPlatform() === "android";
 }
 
+// The @capacitor/app plugin is optional at runtime: an older installed shell
+// (or a build without the native plugin) throws "App plugin is not implemented
+// on android" and used to break startup. Load it lazily, and never return the
+// plugin proxy directly from an async function — the proxy answers every
+// property lookup, so the runtime would treat it as a thenable and call
+// App.then(), which also fails on Android.
+async function appPlugin(): Promise<{ plugin: typeof CapacitorApp } | null> {
+  if (!isInstalledNativeRuntime()) return null;
+  if (!Capacitor.isPluginAvailable?.("App")) return null;
+  try {
+    const mod = await import("@capacitor/app");
+    return mod.App ? { plugin: mod.App } : null;
+  } catch {
+    return null;
+  }
+}
+
+
 function callbackValues(url: string) {
   const callback = new URL(url);
   const values = new URLSearchParams(callback.search);
