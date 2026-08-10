@@ -5,10 +5,7 @@ import {
   publishAuthenticatedSession,
   useAuth,
 } from "@/hooks/use-auth";
-import {
-  describeGoogleAuthError,
-  signInWithGoogle,
-} from "@/lib/google-auth";
+import { describeGoogleAuthError } from "@/lib/google-auth";
 import {
   mountGoogleSignInButton,
   openGoogleAccountChooser,
@@ -16,7 +13,7 @@ import {
 
 import { toast } from "sonner";
 import { Globe, Loader2 } from "lucide-react";
-import { getOAuthRedirectOrigin, PUBLISHED_ORIGIN } from "@/lib/oauth-origin";
+import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -145,7 +142,7 @@ function AuthPage() {
     }
   };
 
-  const onGoogle = async (chooseAccount = false) => {
+  const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
       return;
@@ -169,44 +166,10 @@ function AuthPage() {
         setBusy(false);
         return;
       }
-      // GSI prompt was not shown (blocked, no Google session, or unsupported
-      // browser). Inside the editor preview iframe the broker's popup handoff
-      // is dropped and always surfaces "Authentication was cancelled", so open
-      // the published sign-in page in a real top-level tab instead.
-      const inIframe = typeof window !== "undefined" && window.self !== window.top;
-      if (inIframe) {
-        window.open(`${PUBLISHED_ORIGIN}/auth`, "_blank", "noopener");
-        toast.info("Google sign-in opened in a new tab.");
-        setBusy(false);
-        return;
-      }
-      const result = await signInWithGoogle({
-          extraParams: chooseAccount ? { prompt: "select_account" } : undefined,
-        });
-
-
-      if (result.error) {
-        // signInWithGoogle already performs the one bounded persisted-session
-        // check for transient popup-close results. Do not attach another auth
-        // listener and polling loop here: both the root callback bridge and the
-        // shared auth store already own session completion.
-        console.error(
-          "Google sign-in error:",
-          describeGoogleAuthError(result.error),
-          (result.error as { stack?: string } | null)?.stack ?? "",
-          result.error,
-        );
-        // Show the real reason even for "cancelled"-looking results: on Android
-        // Credential Manager reports user-cancel and configuration failures
-        // with the same wording, so silence hides genuine setup errors.
-        toast.error(authErrorMessage(result.error, "google"));
-        setBusy(false);
-        return;
-      }
-      if (result.redirected) return;
-      // A non-error managed OAuth result means its generated wrapper has
-      // already stored the session. The shared auth listener will publish it.
-      leaveAuth();
+      // Never fall back to redirect-based OAuth from this control. If Google's
+      // in-page chooser is unavailable, keep the user on this screen.
+      toast.error("Google account chooser is unavailable. Please try again.");
+      setBusy(false);
     } catch (error) {
       console.error(
         "Google sign-in error:",
@@ -272,7 +235,7 @@ function AuthPage() {
           {!gsiReady && (
             <button
               type="button"
-              onClick={() => onGoogle(false)}
+              onClick={onGoogle}
               disabled={busy || (mode === "signup" && !agreedTerms)}
               className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
             >
