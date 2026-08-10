@@ -97,9 +97,12 @@ function ensureAuthInitialized() {
         // Also covers TOKEN_REFRESHED, so the native backup always holds the
         // latest rotated refresh token.
         persistSession(s);
-      } else if (event === "SIGNED_OUT") {
-        void clearPersistedSession();
       }
+      // NOTE: SIGNED_OUT is NOT allowed to wipe the native backup. Supabase
+      // also emits it after a transient refresh failure (offline launch, token
+      // rotation race), which used to log Android users out permanently.
+      // Explicit sign-out clears the backup in signOut() below.
+
       // A null INITIAL_SESSION means Supabase storage is empty (the WebView
       // dropped localStorage between launches) — never treat that as a
       // sign-out or the native backup gets wiped before it can be restored.
