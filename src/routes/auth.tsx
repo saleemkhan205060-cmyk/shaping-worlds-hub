@@ -9,10 +9,13 @@ import {
   describeGoogleAuthError,
   signInWithGoogle,
 } from "@/lib/google-auth";
-import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
+import {
+  mountGoogleSignInButton,
+  openGoogleAccountChooser,
+} from "@/lib/google-account-chooser";
 
 import { toast } from "sonner";
-import { Globe, Loader2, ChevronDown } from "lucide-react";
+import { Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin, PUBLISHED_ORIGIN } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
@@ -27,6 +30,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const leavingAuthRef = useRef(false);
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const [gsiReady, setGsiReady] = useState(false);
 
   const leaveAuth = useCallback(() => {
     if (leavingAuthRef.current) return;
@@ -65,6 +70,32 @@ function AuthPage() {
   useEffect(() => {
     if (!authLoading && user) leaveAuth();
   }, [user, authLoading, leaveAuth]);
+
+  useEffect(() => {
+    const container = googleBtnRef.current;
+    if (!container) return;
+    let cancelled = false;
+    void mountGoogleSignInButton(container, {
+      width: Math.min(360, Math.max(240, container.clientWidth || 320)),
+      onSignedIn: () => {
+        toast.success("Welcome back!");
+        leaveAuth();
+      },
+      onError: (error) => {
+        console.error("Google sign-in error:", error);
+        toast.error("Google sign-in failed. Please try again.");
+      },
+    })
+      .then((ok) => {
+        if (!cancelled) setGsiReady(ok);
+      })
+      .catch(() => setGsiReady(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [leaveAuth]);
+
+
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -229,29 +260,27 @@ function AuthPage() {
           </div>
         )}
 
-        <div
-          className={`${mode === "signup" ? "mt-3" : "mt-6"} flex items-center border border-slate-200 rounded-full overflow-hidden hover:bg-slate-50 disabled:opacity-50`}
-        >
-          <button
-            type="button"
-            onClick={() => onGoogle(false)}
-            disabled={busy || (mode === "signup" && !agreedTerms)}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold disabled:opacity-50"
-          >
-            <GoogleIcon /> Continue with Google
-          </button>
-          <div className="w-px h-6 bg-slate-200" />
-          <button
-            type="button"
-            onClick={() => onGoogle(true)}
-            disabled={busy || (mode === "signup" && !agreedTerms)}
-            title="Choose a different Google account"
-            aria-label="Choose a different Google account"
-            className="px-3 flex items-center justify-center disabled:opacity-50"
-          >
-            <ChevronDown className="h-4 w-4 text-slate-600" />
-          </button>
+        <div className={mode === "signup" ? "mt-3" : "mt-6"}>
+          {/* Google's own button: opens the account chooser as a popup over
+              this screen, so the user never lands on another page. */}
+          <div
+            ref={googleBtnRef}
+            className={`flex justify-center ${gsiReady ? "" : "hidden"} ${
+              mode === "signup" && !agreedTerms ? "pointer-events-none opacity-50" : ""
+            }`}
+          />
+          {!gsiReady && (
+            <button
+              type="button"
+              onClick={() => onGoogle(false)}
+              disabled={busy || (mode === "signup" && !agreedTerms)}
+              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+            >
+              <GoogleIcon /> Continue with Google
+            </button>
+          )}
         </div>
+
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
           <div className="flex-1 h-px bg-slate-200" /> OR{" "}
