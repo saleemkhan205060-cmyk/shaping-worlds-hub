@@ -193,3 +193,81 @@ export async function mountGoogleSignInButton(
   });
   return true;
 }
+
+/**
+ * Loads Google Identity Services and triggers the account-chooser POPUP by
+ * rendering an off-screen Google button and clicking it. Unlike the One Tap
+ * `prompt()` (which shows an overlay that is often blocked in third-party
+ * iframes such as the Lovable editor preview), this uses `ux_mode: "popup"`
+ * which opens a proper popup window — far more reliable in embedded contexts.
+ *
+ * Returns `true` if the popup was triggered, `false` if GSI couldn't load.
+ */
+export async function triggerGooglePopup(handlers: {
+  onSignedIn: () => void;
+  onError: (error: unknown) => void;
+}): Promise<boolean> {
+  const google = await loadGsi();
+  if (!google?.accounts?.id) return false;
+
+  const rawNonce = crypto.randomUUID();
+  const hashedNonce = await sha256Hex(rawNonce);
+
+  google.accounts.id.initialize({
+    client_id: GOOGLE_WEB_CLIENT_ID,
+    nonce: hashedNonce,
+    ux_mode: "popup",
+    auto_select: false,
+    itp_support: true,
+    callback: (response: GsiCredentialResponse) => {
+      if (!response.credential) {
+        handlers.onError(new Error("No credential returned from Google"));
+        return;
+      }
+      void supabase.auth
+        .signInWithIdToken({
+          provider: "google",
+          token: response.credential,
+          nonce: rawNonce,
+        })
+        .then(({ data, error }) => {
+          if (error) throw error;
+          if (!data.session) throw new Error("Google sign-in did not create a session");
+          publishAuthenticatedSession(data.session);
+          handlers.onSignedIn();
+        })
+        .catch(handlers.onError);
+    },
+  });
+
+  // Render a Google button in a temporary off-screen container and click it
+  // to trigger the popup account chooser.
+  const tempContainer = document.createElement("div");
+  tempContainer.style.cssText = "position:fixed;left:-9999px;top:0;width:320px;";
+  document.body.appendChild(tempContainer);
+
+  google.accounts.id.renderButton(tempContainer, {
+    type: "standard",
+    theme: "outline",
+    size: "large",
+    text: "continue_with",
+    shape: "pill",
+    width: 320,
+  });
+
+  // Give the button a frame to render, then click it.
+  requestAnimationFrame(() => {
+    const btn = tempContainer.querySelector<HTMLElement>(
+      '[role="button"], button, a[role="button"]',
+    );
+    if (btn) {
+      btn.click();
+    } else {
+      handlers.onError(new Error("Could not render Google sign-in button"));
+    }
+  });
+
+  // Clean up the temporary container after a delay.
+  setTimeout(() => tempContainer.remove(), 10_000);
+  return true;
+}
