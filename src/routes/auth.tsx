@@ -173,7 +173,7 @@ function AuthPage() {
             toast.success("Welcome back!");
             leaveAuth();
           },
-          onError: (error) => {
+          onError: (error: unknown) => {
             console.error("Google sign-in error:", describeGoogleAuthError(error), error);
             toast.error(authErrorMessage(error, "google"));
             setBusy(false);
@@ -253,7 +253,7 @@ function AuthPage() {
               {busy ? (
                 <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
               ) : (
-                <ChevronRight className="h-5 w-5 text-slate-600" />
+                <ChevronDown className="h-5 w-5 text-slate-600" />
               )}
             </button>
           </div>
@@ -282,7 +282,7 @@ function AuthPage() {
                 {busy ? (
                   <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
                 ) : (
-                  <ChevronRight className="h-5 w-5 text-slate-600" />
+                  <ChevronDown className="h-5 w-5 text-slate-600" />
                 )}
               </button>
             </div>
