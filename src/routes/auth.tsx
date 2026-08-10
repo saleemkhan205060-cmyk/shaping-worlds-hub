@@ -148,8 +148,6 @@ function AuthPage() {
       toast.error("Please accept the Terms & Conditions to continue.");
       return;
     }
-    if (!gsiReady) return;
-
     setBusy(true);
     try {
       const result = await openGoogleAccountChooser();
@@ -221,7 +219,7 @@ function AuthPage() {
               type="button"
               aria-label="Choose a Google account"
               onClick={() => void onGoogle()}
-              disabled={busy || !gsiReady}
+              disabled={busy}
               className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
             >
               {busy ? (
@@ -240,7 +238,7 @@ function AuthPage() {
               <button
                 type="button"
                 onClick={() => void onGoogle()}
-                disabled={busy || !gsiReady}
+                disabled={busy}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
               >
                 <GoogleIcon /> Continue with Google
@@ -250,7 +248,7 @@ function AuthPage() {
                 type="button"
                 aria-label="Choose a Google account"
                 onClick={() => void onGoogle()}
-                disabled={busy || !gsiReady}
+                disabled={busy}
                 className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
               >
                 {busy ? (
