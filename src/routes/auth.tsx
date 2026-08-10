@@ -13,7 +13,7 @@ import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
 
 import { toast } from "sonner";
 import { Globe, Loader2, ChevronDown } from "lucide-react";
-import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
+import { getOAuthRedirectOrigin, PUBLISHED_ORIGIN } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
