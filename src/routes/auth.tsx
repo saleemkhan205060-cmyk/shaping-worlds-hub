@@ -5,10 +5,10 @@ import {
   publishAuthenticatedSession,
   useAuth,
 } from "@/hooks/use-auth";
-import { describeGoogleAuthError, signInWithGoogle, waitForAuthSession } from "@/lib/google-auth";
+import { describeGoogleAuthError } from "@/lib/google-auth";
 import {
   mountGoogleSignInButton,
-  triggerGooglePopup,
+  openGoogleAccountChooser,
 } from "@/lib/google-account-chooser";
 
 import { toast } from "sonner";
@@ -143,63 +143,26 @@ function AuthPage() {
     }
   };
 
-  const onGoogle = () => {
+  const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
       return;
     }
+    if (!gsiReady) return;
+
     setBusy(true);
-
-    // If the Google button is already rendered (GSI loaded), click it
-    // synchronously — this stays within the user gesture so popup blockers
-    // don't interfere. The button uses ux_mode:"popup" which opens a proper
-    // popup window (more reliable in iframes than the One Tap prompt).
-    if (gsiReady && googleBtnRef.current) {
-      const btn = googleBtnRef.current.querySelector(
-        '[role="button"], button, a[role="button"]',
-      ) as HTMLElement | null;
-      if (btn) {
-        btn.click();
-        // onSignedIn / onError from mountGoogleSignInButton handle the rest.
-        return;
+    try {
+      const result = await openGoogleAccountChooser();
+      if (result.signedIn) {
+        toast.success("Welcome back!");
+        leaveAuth();
       }
+    } catch (error) {
+      console.error("Google sign-in error:", describeGoogleAuthError(error), error);
+      toast.error(authErrorMessage(error, "google"));
+    } finally {
+      setBusy(false);
     }
-
-    // GSI button not rendered yet — try loading GSI and triggering a popup.
-    void (async () => {
-      try {
-        const ok = await triggerGooglePopup({
-          onSignedIn: () => {
-            toast.success("Welcome back!");
-            leaveAuth();
-          },
-          onError: (error: unknown) => {
-            console.error("Google sign-in error:", describeGoogleAuthError(error), error);
-            toast.error(authErrorMessage(error, "google"));
-            setBusy(false);
-          },
-        });
-        if (!ok) {
-          // Google's script is blocked in this context (e.g. embedded
-          // preview iframes / strict browsers). Fall back to the managed
-          // OAuth popup, which shows the same Google account list.
-          await signInWithGoogle({ extraParams: { prompt: "select_account" } });
-          const session = await waitForAuthSession(20_000);
-          if (session) {
-            publishAuthenticatedSession(session);
-            toast.success("Welcome back!");
-            leaveAuth();
-            return;
-          }
-          toast.error("Google sign-in was not completed. Please try again.");
-          setBusy(false);
-        }
-      } catch (error) {
-        console.error("Google sign-in error:", describeGoogleAuthError(error), error);
-        toast.error(authErrorMessage(error, "google"));
-        setBusy(false);
-      }
-    })();
   };
 
   return (
@@ -257,8 +220,8 @@ function AuthPage() {
             <button
               type="button"
               aria-label="Choose a Google account"
-              onClick={onGoogle}
-              disabled={busy}
+              onClick={() => void onGoogle()}
+              disabled={busy || !gsiReady}
               className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
             >
               {busy ? (
@@ -276,8 +239,8 @@ function AuthPage() {
             >
               <button
                 type="button"
-                onClick={onGoogle}
-                disabled={busy}
+                onClick={() => void onGoogle()}
+                disabled={busy || !gsiReady}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
               >
                 <GoogleIcon /> Continue with Google
@@ -286,8 +249,8 @@ function AuthPage() {
               <button
                 type="button"
                 aria-label="Choose a Google account"
-                onClick={onGoogle}
-                disabled={busy}
+                onClick={() => void onGoogle()}
+                disabled={busy || !gsiReady}
                 className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
               >
                 {busy ? (
