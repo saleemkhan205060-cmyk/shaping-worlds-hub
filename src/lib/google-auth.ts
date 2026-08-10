@@ -1,4 +1,4 @@
-import { App } from "@capacitor/app";
+import type { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
 import type { Session } from "@supabase/supabase-js";
@@ -44,6 +44,24 @@ function isInstalledNativeRuntime() {
   // platform. Only the packaged Play Store app may use the native callback.
   return Capacitor.getPlatform() === "android";
 }
+
+// The @capacitor/app plugin is optional at runtime: an older installed shell
+// (or a build without the native plugin) throws "App plugin is not implemented
+// on android" and used to break startup. Load it lazily, and never return the
+// plugin proxy directly from an async function — the proxy answers every
+// property lookup, so the runtime would treat it as a thenable and call
+// App.then(), which also fails on Android.
+async function appPlugin(): Promise<{ plugin: typeof CapacitorApp } | null> {
+  if (!isInstalledNativeRuntime()) return null;
+  if (!Capacitor.isPluginAvailable?.("App")) return null;
+  try {
+    const mod = await import("@capacitor/app");
+    return mod.App ? { plugin: mod.App } : null;
+  } catch {
+    return null;
+  }
+}
+
 
 function callbackValues(url: string) {
   const callback = new URL(url);
@@ -173,43 +191,57 @@ async function restoreSessionFromNativeCallback(url: string, expectedState?: str
 }
 
 export async function restoreNativeGoogleSession() {
-  if (!isInstalledNativeRuntime()) return false;
-  const launch = await App.getLaunchUrl();
-  if (!launch?.url) return false;
-  return restoreSessionFromNativeCallbackOnce(launch.url);
+  const app = await appPlugin();
+  if (!app) return false;
+  try {
+    const launch = await app.plugin.getLaunchUrl();
+    if (!launch?.url) return false;
+    return await restoreSessionFromNativeCallbackOnce(launch.url);
+  } catch (error) {
+    console.warn("Native launch URL unavailable:", error);
+    return false;
+  }
 }
 
 export function listenForNativeGoogleSession(
   onRestored: () => void,
   onError: (error: Error) => void,
 ) {
-  if (!isInstalledNativeRuntime()) return () => undefined;
-
   let active = true;
   let removeListener: (() => Promise<void>) | undefined;
 
-  void App.addListener("appUrlOpen", ({ url }) => {
-    void restoreSessionFromNativeCallbackOnce(url)
-      .then((restored) => {
-        if (active && restored) onRestored();
-      })
-      .catch((error) => {
-        if (!active) return;
-        onError(error instanceof Error ? error : new Error(String(error)));
-      });
-  }).then((listener) => {
-    if (!active) {
-      void listener.remove();
-      return;
-    }
-    removeListener = () => listener.remove();
-  });
+  void appPlugin()
+    .then((app) => {
+      if (!app || !active) return;
+      return app.plugin
+        .addListener("appUrlOpen", ({ url }) => {
+          void restoreSessionFromNativeCallbackOnce(url)
+            .then((restored) => {
+              if (active && restored) onRestored();
+            })
+            .catch((error) => {
+              if (!active) return;
+              onError(error instanceof Error ? error : new Error(String(error)));
+            });
+        })
+        .then((listener) => {
+          if (!active) {
+            void listener.remove();
+            return;
+          }
+          removeListener = () => listener.remove();
+        });
+    })
+    .catch((error) => {
+      console.warn("Native app URL listener unavailable:", error);
+    });
 
   return () => {
     active = false;
     void removeListener?.();
   };
 }
+
 
 async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
   // Let the managed SDK own the browser flow. It builds the signed broker
