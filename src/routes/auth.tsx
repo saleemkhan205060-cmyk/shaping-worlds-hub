@@ -68,6 +68,32 @@ function AuthPage() {
     if (!authLoading && user) leaveAuth();
   }, [user, authLoading, leaveAuth]);
 
+  useEffect(() => {
+    const container = googleBtnRef.current;
+    if (!container) return;
+    let cancelled = false;
+    void mountGoogleSignInButton(container, {
+      width: Math.min(360, Math.max(240, container.clientWidth || 320)),
+      onSignedIn: () => {
+        toast.success("Welcome back!");
+        leaveAuth();
+      },
+      onError: (error) => {
+        console.error("Google sign-in error:", error);
+        toast.error("Google sign-in failed. Please try again.");
+      },
+    })
+      .then((ok) => {
+        if (!cancelled) setGsiReady(ok);
+      })
+      .catch(() => setGsiReady(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [leaveAuth]);
+
+
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === "signup" && !agreedTerms) {
