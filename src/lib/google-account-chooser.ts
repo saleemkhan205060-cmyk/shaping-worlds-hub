@@ -71,9 +71,11 @@ export async function openGoogleAccountChooser(): Promise<{
 
   return await new Promise((resolve, reject) => {
     let settled = false;
+    let promptShown = false;
     const finish = (value: { signedIn: boolean; shown: boolean }) => {
       if (settled) return;
       settled = true;
+      clearTimeout(timeoutId);
       resolve(value);
     };
 
@@ -104,14 +106,31 @@ export async function openGoogleAccountChooser(): Promise<{
           .catch((error) => {
             if (settled) return;
             settled = true;
+            clearTimeout(timeoutId);
             reject(error);
           });
       },
     });
 
+    // Safety net: if no notification fires within 15s (e.g. the GSI library
+    // silently stalls), resolve so the caller can fall back to the broker.
+    const timeoutId = setTimeout(() => {
+      finish({ signedIn: false, shown: promptShown });
+    }, 15_000);
+
     google.accounts.id.prompt((notification) => {
-      if (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.()) {
+      if (notification?.isNotDisplayed?.()) {
+        // Prompt was never shown (no Google session, FedCM blocked, etc.).
+        // Fall back to the broker flow.
         finish({ signedIn: false, shown: false });
+      } else if (notification?.isSkippedMoment?.()) {
+        // Prompt was shown but the user dismissed it (tapped outside, clicked
+        // "Cancel", etc.). Do NOT fall back to the broker — the user actively
+        // chose not to sign in.
+        finish({ signedIn: false, shown: true });
+      } else if (notification?.isDisplayed?.()) {
+        // Prompt is visible. Wait for the credential callback or a skipped moment.
+        promptShown = true;
       }
     });
   });
