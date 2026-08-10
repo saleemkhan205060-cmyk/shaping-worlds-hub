@@ -19,9 +19,11 @@ type Gsi = {
   };
 };
 type GsiNotification = {
+  isDisplayed?: () => boolean;
   isNotDisplayed?: () => boolean;
   isSkippedMoment?: () => boolean;
   getNotDisplayedReason?: () => string;
+  getSkippedReason?: () => string;
 };
 
 let scriptPromise: Promise<Gsi | null> | null = null;
