@@ -14,6 +14,7 @@ type Gsi = {
     id: {
       initialize(config: Record<string, unknown>): void;
       prompt(listener?: (notification: GsiNotification) => void): void;
+      renderButton(parent: HTMLElement, options: Record<string, unknown>): void;
       cancel(): void;
     };
   };
