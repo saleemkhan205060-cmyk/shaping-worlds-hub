@@ -5,7 +5,7 @@ import {
   publishAuthenticatedSession,
   useAuth,
 } from "@/hooks/use-auth";
-import { describeGoogleAuthError } from "@/lib/google-auth";
+import { describeGoogleAuthError, signInWithGoogle, waitForAuthSession } from "@/lib/google-auth";
 import {
   mountGoogleSignInButton,
   triggerGooglePopup,
