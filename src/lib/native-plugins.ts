@@ -27,9 +27,10 @@ export function hasNativePlugin(name: string): boolean {
   try {
     if (!cap?.isNativePlatform?.()) return false;
     const headers = cap.PluginHeaders;
-    // Older bridges (Capacitor < 3) don't expose PluginHeaders at all; there we
-    // can only fall back to the registry check.
-    if (!Array.isArray(headers)) return true;
+    // No PluginHeaders means we cannot prove a native implementation exists.
+    // Assuming it does is what produced `"App" plugin is not implemented on
+    // android`, so fail closed instead.
+    if (!Array.isArray(headers)) return false;
     return headers.some((header) => header?.name === name);
   } catch {
     return false;
