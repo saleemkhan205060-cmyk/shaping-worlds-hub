@@ -6,15 +6,10 @@ import {
   useAuth,
 } from "@/hooks/use-auth";
 import { describeGoogleAuthError, signInWithGoogle } from "@/lib/google-auth";
-import {
-  mountGoogleSignInButton,
-  openGoogleAccountChooser,
-} from "@/lib/google-account-chooser";
 
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
-import { isNativeCapacitorApp } from "@/lib/native-share";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -28,8 +23,6 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const leavingAuthRef = useRef(false);
-  const googleBtnRef = useRef<HTMLDivElement>(null);
-  const [gsiReady, setGsiReady] = useState(false);
 
   const leaveAuth = useCallback(() => {
     if (leavingAuthRef.current) return;
@@ -68,40 +61,6 @@ function AuthPage() {
   useEffect(() => {
     if (!authLoading && user) leaveAuth();
   }, [user, authLoading, leaveAuth]);
-
-  useEffect(() => {
-    // The installed Android app must use Credential Manager, which reads the
-    // Google accounts already present on the device. GSI is a browser-only
-    // chooser and is unreliable inside an Android WebView.
-    if (isNativeCapacitorApp()) {
-      setGsiReady(false);
-      return;
-    }
-    const container = googleBtnRef.current;
-    if (!container) return;
-    let cancelled = false;
-    void mountGoogleSignInButton(container, {
-      width: Math.min(360, Math.max(240, container.clientWidth || 320)),
-      onSignedIn: () => {
-        toast.success("Welcome back!");
-        leaveAuth();
-      },
-      onError: (error) => {
-        console.error("Google sign-in error:", error);
-        toast.error("Google sign-in failed. Please try again.");
-        setBusy(false);
-      },
-    })
-      .then((ok) => {
-        if (!cancelled) setGsiReady(ok);
-      })
-      .catch(() => setGsiReady(false));
-    return () => {
-      cancelled = true;
-    };
-  }, [leaveAuth]);
-
-
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,20 +117,14 @@ function AuthPage() {
     }
     setBusy(true);
     try {
-      if (isNativeCapacitorApp()) {
-        const result = await signInWithGoogle({
-          extraParams: { prompt: "select_account" },
-        });
-        if (result.error) throw result.error;
-        if (!result.redirected) {
-          toast.success("Welcome back!");
-          leaveAuth();
-        }
-        return;
-      }
-
-      const result = await openGoogleAccountChooser();
-      if (result.signedIn) {
+      // One Google path only: Android uses the native Credential Manager
+      // account list; web uses the managed popup. This avoids the competing
+      // GSI/FedCM initialization that made the button intermittently fail.
+      const result = await signInWithGoogle({
+        extraParams: { prompt: "select_account" },
+      });
+      if (result.error) throw result.error;
+      if (!result.redirected) {
         toast.success("Welcome back!");
         leaveAuth();
       }
@@ -225,16 +178,19 @@ function AuthPage() {
         )}
 
         <div className={mode === "signup" ? "mt-3" : "mt-6"}>
-          {/* Google's own button (when GSI is available): opens the account
-              chooser as a popup over this screen, so the user never lands on
-              another page. */}
           <div
-            className={`flex items-center justify-center gap-2 ${gsiReady ? "" : "hidden"} ${
+            className={`flex items-center gap-2 ${
               mode === "signup" && !agreedTerms ? "pointer-events-none opacity-50" : ""
             }`}
           >
-            <div ref={googleBtnRef} className="flex justify-center" />
-            {/* Arrow: opens the same in-page Google account list overlay */}
+            <button
+              type="button"
+              onClick={() => void onGoogle()}
+              disabled={busy}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+            >
+              <GoogleIcon /> Continue with Google
+            </button>
             <button
               type="button"
               aria-label="Choose a Google account"
@@ -249,36 +205,6 @@ function AuthPage() {
               )}
             </button>
           </div>
-          {!gsiReady && (
-            <div
-              className={`flex items-center gap-2 ${
-                mode === "signup" && !agreedTerms ? "opacity-50 pointer-events-none" : ""
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => void onGoogle()}
-                disabled={busy}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
-              >
-                <GoogleIcon /> Continue with Google
-              </button>
-              {/* Arrow: opens the same in-page Google account list overlay */}
-              <button
-                type="button"
-                aria-label="Choose a Google account"
-                onClick={() => void onGoogle()}
-                disabled={busy}
-                className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
-              >
-                {busy ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-slate-600" />
-                )}
-              </button>
-            </div>
-          )}
         </div>
 
 
