@@ -64,7 +64,7 @@ function UserProfile() {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
+      supabase.from("profiles").select("id, username, display_name, avatar_url, created_at, updated_at, cover_url, bio, location, website, is_verified").eq("id", id).maybeSingle(),
       supabase
         .from("posts")
         .select("id, user_id, media_url, media_type, caption, created_at, thumbnail_url")
