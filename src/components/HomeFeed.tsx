@@ -209,8 +209,12 @@ export function HomeFeed() {
       if (page) {
         setPosts(page);
         setHasMore(page.length === PAGE_SIZE);
+        setLoadFailed(false);
+      } else {
+        setLoadFailed(true);
       }
       setLoading(false);
+
     })();
   }).current;
 
