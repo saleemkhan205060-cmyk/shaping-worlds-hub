@@ -66,6 +66,16 @@ export function Layout({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Safety net: an overlay that unmounts mid-navigation can leave the page
+  // scroll-locked (body overflow/pointer-events), which looks like a freeze.
+  // Clear it on every route change.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.style.overflow = "";
+    document.body.style.pointerEvents = "";
+    document.body.style.position = "";
+  }, [path]);
+
   const refreshUnreadMsgs = useCallback(async () => {
     if (!userId) return setUnreadMsgs(0);
     const { count } = await supabase
