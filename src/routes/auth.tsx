@@ -110,6 +110,27 @@ function AuthPage() {
     }
   };
 
+  const onForgotPassword = async () => {
+    const target = email.trim();
+    if (!target) {
+      toast.error("Please enter your email above first.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(target, {
+        redirectTo: `${getOAuthRedirectOrigin()}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Password reset link sent. Check your email.");
+    } catch (err) {
+      console.error("Password reset error:", err);
+      toast.error(authErrorMessage(err, "signin"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
