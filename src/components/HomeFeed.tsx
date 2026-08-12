@@ -206,18 +206,14 @@ export function HomeFeed() {
     })();
   }).current;
 
+  const postsLenRef = useRef(0);
+
   const loadMore = useRef(() => {
     if (loadingMoreRef.current) return;
     loadingMoreRef.current = true;
     setLoadingMore(true);
     void (async () => {
-      let currentCount = 0;
-      setPosts((prev) => {
-        currentCount = prev.length;
-        return prev;
-      });
-      // read length synchronously from the latest render via functional update
-      const page = await fetchPage(currentCount);
+      const page = await fetchPage(postsLenRef.current);
       if (page) {
         setPosts((prev) => {
           const seen = new Set(prev.map((p) => p.id));
@@ -229,6 +225,10 @@ export function HomeFeed() {
       setLoadingMore(false);
     })();
   }).current;
+
+  useEffect(() => {
+    postsLenRef.current = posts.length;
+  }, [posts]);
 
   useEffect(() => {
     loadPosts();
