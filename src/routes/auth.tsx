@@ -268,7 +268,7 @@ function AuthPage() {
                 type="button"
                 onClick={() => void onForgotPassword()}
                 disabled={busy}
-                className="text-sm font-semibold text-indigo-600 hover:underline disabled:opacity-50"
+                className="text-sm font-semibold text-[#117d43] hover:underline disabled:opacity-50"
               >
                 Forgot password?
               </button>
@@ -289,7 +289,7 @@ function AuthPage() {
           <button
             type="button"
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="text-indigo-600 font-semibold hover:underline"
+            className="text-[#117d43] font-semibold hover:underline"
           >
             {mode === "signin" ? "Create an account" : "Sign in"}
           </button>
