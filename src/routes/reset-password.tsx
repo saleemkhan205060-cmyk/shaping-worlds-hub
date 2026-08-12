@@ -99,8 +99,8 @@ function ResetPasswordPage() {
 
   const savePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      toast.error("Password must be at least 8 characters");
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
     if (password !== confirm) {
@@ -207,7 +207,7 @@ function ResetPasswordPage() {
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="New password (min 8 chars)"
+              placeholder="New password (min 6 chars)"
               className={inputClass}
             />
             <input
