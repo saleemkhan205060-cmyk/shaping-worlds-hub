@@ -144,10 +144,12 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     setActiveId(targetId);
     const target = el.children[startIndex] as HTMLElement | undefined;
     if (target) el.scrollTo({ top: target.offsetTop, behavior: "instant" as ScrollBehavior });
-    const prev = document.body.style.overflow;
+    // Always restore to the default (not the captured value): this effect
+    // re-runs whenever `items` changes, so capturing the previous value would
+    // capture "hidden" and permanently lock page scrolling after close.
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = "";
     };
   }, [items, startIndex]);
 

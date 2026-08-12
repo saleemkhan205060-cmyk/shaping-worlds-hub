@@ -114,7 +114,7 @@ function AuthPage() {
     const target = email.trim();
     void navigate({
       to: "/reset-password",
-      search: target ? { email: target } : {},
+      search: { email: target || undefined },
     });
   };
 
