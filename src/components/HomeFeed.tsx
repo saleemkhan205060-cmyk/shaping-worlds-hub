@@ -967,8 +967,23 @@ export function HomeFeed() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500 text-sm">
-            {query.trim() ? "No posts match your search." : "No posts yet. Be the first to share!"}
+            {query.trim() ? (
+              "No posts match your search."
+            ) : loadFailed ? (
+              <>
+                <p className="mb-3">Couldn’t load the feed. Check your connection.</p>
+                <button
+                  onClick={() => loadPosts()}
+                  className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
+                >
+                  Retry
+                </button>
+              </>
+            ) : (
+              "No posts yet. Be the first to share!"
+            )}
           </div>
+
         ) : (
           filtered.map((p) => {
             const prof = profiles[p.user_id];
