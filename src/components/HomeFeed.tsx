@@ -230,6 +230,22 @@ export function HomeFeed() {
     postsLenRef.current = posts.length;
   }, [posts]);
 
+  // Infinite scroll: auto-load the next page when the sentinel becomes visible
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) loadMore();
+      },
+      { rootMargin: "400px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMore, hasMore, loading, posts.length]);
+
+
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
