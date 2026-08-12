@@ -262,6 +262,18 @@ function AuthPage() {
             placeholder="Password (min 6 chars)"
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
           />
+          {mode === "signin" && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => void onForgotPassword()}
+                disabled={busy}
+                className="text-sm font-semibold text-indigo-600 hover:underline disabled:opacity-50"
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
           <button
             type="submit"
             disabled={busy || (mode === "signup" && !agreedTerms)}
