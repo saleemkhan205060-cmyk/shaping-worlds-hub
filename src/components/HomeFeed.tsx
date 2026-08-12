@@ -176,7 +176,7 @@ export function HomeFeed() {
 
   const fetchPage = useRef(async (from: number) => {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
+    const timeoutId = window.setTimeout(() => controller.abort(), 30_000);
     try {
       const { data, error } = await supabase
         .from("posts")
@@ -194,10 +194,16 @@ export function HomeFeed() {
     }
   }).current;
 
+  // First page: retry a few times (slow/flaky mobile networks used to leave the
+  // feed empty with a misleading "No posts yet" message)
   const loadPosts = useRef(() => {
     setLoading(true);
     void (async () => {
-      const page = await fetchPage(0);
+      let page: Post[] | null = null;
+      for (let attempt = 0; attempt < 4 && !page; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 1500 * attempt));
+        page = await fetchPage(0);
+      }
       if (page) {
         setPosts(page);
         setHasMore(page.length === PAGE_SIZE);
@@ -205,6 +211,7 @@ export function HomeFeed() {
       setLoading(false);
     })();
   }).current;
+
 
   const postsLenRef = useRef(0);
 
