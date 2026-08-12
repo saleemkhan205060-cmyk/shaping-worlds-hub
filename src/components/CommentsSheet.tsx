@@ -42,7 +42,7 @@ export function CommentsSheet({
     (async () => {
       const { data } = await supabase
         .from("post_comments")
-        .select("*")
+        .select("id, post_id, user_id, content, created_at, is_hidden")
         .eq("post_id", postId)
         .order("created_at", { ascending: true });
       const list = (data ?? []) as Comment[];
@@ -73,7 +73,7 @@ export function CommentsSheet({
     const { data, error } = await supabase
       .from("post_comments")
       .insert({ post_id: postId, user_id: user.id, content })
-      .select()
+      .select("id, post_id, user_id, content, created_at, is_hidden")
       .single();
     setBusy(false);
     if (error || !data) {

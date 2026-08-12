@@ -78,7 +78,7 @@ function Videos() {
   useEffect(() => {
     supabase
       .from("posts")
-      .select("*")
+      .select("id, user_id, media_url, media_type, caption, category, created_at, updated_at, is_private, text_style, title, thumbnail_url, thumbnail_title, is_hidden, is_pinned")
       .order("created_at", { ascending: false })
       .limit(50)
       .then(({ data }) => {

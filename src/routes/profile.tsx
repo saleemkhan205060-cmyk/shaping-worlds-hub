@@ -308,7 +308,7 @@ function Profile() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
+    supabase.from("profiles").select("id, username, display_name, avatar_url, created_at, updated_at, cover_url, bio, location, website, is_verified").eq("id", user.id).maybeSingle().then(({ data }) => {
       setProfile(data as ProfileRow | null);
     });
     supabase
