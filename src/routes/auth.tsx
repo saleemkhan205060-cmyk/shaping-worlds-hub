@@ -277,7 +277,7 @@ function AuthPage() {
           <button
             type="submit"
             disabled={busy || (mode === "signup" && !agreedTerms)}
-            className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-full bg-[#117d43] text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
             {mode === "signin" ? "Sign in" : "Create account"}
