@@ -171,6 +171,8 @@ export function HomeFeed() {
   // so the whole feed is reachable instead of stopping at the first 30 posts)
   const PAGE_SIZE = 30;
   const [hasMore, setHasMore] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
+
   const [, setLoadingMore] = useState(false);
   const loadingMoreRef = useRef(false);
 
