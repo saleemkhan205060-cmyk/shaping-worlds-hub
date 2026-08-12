@@ -171,7 +171,7 @@ export function HomeFeed() {
   // so the whole feed is reachable instead of stopping at the first 30 posts)
   const PAGE_SIZE = 30;
   const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [, setLoadingMore] = useState(false);
   const loadingMoreRef = useRef(false);
 
   const fetchPage = useRef(async (from: number) => {
@@ -229,6 +229,22 @@ export function HomeFeed() {
   useEffect(() => {
     postsLenRef.current = posts.length;
   }, [posts]);
+
+  // Infinite scroll: auto-load the next page when the sentinel becomes visible
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) loadMore();
+      },
+      { rootMargin: "400px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMore, hasMore, loading, posts.length]);
+
 
   useEffect(() => {
     loadPosts();
@@ -1208,18 +1224,11 @@ export function HomeFeed() {
         )}
 
         {!loading && !q && filtered.length > 0 && hasMore && (
-          <div className="flex justify-center py-4">
-            <button
-              type="button"
-              onClick={() => loadMore()}
-              disabled={loadingMore}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm active:scale-95 disabled:opacity-60"
-            >
-              {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
-              {loadingMore ? "Loading…" : "Load more"}
-            </button>
+          <div ref={sentinelRef} className="flex justify-center py-6">
+            <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
           </div>
         )}
+
       </div>
       )}
 
