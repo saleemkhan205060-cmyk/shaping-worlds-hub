@@ -171,12 +171,14 @@ export function HomeFeed() {
   // so the whole feed is reachable instead of stopping at the first 30 posts)
   const PAGE_SIZE = 30;
   const [hasMore, setHasMore] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
+
   const [, setLoadingMore] = useState(false);
   const loadingMoreRef = useRef(false);
 
   const fetchPage = useRef(async (from: number) => {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
+    const timeoutId = window.setTimeout(() => controller.abort(), 30_000);
     try {
       const { data, error } = await supabase
         .from("posts")
@@ -194,17 +196,28 @@ export function HomeFeed() {
     }
   }).current;
 
+  // First page: retry a few times (slow/flaky mobile networks used to leave the
+  // feed empty with a misleading "No posts yet" message)
   const loadPosts = useRef(() => {
     setLoading(true);
     void (async () => {
-      const page = await fetchPage(0);
+      let page: Post[] | null = null;
+      for (let attempt = 0; attempt < 4 && !page; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 1500 * attempt));
+        page = await fetchPage(0);
+      }
       if (page) {
         setPosts(page);
         setHasMore(page.length === PAGE_SIZE);
+        setLoadFailed(false);
+      } else {
+        setLoadFailed(true);
       }
       setLoading(false);
+
     })();
   }).current;
+
 
   const postsLenRef = useRef(0);
 
@@ -954,8 +967,23 @@ export function HomeFeed() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500 text-sm">
-            {query.trim() ? "No posts match your search." : "No posts yet. Be the first to share!"}
+            {query.trim() ? (
+              "No posts match your search."
+            ) : loadFailed ? (
+              <>
+                <p className="mb-3">Couldn’t load the feed. Check your connection.</p>
+                <button
+                  onClick={() => loadPosts()}
+                  className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
+                >
+                  Retry
+                </button>
+              </>
+            ) : (
+              "No posts yet. Be the first to share!"
+            )}
           </div>
+
         ) : (
           filtered.map((p) => {
             const prof = profiles[p.user_id];
