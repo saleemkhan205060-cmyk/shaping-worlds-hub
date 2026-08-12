@@ -167,31 +167,66 @@ export function HomeFeed() {
   // Inline video refs for autopause
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
-  // Load posts
-  const loadPosts = useRef(() => {
-    setLoading(true);
+  // Load posts (paginated: keep the first render bounded, then append pages
+  // so the whole feed is reachable instead of stopping at the first 30 posts)
+  const PAGE_SIZE = 30;
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadingMoreRef = useRef(false);
+
+  const fetchPage = useRef(async (from: number) => {
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
+    try {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range(from, from + PAGE_SIZE - 1)
+        .abortSignal(controller.signal);
+      if (error) throw error;
+      return (data ?? []) as Post[];
+    } catch (error) {
+      console.error("Feed load failed:", error);
+      return null;
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  }).current;
 
+  const loadPosts = useRef(() => {
+    setLoading(true);
     void (async () => {
-      try {
-        const { data, error } = await supabase
-          .from("posts")
-          .select("*")
-          .order("created_at", { ascending: false })
-          // Keep the first mobile render bounded. Rendering 100 media cards at
-          // once after auth monopolizes the Android main thread and makes taps
-          // look frozen while the feed is mounting.
-          .limit(30)
-          .abortSignal(controller.signal);
-        if (error) throw error;
-        setPosts((data ?? []) as Post[]);
-      } catch (error) {
-        console.error("Feed load failed:", error);
-      } finally {
-        window.clearTimeout(timeoutId);
-        setLoading(false);
+      const page = await fetchPage(0);
+      if (page) {
+        setPosts(page);
+        setHasMore(page.length === PAGE_SIZE);
       }
+      setLoading(false);
+    })();
+  }).current;
+
+  const loadMore = useRef(() => {
+    if (loadingMoreRef.current) return;
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
+    void (async () => {
+      let currentCount = 0;
+      setPosts((prev) => {
+        currentCount = prev.length;
+        return prev;
+      });
+      // read length synchronously from the latest render via functional update
+      const page = await fetchPage(currentCount);
+      if (page) {
+        setPosts((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...page.filter((p) => !seen.has(p.id))];
+        });
+        setHasMore(page.length === PAGE_SIZE);
+      }
+      loadingMoreRef.current = false;
+      setLoadingMore(false);
     })();
   }).current;
 
