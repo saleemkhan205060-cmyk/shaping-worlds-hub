@@ -36,7 +36,7 @@ function AuthPage() {
     const code = String(authError?.code ?? "");
 
     if (code === "weak_password" || /weak|easy to guess|pwned/i.test(message)) {
-      return "Please choose a stronger, unique password that you have not used before.";
+      return "Password must be at least 6 characters.";
     }
     if (code === "email_not_confirmed" || /email not confirmed/i.test(message)) {
       return "Please confirm your email, then sign in.";
