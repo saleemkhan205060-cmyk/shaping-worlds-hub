@@ -262,7 +262,7 @@ export function listenForNativeGoogleSession(
 
   return () => {
     active = false;
-    void removeListener?.();
+    try { void removeListener?.(); } catch { /* plugin unavailable */ }
   };
 }
 
