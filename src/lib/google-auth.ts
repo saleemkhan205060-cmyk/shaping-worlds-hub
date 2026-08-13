@@ -228,28 +228,37 @@ export function listenForNativeGoogleSession(
   void appPlugin()
     .then((app) => {
       if (!app || !active) return;
-      return app.plugin
-        .addListener("appUrlOpen", ({ url }) => {
-          void restoreSessionFromNativeCallbackOnce(url)
-            .then((restored) => {
-              if (active && restored) onRestored();
-            })
-            .catch((error) => {
-              if (!active) return;
-              onError(error instanceof Error ? error : new Error(String(error)));
-            });
-        })
-        .then((listener) => {
-          if (!active) {
-            void listener.remove();
-            return;
-          }
-          removeListener = () => listener.remove();
-        });
+      // Even after the PluginHeaders check, calling into the bridge can throw
+      // synchronously (`"App" plugin is not implemented on android`) on shells
+      // where the native plugin is missing. Never let that escape.
+      try {
+        return app.plugin
+          .addListener("appUrlOpen", ({ url }) => {
+            void restoreSessionFromNativeCallbackOnce(url)
+              .then((restored) => {
+                if (active && restored) onRestored();
+              })
+              .catch((error) => {
+                if (!active) return;
+                onError(error instanceof Error ? error : new Error(String(error)));
+              });
+          })
+          .then((listener) => {
+            if (!active) {
+              void listener.remove();
+              return;
+            }
+            removeListener = () => listener.remove();
+          });
+      } catch (error) {
+        console.warn("Native app URL listener unavailable:", error);
+        return;
+      }
     })
     .catch((error) => {
       console.warn("Native app URL listener unavailable:", error);
     });
+
 
   return () => {
     active = false;
