@@ -57,16 +57,13 @@ repositories {
 }
 
 configurations.configureEach {
-    // No advertising in this app: keep ads/measurement SDKs (and their AD_ID
-    // permission) out of the merged manifest entirely.
+    // No advertising in this app: ads SDKs (and the Advertising ID client that
+    // pulls in the AD_ID permission) stay out of the merged manifest entirely.
+    // Firebase Analytics itself is allowed — it needs the measurement modules,
+    // and without play-services-ads-identifier it cannot collect an ad ID.
     exclude group: 'com.google.android.gms', module: 'play-services-ads'
     exclude group: 'com.google.android.gms', module: 'play-services-ads-identifier'
     exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
-    exclude group: 'com.google.android.gms', module: 'play-services-measurement'
-    exclude group: 'com.google.android.gms', module: 'play-services-measurement-api'
-    exclude group: 'com.google.android.gms', module: 'play-services-measurement-sdk'
-    exclude group: 'com.google.android.gms', module: 'play-services-measurement-sdk-api'
-    exclude group: 'com.google.firebase', module: 'firebase-analytics'
 }
 
 dependencies {
@@ -75,6 +72,9 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
+    // GA4 Android stream (VIP Life): app events + active users.
+    implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")
+    implementation 'com.google.firebase:firebase-analytics'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
