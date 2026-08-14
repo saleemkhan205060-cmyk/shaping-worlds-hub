@@ -70,6 +70,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [shareItem, setShareItem] = useState<FsItem | null>(null);
   const [thumbPickFor, setThumbPickFor] = useState<FsItem | null>(null);
   const [editFor, setEditFor] = useState<FsItem | null>(null);
+  const activeIndex = Math.max(0, items.findIndex((item) => item.id === activeId));
 
   const saveThumbnail = useCallback(
     async (item: FsItem, file: File, previewUrl: string) => {
@@ -354,6 +355,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       >
         {items.map((it, i) => {
           const isActive = it.id === activeId;
+          const shouldMountMedia = Math.abs(i - activeIndex) <= 1;
           const isLiked = !!likedByMe[it.id];
           const likes = likeCounts[it.id] ?? 0;
           const comments = commentCounts[it.id] ?? 0;
@@ -371,7 +373,9 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                 caption={it.caption}
                 onDeleted={() => handleClose()}
               >
-                {it.media_type === "video" ? (
+                {!shouldMountMedia ? (
+                  <div className="h-full w-full bg-black" aria-hidden="true" />
+                ) : it.media_type === "video" ? (
                   <video
                     ref={(el) => {
                       videoRefs.current[it.id] = el;
@@ -382,7 +386,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     loop
                     playsInline
                     muted={muted}
-                    preload="metadata"
+                    preload={isActive ? "metadata" : "none"}
                     onClick={() => togglePlay(it.id)}
                   />
                 ) : (

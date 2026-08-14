@@ -750,7 +750,16 @@ function Profile() {
                       aria-label={p.media_type === "video" ? "Play video" : "Open photo"}
                     >
                       {p.media_type === "video" ? (
-                        <video src={p.media_url} poster={p.thumbnail_url ?? undefined} className="w-full h-full object-cover pointer-events-none" muted playsInline preload="metadata" />
+                        p.thumbnail_url ? (
+                          <img
+                            src={p.thumbnail_url}
+                            alt={p.caption ?? "Video thumbnail"}
+                            className="w-full h-full object-cover pointer-events-none"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="absolute inset-0 bg-slate-900" aria-hidden="true" />
+                        )
                       ) : (
                         <img src={p.media_url} alt={p.caption ?? "Post"} className="w-full h-full object-cover" loading="lazy" />
                       )}

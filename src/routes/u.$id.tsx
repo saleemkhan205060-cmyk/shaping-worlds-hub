@@ -281,14 +281,16 @@ function UserProfile() {
                 >
                   {p.media_type === "video" ? (
                     <>
-                      <video
-                        src={p.media_url}
-                        poster={p.thumbnail_url ?? undefined}
-                        className="w-full h-full object-cover"
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
+                      {p.thumbnail_url ? (
+                        <img
+                          src={p.thumbnail_url}
+                          alt={p.caption ?? "Video thumbnail"}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="absolute inset-0 bg-slate-900" aria-hidden="true" />
+                      )}
                       <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition">
                         <span className="h-12 w-12 rounded-full bg-black/60 flex items-center justify-center">
                           <Play className="h-6 w-6 text-white fill-white" />
