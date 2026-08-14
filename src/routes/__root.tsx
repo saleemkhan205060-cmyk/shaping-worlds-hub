@@ -5,9 +5,11 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { initAnalytics, trackPageView } from "@/lib/analytics";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
 import { AppMessageNotifications } from "@/components/AppMessageNotifications";
