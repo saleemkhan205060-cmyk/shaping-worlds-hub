@@ -5,9 +5,11 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { initAnalytics, trackPageView } from "@/lib/analytics";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
 import { AppMessageNotifications } from "@/components/AppMessageNotifications";
@@ -155,6 +157,15 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useRegisterServiceWorker();
+
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  React.useEffect(() => {
+    initAnalytics();
+  }, []);
+  React.useEffect(() => {
+    trackPageView(pathname);
+  }, [pathname]);
+
 
   return (
     <QueryClientProvider client={queryClient}>
