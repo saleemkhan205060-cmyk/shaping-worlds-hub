@@ -17,14 +17,10 @@ export function gtag(...args: unknown[]) {
 let initialized = false;
 
 export function initAnalytics() {
-  if (typeof window !== "undefined") (window as any).__gaInit = ((window as any).__gaInit ?? 0) + 1;
   if (typeof window === "undefined" || initialized) return;
-  // Skip the native Capacitor shell (served from the capacitor:// or
-  // https://localhost origin) — GA4 only tracks the website.
-  const isNativeShell =
-    typeof (window as { Capacitor?: unknown }).Capacitor !== "undefined" ||
-    !/^https?:$/.test(window.location.protocol);
-  if (isNativeShell) return;
+  // Skip the native Capacitor shell — GA4 only tracks the website.
+  const cap = (window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+  if (cap?.isNativePlatform?.()) return;
   initialized = true;
 
   if (!document.querySelector(`script[data-ga4="${GA_MEASUREMENT_ID}"]`)) {
