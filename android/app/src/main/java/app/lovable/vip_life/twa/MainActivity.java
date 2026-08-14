@@ -74,6 +74,25 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
         if (hasFocus) applyCleanFullscreen();
     }
 
+    /** Best-effort: never crash the app if analytics is unavailable. */
+    private void startAnalytics() {
+        try {
+            Class<?> analytics = Class.forName("com.google.firebase.analytics.FirebaseAnalytics");
+            Object instance = analytics
+                .getMethod("getInstance", android.content.Context.class)
+                .invoke(null, getApplicationContext());
+            if (instance != null) {
+                analytics
+                    .getMethod("setAnalyticsCollectionEnabled", boolean.class)
+                    .invoke(instance, true);
+            }
+        } catch (Throwable error) {
+            Log.i("Analytics", "Firebase Analytics unavailable: " + error);
+        }
+    }
+
+
+
     private void applyCleanFullscreen() {
         Window window = getWindow();
         window.setStatusBarColor(Color.WHITE);
