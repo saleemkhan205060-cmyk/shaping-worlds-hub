@@ -3,6 +3,7 @@
 // first user gesture so it can play reliably on later message events.
 
 import notificationAsset from "@/assets/notification.mp3.asset.json";
+import { resolveAssetUrl } from "./asset-url";
 
 let audioCtx: AudioContext | null = null;
 let htmlAudio: HTMLAudioElement | null = null;
@@ -34,7 +35,7 @@ function getAudioElement(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
   if (!htmlAudio) {
     try {
-      htmlAudio = new Audio(notificationAsset.url);
+      htmlAudio = new Audio(resolveAssetUrl(notificationAsset.url));
       htmlAudio.preload = "auto";
       htmlAudio.volume = 1;
       htmlAudio.crossOrigin = "anonymous";
