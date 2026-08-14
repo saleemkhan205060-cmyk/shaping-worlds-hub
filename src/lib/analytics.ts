@@ -17,7 +17,7 @@ export function gtag(...args: unknown[]) {
 let initialized = false;
 
 export function initAnalytics() {
-  console.log("[ga] init called", typeof window, initialized);
+  if (typeof window !== "undefined") (window as any).__gaInit = ((window as any).__gaInit ?? 0) + 1;
   if (typeof window === "undefined" || initialized) return;
   // Skip the native Capacitor shell (served from the capacitor:// or
   // https://localhost origin) — GA4 only tracks the website.
