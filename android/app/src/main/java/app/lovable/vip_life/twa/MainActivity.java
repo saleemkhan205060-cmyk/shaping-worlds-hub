@@ -52,7 +52,11 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
         // Initialize Firebase (when google-services.json is present) BEFORE any
         // push code can reach FirebaseMessaging.getInstance().
         PushSupportPlugin.ensureFirebase(this);
+        // Touch FirebaseAnalytics once so the GA4 Android stream actually starts
+        // collecting sessions/events in release builds.
+        startAnalytics();
         super.onCreate(savedInstanceState);
+
         applyCleanFullscreen();
 
         WebView webView = getBridge().getWebView();
@@ -69,6 +73,25 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) applyCleanFullscreen();
     }
+
+    /** Best-effort: never crash the app if analytics is unavailable. */
+    private void startAnalytics() {
+        try {
+            Class<?> analytics = Class.forName("com.google.firebase.analytics.FirebaseAnalytics");
+            Object instance = analytics
+                .getMethod("getInstance", android.content.Context.class)
+                .invoke(null, getApplicationContext());
+            if (instance != null) {
+                analytics
+                    .getMethod("setAnalyticsCollectionEnabled", boolean.class)
+                    .invoke(instance, true);
+            }
+        } catch (Throwable error) {
+            Log.i("Analytics", "Firebase Analytics unavailable: " + error);
+        }
+    }
+
+
 
     private void applyCleanFullscreen() {
         Window window = getWindow();
