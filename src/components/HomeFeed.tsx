@@ -43,6 +43,7 @@ import { Progress } from "@/components/ui/progress";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import likeSoundAsset from "@/assets/like.mp3.asset.json";
 import shareIconAsset from "@/assets/share-icon.png.asset.json";
+import { resolveAssetUrl } from "@/lib/asset-url";
 import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
 let likeAudio: HTMLAudioElement | null = null;
@@ -50,7 +51,7 @@ const playLikeSound = () => {
   if (typeof window === "undefined") return;
   try {
     if (!likeAudio) {
-      likeAudio = new Audio(likeSoundAsset.url);
+      likeAudio = new Audio(resolveAssetUrl(likeSoundAsset.url));
       likeAudio.preload = "auto";
       likeAudio.volume = 0.9;
     }
@@ -1238,7 +1239,7 @@ export function HomeFeed() {
                     className="flex flex-col items-center gap-0.5 hover:text-indigo-600"
                     aria-label="Share"
                   >
-                    <img src={shareIconAsset.url} alt="Share" className="h-7 w-7 object-contain" />
+                    <img src={resolveAssetUrl(shareIconAsset.url)} alt="Share" className="h-7 w-7 object-contain" />
                     <span className="text-[11px] font-semibold tabular-nums">{shareCounts[p.id] ?? 0}</span>
                   </button>
                   {hasMedia && (
