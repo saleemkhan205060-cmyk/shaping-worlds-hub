@@ -158,6 +158,15 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useRegisterServiceWorker();
 
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  React.useEffect(() => {
+    initAnalytics();
+  }, []);
+  React.useEffect(() => {
+    trackPageView(pathname);
+  }, [pathname]);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
