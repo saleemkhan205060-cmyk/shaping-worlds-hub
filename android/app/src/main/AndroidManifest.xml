@@ -64,6 +64,18 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="messages" />
 
+        <!-- GA4 Android stream: analytics on, advertising ID collection off. -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="true" />
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_ssaid_collection_enabled"
+            android:value="false" />
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
