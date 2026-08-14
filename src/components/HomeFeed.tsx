@@ -220,9 +220,10 @@ export function HomeFeed() {
 
 
   const postsLenRef = useRef(0);
+  const hasMoreRef = useRef(true);
 
   const loadMore = useRef(() => {
-    if (loadingMoreRef.current) return;
+    if (loadingMoreRef.current || !hasMoreRef.current) return;
     loadingMoreRef.current = true;
     setLoadingMore(true);
     void (async () => {
@@ -243,11 +244,15 @@ export function HomeFeed() {
     postsLenRef.current = posts.length;
   }, [posts]);
 
+  useEffect(() => {
+    hasMoreRef.current = hasMore;
+  }, [hasMore]);
+
   // Infinite scroll: auto-load the next page when the sentinel becomes visible
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = sentinelRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
+    if (!el || loading || !hasMore || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) loadMore();
