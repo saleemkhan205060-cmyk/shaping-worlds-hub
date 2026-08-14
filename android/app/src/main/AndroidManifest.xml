@@ -92,8 +92,15 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- This app does not use advertising. Strip AD_ID if any dependency merges it in. -->
+    <!-- This app does not use advertising. Strip ad-ID permissions merged in by
+         Firebase/Play measurement libraries (analytics keeps working without them). -->
     <uses-permission
         android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION"
         tools:node="remove" />
 </manifest>
