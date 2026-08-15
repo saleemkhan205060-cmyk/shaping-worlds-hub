@@ -26,10 +26,10 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VIP Life — Community Feed" },
-      { name: "description", content: "Connect, share, and explore the VIP Life community feed." },
-      { property: "og:title", content: "VIP Life — Community Feed" },
-      { property: "og:description", content: "Connect, share, and explore the VIP Life community feed." },
+      { title: "VIP Life" },
+      { name: "description", content: "VIP Life — one platform for relationships. Watch, share, connect, and grow." },
+      { property: "og:title", content: "VIP Life" },
+      { property: "og:description", content: "VIP Life — one platform for relationships. Watch, share, connect, and grow." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -76,7 +76,7 @@ function LandingUnused() {
               Shape your life, shape the world
             </p>
             <p className="mt-3 text-sm sm:text-base text-white/70 max-w-md">
-              One platform for feed, Business and Relationships.
+              One platform for Relationships.
               Explore endless possibilities and connect with the world.
             </p>
             <Link to="/auth" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition font-semibold shadow-lg shadow-indigo-500/30">
