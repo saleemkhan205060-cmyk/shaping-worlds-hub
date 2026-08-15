@@ -8,6 +8,15 @@ import { hasNativePlugin } from "./native-plugins";
 
 let initialized = false;
 
+// Native bridge calls can hang if the plugin never answers. Never let push
+// setup keep a promise (or the UI) waiting forever.
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ]);
+}
+
 export async function initNativePushNotifications(userId: string) {
   if (initialized) return;
   if (typeof window === "undefined") return;
@@ -15,6 +24,7 @@ export async function initNativePushNotifications(userId: string) {
   initialized = true;
 
   try {
+
     const { registerPlugin } = await import("@capacitor/core");
     // Firebase must be initialized natively (google-services.json present) AND
     // FirebaseMessaging must resolve, otherwise PushNotifications.register()
