@@ -20,16 +20,11 @@ const CHIME_PREF_EVENT = "vip:notification-chime-changed";
 const MAX_PENDING_CHIMES = 6;
 const NOTIFICATION_ICON = "/logo.png";
 
-const unlockEvents: (keyof WindowEventMap)[] = [
-  "pointerdown",
-  "pointerup",
-  "touchstart",
-  "touchend",
-  "mousedown",
-  "mouseup",
-  "keydown",
-  "click",
-];
+// One listener is enough to unlock audio. The previous implementation attached
+// eight capture listeners to both window and document during app startup. A
+// single tap therefore entered the audio/permission path repeatedly and could
+// stall Android WebView's UI thread before the original button received it.
+const unlockEvents: (keyof WindowEventMap)[] = ["pointerdown"];
 
 function getAudioElement(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
@@ -65,7 +60,6 @@ function removeUnlockListeners() {
   if (!unlockBound || typeof window === "undefined") return;
   unlockEvents.forEach((e) => {
     window.removeEventListener(e, unlockFromGesture, true);
-    document.removeEventListener(e, unlockFromGesture, true);
   });
   unlockBound = false;
 }
@@ -164,8 +158,6 @@ function drainChimeQueue() {
 }
 
 function unlockFromGesture() {
-  requestNotificationPermissionFromGesture();
-
   // Prime HTMLAudio inside the gesture so future programmatic plays work
   const el = getAudioElement();
   if (el) {
@@ -217,21 +209,12 @@ export function initNotificationSoundUnlock() {
   if (unlockBound) return;
   unlockBound = true;
   unlockEvents.forEach((e) => {
-    window.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
-    document.addEventListener(e, unlockFromGesture, { capture: true, passive: true });
+    window.addEventListener(e, unlockFromGesture, { capture: true, passive: true, once: true });
   });
-  // Start loading the audio file
-  getAudioElement();
 }
 
 function canUseBrowserNotifications() {
   return typeof window !== "undefined" && "Notification" in window;
-}
-
-function requestNotificationPermissionFromGesture() {
-  if (!canUseBrowserNotifications()) return;
-  if (window.Notification.permission !== "default") return;
-  void window.Notification.requestPermission().catch(() => {});
 }
 
 export function initBackgroundMessageNotifications() {
@@ -358,6 +341,3 @@ export function playSoftChime(chimeKey?: string) {
   }
 }
 
-if (typeof window !== "undefined") {
-  initNotificationSoundUnlock();
-}

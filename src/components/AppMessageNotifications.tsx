@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  initNotificationSoundUnlock,
   playSoftChime,
   showNewMessageNotification,
 } from "@/lib/notification-sound";
@@ -30,10 +29,6 @@ function previewText(content?: string | null) {
 export function AppMessageNotifications() {
   const { user } = useAuth();
   const userId = user?.id ?? null;
-
-  useEffect(() => {
-    initNotificationSoundUnlock();
-  }, []);
 
   useEffect(() => {
     if (!userId) return;
