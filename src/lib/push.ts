@@ -8,6 +8,15 @@ import { hasNativePlugin } from "./native-plugins";
 
 let initialized = false;
 
+// Native bridge calls can hang if the plugin never answers. Never let push
+// setup keep a promise (or the UI) waiting forever.
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ]);
+}
+
 export async function initNativePushNotifications(userId: string) {
   if (initialized) return;
   if (typeof window === "undefined") return;
@@ -15,6 +24,7 @@ export async function initNativePushNotifications(userId: string) {
   initialized = true;
 
   try {
+
     const { registerPlugin } = await import("@capacitor/core");
     // Firebase must be initialized natively (google-services.json present) AND
     // FirebaseMessaging must resolve, otherwise PushNotifications.register()
@@ -25,7 +35,9 @@ export async function initNativePushNotifications(userId: string) {
     );
     const isFirebaseReady = async () => {
       try {
-        const { available } = await PushSupport.isAvailable();
+        const { available } = await withTimeout(PushSupport.isAvailable(), 4_000, {
+          available: false,
+        });
         return available === true;
       } catch {
         return false;
@@ -36,6 +48,7 @@ export async function initNativePushNotifications(userId: string) {
       initialized = false;
       return;
     }
+
 
     const { PushNotifications } = await import("@capacitor/push-notifications");
 
@@ -68,18 +81,23 @@ export async function initNativePushNotifications(userId: string) {
 
     PushNotifications.removeAllListeners().catch(() => {});
 
-    PushNotifications.addListener("registration", async (token) => {
-      try {
-        await supabase
-          .from("push_tokens")
-          .upsert(
-            { user_id: userId, token: token.value, platform: "android" },
-            { onConflict: "token" },
-          );
-      } catch {
-        /* ignore */
-      }
+    PushNotifications.addListener("registration", (token) => {
+      // Fire-and-forget: a failed/slow token write must never block the app.
+      void (async () => {
+        try {
+          const { error } = await supabase
+            .from("push_tokens")
+            .upsert(
+              { user_id: userId, token: token.value, platform: "android" },
+              { onConflict: "token" },
+            );
+          if (error) console.warn("push token save failed:", error.message);
+        } catch (err) {
+          console.warn("push token save failed:", err);
+        }
+      })();
     });
+
 
     PushNotifications.addListener("registrationError", () => {
       /* surfaced to user via OS UI; nothing actionable here */
