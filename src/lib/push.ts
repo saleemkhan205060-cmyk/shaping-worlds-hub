@@ -35,7 +35,9 @@ export async function initNativePushNotifications(userId: string) {
     );
     const isFirebaseReady = async () => {
       try {
-        const { available } = await PushSupport.isAvailable();
+        const { available } = await withTimeout(PushSupport.isAvailable(), 4_000, {
+          available: false,
+        });
         return available === true;
       } catch {
         return false;
@@ -46,6 +48,7 @@ export async function initNativePushNotifications(userId: string) {
       initialized = false;
       return;
     }
+
 
     const { PushNotifications } = await import("@capacitor/push-notifications");
 
