@@ -167,6 +167,9 @@ export function HomeFeed() {
 
   // Inline video refs for autopause
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+  const videoWrapRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+
 
   // Load posts (paginated: keep the first render bounded, then append pages
   // so the whole feed is reachable instead of stopping at the first 30 posts)
@@ -360,27 +363,36 @@ export function HomeFeed() {
   }, [thumbFile]);
 
 
-  // IntersectionObserver: auto play/pause inline videos
+  // Only ONE inline video element is mounted at a time (the most visible one).
+  // Android WebView has a very small pool of media decoders: keeping a <video>
+  // per feed item exhausts it and the whole app stops responding to touches.
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
+    const ratios = new Map<string, number>();
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          const v = e.target as HTMLVideoElement;
-          if (e.isIntersecting && e.intersectionRatio > 0.6) {
-            v.play().catch(() => {});
-          } else {
-            if (!v.paused) v.pause();
+          const id = (e.target as HTMLElement).dataset.postid;
+          if (id) ratios.set(id, e.isIntersecting ? e.intersectionRatio : 0);
+        });
+        let bestId: string | null = null;
+        let best = 0.5;
+        ratios.forEach((r, id) => {
+          if (r > best) {
+            best = r;
+            bestId = id;
           }
         });
+        setActiveVideoId((prev) => (prev === bestId ? prev : bestId));
       },
-      { threshold: [0, 0.6, 1] }
+      { threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
-    Object.values(videoRefs.current).forEach((v) => {
-      if (v) io.observe(v);
+    Object.values(videoWrapRefs.current).forEach((el) => {
+      if (el) io.observe(el);
     });
     return () => io.disconnect();
   }, [posts]);
+
 
   const pickFile = (f: File | null) => {
     if (!f) return;
@@ -1154,24 +1166,51 @@ export function HomeFeed() {
                     caption={p.caption}
                     onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
                   >
-                  <div className="relative bg-black aspect-[4/5]">
-                    <video
-                      ref={(el) => {
-                        videoRefs.current[p.id] = el;
-                      }}
-                      src={p.media_url}
-                      poster={p.thumbnail_url ?? undefined}
-                      playsInline
-                      muted
-                      loop
-                      // Loading metadata for every video in a 100-post feed
-                      // starts dozens of range requests at once on mobile.
-                      // IntersectionObserver calls play() only for the visible
-                      // item, so off-screen videos must remain network-idle.
-                      preload="none"
-                      className="w-full h-full object-cover cursor-pointer"
-                      onClick={() => openFullscreen(p.id)}
-                    />
+                  <div
+                    className="relative bg-black aspect-[4/5]"
+                    data-postid={p.id}
+                    ref={(el) => {
+                      videoWrapRefs.current[p.id] = el;
+                    }}
+                  >
+                    {activeVideoId === p.id ? (
+                      <video
+                        ref={(el) => {
+                          videoRefs.current[p.id] = el;
+                        }}
+                        src={p.media_url}
+                        poster={p.thumbnail_url ?? undefined}
+                        playsInline
+                        muted
+                        loop
+                        autoPlay
+                        preload="metadata"
+                        className="w-full h-full object-cover cursor-pointer"
+                        onClick={() => openFullscreen(p.id)}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => openFullscreen(p.id)}
+                        className="w-full h-full block"
+                        aria-label="Play video"
+                      >
+                        {p.thumbnail_url ? (
+                          <img
+                            src={p.thumbnail_url}
+                            alt={p.caption ?? "Video"}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="absolute inset-0 flex items-center justify-center text-white/70">
+                            <Play className="h-10 w-10" />
+                          </span>
+                        )}
+                      </button>
+                    )}
+
                     <button
                       type="button"
                       onClick={(e) => {
