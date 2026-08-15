@@ -81,18 +81,23 @@ export async function initNativePushNotifications(userId: string) {
 
     PushNotifications.removeAllListeners().catch(() => {});
 
-    PushNotifications.addListener("registration", async (token) => {
-      try {
-        await supabase
-          .from("push_tokens")
-          .upsert(
-            { user_id: userId, token: token.value, platform: "android" },
-            { onConflict: "token" },
-          );
-      } catch {
-        /* ignore */
-      }
+    PushNotifications.addListener("registration", (token) => {
+      // Fire-and-forget: a failed/slow token write must never block the app.
+      void (async () => {
+        try {
+          const { error } = await supabase
+            .from("push_tokens")
+            .upsert(
+              { user_id: userId, token: token.value, platform: "android" },
+              { onConflict: "token" },
+            );
+          if (error) console.warn("push token save failed:", error.message);
+        } catch (err) {
+          console.warn("push token save failed:", err);
+        }
+      })();
     });
+
 
     PushNotifications.addListener("registrationError", () => {
       /* surfaced to user via OS UI; nothing actionable here */
