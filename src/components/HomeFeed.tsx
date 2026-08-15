@@ -360,27 +360,36 @@ export function HomeFeed() {
   }, [thumbFile]);
 
 
-  // IntersectionObserver: auto play/pause inline videos
+  // Only ONE inline video element is mounted at a time (the most visible one).
+  // Android WebView has a very small pool of media decoders: keeping a <video>
+  // per feed item exhausts it and the whole app stops responding to touches.
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
+    const ratios = new Map<string, number>();
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          const v = e.target as HTMLVideoElement;
-          if (e.isIntersecting && e.intersectionRatio > 0.6) {
-            v.play().catch(() => {});
-          } else {
-            if (!v.paused) v.pause();
+          const id = (e.target as HTMLElement).dataset.postid;
+          if (id) ratios.set(id, e.isIntersecting ? e.intersectionRatio : 0);
+        });
+        let bestId: string | null = null;
+        let best = 0.5;
+        ratios.forEach((r, id) => {
+          if (r > best) {
+            best = r;
+            bestId = id;
           }
         });
+        setActiveVideoId((prev) => (prev === bestId ? prev : bestId));
       },
-      { threshold: [0, 0.6, 1] }
+      { threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
-    Object.values(videoRefs.current).forEach((v) => {
-      if (v) io.observe(v);
+    Object.values(videoWrapRefs.current).forEach((el) => {
+      if (el) io.observe(el);
     });
     return () => io.disconnect();
   }, [posts]);
+
 
   const pickFile = (f: File | null) => {
     if (!f) return;
