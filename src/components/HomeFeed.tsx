@@ -167,6 +167,9 @@ export function HomeFeed() {
 
   // Inline video refs for autopause
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+  const videoWrapRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+
 
   // Load posts (paginated: keep the first render bounded, then append pages
   // so the whole feed is reachable instead of stopping at the first 30 posts)
