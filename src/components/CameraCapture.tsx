@@ -175,8 +175,17 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           }
           if (vid.paused) vid.play().catch(() => {});
         }, 3000);
-      } catch {
-        if (!cancelled) setError("Camera not available. Please allow camera & microphone access.");
+      } catch (err) {
+        const name = (err as { name?: string })?.name ?? "";
+        if (!cancelled) {
+          setError(
+            name === "NotAllowedError"
+              ? "Camera permission denied. Allow Camera & Microphone for VIP Life in Settings > Apps > Permissions."
+              : name === "NotFoundError"
+                ? "No camera found on this device."
+                : `Camera not available (${name || "unknown error"}). Please allow camera & microphone access.`,
+          );
+        }
       }
     })();
     const onVisible = () => {
