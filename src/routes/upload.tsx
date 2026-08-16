@@ -13,6 +13,7 @@ import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import { useServerFn } from "@tanstack/react-start";
 import { publishPost } from "@/lib/moderate.functions";
+import { isNativeShell } from "@/lib/native-plugins";
 
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });
@@ -175,7 +176,7 @@ function UploadPage() {
 
       const publishData = {
         mediaPath,
-        mediaType,
+        mediaType: mediaType as "image" | "video",
         moderationImageUrl,
         title: title.trim() || null,
         caption: caption.trim() || null,
