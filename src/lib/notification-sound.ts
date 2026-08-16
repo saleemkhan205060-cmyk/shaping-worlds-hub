@@ -7,8 +7,6 @@ import { resolveAssetUrl } from "./asset-url";
 
 let audioCtx: AudioContext | null = null;
 let htmlAudio: HTMLAudioElement | null = null;
-let unlockBound = false;
-let unlocked = false;
 let pendingChimes = 0;
 let queueRunning = false;
 const playedChimeKeys = new Set<string>();
@@ -19,12 +17,6 @@ const CHIME_PREF_KEY = "vip:notification-chime-enabled";
 const CHIME_PREF_EVENT = "vip:notification-chime-changed";
 const MAX_PENDING_CHIMES = 6;
 const NOTIFICATION_ICON = "/logo.png";
-
-// One listener is enough to unlock audio. The previous implementation attached
-// eight capture listeners to both window and document during app startup. A
-// single tap therefore entered the audio/permission path repeatedly and could
-// stall Android WebView's UI thread before the original button received it.
-const unlockEvents: (keyof WindowEventMap)[] = ["pointerdown"];
 
 function getAudioElement(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
@@ -54,14 +46,6 @@ function getAudioContext(): AudioContext | null {
     }
   }
   return audioCtx;
-}
-
-function removeUnlockListeners() {
-  if (!unlockBound || typeof window === "undefined") return;
-  unlockEvents.forEach((e) => {
-    window.removeEventListener(e, unlockFromGesture, true);
-  });
-  unlockBound = false;
 }
 
 function playFallbackChime(ctx: AudioContext) {
@@ -110,8 +94,6 @@ async function tryPlay(): Promise<boolean> {
   // Try uploaded MP3 first
   const ok = await playUploadedSound();
   if (ok) {
-    unlocked = true;
-    removeUnlockListeners();
     return true;
   }
   // Fallback to WebAudio synth
@@ -120,8 +102,6 @@ async function tryPlay(): Promise<boolean> {
   try {
     if (ctx.state === "suspended") await ctx.resume();
     if (ctx.state !== "running") return false;
-    unlocked = true;
-    removeUnlockListeners();
     playFallbackChime(ctx);
     return true;
   } catch {
@@ -140,9 +120,12 @@ function drainChimeQueue() {
     }
     void tryPlay().then((ok) => {
       if (!ok) {
-        unlocked = false;
+        // Never retry audio from a global touch listener. Starting
+        // HTMLAudio/WebAudio synchronously from Android WebView's first
+        // pointer event can block its UI thread and make the entire app (and
+        // system navigation) appear frozen. A later message may try again.
+        pendingChimes = 0;
         queueRunning = false;
-        initNotificationSoundUnlock();
         return;
       }
       pendingChimes -= 1;
@@ -157,60 +140,10 @@ function drainChimeQueue() {
   playNext();
 }
 
-function unlockFromGesture() {
-  // Prime HTMLAudio inside the gesture so future programmatic plays work
-  const el = getAudioElement();
-  if (el) {
-    try {
-      const prevVol = el.volume;
-      el.muted = true;
-      const p = el.play();
-      if (p && typeof p.then === "function") {
-        void p
-          .then(() => {
-            el.pause();
-            try {
-              el.currentTime = 0;
-            } catch {
-              /* ignore */
-            }
-            el.muted = false;
-            el.volume = prevVol;
-            unlocked = true;
-            removeUnlockListeners();
-            drainChimeQueue();
-          })
-          .catch(() => {
-            el.muted = false;
-            el.volume = prevVol;
-          });
-      } else {
-        el.pause();
-        el.muted = false;
-        unlocked = true;
-        removeUnlockListeners();
-        drainChimeQueue();
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-
-  // Also resume AudioContext as a fallback
-  const ctx = getAudioContext();
-  if (ctx && ctx.state === "suspended") {
-    void ctx.resume().catch(() => {});
-  }
-}
-
+// Kept as a compatibility no-op for callers in older cached bundles. Audio is
+// attempted only when an actual notification arrives, never on arbitrary taps.
 export function initNotificationSoundUnlock() {
-  if (typeof window === "undefined") return;
-  if (unlocked) return;
-  if (unlockBound) return;
-  unlockBound = true;
-  unlockEvents.forEach((e) => {
-    window.addEventListener(e, unlockFromGesture, { capture: true, passive: true, once: true });
-  });
+  return;
 }
 
 function canUseBrowserNotifications() {
@@ -303,7 +236,6 @@ export function setNotificationChimeEnabled(enabled: boolean) {
   try {
     window.localStorage.setItem(CHIME_PREF_KEY, enabled ? "1" : "0");
     window.dispatchEvent(new CustomEvent(CHIME_PREF_EVENT, { detail: enabled }));
-    if (enabled) initNotificationSoundUnlock();
   } catch {
     /* ignore */
   }
@@ -334,7 +266,6 @@ export function playSoftChime(chimeKey?: string) {
       }
     }
     pendingChimes = Math.min(MAX_PENDING_CHIMES, pendingChimes + 1);
-    initNotificationSoundUnlock();
     drainChimeQueue();
   } catch {
     /* ignore */
