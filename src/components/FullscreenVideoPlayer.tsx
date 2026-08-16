@@ -214,9 +214,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     const root = containerRef.current;
     if (!root) return;
     const removeUnlockListeners = () => {
-      root.removeEventListener("pointerdown", handler, true);
-      root.removeEventListener("click", handler, true);
-      root.removeEventListener("touchstart", handler, true);
+      root.removeEventListener("pointerdown", handler);
     };
     const handler = () => {
       removeUnlockListeners();
@@ -227,9 +225,10 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         ignoreNextVideoClickRef.current = false;
       }, 350);
     };
-    root.addEventListener("pointerdown", handler, { capture: true });
-    root.addEventListener("click", handler, { capture: true });
-    root.addEventListener("touchstart", handler, { capture: true, passive: true });
+    // One bubbling passive listener is enough. Capture-phase pointer/click/touch
+    // listeners ran before close and playback controls and could make the first
+    // tap in Android WebView appear frozen while audio was being resumed.
+    root.addEventListener("pointerdown", handler, { once: true, passive: true });
     return removeUnlockListeners;
   }, [setSoundMuted]);
 
