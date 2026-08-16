@@ -27,10 +27,15 @@ function AuthCallbackPage() {
   useEffect(() => {
     let active = true;
     let settled = false;
+    let unsubscribe: (() => void) | undefined;
 
     const finish = () => {
       if (settled) return;
       settled = true;
+      // Stop listening BEFORE navigating: a late TOKEN_REFRESHED/SIGNED_IN can
+      // otherwise fire a second navigation while the first is still in flight,
+      // which is what left the Android WebView stuck on this screen.
+      unsubscribe?.();
       window.sessionStorage.removeItem("vip-life-auth-return-to");
       void navigate({ to: "/", replace: true });
     };
