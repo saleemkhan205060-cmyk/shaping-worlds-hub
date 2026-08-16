@@ -158,7 +158,7 @@ function ensureAuthInitialized() {
       // bounded — an unanswered restore used to leave the app stuck on the
       // startup spinner with every tap looking frozen.
       return withAuthTimeout(
-        restorePersistedSession(),
+        restorePersistedSessionOnce(),
         "Auth session restore timed out",
       ).then((restored) => {
         if (authRevision !== initializationRevision) return;
@@ -180,7 +180,7 @@ function ensureAuthInitialized() {
         await clearBrokenLocalSession();
         try {
           const restored = await withAuthTimeout(
-            restorePersistedSession(),
+            restorePersistedSessionOnce(),
             "Auth session restore timed out",
           );
           if (authRevision !== initializationRevision) return;
