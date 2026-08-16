@@ -4,9 +4,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { routeTree } from "./routeTree.gen";
-import LogRocket from "logrocket";
 
-LogRocket.init("p3epoj/vip-life-app");
+// Do not initialize DOM/session-replay recorders in the Android WebView.
+// Their global interaction instrumentation runs on every pointer event and can
+// monopolize the WebView UI thread on media-heavy feeds. Browser monitoring
+// remains enabled through src/router.tsx.
 
 // ---------------------------------------------------------------------------
 // Startup guard
