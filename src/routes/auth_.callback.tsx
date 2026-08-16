@@ -79,7 +79,7 @@ function AuthCallbackPage() {
 
     return () => {
       active = false;
-      subscription.unsubscribe();
+      unsubscribe?.();
     };
   }, [navigate]);
 
