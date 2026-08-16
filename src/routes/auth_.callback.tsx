@@ -45,11 +45,22 @@ function AuthCallbackPage() {
     // call in completeGoogleOAuthCallback finishes. Listen for it so the user
     // is redirected immediately instead of waiting for the poll.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (active && event === "SIGNED_IN" && session) {
+      if (!active || event !== "SIGNED_IN" || !session) return;
+      // Never do work synchronously inside an auth listener: Supabase holds its
+      // auth lock here, and publishing state + navigating can re-enter it.
+      setTimeout(() => {
+        if (!active) return;
         publishAuthenticatedSession(session);
         finish();
-      }
+      }, 0);
     });
+
+    let subscriptionActive = true;
+    unsubscribe = () => {
+      if (!subscriptionActive) return;
+      subscriptionActive = false;
+      subscription.unsubscribe();
+    };
 
     void completeGoogleOAuthCallback(window.location.href)
       .then(() => {
