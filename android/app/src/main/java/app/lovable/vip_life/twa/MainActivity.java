@@ -68,11 +68,12 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) applyCleanFullscreen();
-    }
+    // NOTE: system-bar styling is applied once in onCreate(). Re-applying it in
+    // onWindowFocusChanged() re-ran setSystemUiVisibility()/insets every time the
+    // soft keyboard took or gave up window focus, which produced a relayout loop
+    // in the WebView — tapping a text field looked like the whole app froze.
+
+
 
     /** Best-effort: never crash the app if analytics is unavailable. */
     private void startAnalytics() {

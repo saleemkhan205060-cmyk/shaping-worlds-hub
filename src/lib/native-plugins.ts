@@ -36,3 +36,16 @@ export function hasNativePlugin(name: string): boolean {
     return false;
   }
 }
+
+/**
+ * True inside the Capacitor Android/iOS shell. The native build bundles a plain
+ * SPA (no TanStack Start server runtime), so server functions cannot execute
+ * there and callers must use a client-side path instead.
+ */
+export function isNativeShell(): boolean {
+  try {
+    return !!runtime()?.isNativePlatform?.();
+  } catch {
+    return false;
+  }
+}
