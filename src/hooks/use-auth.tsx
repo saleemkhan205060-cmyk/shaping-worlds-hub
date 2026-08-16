@@ -36,6 +36,19 @@ function withAuthTimeout<T>(operation: Promise<T>, message: string): Promise<T> 
   });
 }
 
+// The native session backup can be requested from several places at once
+// (startup read, refresh failure, OAuth callback). Two concurrent restores race
+// each other through the Supabase auth lock and stall the Android WebView, so
+// every caller shares a single in-flight restore.
+let restoreInFlight: Promise<Session | null> | null = null;
+
+function restorePersistedSessionOnce(): Promise<Session | null> {
+  restoreInFlight ??= restorePersistedSession().finally(() => {
+    restoreInFlight = null;
+  });
+  return restoreInFlight;
+}
+
 function publishAuthState(next: AuthState) {
   if (
     authState.loading === next.loading &&
