@@ -134,22 +134,31 @@ async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?:
     return false;
   }
 
-  if (url === completedNativeCallbackUrl) return true;
-  if (nativeCallbackInFlight) return nativeCallbackInFlight;
+  return completeGoogleOAuthCallback(url, expectedState);
+}
 
-  nativeCallbackInFlight = restoreSessionFromNativeCallback(url, expectedState)
+/**
+ * Deduplicated entry point: the same callback URL is never exchanged twice, and
+ * concurrent callers share a single in-flight promise.
+ */
+export async function completeGoogleOAuthCallback(url: string, expectedState?: string) {
+  if (url === completedCallbackUrl) return true;
+  if (callbackInFlight && callbackInFlight.url === url) return callbackInFlight.promise;
+
+  const promise = runGoogleOAuthCallback(url, expectedState)
     .then((restored) => {
-      if (restored) completedNativeCallbackUrl = url;
+      if (restored) completedCallbackUrl = url;
       return restored;
     })
     .finally(() => {
-      nativeCallbackInFlight = null;
+      if (callbackInFlight?.url === url) callbackInFlight = null;
     });
 
-  return nativeCallbackInFlight;
+  callbackInFlight = { url, promise };
+  return promise;
 }
 
-export async function completeGoogleOAuthCallback(url: string, expectedState?: string) {
+async function runGoogleOAuthCallback(url: string, expectedState?: string) {
   const values = callbackValues(url);
   const storedState = localStorage.getItem(NATIVE_OAUTH_STATE_KEY);
   const requiredState = expectedState ?? storedState;
