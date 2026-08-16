@@ -214,9 +214,6 @@ async function runGoogleOAuthCallback(url: string, expectedState?: string) {
   return true;
 }
 
-async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
-  return completeGoogleOAuthCallback(url, expectedState);
-}
 
 export async function restoreNativeGoogleSession() {
   const app = await appPlugin();
