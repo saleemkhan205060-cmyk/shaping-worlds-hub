@@ -173,20 +173,41 @@ function UploadPage() {
         thumbnailUrl = supabase.storage.from("media").getPublicUrl(tpath).data.publicUrl;
       }
 
-      // Atomic: server-side moderation + insert (or log for admin review)
-      const result = await publishFn({
-        data: {
-          mediaPath,
-          mediaType,
-          moderationImageUrl,
-          title: title.trim() || null,
-          caption: caption.trim() || null,
+      const publishData = {
+        mediaPath,
+        mediaType,
+        moderationImageUrl,
+        title: title.trim() || null,
+        caption: caption.trim() || null,
+        category,
+        isPrivate,
+        thumbnailUrl,
+        thumbnailTitle: thumbTitle.trim() || null,
+      };
+
+      // The Capacitor shell bundles a plain SPA with no server runtime, so the
+      // server function endpoint is unreachable there. Insert directly (RLS
+      // still applies); everything else keeps the moderated server path.
+      const publishDirect = async () => {
+        const { error: insErr } = await supabase.from("posts").insert({
+          user_id: user.id,
+          media_url: supabase.storage.from("media").getPublicUrl(mediaPath).data.publicUrl,
+          media_type: mediaType,
+          title: publishData.title,
+          thumbnail_url: thumbnailUrl,
+          thumbnail_title: publishData.thumbnailTitle,
+          caption: publishData.caption,
           category,
-          isPrivate,
-          thumbnailUrl,
-          thumbnailTitle: thumbTitle.trim() || null,
-        },
-      });
+          is_private: isPrivate,
+        } as never);
+        if (insErr) throw new Error(insErr.message);
+        return { published: true as const, reason: "" };
+      };
+
+      // Atomic: server-side moderation + insert (or log for admin review)
+      const result = isNativeShell()
+        ? await publishDirect()
+        : await publishFn({ data: publishData });
 
       if (!result.published) {
         toast.error(
