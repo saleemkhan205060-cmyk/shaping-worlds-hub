@@ -34,8 +34,12 @@ const nativeBrowserAuth = createLovableAuth({
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/callback`;
 const NATIVE_OAUTH_STATE_KEY = "vip-life-google-oauth-state";
-let nativeCallbackInFlight: Promise<boolean> | null = null;
-let completedNativeCallbackUrl: string | null = null;
+// One shared guard for EVERY entry point into the OAuth callback (the
+// /auth/callback route, the native launch URL, and the appUrlOpen listener).
+// Two concurrent exchanges of the same PKCE code re-enter the Supabase auth
+// lock and used to hang the Android WebView.
+let callbackInFlight: { url: string; promise: Promise<boolean> } | null = null;
+let completedCallbackUrl: string | null = null;
 let nativeGoogleInitialization: Promise<void> | null = null;
 
 function isInstalledNativeRuntime() {
@@ -130,22 +134,31 @@ async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?:
     return false;
   }
 
-  if (url === completedNativeCallbackUrl) return true;
-  if (nativeCallbackInFlight) return nativeCallbackInFlight;
+  return completeGoogleOAuthCallback(url, expectedState);
+}
 
-  nativeCallbackInFlight = restoreSessionFromNativeCallback(url, expectedState)
+/**
+ * Deduplicated entry point: the same callback URL is never exchanged twice, and
+ * concurrent callers share a single in-flight promise.
+ */
+export async function completeGoogleOAuthCallback(url: string, expectedState?: string) {
+  if (url === completedCallbackUrl) return true;
+  if (callbackInFlight && callbackInFlight.url === url) return callbackInFlight.promise;
+
+  const promise = runGoogleOAuthCallback(url, expectedState)
     .then((restored) => {
-      if (restored) completedNativeCallbackUrl = url;
+      if (restored) completedCallbackUrl = url;
       return restored;
     })
     .finally(() => {
-      nativeCallbackInFlight = null;
+      if (callbackInFlight?.url === url) callbackInFlight = null;
     });
 
-  return nativeCallbackInFlight;
+  callbackInFlight = { url, promise };
+  return promise;
 }
 
-export async function completeGoogleOAuthCallback(url: string, expectedState?: string) {
+async function runGoogleOAuthCallback(url: string, expectedState?: string) {
   const values = callbackValues(url);
   const storedState = localStorage.getItem(NATIVE_OAUTH_STATE_KEY);
   const requiredState = expectedState ?? storedState;
@@ -201,9 +214,6 @@ export async function completeGoogleOAuthCallback(url: string, expectedState?: s
   return true;
 }
 
-async function restoreSessionFromNativeCallback(url: string, expectedState?: string) {
-  return completeGoogleOAuthCallback(url, expectedState);
-}
 
 export async function restoreNativeGoogleSession() {
   const app = await appPlugin();
