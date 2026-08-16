@@ -34,8 +34,12 @@ const nativeBrowserAuth = createLovableAuth({
 // OAuth broker only accepts the project's trusted HTTPS redirect origins.
 const NATIVE_REDIRECT_URI = `${PUBLISHED_ORIGIN}/auth/callback`;
 const NATIVE_OAUTH_STATE_KEY = "vip-life-google-oauth-state";
-let nativeCallbackInFlight: Promise<boolean> | null = null;
-let completedNativeCallbackUrl: string | null = null;
+// One shared guard for EVERY entry point into the OAuth callback (the
+// /auth/callback route, the native launch URL, and the appUrlOpen listener).
+// Two concurrent exchanges of the same PKCE code re-enter the Supabase auth
+// lock and used to hang the Android WebView.
+let callbackInFlight: { url: string; promise: Promise<boolean> } | null = null;
+let completedCallbackUrl: string | null = null;
 let nativeGoogleInitialization: Promise<void> | null = null;
 
 function isInstalledNativeRuntime() {
