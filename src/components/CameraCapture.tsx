@@ -130,10 +130,19 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
               audio: { echoCancellation: true, noiseSuppression: true },
             });
           } catch {
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: { ideal: facing } },
-              audio: true,
-            });
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: facing } },
+                audio: true,
+              });
+            } catch {
+              // Microphone can be denied separately (common on Android):
+              // still let the user record video instead of failing outright.
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: facing } },
+                audio: false,
+              });
+            }
           }
         }
 
