@@ -168,7 +168,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       ]);
       const lc: Record<string, number> = {};
       const me: Record<string, boolean> = {};
-      ((likes ?? []) as PostLikeRow[]).forEach((l) => {
+      ((likes ?? []) as unknown as PostLikeRow[]).forEach((l) => {
         lc[l.post_id] = (lc[l.post_id] ?? 0) + 1;
         if (user && l.user_id === user.id) me[l.post_id] = true;
       });
