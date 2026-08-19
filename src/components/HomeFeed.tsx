@@ -180,9 +180,11 @@ export function HomeFeed() {
   const [, setLoadingMore] = useState(false);
   const loadingMoreRef = useRef(false);
 
-  const fetchPage = useRef(async (from: number) => {
+  const fetchPage = useRef(async (from: number, timeoutMs = 8_000) => {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 30_000);
+    // Hard cap: the Android WebView can leave a fetch pending forever, which
+    // used to keep the feed spinning. Abort well before that.
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
     try {
       const { data, error } = await supabase
         .from("posts")
@@ -200,15 +202,15 @@ export function HomeFeed() {
     }
   }).current;
 
-  // First page: retry a few times (slow/flaky mobile networks used to leave the
-  // feed empty with a misleading "No posts yet" message)
+  // First page: two bounded attempts (~17s worst case) instead of an
+  // open-ended retry loop that blocked the UI for minutes.
   const loadPosts = useRef(() => {
     setLoading(true);
     void (async () => {
       let page: Post[] | null = null;
-      for (let attempt = 0; attempt < 4 && !page; attempt++) {
-        if (attempt > 0) await new Promise((r) => setTimeout(r, 1500 * attempt));
-        page = await fetchPage(0);
+      for (let attempt = 0; attempt < 2 && !page; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 800));
+        page = await fetchPage(0, attempt === 0 ? 8_000 : 12_000);
       }
       if (page) {
         setPosts(page);
@@ -221,6 +223,7 @@ export function HomeFeed() {
 
     })();
   }).current;
+
 
 
   const postsLenRef = useRef(0);
