@@ -971,6 +971,21 @@ export type Database = {
       }
     }
     Views: {
+      post_like_counts: {
+        Row: {
+          like_count: number | null
+          post_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_about_public: {
         Row: {
           country: string | null
