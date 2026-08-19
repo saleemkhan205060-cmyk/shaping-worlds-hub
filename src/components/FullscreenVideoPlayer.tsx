@@ -159,18 +159,22 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     const ids = items.map((i) => i.id);
     if (ids.length === 0) return;
     (async () => {
-      const [{ data: likes }, { data: comments }] = await Promise.all([
-        supabase
-          .from("post_likes")
-          .select(user ? "post_id,user_id" : ("post_id" as string))
-          .in("post_id", ids),
+      const [likesRes, { data: comments }] = await Promise.all([
+        user
+          ? supabase.from("post_likes").select("post_id,user_id").in("post_id", ids)
+          : (supabase.rpc as any)("get_post_like_counts", { post_ids: ids }),
         supabase.from("post_comments").select("post_id").in("post_id", ids),
       ]);
+      const likes = (likesRes as any)?.data;
       const lc: Record<string, number> = {};
       const me: Record<string, boolean> = {};
-      ((likes ?? []) as unknown as PostLikeRow[]).forEach((l) => {
+      ((likes ?? []) as unknown as (PostLikeRow & { like_count?: number })[]).forEach((l) => {
+        if (!user) {
+          lc[l.post_id] = Number(l.like_count ?? 0);
+          return;
+        }
         lc[l.post_id] = (lc[l.post_id] ?? 0) + 1;
-        if (user && l.user_id === user.id) me[l.post_id] = true;
+        if (l.user_id === user.id) me[l.post_id] = true;
       });
       const cc: Record<string, number> = {};
       ((comments ?? []) as PostCommentRow[]).forEach((c) => {

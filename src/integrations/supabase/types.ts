@@ -1044,6 +1044,13 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_post_like_counts: {
+        Args: { post_ids: string[] }
+        Returns: {
+          like_count: number
+          post_id: string
+        }[]
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
