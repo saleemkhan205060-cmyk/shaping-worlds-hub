@@ -971,21 +971,6 @@ export type Database = {
       }
     }
     Views: {
-      post_like_counts: {
-        Row: {
-          like_count: number | null
-          post_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "post_likes_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profile_about_public: {
         Row: {
           country: string | null
@@ -1058,6 +1043,13 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      get_post_like_counts: {
+        Args: { post_ids: string[] }
+        Returns: {
+          like_count: number
+          post_id: string
+        }[]
       }
       move_to_dlq: {
         Args: {
