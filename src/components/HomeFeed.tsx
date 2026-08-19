@@ -241,7 +241,11 @@ export function HomeFeed() {
           return [...prev, ...page.filter((p) => !seen.has(p.id))];
         });
         setHasMore(page.length === PAGE_SIZE);
+      } else {
+        // Timed out / offline: stop the sentinel from retrying in a tight loop.
+        setHasMore(false);
       }
+
       loadingMoreRef.current = false;
       setLoadingMore(false);
     })();
