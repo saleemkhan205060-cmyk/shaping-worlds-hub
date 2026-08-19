@@ -297,7 +297,10 @@ export function HomeFeed() {
     if (ids.length === 0) return;
     (async () => {
       const [{ data: likes }, { data: comments }, { data: shares }] = await Promise.all([
-        supabase.from("post_likes").select("post_id,user_id").in("post_id", ids),
+        supabase
+          .from("post_likes")
+          .select(user ? "post_id,user_id" : "post_id")
+          .in("post_id", ids),
         supabase.from("post_comments").select("post_id").in("post_id", ids),
         supabase.from("post_shares").select("post_id").in("post_id", ids),
       ]);
