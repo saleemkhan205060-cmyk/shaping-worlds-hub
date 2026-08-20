@@ -13,6 +13,8 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.WebView;
 
+import app.lovable.vip_life.twa.BuildConfig;
+
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginHandle;

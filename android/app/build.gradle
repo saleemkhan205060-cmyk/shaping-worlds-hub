@@ -18,6 +18,11 @@ if (keystoreProps.containsKey('VIP_LIFE_STORE_FILE')) {
 android {
     namespace = "app.lovable.vip_life.twa"
     compileSdk = rootProject.ext.compileSdkVersion
+
+    buildFeatures {
+        buildConfig true
+    }
+
     defaultConfig {
         applicationId "app.lovable.vip_life.twa"
         minSdkVersion rootProject.ext.minSdkVersion
