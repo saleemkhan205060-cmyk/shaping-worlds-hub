@@ -27,8 +27,8 @@ android {
         applicationId "app.lovable.vip_life.twa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 46
-        versionName "1.0.41"
+        versionCode 47
+        versionName "1.0.42"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -48,8 +48,16 @@ android {
     }
     buildTypes {
         release {
+            // Keep the signed production package as close as possible to the
+            // device-tested debug package. Only signing and the non-debuggable
+            // security boundary differ intentionally.
+            initWith debug
+            debuggable false
+            jniDebuggable false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            crunchPngs false
+            pseudoLocalesEnabled false
             signingConfig signingConfigs.release
         }
     }
