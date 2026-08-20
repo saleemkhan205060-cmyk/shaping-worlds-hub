@@ -75,6 +75,16 @@ jobs:
           fi
           echo "Verified: no Advertising ID permission in merged manifest or AAB"
 
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: vip-life-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
