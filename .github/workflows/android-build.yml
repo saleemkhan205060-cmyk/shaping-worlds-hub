@@ -60,6 +60,10 @@ jobs:
         working-directory: android
         run: ./gradlew bundleRelease --stacktrace
 
+      - name: Build signed release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --stacktrace
+
       - name: Assert AAB contains no AD_ID permission
         run: |
           MERGED=$(find android/app/build/intermediates -name AndroidManifest.xml \( -path '*merged_manifest*release*' -o -path '*merged_manifests*release*' \) | head -1)
@@ -75,9 +79,6 @@ jobs:
           fi
           echo "Verified: no Advertising ID permission in merged manifest or AAB"
 
-      - name: Build signed release APK
-        working-directory: android
-        run: ./gradlew assembleRelease --stacktrace
 
       - name: Verify release uses debug-stable packaging
         run: |
