@@ -25,14 +25,12 @@ android {
 
     packagingOptions {
         resources {
-            // The working debug APK has no install-time ART profile. Exclude
-            // dependency-provided profiles from release packaging as well.
             excludes += [
-                'assets/dexopt/baseline.prof',
-                'assets/dexopt/baseline.profm'
+                'DebugProbesKt.bin'
             ]
         }
     }
+
 
     defaultConfig {
         applicationId "app.lovable.vip_life.twa"
@@ -75,11 +73,22 @@ android {
     }
 }
 
+// The working debug APK ships no install-time ART profile. AGP packages the
+// profile under assets/dexopt via dedicated tasks (packaging `resources`
+// excludes do not apply to assets), so disable those tasks for release.
+tasks.configureEach { task ->
+    def name = task.name
+    if (name ==~ /(?i)(compile|merge|expand).*Release.*(ArtProfile|ArtProfileWildcards)/) {
+        task.enabled = false
+    }
+}
+
 repositories {
     flatDir{
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
     }
 }
+
 
 configurations.configureEach {
     // No advertising in this app: ads SDKs (and the Advertising ID client that

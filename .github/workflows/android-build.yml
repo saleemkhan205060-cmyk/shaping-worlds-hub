@@ -60,6 +60,10 @@ jobs:
         working-directory: android
         run: ./gradlew bundleRelease --stacktrace
 
+      - name: Build signed release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --stacktrace
+
       - name: Assert AAB contains no AD_ID permission
         run: |
           MERGED=$(find android/app/build/intermediates -name AndroidManifest.xml \( -path '*merged_manifest*release*' -o -path '*merged_manifests*release*' \) | head -1)
@@ -75,9 +79,6 @@ jobs:
           fi
           echo "Verified: no Advertising ID permission in merged manifest or AAB"
 
-      - name: Build signed release APK
-        working-directory: android
-        run: ./gradlew assembleRelease --stacktrace
 
       - name: Verify release uses debug-stable packaging
         run: |
@@ -94,22 +95,26 @@ jobs:
           echo "Verified: Release APK/AAB contain no ART baseline profile"
 
       - name: Upload release APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: vip-life-release-apk
           path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
 
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload debug APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: vip-life-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
 
       - name: Upload AAB
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: vip-life-release-aab
