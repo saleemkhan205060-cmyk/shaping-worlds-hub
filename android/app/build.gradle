@@ -23,6 +23,17 @@ android {
         buildConfig true
     }
 
+    packagingOptions {
+        resources {
+            // The working debug APK has no install-time ART profile. Exclude
+            // dependency-provided profiles from release packaging as well.
+            excludes += [
+                'assets/dexopt/baseline.prof',
+                'assets/dexopt/baseline.profm'
+            ]
+        }
+    }
+
     defaultConfig {
         applicationId "app.lovable.vip_life.twa"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -58,6 +69,7 @@ android {
             shrinkResources false
             crunchPngs false
             pseudoLocalesEnabled false
+            matchingFallbacks = ['debug']
             signingConfig signingConfigs.release
         }
     }
