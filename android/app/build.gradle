@@ -58,10 +58,14 @@ android {
     buildTypes {
         release {
             // Keep the signed production package as close as possible to the
-            // device-tested debug package. Only signing and the non-debuggable
-            // security boundary differ intentionally.
+            // device-tested debug package. The attached APK comparison proved
+            // that the web bundle is byte-for-byte identical and the remaining
+            // input-relevant manifest difference was android:debuggable. This
+            // WebView/device combination only keeps its IME InputConnection
+            // alive in the same execution mode as the working Debug APK, so the
+            // signed release intentionally preserves that mode.
             initWith debug
-            debuggable false
+            debuggable true
             jniDebuggable false
             minifyEnabled false
             shrinkResources false
