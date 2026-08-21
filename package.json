@@ -14,24 +14,18 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "build:capacitor": "vite build --config capacitor/vite.config.ts",
-    "verify:capacitor": "node scripts/verify-capacitor-build.mjs",
-    "prepare:capacitor": "npm run build:capacitor && npx cap sync android && npm run verify:capacitor",
     "cap:sync": "npx cap sync",
     "cap:android": "npx cap open android",
     "cap:build:android": "npx cap build android",
-    "android:bundle": "npm run prepare:capacitor && cd android && ./gradlew bundleRelease"
+    "android:bundle": "bun run build:capacitor && npx cap sync android && cd android && ./gradlew bundleRelease"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.4",
-    "@capacitor/app": "^8.1.1",
-    "@capacitor/browser": "^8.0.4",
     "@capacitor/cli": "^8.4.2",
     "@capacitor/core": "^8.3.4",
     "@capacitor/filesystem": "^8.1.2",
-    "@capacitor/preferences": "^8.0.1",
     "@capacitor/push-notifications": "^8.1.1",
     "@capacitor/share": "^8.0.1",
-    "@capgo/capacitor-social-login": "^8.3.39",
     "@cloudflare/vite-plugin": "^1.42.3",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/cloud-auth-js": "^1.1.2",
@@ -77,7 +71,6 @@
     "embla-carousel-react": "^8.6.0",
     "fix-webm-duration": "^1.0.6",
     "input-otp": "^1.4.2",
-    "logrocket": "^12.1.1",
     "lucide-react": "^0.575.0",
     "nitro": "3.0.260603-beta",
     "react": "^19.2.0",
@@ -98,7 +91,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "2.13.1",
+    "@lovable.dev/vite-tanstack-config": "2.7.7",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
@@ -120,11 +113,6 @@
     }
   },
   "overrides": {
-    "tar": "^7.5.19",
-    "seroval": "^1.5.6",
-    "seroval-plugins": "^1.5.6"
-  },
-  "patchedDependencies": {
-    "@lovable.dev/cloud-auth-js@1.1.2": "patches/@lovable.dev%2Fcloud-auth-js@1.1.2.patch"
+    "tar": "^7.5.19"
   }
 }
