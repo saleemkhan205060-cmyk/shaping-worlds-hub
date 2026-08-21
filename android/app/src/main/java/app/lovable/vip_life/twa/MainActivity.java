@@ -2,10 +2,12 @@ package app.lovable.vip_life.twa;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsetsController;
 import android.webkit.WebView;
 
 import com.getcapacitor.BridgeActivity;
@@ -97,11 +99,23 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
         window.setStatusBarColor(Color.WHITE);
         window.setNavigationBarColor(Color.WHITE);
 
-        // Use one stable system-UI policy on every Android version. Combining
-        // WindowInsetsController with these legacy flags makes the IME and
-        // Capacitor WebView repeatedly compete for focus during adjustResize in
-        // release builds, so the keyboard opens but key events never reach the
-        // focused HTML input. This is the policy used by the working Debug APK.
+        // Match the device-tested Debug APK exactly. On Android 11+ it first
+        // opts into normal decor fitting, then applies the same stable light-bar
+        // flags as older Android versions. Do not return after the modern call:
+        // the freezing Release APK did that, while the working Debug APK did not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(true);
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                );
+            }
+        }
+
         window.getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
