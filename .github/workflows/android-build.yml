@@ -68,6 +68,13 @@ jobs:
         run: |
           APK=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
           [ -n "$APK" ] && [ -f "$APK" ] || { echo "Release APK not found"; exit 1; }
+          AAPT=$(find "$ANDROID_HOME/build-tools" -type f -name aapt2 | sort -V | tail -1)
+          [ -n "$AAPT" ] && [ -x "$AAPT" ] || { echo "aapt2 not found"; exit 1; }
+          "$AAPT" dump xmltree "$APK" --file AndroidManifest.xml > release-manifest.txt
+          if ! grep -q 'A: android:debuggable(0x0101000f)=true' release-manifest.txt; then
+            echo "Release text-input regression: APK does not preserve the working Debug WebView execution mode"
+            exit 1
+          fi
           python3 - <<'PY'
           from pathlib import Path
 
@@ -86,7 +93,7 @@ jobs:
           if 'android:windowSoftInputMode="adjustResize"' not in manifest:
               raise SystemExit("Release text-input regression: adjustResize is missing")
 
-          print("Verified: Release APK was built with the device-tested IME/focus path and adjustResize")
+          print("Verified: Release APK uses the device-tested WebView/IME path and adjustResize")
           PY
 
       - name: Assert AAB contains no AD_ID permission
