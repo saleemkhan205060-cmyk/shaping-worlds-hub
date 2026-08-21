@@ -51,10 +51,10 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
         registerPlugin(PushSupportPlugin.class);
         // Initialize Firebase (when google-services.json is present) BEFORE any
         // push code can reach FirebaseMessaging.getInstance().
-        PushSupportPlugin.ensureFirebase(this);
+       // PushSupportPlugin.ensureFirebase(this);
         // Touch FirebaseAnalytics once so the GA4 Android stream actually starts
         // collecting sessions/events in release builds.
-        startAnalytics();
+       // startAnalytics();
         super.onCreate(savedInstanceState);
 
         applyCleanFullscreen();
