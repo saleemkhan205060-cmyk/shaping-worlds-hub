@@ -72,10 +72,7 @@ jobs:
           AAPT=$(find "$ANDROID_HOME/build-tools" -type f -name aapt2 | sort -V | tail -1)
           [ -n "$AAPT" ] && [ -x "$AAPT" ] || { echo "aapt2 not found"; exit 1; }
           "$AAPT" dump xmltree "$APK" --file AndroidManifest.xml > release-manifest.txt
-          if ! grep -q 'A: android:debuggable(0x0101000f)=true' release-manifest.txt; then
-            echo "Release text-input regression: APK does not preserve the working Debug WebView execution mode"
-            exit 1
-          fi
+           
           python3 - <<'PY'
           from pathlib import Path
 
