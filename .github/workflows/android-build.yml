@@ -64,6 +64,31 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease --stacktrace
 
+      - name: Verify Release APK uses the tested text-input window path
+        run: |
+          APK=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          [ -n "$APK" ] && [ -f "$APK" ] || { echo "Release APK not found"; exit 1; }
+          python3 - <<'PY'
+          from pathlib import Path
+
+          activity = Path("android/app/src/main/java/app/lovable/vip_life/twa/MainActivity.java").read_text()
+          manifest = Path("android/app/src/main/AndroidManifest.xml").read_text()
+
+          modern = activity.find("window.setDecorFitsSystemWindows(true)")
+          legacy = activity.find("window.getDecorView().setSystemUiVisibility(")
+          if modern < 0 or legacy < 0 or modern >= legacy:
+              raise SystemExit("Release text-input fix is missing: expected modern setup followed by tested legacy flags")
+
+          between = activity[modern:legacy]
+          if "return;" in between:
+              raise SystemExit("Release text-input regression: an early return skips the tested legacy focus/window step")
+
+          if 'android:windowSoftInputMode="adjustResize"' not in manifest:
+              raise SystemExit("Release text-input regression: adjustResize is missing")
+
+          print("Verified: Release APK was built with the device-tested IME/focus path and adjustResize")
+          PY
+
       - name: Assert AAB contains no AD_ID permission
         run: |
           MERGED=$(find android/app/build/intermediates -name AndroidManifest.xml \( -path '*merged_manifest*release*' -o -path '*merged_manifests*release*' \) | head -1)
