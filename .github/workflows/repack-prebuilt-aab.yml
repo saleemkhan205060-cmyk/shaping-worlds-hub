@@ -1,0 +1,66 @@
+name: Repack Prebuilt AAB (versionCode bump only)
+
+# Takes the prebuilt bundle at prebuilt/app-release-v6.aab (versionName 1.0.4,
+# versionCode 6), rewrites ONLY the manifest versionCode, and re-signs it.
+# No app code, native code, WebView, OAuth, Supabase or dependency is rebuilt.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_code:
+        description: New versionCode
+        required: true
+        default: "48"
+
+jobs:
+  repack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Patch versionCode and strip old signature
+        run: |
+          python3 scripts/patch-aab-version-code.py \
+            prebuilt/app-release-v6.aab app-unsigned.aab "${{ inputs.version_code }}"
+          zip -d app-unsigned.aab 'META-INF/*.SF' 'META-INF/*.RSA' 'META-INF/*.DSA' 'META-INF/MANIFEST.MF' || true
+
+      - name: Sign AAB
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > upload-key.jks
+          cp app-unsigned.aab app-release.aab
+          jarsigner -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore upload-key.jks \
+            -storepass "$KEYSTORE_PASSWORD" -keypass "$KEY_PASSWORD" \
+            app-release.aab "$KEY_ALIAS"
+          jarsigner -verify app-release.aab
+
+      - name: Verify versionCode in the produced AAB
+        run: |
+          python3 - <<'PY'
+          import zipfile, sys
+          d = zipfile.ZipFile("app-release.aab").read("base/manifest/AndroidManifest.xml")
+          i = d.find(b"versionCode")
+          blob = d[i:i+40]
+          expected = b"\x1a\x02" + b"${{ inputs.version_code }}"
+          if expected not in blob:
+              raise SystemExit("versionCode not patched: %r" % blob)
+          print("Verified versionCode = ${{ inputs.version_code }}")
+          PY
+
+      - name: Upload signed AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: vip-life-repacked-aab
+          path: app-release.aab
+          if-no-files-found: error
