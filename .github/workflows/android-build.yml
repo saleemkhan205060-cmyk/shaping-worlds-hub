@@ -27,7 +27,10 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: Build, sync, and verify Capacitor bundle
-        run: npm run prepare:capacitor
+        run: |
+          npm run build:capacitor
+          npx cap sync android
+          node scripts/verify-capacitor-build.mjs
 
       - name: Decode signing keystore
         env:
