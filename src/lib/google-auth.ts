@@ -402,48 +402,31 @@ async function resolveWithPersistedSession(
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   if (!isInstalledNativeRuntime()) {
-    // Sign-in must complete in place: the managed SDK's popup `web_message`
-    // handoff keeps the user on the current page/route. Never open a separate
-    // redirect tab or navigate the app away to finish OAuth.
-
-    // The generated Lovable auth wrapper already awaited setSession, so the
-    // single shared onAuthStateChange listener publishes the session.
     try {
-      return await resolveWithPersistedSession(await signInWithBrowserGoogle(options), 15_000);
+      return await resolveWithPersistedSession(
+        await signInWithBrowserGoogle(options),
+        15_000,
+      );
     } catch (error) {
       logGoogleAuthError("browser sign-in", error);
       return await resolveWithPersistedSession(
-        { error: toDetailedError("Browser Google sign-in", error), redirected: false },
+        {
+          error: toDetailedError("Browser Google sign-in", error),
+          redirected: false,
+        },
         15_000,
       );
     }
   }
 
-
   try {
-    // Use Google's native Credential Manager in the installed Android app.
-    // This keeps the WebView alive and exchanges Google's ID token directly for
-    // an app session, avoiding the browser/App-Link handoff that could leave the
-    // auth page waiting forever after account selection.
+    // Android: use native Google Credential Manager only.
+    // Do NOT fall back to browser, which can open Google account selection again.
     return await signInWithNativeGoogle();
   } catch (error) {
-    // Credential Manager can fail for reasons unrelated to the user (no Google
-    // account on device, Play Services mismatch, or the ID-token audience not
-    // being accepted yet). Fall back to the managed browser flow instead of
-    // dead-ending sign-in.
     logGoogleAuthError("native Credential Manager sign-in", error);
-    const nativeDetail = describeGoogleAuthError(error);
-    try {
-      // The Android fallback finishes in an external browser and hands the
-      // session back through the App Link, so allow a longer window than web.
-      return await resolveWithPersistedSession(await signInWithBrowserGoogle(options), 45_000);
-    } catch (fallbackError) {
-      logGoogleAuthError("browser fallback sign-in", fallbackError);
-      const detailed = toDetailedError("Google sign-in", fallbackError);
-      detailed.message = `${detailed.message} (native: ${nativeDetail})`;
-      return await resolveWithPersistedSession({ error: detailed, redirected: false }, 45_000);
-    }
+
+    const detailed = toDetailedError("Google sign-in", error);
+    return { error: detailed, redirected: false };
   }
-
 }
-
