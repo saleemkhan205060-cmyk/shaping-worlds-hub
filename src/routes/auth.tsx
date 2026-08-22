@@ -196,8 +196,8 @@ function AuthPage() {
               type="button"
               onClick={() => void onGoogle()}
               disabled={busy}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
-            >
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 px-2 text-sm font-semibold whitespace-nowrap border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+             >
               <GoogleIcon /> Continue with Google
             </button>
             <button
