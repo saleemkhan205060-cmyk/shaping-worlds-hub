@@ -57,15 +57,16 @@ protected void onCreate(Bundle savedInstanceState) {
 
   // applyCleanFullscreen();
 
-    WebView webView = getBridge().getWebView();
-    if (webView != null) {
-        webView.setBackgroundColor(Color.WHITE);
-        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(false);
-    }
+/*
+WebView webView = getBridge().getWebView();
+if (webView != null) {
+    webView.setBackgroundColor(Color.WHITE);
+    webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+    webView.setVerticalScrollBarEnabled(false);
+    webView.setHorizontalScrollBarEnabled(false);
 }
-
+*/
+}
     // NOTE: system-bar styling is applied once in onCreate(). Re-applying it in
     // onWindowFocusChanged() re-ran setSystemUiVisibility()/insets every time the
     // soft keyboard took or gave up window focus, which produced a relayout loop
