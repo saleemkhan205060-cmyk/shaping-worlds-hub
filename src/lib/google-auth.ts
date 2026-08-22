@@ -420,9 +420,9 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   }
 
   try {
-  return await signInWithNativeGoogle();
+  return await signInWithBrowserGoogle(options);
 } catch (error) {
-  logGoogleAuthError("native Credential Manager sign-in", error);
+  logGoogleAuthError("browser Google sign-in", error);
 
   const detail = describeGoogleAuthError(error);
 
