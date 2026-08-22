@@ -66,11 +66,14 @@ public class MainActivity extends BridgeActivity
         WebView webView = getBridge().getWebView();
 
         if (webView != null) {
-            webView.setBackgroundColor(Color.WHITE);
-            webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-            webView.setVerticalScrollBarEnabled(false);
-            webView.setHorizontalScrollBarEnabled(false);
-        }
+        webView.setBackgroundColor(Color.WHITE);
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+
+        webView.setFocusable(true);
+        webView.setFocusableInTouchMode(true);
+        webView.requestFocusFromTouch();
     }
 
     private void startAnalytics() {
