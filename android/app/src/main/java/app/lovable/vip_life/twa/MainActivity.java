@@ -46,27 +46,25 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        registerPlugin(SafeBrowserPlugin.class);
-        registerPlugin(PushSupportPlugin.class);
-        // Initialize Firebase (when google-services.json is present) BEFORE any
-        // push code can reach FirebaseMessaging.getInstance().
-        PushSupportPlugin.ensureFirebase(this);
-        // Touch FirebaseAnalytics once so the GA4 Android stream actually starts
-        // collecting sessions/events in release builds.
-        startAnalytics();
-        super.onCreate(savedInstanceState);
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        applyCleanFullscreen();
+    registerPlugin(SafeBrowserPlugin.class);
+    registerPlugin(PushSupportPlugin.class);
 
-        WebView webView = getBridge().getWebView();
-        if (webView != null) {
-            webView.setBackgroundColor(Color.WHITE);
-            webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-            webView.setVerticalScrollBarEnabled(false);
-            webView.setHorizontalScrollBarEnabled(false);
-        }
+    PushSupportPlugin.ensureFirebase(this);
+    startAnalytics();
+
+    applyCleanFullscreen();
+
+    WebView webView = getBridge().getWebView();
+    if (webView != null) {
+        webView.setBackgroundColor(Color.WHITE);
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
     }
+}
 
     // NOTE: system-bar styling is applied once in onCreate(). Re-applying it in
     // onWindowFocusChanged() re-ran setSystemUiVisibility()/insets every time the
