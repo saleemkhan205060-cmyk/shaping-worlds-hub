@@ -420,13 +420,10 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
   }
 
   try {
-    // Android: use native Google Credential Manager only.
-    // Do NOT fall back to browser, which can open Google account selection again.
-    return await signInWithNativeGoogle();
-  } catch (error) {
-    logGoogleAuthError("native Credential Manager sign-in", error);
+  return await signInWithNativeGoogle();
+} catch (error) {
+  logGoogleAuthError("native Credential Manager sign-in", error);
 
-    const detailed = toDetailedError("Google sign-in", error);
-    return { error: detailed, redirected: false };
-  }
+  const detailed = toDetailedError("Google sign-in", error);
+  return { error: detailed, redirected: false };
 }
