@@ -424,6 +424,28 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
 } catch (error) {
   logGoogleAuthError("native Credential Manager sign-in", error);
 
-  const detailed = toDetailedError("Google sign-in", error);
-  return { error: detailed, redirected: false };
+  const detail = describeGoogleAuthError(error);
+
+  if (/USER_CANCELLED|cancelled by user/i.test(detail)) {
+    return {
+      error: new Error("Google sign-in cancelled by user"),
+      redirected: false,
+    };
+  }
+
+  try {
+    return await resolveWithPersistedSession(
+      await signInWithBrowserGoogle(options),
+      45_000,
+    );
+  } catch (fallbackError) {
+    logGoogleAuthError("browser fallback sign-in", fallbackError);
+    const detailed = toDetailedError("Google sign-in", fallbackError);
+    detailed.message = `${detailed.message} (native: ${detail})`;
+
+    return await resolveWithPersistedSession(
+      { error: detailed, redirected: false },
+      45_000,
+    );
+  }
 }
