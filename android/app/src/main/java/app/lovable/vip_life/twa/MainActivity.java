@@ -55,7 +55,7 @@ protected void onCreate(Bundle savedInstanceState) {
     PushSupportPlugin.ensureFirebase(this);
     startAnalytics();
 
-    applyCleanFullscreen();
+  // applyCleanFullscreen();
 
     WebView webView = getBridge().getWebView();
     if (webView != null) {
