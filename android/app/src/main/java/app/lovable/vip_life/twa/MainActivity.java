@@ -48,7 +48,7 @@ public class MainActivity extends BridgeActivity implements ModifiedMainActivity
     @Override
 protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+}
     registerPlugin(SafeBrowserPlugin.class);
     registerPlugin(PushSupportPlugin.class);
 
