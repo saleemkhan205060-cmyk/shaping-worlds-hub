@@ -446,6 +446,7 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     return await resolveWithPersistedSession(
       { error: detailed, redirected: false },
       45_000,
-    );
+     );
   }
+}
 }
