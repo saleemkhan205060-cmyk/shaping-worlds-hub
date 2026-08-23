@@ -122,6 +122,38 @@ function AuthPage() {
   };
 
 
+  // The arrow opens the native Google account chooser. Its result MUST be
+  // awaited and handled here: previously the promise was fired and forgotten,
+  // so a failed (or successful-but-unannounced) sign-in silently left the user
+  // on this screen after picking an account.
+  const onGoogleAccountChooser = async () => {
+    if (mode === "signup" && !agreedTerms) {
+      toast.error("Please accept the Terms & Conditions to continue.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await signInWithNativeGoogle();
+      if (result.error) throw result.error;
+      toast.success("Welcome back!");
+      leaveAuth();
+    } catch (error) {
+      console.error("Google account chooser error:", describeGoogleAuthError(error), error);
+      // The account handoff can report failure while the session is still being
+      // written. Treat an already-persisted session as success.
+      const session = await waitForAuthSession(8_000);
+      if (session) {
+        publishAuthenticatedSession(session);
+        toast.success("Welcome back!");
+        leaveAuth();
+        return;
+      }
+      toast.error(authErrorMessage(error, "google"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
@@ -147,6 +179,7 @@ function AuthPage() {
       setBusy(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
