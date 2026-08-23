@@ -117,14 +117,25 @@ async function sha256Hex(value: string) {
       },
     });
   } catch (error) {
+    const detail = describeGoogleAuthError(error);
     // Never turn a native chooser cancellation into browser OAuth. Doing so
     // asks for the account a second time on a new page. A successful native
     // selection resolves above with an ID token and signs in directly here.
-    if (/USER_CANCELLED|cancelled by user/i.test(describeGoogleAuthError(error))) {
+    if (/USER_CANCELLED|cancelled by user/i.test(detail)) {
       throw new Error("Google account selection was cancelled");
+    }
+    // The installed build's signing SHA-1 / package is not registered as an
+    // Android OAuth client in Google Cloud, so Credential Manager refuses with
+    // "Developer console is not set up correctly" (status 10 / 28444). Nothing
+    // the user can do in-app — fall back to the managed browser OAuth flow so
+    // sign-in still completes on this build.
+    if (/28444|Developer console is not set up|not configured for this installed|status(?: code)?[:= ]*10\b/i.test(detail)) {
+      logGoogleAuthError("native google unconfigured, using browser flow", error);
+      return await signInWithBrowserGoogle({ extraParams: { prompt: "select_account" } });
     }
     throw error;
   }
+
 
   if (login.result.responseType !== "online" || !login.result.idToken) {
     throw new Error("Google sign-in did not return an ID token");
