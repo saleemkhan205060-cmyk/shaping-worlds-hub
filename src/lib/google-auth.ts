@@ -85,7 +85,7 @@ async function sha256Hex(value: string) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-async function signInWithNativeGoogle() {
+ export async function signInWithNativeGoogle() {
   const { SocialLogin } = await import("@capgo/capacitor-social-login");
 
   nativeGoogleInitialization ??= SocialLogin.initialize({
