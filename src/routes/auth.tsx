@@ -137,8 +137,10 @@ function AuthPage() {
     try {
       const result = await signInWithNativeGoogle();
       if (result.error) throw result.error;
-      toast.success("Welcome back!");
-      leaveAuth();
+      if (!result.redirected) {
+        toast.success("Welcome back!");
+        leaveAuth();
+      }
     } catch (error) {
       console.error("Google account chooser error:", describeGoogleAuthError(error), error);
       // The account handoff can report failure while the session is still being
