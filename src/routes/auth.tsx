@@ -5,8 +5,11 @@ import {
   publishAuthenticatedSession,
   useAuth,
 } from "@/hooks/use-auth";
-import { describeGoogleAuthError, signInWithGoogle } from "@/lib/google-auth";
-
+import {
+  describeGoogleAuthError,
+  signInWithGoogle,
+  signInWithNativeGoogle,
+} from "@/lib/google-auth";
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
@@ -203,7 +206,7 @@ function AuthPage() {
             <button
               type="button"
               aria-label="Choose a Google account"
-              onClick={() => void onGoogle()}
+              onClick={() => void signInWithNativeGoogle()}
               disabled={busy}
               className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
             >
