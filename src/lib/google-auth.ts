@@ -6,6 +6,8 @@ import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { publishAuthenticatedSession } from "@/hooks/use-auth";
 import { isNativeCapacitorApp } from "./native-share";
+import { persistSession } from "./session-persistence";
+
 import { hasNativePlugin } from "./native-plugins";
 import { ANDROID_OAUTH_BROKER_URL, getOAuthCallbackUrl, PUBLISHED_ORIGIN } from "./oauth-origin";
 
@@ -112,17 +114,41 @@ async function sha256Hex(value: string) {
     throw new Error("Google sign-in did not return an ID token");
   }
 
-  const { data, error } = await supabase.auth.signInWithIdToken({
+  const idToken = login.result.idToken;
+  let { data, error } = await supabase.auth.signInWithIdToken({
     provider: "google",
-    token: login.result.idToken,
+    token: idToken,
     nonce: rawNonce,
   });
+
+  // Some Credential Manager / plugin versions hash or drop the nonce
+  // themselves, so the ID token's `nonce` claim no longer matches the raw
+  // value Supabase re-hashes. That surfaces as a nonce mismatch and used to
+  // leave the user on the Sign In screen with no visible error. Retry once
+  // without the nonce — Supabase still verifies the token against Google.
+  if (error && /nonce/i.test(describeGoogleAuthError(error))) {
+    logGoogleAuthError("native id-token nonce", error);
+    ({ data, error } = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: idToken,
+    }));
+  }
+
   if (error) throw error;
   if (!data.session) throw new Error("Google sign-in did not create a session");
+
+  // Mirror the session into native storage immediately so reopening the app
+  // restores it, instead of relying only on the async auth listener.
+  try {
+    await persistSession(data.session);
+  } catch (persistError) {
+    console.warn("Native session persistence failed:", persistError);
+  }
 
   publishAuthenticatedSession(data.session);
   return { error: null, redirected: false as const };
 }
+
 
 async function restoreSessionFromNativeCallbackOnce(url: string, expectedState?: string) {
   if (

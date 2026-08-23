@@ -51,7 +51,7 @@ const PAGE = `<!doctype html>
   </body>
 </html>`;
 
-export const Route = createFileRoute("/auth/native-callback")({
+export const Route = createFileRoute("/auth_/native-callback")({
   server: {
     handlers: {
       GET: async () =>

@@ -9,7 +9,9 @@ import {
   describeGoogleAuthError,
   signInWithGoogle,
   signInWithNativeGoogle,
+  waitForAuthSession,
 } from "@/lib/google-auth";
+
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
@@ -122,6 +124,38 @@ function AuthPage() {
   };
 
 
+  // The arrow opens the native Google account chooser. Its result MUST be
+  // awaited and handled here: previously the promise was fired and forgotten,
+  // so a failed (or successful-but-unannounced) sign-in silently left the user
+  // on this screen after picking an account.
+  const onGoogleAccountChooser = async () => {
+    if (mode === "signup" && !agreedTerms) {
+      toast.error("Please accept the Terms & Conditions to continue.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await signInWithNativeGoogle();
+      if (result.error) throw result.error;
+      toast.success("Welcome back!");
+      leaveAuth();
+    } catch (error) {
+      console.error("Google account chooser error:", describeGoogleAuthError(error), error);
+      // The account handoff can report failure while the session is still being
+      // written. Treat an already-persisted session as success.
+      const session = await waitForAuthSession(8_000);
+      if (session) {
+        publishAuthenticatedSession(session);
+        toast.success("Welcome back!");
+        leaveAuth();
+        return;
+      }
+      toast.error(authErrorMessage(error, "google"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
@@ -147,6 +181,7 @@ function AuthPage() {
       setBusy(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
@@ -206,10 +241,11 @@ function AuthPage() {
             <button
               type="button"
               aria-label="Choose a Google account"
-              onClick={() => void signInWithNativeGoogle()}
+              onClick={() => void onGoogleAccountChooser()}
               disabled={busy}
               className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
             >
+
               {busy ? (
                 <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
               ) : (
