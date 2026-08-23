@@ -105,6 +105,11 @@ async function sha256Hex(value: string) {
     login = await SocialLogin.login({
       provider: "google",
       options: {
+        // Use Credential Manager's account bottom sheet for the arrow action.
+        // The standard variant can hand control to a separate Google activity;
+        // if that activity reports USER_CANCELLED after account selection, the
+        // old browser fallback opened a second account chooser in Chrome.
+        style: "bottom",
         scopes: ["email", "profile"],
         nonce: nonceDigest,
         filterByAuthorizedAccounts: false,
@@ -112,16 +117,11 @@ async function sha256Hex(value: string) {
       },
     });
   } catch (error) {
-    // Credential Manager can return USER_CANCELLED after an account was
-    // actually selected when Google rejects the installed APK's native
-    // credential handoff. No ID token exists in that case, so there is no
-    // session for the callback code to restore. Continue through the existing
-    // managed browser flow, which does not depend on that native handoff.
+    // Never turn a native chooser cancellation into browser OAuth. Doing so
+    // asks for the account a second time on a new page. A successful native
+    // selection resolves above with an ID token and signs in directly here.
     if (/USER_CANCELLED|cancelled by user/i.test(describeGoogleAuthError(error))) {
-      logGoogleAuthError("native credential handoff", error);
-      return await signInWithBrowserGoogle({
-        extraParams: { prompt: "select_account" },
-      });
+      throw new Error("Google account selection was cancelled");
     }
     throw error;
   }
