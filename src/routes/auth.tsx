@@ -9,7 +9,9 @@ import {
   describeGoogleAuthError,
   signInWithGoogle,
   signInWithNativeGoogle,
+  waitForAuthSession,
 } from "@/lib/google-auth";
+
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
