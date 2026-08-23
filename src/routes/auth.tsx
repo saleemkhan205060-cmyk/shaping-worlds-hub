@@ -206,10 +206,11 @@ function AuthPage() {
             <button
               type="button"
               aria-label="Choose a Google account"
-              onClick={() => void signInWithNativeGoogle()}
+              onClick={() => void onGoogleAccountChooser()}
               disabled={busy}
               className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
             >
+
               {busy ? (
                 <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
               ) : (
