@@ -100,15 +100,31 @@ async function sha256Hex(value: string) {
 
   const rawNonce = crypto.randomUUID();
   const nonceDigest = await sha256Hex(rawNonce);
-  const login = await SocialLogin.login({
-    provider: "google",
-    options: {
-      scopes: ["email", "profile"],
-      nonce: nonceDigest,
-      filterByAuthorizedAccounts: false,
-      autoSelectEnabled: false,
-    },
-  });
+  let login;
+  try {
+    login = await SocialLogin.login({
+      provider: "google",
+      options: {
+        scopes: ["email", "profile"],
+        nonce: nonceDigest,
+        filterByAuthorizedAccounts: false,
+        autoSelectEnabled: false,
+      },
+    });
+  } catch (error) {
+    // Credential Manager can return USER_CANCELLED after an account was
+    // actually selected when Google rejects the installed APK's native
+    // credential handoff. No ID token exists in that case, so there is no
+    // session for the callback code to restore. Continue through the existing
+    // managed browser flow, which does not depend on that native handoff.
+    if (/USER_CANCELLED|cancelled by user/i.test(describeGoogleAuthError(error))) {
+      logGoogleAuthError("native credential handoff", error);
+      return await signInWithBrowserGoogle({
+        extraParams: { prompt: "select_account" },
+      });
+    }
+    throw error;
+  }
 
   if (login.result.responseType !== "online" || !login.result.idToken) {
     throw new Error("Google sign-in did not return an ID token");
