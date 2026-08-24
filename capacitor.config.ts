@@ -10,6 +10,9 @@ const config: CapacitorConfig = {
     cleartext: false,
   },
   android: {
+    // Let tapped HTML controls acquire focus directly. Capacitor's default
+    // initial WebView focus can leave the container holding the IME connection.
+    initialFocus: false,
     buildOptions: {
       keystorePath: "android/app/release-key.jks",
       keystoreAlias: "vip-life",
