@@ -5,22 +5,10 @@
 	"bundledWebRuntime": false,
 	"server": {
 		"androidScheme": "https",
-		"hostname": "localhost",
-		"cleartext": false,
-		"allowNavigation": [
-			"accounts.google.com",
-			"*.google.com",
-			"oauth.lovable.app",
-			"*.lovable.app",
-			"viplifes.com",
-			"*.viplifes.com",
-			"*.supabase.co"
-		]
+		"cleartext": false
 	},
 	"android": {
-		"initialFocus": false,
-		"allowMixedContent": true,
-		"webContentsDebuggingEnabled": true
+		"initialFocus": false
 	},
 	"plugins": {
 		"SplashScreen": {
@@ -28,14 +16,6 @@
 			"backgroundColor": "#FFFFFF",
 			"androidSplashResourceName": "splash",
 			"androidScaleType": "CENTER_CROP"
-		},
-		"SocialLogin": {
-			"providers": {
-				"google": true,
-				"facebook": false,
-				"apple": false,
-				"twitter": false
-			}
 		}
 	}
 }
