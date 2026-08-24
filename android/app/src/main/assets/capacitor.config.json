@@ -18,6 +18,7 @@
 		]
 	},
 	"android": {
+		"initialFocus": false,
 		"allowMixedContent": true,
 		"webContentsDebuggingEnabled": true
 	},
