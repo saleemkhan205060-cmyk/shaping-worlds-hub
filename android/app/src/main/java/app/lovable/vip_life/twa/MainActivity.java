@@ -67,14 +67,14 @@ public class MainActivity extends BridgeActivity
 
         if (webView != null) {
             webView.setBackgroundColor(Color.WHITE);
-            webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-            webView.setVerticalScrollBarEnabled(false);
-            webView.setHorizontalScrollBarEnabled(false);
+         // webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+         // webView.setVerticalScrollBarEnabled(false);
+         // webView.setHorizontalScrollBarEnabled(false);
 
             // Do not force focus onto the WebView container. The tapped HTML
             // input must own focus so Chromium can create its editable
             // InputConnection and deliver IME text to that field.
-            webView.requestFocusFromTouch();
+           // webView.requestFocusFromTouch();
         }
     }
 
