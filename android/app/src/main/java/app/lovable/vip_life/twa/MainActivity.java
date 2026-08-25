@@ -74,7 +74,7 @@ public class MainActivity extends BridgeActivity
             // Do not force focus onto the WebView container. The tapped HTML
             // input must own focus so Chromium can create its editable
             // InputConnection and deliver IME text to that field.
-            webView.clearFocus();
+            webView.requestFocusFromTouch();
         }
     }
 
