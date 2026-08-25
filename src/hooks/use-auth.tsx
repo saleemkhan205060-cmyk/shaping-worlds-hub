@@ -18,7 +18,7 @@ const serverAuthState: AuthState = { session: null, user: null, loading: true };
 const listeners = new Set<() => void>();
 let authInitialized = false;
 let authRevision = 0;
-const AUTH_REQUEST_TIMEOUT_MS = 15_000;
+const AUTH_REQUEST_TIMEOUT_MS = 5_000;
 
 function withAuthTimeout<T>(operation: Promise<T>, message: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
