@@ -65,7 +65,7 @@ android {
             // alive in the same execution mode as the working Debug APK, so the
             // signed release intentionally preserves that mode.
             initWith debug
-            debuggable true
+            debuggable false
             jniDebuggable false
             minifyEnabled false
             shrinkResources false
