@@ -58,7 +58,7 @@ public class MainActivity extends BridgeActivity
         registerPlugin(PushSupportPlugin.class);
 
        // PushSupportPlugin.ensureFirebase(this);
-        startAnalytics();
+       // startAnalytics();
 
         // Keep fullscreen/system-bar code disabled while testing the freeze.
         // applyCleanFullscreen();
