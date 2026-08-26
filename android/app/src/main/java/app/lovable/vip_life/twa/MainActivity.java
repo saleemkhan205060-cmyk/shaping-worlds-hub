@@ -49,7 +49,11 @@ public class MainActivity extends BridgeActivity
                     .handleGoogleLoginIntent(requestCode, data);
         }
     }
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
