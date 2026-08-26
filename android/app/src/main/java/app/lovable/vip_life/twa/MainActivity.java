@@ -55,7 +55,6 @@ public class MainActivity extends BridgeActivity
         super.onCreate(savedInstanceState);
 
         registerPlugin(SafeBrowserPlugin.class);
-        registerPlugin(PushSupportPlugin.class);
 
        // PushSupportPlugin.ensureFirebase(this);
        // startAnalytics();
