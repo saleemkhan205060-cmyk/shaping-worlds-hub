@@ -14,6 +14,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
 import { AppMessageNotifications } from "@/components/AppMessageNotifications";
 import { NativeGoogleAuthBridge } from "@/components/NativeGoogleAuthBridge";
+import { identifyLogRocketUser } from "@/lib/logrocket";
+import { useAuth } from "@/hooks/use-auth";
 
 import appCss from "../styles.css?url";
 
@@ -163,6 +165,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useRegisterServiceWorker();
+
+  const { user } = useAuth();
+  React.useEffect(() => {
+    identifyLogRocketUser(user?.id ?? null, user?.email ? { email: user.email } : undefined);
+  }, [user?.id, user?.email]);
 
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   React.useEffect(() => {
