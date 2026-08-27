@@ -3,7 +3,7 @@ import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { initLogRocket } from "./lib/logrocket";
 
-initLogRocket();
+initLogRocket(); console.log("🔥 LogRocket initialized");
 
 
 
