@@ -8,7 +8,8 @@
     "cleartext": false
   },
   "android": {
-    "initialFocus": true
+    "initialFocus": true,
+    "captureInput": true
   },
   "plugins": {
     "SplashScreen": {
