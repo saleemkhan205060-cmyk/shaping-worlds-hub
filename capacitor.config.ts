@@ -10,10 +10,11 @@ const config: CapacitorConfig = {
     cleartext: false,
   },
   android: {
-    // Stock Capacitor behaviour. The WebView must be focusable in touch mode
-    // so Chromium can build an editable InputConnection for tapped fields;
-    // disabling it stopped the Android keyboard from delivering any text.
+    // Keep stock one-tap WebView focus, but use Capacitor's alternate Android
+    // InputConnection. Some Android WebView/IME combinations open the keyboard
+    // while dropping committed text through Chromium's normal connection.
     initialFocus: true,
+    captureInput: true,
     buildOptions: {
       keystorePath: "android/app/release-key.jks",
       keystoreAlias: "vip-life",
