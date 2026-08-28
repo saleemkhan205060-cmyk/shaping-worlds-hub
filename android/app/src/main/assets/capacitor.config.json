@@ -1,21 +1,21 @@
 {
-	"appId": "app.lovable.vip_life.twa",
-	"appName": "VIP Life",
-	"webDir": "dist-capacitor",
-	"bundledWebRuntime": false,
-	"server": {
-		"androidScheme": "https",
-		"cleartext": false
-	},
-	"android": {
-		"initialFocus": false
-	},
-	"plugins": {
-		"SplashScreen": {
-			"launchShowDuration": 500,
-			"backgroundColor": "#FFFFFF",
-			"androidSplashResourceName": "splash",
-			"androidScaleType": "CENTER_CROP"
-		}
-	}
+  "appId": "app.lovable.vip_life.twa",
+  "appName": "VIP Life",
+  "webDir": "dist-capacitor",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "android": {
+    "initialFocus": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 500,
+      "backgroundColor": "#FFFFFF",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
 }
