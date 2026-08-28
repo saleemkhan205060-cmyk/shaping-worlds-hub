@@ -138,13 +138,6 @@ function Videos() {
 
   return (
     <Layout>
-      <Helmet>
-  <title>VIP Life Videos – Trending Videos & Creators</title>
-  <meta
-    name="description"
-    content="Watch trending videos, discover creators, and explore music, food, travel and more on VIP Life."
-  />
-</Helmet>
       <div className="flex items-center justify-between mb-5 gap-3">
         <div className="min-w-0">
           <h1 className="text-2xl font-extrabold">Video Feed</h1>
