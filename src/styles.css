@@ -156,6 +156,19 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+
+  /* Android WebView: text controls must always be selectable, tappable and
+   * free of the 300ms double-tap delay, no matter what selection/callout
+   * suppression is applied to media containers around them. */
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+    touch-action: manipulation;
+  }
 }
 
 

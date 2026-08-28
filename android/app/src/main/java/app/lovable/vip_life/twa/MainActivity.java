@@ -70,14 +70,16 @@ public class MainActivity extends BridgeActivity
 
         if (webView != null) {
             webView.setBackgroundColor(Color.WHITE);
-         // webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-         // webView.setVerticalScrollBarEnabled(false);
-         // webView.setHorizontalScrollBarEnabled(false);
 
-            // Do not force focus onto the WebView container. The tapped HTML
-            // input must own focus so Chromium can create its editable
-            // InputConnection and deliver IME text to that field.
-           // webView.requestFocusFromTouch();
+            // The WebView must be focusable in touch mode, otherwise Chromium
+            // never creates an editable InputConnection for the tapped HTML
+            // field and the soft keyboard delivers no text. This is the stock
+            // Capacitor behaviour; the previous build disabled it, which is
+            // what broke typing everywhere in the app.
+            webView.setFocusable(true);
+            webView.setFocusableInTouchMode(true);
+
+            // Do not steal focus back afterwards: the tapped input keeps it.
         }
     }
 
