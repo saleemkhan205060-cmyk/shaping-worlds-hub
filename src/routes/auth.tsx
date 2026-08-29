@@ -189,15 +189,16 @@ function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
         <Link to="/" className="flex items-center gap-2 justify-center mb-6">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
-            <Globe className="h-5 w-5" />
-          </div>
-          <div className="leading-tight">
-          <div className="font-extrabold text-sm text-[#0b6b35]">
-          VIP Life
+        <div className="h-10 w-10 rounded-xl bg-[#0b6b35] flex items-center justify-center text-white font-bold">
+        <span className="text-lg font-black">V</span>
+        </div>
+
+        <div className="leading-tight">
+         <div className="font-black text-2xl text-[#0b6b35] tracking-tight">
+         VIP Life
          </div>
          </div>
-        </Link>
+         </Link>
 
         <h1 className="text-2xl font-extrabold text-center">
           {mode === "signin" ? "Welcome back" : "Create your account"}
