@@ -76,7 +76,7 @@ function UploadPage() {
   const setIsPrivate = (v: boolean) => setVisibility(v ? "private" : "public");
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [showCamera, setShowCamera] = useState(true);
+  const [showCamera, setShowCamera] = useState(false)
   const [framePickerOpen, setFramePickerOpen] = useState(false);
   const [videoMenuOpen, setVideoMenuOpen] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
@@ -249,6 +249,7 @@ function UploadPage() {
           onCapture={(f) => { setShowCamera(false); onPick(f); }}
         />
       )}
+      <div className="min-h-screen bg-green-600">
       <div className="max-w-xl mx-auto">
         <div className="flex items-start justify-between mb-5">
           <div>
