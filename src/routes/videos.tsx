@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
@@ -31,7 +30,23 @@ type Post = {
   thumbnail_url: string | null;
 };
 
-export const Route = createFileRoute("/videos")({ component: Videos });
+export const Route = createFileRoute("/videos")({
+  head: () => ({
+    meta: [
+      { title: "Videos — VIP Life" },
+      { name: "description", content: "Watch short videos shared by the VIP Life community. Sign in to upload your own." },
+      { property: "og:title", content: "Videos — VIP Life" },
+      { property: "og:description", content: "Watch short videos shared by the VIP Life community. Sign in to upload your own." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://viplifes.com/videos" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Videos — VIP Life" },
+      { name: "twitter:description", content: "Watch short videos shared by the VIP Life community. Sign in to upload your own." },
+    ],
+    links: [{ rel: "canonical", href: "https://viplifes.com/videos" }],
+  }),
+  component: Videos,
+});
 
 const TABS = ["For You", "Trending", "Music", "Food", "Travel"];
 
