@@ -189,8 +189,12 @@ function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
         <Link to="/" className="flex items-center gap-2 justify-center mb-6">
-        <div className="h-10 w-10 rounded-xl bg-[#0b6b35] flex items-center justify-center text-white font-bold">
-        <span className="text-lg font-black">V</span>
+       <div className="h-10 w-10 rounded-xl overflow-hidden">
+        <img
+        src="/logo.png"
+        alt="VIP Life"
+        className="h-full w-full object-contain"
+        />
         </div>
 
         <div className="leading-tight">
