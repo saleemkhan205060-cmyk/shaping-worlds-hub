@@ -508,6 +508,8 @@ function UploadPage() {
 
         </div>
       </div>
+      </div>
+
 
       {file && isVideoFile(file) && preview && (
         <VideoThumbnailPicker
