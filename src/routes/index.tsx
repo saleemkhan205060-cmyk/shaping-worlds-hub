@@ -23,16 +23,31 @@ import {
 } from "lucide-react";
 
 
+const OG_TITLE = "VIP Life";
+const OG_DESCRIPTION = "VIP Life — one platform for relationships. Watch, share, connect, and grow.";
+const OG_URL = "https://viplifes.com/";
+const OG_IMAGE = "https://viplifes.com/og-image-v2.png";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VIP Life" },
-      { name: "description", content: "VIP Life — one platform for relationships. Watch, share, connect, and grow." },
-      { property: "og:title", content: "VIP Life" },
-      { property: "og:description", content: "VIP Life — one platform for relationships. Watch, share, connect, and grow." },
+      { title: OG_TITLE },
+      { name: "description", content: OG_DESCRIPTION },
+      { property: "og:title", content: OG_TITLE },
+      { property: "og:description", content: OG_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:url", content: OG_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:secure_url", content: OG_IMAGE },
+      { property: "og:image:type", content: "image/png" },
+      { property: "og:image:width", content: "1731" },
+      { property: "og:image:height", content: "909" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: OG_TITLE },
+      { name: "twitter:description", content: OG_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
+    links: [{ rel: "canonical", href: OG_URL }],
   }),
   component: Index,
 });
