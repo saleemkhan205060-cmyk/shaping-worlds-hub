@@ -193,11 +193,10 @@ function AuthPage() {
             <Globe className="h-5 w-5" />
           </div>
           <div className="leading-tight">
-            <div className="font-extrabold text-sm">SHAPING</div>
-            <div className="font-extrabold text-sm -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-              WORLD
-            </div>
-          </div>
+          <div className="font-extrabold text-sm text-[#0b6b35]">
+          VIP Life
+         </div>
+         </div>
         </Link>
 
         <h1 className="text-2xl font-extrabold text-center">
