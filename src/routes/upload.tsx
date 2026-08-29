@@ -249,7 +249,7 @@ function UploadPage() {
           onCapture={(f) => { setShowCamera(false); onPick(f); }}
         />
       )}
-      <div className="min-h-screen bg-green-600">
+      <div className="min-h-screen bg-white">
       <div className="max-w-xl mx-auto">
         <div className="flex items-start justify-between mb-5">
           <div>
