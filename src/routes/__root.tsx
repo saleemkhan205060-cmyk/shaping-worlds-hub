@@ -125,7 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "VIP Life" },
       { property: "og:description", content: "VIP Life — one platform for relationships. Watch, share, connect, and grow." },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://raw.githubusercontent.com/saleemkhan205060-cmyk/shaping-worlds-hub/main/public/og-image-v2.png" },
+      { property: "og:image", content: "https://viplifes.com/og-image-v2.png" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "VIP Life" },
       { name: "twitter:description", content: "VIP Life — one platform for relationships. Watch, share, connect, and grow." },
