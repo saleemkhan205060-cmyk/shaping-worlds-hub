@@ -72,7 +72,6 @@ function Profile() {
   const [nameText, setNameText] = useState("");
   const [bioText, setBioText] = useState("");
   const [savingBio, setSavingBio] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
 
   const BIO_CHAR_LIMIT = 80;
   const bioCharCount = bioText.length;
