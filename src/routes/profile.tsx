@@ -1025,13 +1025,7 @@ function Profile() {
           onClose={() => setFs(null)}
         />
       )}
-      <ShareSheet
-        open={shareOpen}
-        onClose={() => setShareOpen(false)}
-        title={`${displayName} on VIP Life`}
-        text={profile?.bio || `View ${displayName}'s profile on VIP Life`}
-        url={profileUrl}
-      />
+      
     </Layout>
   );
 }
