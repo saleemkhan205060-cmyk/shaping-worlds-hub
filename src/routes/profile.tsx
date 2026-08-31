@@ -544,22 +544,6 @@ function Profile() {
           </div>
         </div>
 
-
-        {/* VIP Life row */}
-        <button
-          type="button"
-          className="mt-5 w-full flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-200 text-left"
-        >
-          <span className="flex items-center gap-3">
-            <span className="relative inline-flex h-7 w-7 items-center justify-center">
-              <User className="h-6 w-6 text-rose-500" strokeWidth={2} />
-              <Star className="absolute -bottom-0.5 -right-0.5 h-3 w-3 text-rose-500 fill-rose-500" />
-            </span>
-            <span className="font-semibold text-slate-900 text-base">VIP Life</span>
-          </span>
-          <span className="text-slate-400 text-xl leading-none">›</span>
-        </button>
-
         {/* Hidden cover input retained for compatibility */}
         <input
           ref={coverInputRef}
