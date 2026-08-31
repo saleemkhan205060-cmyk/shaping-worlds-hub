@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Save, X, ChevronDown, User, Share2, Star } from "lucide-react";
+import { Pencil, Save, X, ChevronDown, User, UserPlus, Share2, Star } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { MapPin, Link as LinkIcon, Calendar, Play, Heart, Users, Loader2, UploadCloud, Trash2, Lock, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
