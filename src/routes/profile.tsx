@@ -447,9 +447,6 @@ function Profile() {
       <div className="bg-white">
         {/* Top icon bar */}
         <div className="flex items-center justify-between px-4 pt-3">
-          <button type="button" aria-label="Add friends" className="p-1">
-            <UserPlus className="h-7 w-7 text-slate-900" strokeWidth={2} />
-          </button>
           <div className="flex items-center gap-4">
           <button type="button" aria-label="Share profile" className="p-1" onClick={shareProfile}>
               <Share2 className="h-7 w-7 text-slate-900" strokeWidth={2.25} />
