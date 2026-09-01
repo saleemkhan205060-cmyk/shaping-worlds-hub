@@ -128,35 +128,71 @@ function AuthPage() {
   // awaited and handled here: previously the promise was fired and forgotten,
   // so a failed (or successful-but-unannounced) sign-in silently left the user
   // on this screen after picking an account.
-  const onGoogleAccountChooser = async () => {
-    if (mode === "signup" && !agreedTerms) {
-      toast.error("Please accept the Terms & Conditions to continue.");
-      return;
-    }
-    setBusy(true);
-    try {
-      const result = await signInWithNativeGoogle();
-      if (result.error) throw result.error;
-      if (!result.redirected) {
-        toast.success("Welcome back!");
-        leaveAuth();
-      }
-    } catch (error) {
-      console.error("Google account chooser error:", describeGoogleAuthError(error), error);
-      // The account handoff can report failure while the session is still being
-      // written. Treat an already-persisted session as success.
-      const session = await waitForAuthSession(8_000);
+ const onGoogleAccountChooser = async () => {
+  if (mode === "signup" && !agreedTerms) {
+    toast.error("Please accept the Terms & Conditions to continue.");
+    return;
+  }
+
+  if (busy) return;
+
+  setBusy(true);
+
+  try {
+    const result = await Promise.race([
+      signInWithNativeGoogle(),
+      new Promise<never>((_, reject) =>
+        window.setTimeout(
+          () => reject(new Error("Google account chooser timed out")),
+          10_000
+        )
+      ),
+    ]);
+
+    if (result.error) throw result.error;
+
+    if (!result.redirected) {
+      const session = await waitForAuthSession(5_000);
+
       if (session) {
         publishAuthenticatedSession(session);
-        toast.success("Welcome back!");
-        leaveAuth();
-        return;
       }
-      toast.error(authErrorMessage(error, "google"));
-    } finally {
-      setBusy(false);
+
+      toast.success("Welcome back!");
+      leaveAuth();
     }
-  };
+  } catch (error) {
+    console.error(
+      "Google account chooser error:",
+      describeGoogleAuthError(error),
+      error
+    );
+
+    // Android can finish Google login successfully while the native
+    // callback promise remains pending. Check Supabase before showing error.
+    const session = await waitForAuthSession(5_000);
+
+    if (session) {
+      publishAuthenticatedSession(session);
+      toast.success("Welcome back!");
+      leaveAuth();
+      return;
+    }
+
+    // Do not show an error just because the Android callback timed out.
+    if (
+      error instanceof Error &&
+      error.message === "Google account chooser timed out"
+    ) {
+      return;
+    }
+
+    toast.error(authErrorMessage(error, "google"));
+  } finally {
+    setBusy(false);
+  }
+};
+
 
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
