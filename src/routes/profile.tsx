@@ -57,6 +57,7 @@ function Profile() {
   const navigate = useNavigate();
   const search = Route.useSearch() as { about?: string; edit?: string };
   const [tab, setTab] = useState<Tab>("Posts");
+  const [shareOpen, setShareOpen] = useState(false);
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [followersCount, setFollowersCount] = useState(0);
@@ -997,7 +998,14 @@ function Profile() {
           onClose={() => setFs(null)}
         />
       )}
-      
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        title={`${displayName} on VIP Life`}
+        text={profile?.bio || `View ${displayName}'s profile on VIP Life`}
+        url={profileUrl}
+      />
+
     </Layout>
   );
 }
