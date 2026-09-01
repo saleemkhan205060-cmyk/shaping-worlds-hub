@@ -13,12 +13,11 @@ const config: CapacitorConfig = {
     // Keep stock one-tap WebView focus, but use Capacitor's alternate Android
     // InputConnection. Some Android WebView/IME combinations open the keyboard
     // while dropping committed text through Chromium's normal connection.
-    initialFocus: true,
-    captureInput: true,
+    android: {
     buildOptions: {
-      keystorePath: "android/app/release-key.jks",
-      keystoreAlias: "vip-life",
-    },
+    keystorePath: "android/app/release-key.jks",
+    keystoreAlias: "vip-life",
+   },
   },
   plugins: {
     SplashScreen: {
