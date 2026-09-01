@@ -78,3 +78,58 @@
         loading: false,
       });
     });
+  if (import.meta.hot) {
+    import.meta.hot.dispose(() => {
+      subscription.unsubscribe();
+      listeners.clear();
+      authInitialized = false;
+    });
+  }
+}
+
+export function useAuth() {
+  useEffect(() => {
+    ensureAuthInitialized();
+  }, []);
+
+  return useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => authState,
+    () => serverAuthState,
+  );
+}
+
+export async function signOut() {
+  await clearPersistedSession();
+  await supabase.auth.signOut();
+
+  publishAuthState({
+    session: null,
+    user: null,
+    loading: false,
+  });
+}
+
+export async function confirmAuthenticatedUser() {
+  const {
+    data: sessionData,
+    error: sessionError,
+  } = await withAuthTimeout(
+    supabase.auth.getSession(),
+    "Auth session verification timed out",
+  );
+
+  if (sessionError) throw sessionError;
+  if (!sessionData.session) return null;
+
+  publishAuthState({
+    session: sessionData.session,
+    user: sessionData.session.user,
+    loading: false,
+  });
+
+  return sessionData.session.user;
+}
