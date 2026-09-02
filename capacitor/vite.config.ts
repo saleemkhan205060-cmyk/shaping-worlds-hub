@@ -23,7 +23,10 @@ export default defineConfig({
     },
   },
   plugins: [
-  tanstackRouter(),
+  tanstackRouter({
+    routesDirectory: resolve(projectRoot, "src/routes"),
+    generatedRouteTree: resolve(projectRoot, "src/routeTree.gen.ts"),
+  }),
   tailwindcss(),
   tsconfigPaths({
     projects: [resolve(projectRoot, "tsconfig.json")],
