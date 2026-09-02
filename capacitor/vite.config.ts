@@ -22,7 +22,15 @@ export default defineConfig({
       input: resolve(__dirname, "index.html"),
     },
   },
-  plugins: [tailwindcss(), tsconfigPaths({ projects: [resolve(projectRoot, "tsconfig.json")], ignoreConfigErrors: true }), react()],
+  plugins: [
+  tanstackRouter(),
+  tailwindcss(),
+  tsconfigPaths({
+    projects: [resolve(projectRoot, "tsconfig.json")],
+    ignoreConfigErrors: true,
+  }),
+  react(),
+],
   resolve: {
     alias: [
       // Shim server-only modules that would otherwise pull TanStack Start's
