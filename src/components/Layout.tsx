@@ -366,6 +366,7 @@ export function Layout({
               <Link
                 key={item.to}
                 to={item.to}
+                params={item.to === "/u/$id" ? { id: userId! } : undefined}
                 onClick={async (e) => {
                   if (isHome) {
                     e.preventDefault();
