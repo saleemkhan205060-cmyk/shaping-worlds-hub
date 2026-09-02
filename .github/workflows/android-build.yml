@@ -26,6 +26,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+
       - name: Build, sync, and verify Capacitor bundle
         run: |
           npm run build:capacitor
