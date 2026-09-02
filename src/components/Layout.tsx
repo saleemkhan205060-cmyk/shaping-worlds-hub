@@ -246,14 +246,17 @@ export function Layout({
               const active = path === item.to;
               return (
                 <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                    active ? "text-indigo-600 bg-indigo-50" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-                >
-                  {t(item.labelKey)}
-                </Link>
+               key={item.to}
+               to={item.to}
+              params={item.to === "/u/$id" ? { id: userId! } : undefined}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              active
+           ? "text-indigo-600 bg-indigo-50"
+          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+          }`}
+          >
+          {t(item.labelKey)}
+           </Link>
               );
             })}
           </nav>
