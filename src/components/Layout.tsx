@@ -40,8 +40,7 @@ const FeedIcon = ({ className }: { className?: string }) => (
 
 const navItems = [
   { to: "/", labelKey: "nav.home", icon: Home },
-  { to: "/profile", labelKey: "nav.profile", icon: User },
-] as const;
+  { to: "/u/$id", labelKey: "nav.profile", icon: User },] as const;
 
 const NOTIF_SEEN_KEY = "viplife.notifSeenAt";
 const NOTIFICATION_POST_LIMIT = 200;
