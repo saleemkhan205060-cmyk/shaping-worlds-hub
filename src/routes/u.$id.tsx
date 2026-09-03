@@ -247,7 +247,7 @@ try {
               <img
                 src={profile.avatar_url}
                 alt={displayName}
-                className="h-24 w-24 sm:h-28 sm:w-28 rounded-full ring-4 ring-white object-cover"
+                className="relative z-20 h-24 w-24 sm:h-28 sm:w-28 rounded-full ring-4 ring-white object-cover"
                 referrerPolicy="no-referrer"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
