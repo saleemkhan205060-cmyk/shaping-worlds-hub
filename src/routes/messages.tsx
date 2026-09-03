@@ -485,7 +485,7 @@ function Messages() {
   }
 
   return (
-    <Layout hideMobileNav={!!activePeer} fullScreenMobile={!!activePeer}>
+    <Layout hideMobileNav={!!activePeer}>
       <div className={`bg-white border-slate-200 overflow-hidden flex flex-col md:flex-row md:border md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${activePeer ? "h-full" : "h-[calc(100dvh-68px-56px)] -mb-24 border"}`}>
         {/* Sidebar */}
         <aside
