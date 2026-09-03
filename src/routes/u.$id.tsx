@@ -50,6 +50,7 @@ function UserProfile() {
 
   const isSelf = !!user && user.id === id;
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const handleCoverChange = async (file: File | null) => {
   if (!file || !user || !isSelf) return;
