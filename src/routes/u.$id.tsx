@@ -282,7 +282,7 @@ const handleAvatarChange = async (file: File | null) => {
 </div>
         <div className="px-5 sm:px-8 pb-6 -mt-12">
           <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-            <div className="relative z-20">
+            <div className="relative z-20 w-fit">
              {profile.avatar_url ? (
               <img
                 src={profile.avatar_url}
