@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle } from "lucide-react";
+import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
@@ -26,6 +26,7 @@ type ProfileRow = {
   username: string | null;
   avatar_url: string | null;
   created_at: string;
+  cover_url: string | null;
 };
 
 const TABS = ["Posts", "Videos", "Photos"] as const;
@@ -170,7 +171,29 @@ function UserProfile() {
       </div>
 
       <div className="rounded-2xl overflow-hidden bg-white border border-slate-200">
-        <div className="h-40 sm:h-56 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+        <div className="relative h-40 sm:h-56 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+  {profile.cover_url && (
+    <img
+      src={profile.cover_url}
+      alt="Cover"
+      className="absolute inset-0 w-full h-full object-cover"
+      referrerPolicy="no-referrer"
+    />
+  )}
+
+  {isSelf && (
+    <button
+      type="button"
+      onClick={() => {
+        // Cover photo edit action yahan add hoga
+      }}
+      className="absolute bottom-3 right-3 h-9 w-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white transition"
+      aria-label="Edit cover photo"
+    >
+      <Pencil className="h-4 w-4 text-slate-700" />
+    </button>
+  )}
+</div>
         <div className="px-5 sm:px-8 pb-6 -mt-12">
           <div className="flex flex-col sm:flex-row sm:items-end gap-4">
             {profile.avatar_url ? (
