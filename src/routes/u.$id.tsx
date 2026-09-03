@@ -302,7 +302,7 @@ const handleAvatarChange = async (file: File | null) => {
   <button
     type="button"
     onClick={() => avatarInputRef.current?.click()}
-    className="absolute bottom-0 right-0 z-30 h-7 w-7 rounded-full bg-green-500 shadow-md flex items-center justify-center"
+    className="absolute bottom-0 right-0 z-30 h-7 w-7 rounded-full bg-[#057640] shadow-md flex items-center justify-center"
     aria-label="Change profile photo"
   >
     <span className="text-lg font-bold text-white">+</span>
