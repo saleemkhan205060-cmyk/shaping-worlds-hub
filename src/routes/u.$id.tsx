@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
