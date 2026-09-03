@@ -90,7 +90,45 @@ try {
   toast.error("Cover photo upload failed.");
 }
 };
+ 
+const handleAvatarChange = async (file: File | null) => {
+  if (!file || !user || !isSelf) return;
 
+  if (!file.type.startsWith("image/")) {
+    toast.error("Please select an image.");
+    return;
+  }
+
+  const ext = file.name.split(".").pop() || "jpg";
+  const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+
+  try {
+    await uploadToStorage({
+      bucket: "media",
+      path,
+      file,
+    });
+
+    const { data } = supabase.storage.from("media").getPublicUrl(path);
+    const avatarUrl = data.publicUrl;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", user.id);
+
+    if (error) throw error;
+
+    setProfile((prev) =>
+      prev ? { ...prev, avatar_url: avatarUrl } : prev
+    );
+
+    toast.success("Profile photo updated!");
+  } catch (error) {
+    console.error("Avatar upload error:", error);
+    toast.error("Profile photo upload failed.");
+  }
+};
   const refreshFollows = () => {
     supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", id)
       .then(({ count }) => setFollowersCount(count ?? 0));
@@ -244,7 +282,8 @@ try {
 </div>
         <div className="px-5 sm:px-8 pb-6 -mt-12">
           <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-            {profile.avatar_url ? (
+            <div className="relative z-20">
+             {profile.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={displayName}
@@ -259,6 +298,24 @@ try {
                 {displayName[0]?.toUpperCase()}
               </div>
             )}
+              {isSelf && (
+  <button
+    type="button"
+    onClick={() => avatarInputRef.current?.click()}
+    className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-white shadow-md flex items-center justify-center"
+    aria-label="Change profile photo"
+  >
+    <span className="text-lg font-bold text-slate-700">+</span>
+  </button>
+)}
+              <input
+  ref={avatarInputRef}
+  type="file"
+  accept="image/*"
+  className="hidden"
+  onChange={(e) => handleAvatarChange(e.target.files?.[0] ?? null)}
+/>
+            </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
