@@ -182,8 +182,8 @@ function Messages() {
 
   // scroll on new
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [thread.length, activePeer]);
+  endRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+}, [thread.length, activePeer]);
 
   // mark as read
   useEffect(() => {
