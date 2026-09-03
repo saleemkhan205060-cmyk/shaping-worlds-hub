@@ -7,6 +7,7 @@ import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideo
 import { MediaActions } from "@/components/MediaActions";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { uploadToStorage } from "@/lib/resumable-upload";
 
 export const Route = createFileRoute("/u/$id")({ component: UserProfile });
 
@@ -48,6 +49,46 @@ function UserProfile() {
   const [followBusy, setFollowBusy] = useState(false);
 
   const isSelf = !!user && user.id === id;
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCoverChange = async (file: File | null) => {
+  if (!file || !user || !isSelf) return;
+
+if (!file.type.startsWith("image/")) {
+  toast.error("Please select an image.");
+  return;
+}
+
+const ext = file.name.split(".").pop() || "jpg";
+const path = `${user.id}/cover-${Date.now()}.${ext}`;
+
+try {
+  await uploadToStorage({
+    bucket: "media",
+    path,
+    file,
+  });
+
+  const { data } = supabase.storage.from("media").getPublicUrl(path);
+  const coverUrl = data.publicUrl;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ cover_url: coverUrl })
+    .eq("id", user.id);
+
+  if (error) throw error;
+
+  setProfile((prev) =>
+    prev ? { ...prev, cover_url: coverUrl } : prev
+  );
+
+  toast.success("Cover photo updated!");
+} catch (error) {
+  console.error("Cover upload error:", error);
+  toast.error("Cover photo upload failed.");
+}
+};
 
   const refreshFollows = () => {
     supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", id)
@@ -182,17 +223,23 @@ function UserProfile() {
   )}
 
   {isSelf && (
-    <button
-      type="button"
-      onClick={() => {
-        // Cover photo edit action yahan add hoga
-      }}
+  <button
+    type="button"
+    onClick={() => coverInputRef.current?.click()}
       className="absolute bottom-3 right-3 h-9 w-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white transition"
       aria-label="Edit cover photo"
     >
       <Pencil className="h-4 w-4 text-slate-700" />
     </button>
   )}
+
+  <input
+    ref={coverInputRef}
+    type="file"
+    accept="image/*"
+    className="hidden"
+    onChange={(e) => handleCoverChange(e.target.files?.[0] ?? null)}
+  />
 </div>
         <div className="px-5 sm:px-8 pb-6 -mt-12">
           <div className="flex flex-col sm:flex-row sm:items-end gap-4">
