@@ -305,7 +305,7 @@ const handleAvatarChange = async (file: File | null) => {
     className="absolute bottom-0 right-0 z-30 h-7 w-7 rounded-full bg-green-500 shadow-md flex items-center justify-center"
     aria-label="Change profile photo"
   >
-    <span className="text-lg font-bold text-slate-700">+</span>
+    <span className="text-lg font-bold text-white">+</span>
   </button>
 )}
               <input
