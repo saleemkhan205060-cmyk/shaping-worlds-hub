@@ -3,6 +3,7 @@ CREATE TABLE public.profiles (
   username TEXT,
   display_name TEXT,
   avatar_url TEXT,
+  cover_url TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
