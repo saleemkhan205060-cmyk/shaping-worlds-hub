@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Drawer, DrawerContent, DrawerTrigger, DrawerTitle } from "@/components/ui/drawer";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { moderateUploadedMedia } from "@/lib/moderate.functions";
+import { moderateMedia } from "@/lib/moderation-bridge";
 
 // Capture a still frame from a video File as a JPEG Blob (for chat-video moderation).
 async function captureChatVideoFrame(file: File): Promise<Blob | null> {
@@ -304,7 +304,6 @@ function Messages() {
     setPending(null);
   };
 
-  const moderateChatMedia = useServerFn(moderateUploadedMedia);
 
   const confirmSendPending = async () => {
     if (!pending || !user || !activePeer) return;
@@ -336,14 +335,12 @@ function Messages() {
             if (fErr) framePath = null;
           }
         }
-        const verdict = await moderateChatMedia({
-          data: {
-            bucket: "message-media",
-            path,
-            mediaType: kind,
-            surface: kind === "image" ? "chat_image" : "chat_video",
-            framePath,
-          },
+        const verdict = await moderateMedia({
+          bucket: "message-media",
+          path,
+          mediaType: kind,
+          surface: kind === "image" ? "chat_image" : "chat_video",
+          framePath,
         });
         // Clean up the frame regardless of verdict; only the media path is referenced by the message.
         if (framePath) { try { await supabase.storage.from("message-media").remove([framePath]); } catch {} }

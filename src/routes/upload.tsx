@@ -12,7 +12,7 @@ import { CameraCapture } from "@/components/CameraCapture";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import { useServerFn } from "@tanstack/react-start";
-import { publishPost } from "@/lib/moderate.functions";
+import { publishModeratedPost } from "@/lib/moderation-bridge";
 import { isNativeShell } from "@/lib/native-plugins";
 
 
@@ -131,7 +131,6 @@ function UploadPage() {
     setThumbFile(f);
   };
 
-  const publishFn = useServerFn(publishPost);
 
   const handleUpload = async () => {
     if (!user || !file) return;
@@ -186,29 +185,9 @@ function UploadPage() {
         thumbnailTitle: thumbTitle.trim() || null,
       };
 
-      // The Capacitor shell bundles a plain SPA with no server runtime, so the
-      // server function endpoint is unreachable there. Insert directly (RLS
-      // still applies); everything else keeps the moderated server path.
-      const publishDirect = async () => {
-        const { error: insErr } = await supabase.from("posts").insert({
-          user_id: user.id,
-          media_url: supabase.storage.from("media").getPublicUrl(mediaPath).data.publicUrl,
-          media_type: mediaType,
-          title: publishData.title,
-          thumbnail_url: thumbnailUrl,
-          thumbnail_title: publishData.thumbnailTitle,
-          caption: publishData.caption,
-          category,
-          is_private: isPrivate,
-        } as never);
-        if (insErr) throw new Error(insErr.message);
-        return { published: true as const, reason: "" };
-      };
-
-      // Atomic: server-side moderation + insert (or log for admin review)
-      const result = isNativeShell()
-        ? await publishDirect()
-        : await publishFn({ data: publishData });
+      // One moderated path for web and native: the native shell posts to
+      // /api/public/moderate, the web app calls the server function.
+      const result = await publishModeratedPost(publishData);
 
       if (!result.published) {
         toast.error(
