@@ -50,6 +50,7 @@ export default defineConfig({
       { find: /.*\/routes\/lovable\/email\/queue\/process$/, replacement: resolve(__dirname, "route-shim-email-queue.ts") },
       { find: /.*\/integrations\/supabase\/auth-middleware$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: /.*\/integrations\/supabase\/client\.server$/, replacement: resolve(__dirname, "empty-shim.ts") },
+      { find: /.*\/lib\/moderation-core\.server$/, replacement: resolve(__dirname, "empty-shim.ts") },
       { find: "@", replacement: resolve(projectRoot, "src") },
     ],
   },

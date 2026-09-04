@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Upload, Film } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { moderateMedia } from "@/lib/moderation-bridge";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
@@ -98,6 +99,15 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
       .upload(path, file, { upsert: true, contentType: file.type });
     if (error) {
       toast.error("Upload failed");
+      setUploading(false);
+      return;
+    }
+    const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "thumbnail" });
+    if (!verdict.safe) {
+      toast.error(
+        `Thumbnail rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Please pick a different image.`,
+        { duration: 6000 },
+      );
       setUploading(false);
       return;
     }

@@ -19,6 +19,7 @@ import { EditPostDialog } from "@/components/EditPostDialog";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { moderateMedia } from "@/lib/moderation-bridge";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { CommentsSheet } from "@/components/CommentsSheet";
@@ -81,6 +82,14 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           contentType: "image/jpeg",
         });
         if (upErr) throw upErr;
+        const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "thumbnail" });
+        if (!verdict.safe) {
+          toast.error(
+            `Thumbnail rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Please pick a different image.`,
+            { duration: 6000 },
+          );
+          return;
+        }
         const url = supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
         const { error: updErr } = await supabase
           .from("posts")

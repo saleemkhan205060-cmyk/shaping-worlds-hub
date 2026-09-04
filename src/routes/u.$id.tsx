@@ -8,6 +8,7 @@ import { MediaActions } from "@/components/MediaActions";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { uploadToStorage } from "@/lib/resumable-upload";
+import { moderateMedia } from "@/lib/moderation-bridge";
 
 export const Route = createFileRoute("/u/$id")({ component: UserProfile });
 
