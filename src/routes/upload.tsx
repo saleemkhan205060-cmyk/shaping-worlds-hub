@@ -11,9 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { CameraCapture } from "@/components/CameraCapture";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
-import { useServerFn } from "@tanstack/react-start";
 import { publishModeratedPost } from "@/lib/moderation-bridge";
-import { isNativeShell } from "@/lib/native-plugins";
 
 
 export const Route = createFileRoute("/upload")({ component: UploadPage });

@@ -10,7 +10,6 @@ import { Send, Search, ArrowLeft, Loader2, MessageCircle, Smile, Paperclip, Came
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerTitle } from "@/components/ui/drawer";
 import { toast } from "sonner";
-import { useServerFn } from "@tanstack/react-start";
 import { moderateMedia } from "@/lib/moderation-bridge";
 
 // Capture a still frame from a video File as a JPEG Blob (for chat-video moderation).
