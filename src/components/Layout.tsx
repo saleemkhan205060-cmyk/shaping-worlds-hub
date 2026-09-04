@@ -248,7 +248,7 @@ export function Layout({
                 <Link
                key={item.to}
                to={item.to}
-              params={item.to === "/u/$id" ? { id: userId! } : undefined}
+              params={item.to === "/u/$id" && userId ? { id: userId } : undefined}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               active
            ? "text-indigo-600 bg-indigo-50"
@@ -373,8 +373,8 @@ export function Layout({
             return (
               <Link
                 key={item.to}
-                to={item.to}
-                params={item.to === "/u/$id" ? { id: userId! } : undefined}
+                to={item.to === "/u/$id" && !userId ? "/auth" : item.to}
+                params={item.to === "/u/$id" && userId ? { id: userId } : undefined}
                 onClick={async (e) => {
                   if (isHome) {
                     e.preventDefault();
