@@ -429,7 +429,7 @@ export function Layout({
             className="col-start-2 row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
           >
             <span className="h-8 w-8 flex items-center justify-center mb-1">
-              <span className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md shadow-indigo-500/30 ring-2 ring-white flex items-center justify-center transition-transform active:scale-95">
+              <span className="h-8 w-8 rounded-full bg-[#057543] shadow-md shadow-indigo-500/30 ring-2 ring-white flex items-center justify-center transition-transform active:scale-95">
                 <Plus className="h-4 w-4 text-white" strokeWidth={3} />
               </span>
             </span>
