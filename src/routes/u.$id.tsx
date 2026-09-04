@@ -8,6 +8,7 @@ import { MediaActions } from "@/components/MediaActions";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { uploadToStorage } from "@/lib/resumable-upload";
+import { moderateMedia } from "@/lib/moderation-bridge";
 
 export const Route = createFileRoute("/u/$id")({ component: UserProfile });
 
@@ -53,82 +54,93 @@ function UserProfile() {
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const handleCoverChange = async (file: File | null) => {
-  if (!file || !user || !isSelf) return;
+    if (!file || !user || !isSelf) return;
 
-if (!file.type.startsWith("image/")) {
-  toast.error("Please select an image.");
-  return;
-}
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image.");
+      return;
+    }
 
-const ext = file.name.split(".").pop() || "jpg";
-const path = `${user.id}/cover-${Date.now()}.${ext}`;
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${user.id}/cover-${Date.now()}.${ext}`;
 
-try {
-  await uploadToStorage({
-    bucket: "media",
-    path,
-    file,
-  });
+    try {
+      await uploadToStorage({ bucket: "media", path, file });
 
-  const { data } = supabase.storage.from("media").getPublicUrl(path);
-  const coverUrl = data.publicUrl;
+      // Safety scan BEFORE the photo is linked to the profile. Rejected files
+      // are deleted server-side, so other users never see them.
+      toast.message("Checking photo…");
+      const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "cover" });
+      if (!verdict.safe) {
+        toast.error(
+          `Cover photo rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Nude or sexually suggestive images are not allowed.`,
+          { duration: 6000 },
+        );
+        return;
+      }
 
-  const { error } = await supabase
-    .from("profiles")
-    .update({ cover_url: coverUrl })
-    .eq("id", user.id);
+      const { data } = supabase.storage.from("media").getPublicUrl(path);
+      const coverUrl = data.publicUrl;
 
-  if (error) throw error;
+      const { error } = await supabase
+        .from("profiles")
+        .update({ cover_url: coverUrl })
+        .eq("id", user.id);
 
-  setProfile((prev) =>
-    prev ? { ...prev, cover_url: coverUrl } : prev
-  );
+      if (error) throw error;
 
-  toast.success("Cover photo updated!");
-} catch (error) {
-  console.error("Cover upload error:", error);
-  toast.error("Cover photo upload failed.");
-}
-};
- 
-const handleAvatarChange = async (file: File | null) => {
-  if (!file || !user || !isSelf) return;
+      setProfile((prev) => (prev ? { ...prev, cover_url: coverUrl } : prev));
 
-  if (!file.type.startsWith("image/")) {
-    toast.error("Please select an image.");
-    return;
-  }
+      toast.success("Cover photo updated!");
+    } catch (error) {
+      console.error("Cover upload error:", error);
+      toast.error("Cover photo upload failed.");
+    }
+  };
 
-  const ext = file.name.split(".").pop() || "jpg";
-  const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+  const handleAvatarChange = async (file: File | null) => {
+    if (!file || !user || !isSelf) return;
 
-  try {
-    await uploadToStorage({
-      bucket: "media",
-      path,
-      file,
-    });
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image.");
+      return;
+    }
 
-    const { data } = supabase.storage.from("media").getPublicUrl(path);
-    const avatarUrl = data.publicUrl;
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${user.id}/avatar-${Date.now()}.${ext}`;
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ avatar_url: avatarUrl })
-      .eq("id", user.id);
+    try {
+      await uploadToStorage({ bucket: "media", path, file });
 
-    if (error) throw error;
+      toast.message("Checking photo…");
+      const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "avatar" });
+      if (!verdict.safe) {
+        toast.error(
+          `Profile photo rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Nude or sexually suggestive images are not allowed.`,
+          { duration: 6000 },
+        );
+        return;
+      }
 
-    setProfile((prev) =>
-      prev ? { ...prev, avatar_url: avatarUrl } : prev
-    );
+      const { data } = supabase.storage.from("media").getPublicUrl(path);
+      const avatarUrl = data.publicUrl;
 
-    toast.success("Profile photo updated!");
-  } catch (error) {
-    console.error("Avatar upload error:", error);
-    toast.error("Profile photo upload failed.");
-  }
-};
+      const { error } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarUrl })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      setProfile((prev) => (prev ? { ...prev, avatar_url: avatarUrl } : prev));
+
+      toast.success("Profile photo updated!");
+    } catch (error) {
+      console.error("Avatar upload error:", error);
+      toast.error("Profile photo upload failed.");
+    }
+  };
+
   const refreshFollows = () => {
     supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", id)
       .then(({ count }) => setFollowersCount(count ?? 0));

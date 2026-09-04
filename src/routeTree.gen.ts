@@ -15,7 +15,6 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
@@ -43,6 +42,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCommentsRouteImport } from './routes/admin.comments'
 import { Route as AdminChatRouteImport } from './routes/admin.chat'
 import { Route as DotwellKnownAssetlinksDotjsonRouteImport } from './routes/[.]well-known.assetlinks[.]json'
+import { Route as ApiPublicModerateRouteImport } from './routes/api/public/moderate'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -75,11 +75,6 @@ const SearchRoute = SearchRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -218,6 +213,11 @@ const DotwellKnownAssetlinksDotjsonRoute =
     path: '/.well-known/assetlinks.json',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicModerateRoute = ApiPublicModerateRouteImport.update({
+  id: '/api/public/moderate',
+  path: '/api/public/moderate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -243,7 +243,6 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
-  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -270,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
+  '/api/public/moderate': typeof ApiPublicModerateRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -280,7 +280,6 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
-  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -307,6 +306,7 @@ export interface FileRoutesByTo {
   '/u/$id': typeof UIdRoute
   '/admin': typeof AdminIndexRoute
   '/marriage': typeof MarriageIndexRoute
+  '/api/public/moderate': typeof ApiPublicModerateRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -320,7 +320,6 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
-  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -347,6 +346,7 @@ export interface FileRoutesById {
   '/u/$id': typeof UIdRoute
   '/admin/': typeof AdminIndexRoute
   '/marriage/': typeof MarriageIndexRoute
+  '/api/public/moderate': typeof ApiPublicModerateRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -361,7 +361,6 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/privacy'
-    | '/profile'
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
@@ -388,6 +387,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/admin/'
     | '/marriage/'
+    | '/api/public/moderate'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -398,7 +398,6 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/privacy'
-    | '/profile'
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
@@ -425,6 +424,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/admin'
     | '/marriage'
+    | '/api/public/moderate'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -437,7 +437,6 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/privacy'
-    | '/profile'
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
@@ -464,6 +463,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/admin/'
     | '/marriage/'
+    | '/api/public/moderate'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -477,7 +477,6 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
   PrivacyRoute: typeof PrivacyRoute
-  ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -488,6 +487,7 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthNativeCallbackRoute: typeof AuthNativeCallbackRoute
   UIdRoute: typeof UIdRoute
+  ApiPublicModerateRoute: typeof ApiPublicModerateRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -535,13 +535,6 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -733,6 +726,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotwellKnownAssetlinksDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/moderate': {
+      id: '/api/public/moderate'
+      path: '/api/public/moderate'
+      fullPath: '/api/public/moderate'
+      preLoaderRoute: typeof ApiPublicModerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -815,7 +815,6 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,
-  ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -826,6 +825,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   AuthNativeCallbackRoute: AuthNativeCallbackRoute,
   UIdRoute: UIdRoute,
+  ApiPublicModerateRoute: ApiPublicModerateRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
