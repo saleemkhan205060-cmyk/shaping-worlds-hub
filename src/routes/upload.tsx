@@ -338,7 +338,11 @@ function UploadPage() {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+            onChange={(e) => {
+            const f = e.target.files?.[0] ?? null;
+            e.currentTarget.value = "";
+           onPick(f);
+      }}
           />
           <input
             ref={galleryVidRef}
