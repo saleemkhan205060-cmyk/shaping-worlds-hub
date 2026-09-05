@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
 import { supabase } from "@/integrations/supabase/client";
 import {
   publishAuthenticatedSession,
@@ -134,12 +135,13 @@ const onGoogleAccountChooser = async () => {
 
   if (busy) return;
 
-  await openGoogleAccountChooser();
+  try {
+    await openGoogleAccountChooser();
+  } catch (error) {
+    console.error("Google account chooser error:", error);
+  }
 };
 
-  try {
-    const result = await Promise.race([
-      signInWithNativeGoogle(),
       new Promise<never>((_, reject) =>
         window.setTimeout(
           () => reject(new Error("Google account chooser timed out")),
