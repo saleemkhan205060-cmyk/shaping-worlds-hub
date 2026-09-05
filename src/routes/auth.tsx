@@ -141,49 +141,6 @@ const onGoogleAccountChooser = async () => {
     console.error("Google account chooser error:", error);
   }
 };
-
-    if (result.error) throw result.error;
-
-    if (!result.redirected) {
-  const session = await waitForAuthSession(5_000);
-
-  if (session) {
-    publishAuthenticatedSession(session);
-  }
-
-  toast.success("Welcome back!");
-  leaveAuth();
-}
-  } catch (error) {
-    console.error(
-      "Google account chooser error:",
-      describeGoogleAuthError(error),
-      error
-    );
-
-    const session = await waitForAuthSession(5_000);
-
-    if (session) {
-      publishAuthenticatedSession(session);
-      toast.success("Welcome back!");
-      leaveAuth();
-      return;
-    }
-
-    if (
-      error instanceof Error &&
-      error.message === "Google account chooser timed out"
-    ) {
-      return;
-    }
-
-    toast.error(authErrorMessage(error, "google"));
-  } finally {
-    setBusy(false);
-  }
-};
-
-
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
