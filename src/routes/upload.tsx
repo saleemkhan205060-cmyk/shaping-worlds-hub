@@ -345,9 +345,9 @@ function UploadPage() {
       }}
           />
           <input
-            ref={galleryVidRef}
-            type="file"
-            accept="video/*"
+          ref={galleryVidRef}
+           type="file"
+            accept="image/*,video/*"
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0] ?? null;
