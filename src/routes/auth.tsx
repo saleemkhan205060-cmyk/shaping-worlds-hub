@@ -137,16 +137,27 @@ const onGoogleAccountChooser = async () => {
   setBusy(true);
 
   try {
-    const result = await openGoogleAccountChooser();
+    const result = await Promise.race([
+      signInWithNativeGoogle(),
+      new Promise<never>((_, reject) =>
+        window.setTimeout(
+          () => reject(new Error("Google account chooser timed out")),
+          10_000
+        )
+      ),
+    ]);
 
-    if (result.signedIn) {
+    if (result.error) throw result.error;
+
+    if (!result.redirected) {
+      const session = await waitForAuthSession(5_000);
+
+      if (session) {
+        publishAuthenticatedSession(session);
+      }
+
       toast.success("Welcome back!");
       leaveAuth();
-      return;
-    }
-
-    if (!result.shown) {
-      toast.error("Google account chooser could not be opened.");
     }
   } catch (error) {
     console.error(
@@ -154,6 +165,23 @@ const onGoogleAccountChooser = async () => {
       describeGoogleAuthError(error),
       error
     );
+
+    const session = await waitForAuthSession(5_000);
+
+    if (session) {
+      publishAuthenticatedSession(session);
+      toast.success("Welcome back!");
+      leaveAuth();
+      return;
+    }
+
+    if (
+      error instanceof Error &&
+      error.message === "Google account chooser timed out"
+    ) {
+      return;
+    }
+
     toast.error(authErrorMessage(error, "google"));
   } finally {
     setBusy(false);
