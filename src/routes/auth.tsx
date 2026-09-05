@@ -142,14 +142,6 @@ const onGoogleAccountChooser = async () => {
   }
 };
 
-      new Promise<never>((_, reject) =>
-        window.setTimeout(
-          () => reject(new Error("Google account chooser timed out")),
-          10_000
-        )
-      ),
-    ]);
-
     if (result.error) throw result.error;
 
     if (!result.redirected) {
