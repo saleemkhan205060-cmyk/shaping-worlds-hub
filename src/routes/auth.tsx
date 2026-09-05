@@ -134,26 +134,23 @@ const onGoogleAccountChooser = async () => {
   }
 
   if (busy) return;
+  setBusy(true);
 
   try {
-    await openGoogleAccountChooser();
-  } catch (error) {
-    console.error("Google account chooser error:", error);
-  }
-};
+    const result = await openGoogleAccountChooser();
 
-    if (result.error) throw result.error;
+    if (result?.error) throw result.error;
 
-    if (!result.redirected) {
-  const session = await waitForAuthSession(5_000);
+    if (!result?.redirected) {
+      const session = await waitForAuthSession(5_000);
 
-  if (session) {
-    publishAuthenticatedSession(session);
-  }
+      if (session) {
+        publishAuthenticatedSession(session);
+      }
 
-  toast.success("Welcome back!");
-  leaveAuth();
-}
+      toast.success("Welcome back!");
+      leaveAuth();
+    }
   } catch (error) {
     console.error(
       "Google account chooser error:",
@@ -182,6 +179,7 @@ const onGoogleAccountChooser = async () => {
     setBusy(false);
   }
 };
+
 
 
   const onGoogle = async () => {
