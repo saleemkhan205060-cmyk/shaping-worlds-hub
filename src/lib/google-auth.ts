@@ -44,7 +44,7 @@ let callbackInFlight: { url: string; promise: Promise<boolean> } | null = null;
 let completedCallbackUrl: string | null = null;
 let nativeGoogleInitialization: Promise<void> | null = null;
 
-function isInstalledNativeRuntime() {
+export function isInstalledNativeRuntime() {
   if (!isNativeCapacitorApp() || typeof window === "undefined") return false;
 
   // The mobile preview exposes a Capacitor bridge but reports the web
@@ -454,7 +454,7 @@ async function resolveWithPersistedSession(
 }
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
-  if (!isInstalledNativeRuntime()) {
+  return await signInWithBrowserGoogle(options);
     try {
       return await resolveWithPersistedSession(
         await signInWithBrowserGoogle(options),
