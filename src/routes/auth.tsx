@@ -262,37 +262,37 @@ const onGoogleAccountChooser = async () => {
         )}
 
         <div className={mode === "signup" ? "mt-3" : "mt-6"}>
-          <div
-            className={`flex items-center gap-2 ${
-              mode === "signup" && !agreedTerms ? "pointer-events-none opacity-50" : ""
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => void onGoogle()}
-              disabled={busy}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 px-2 text-sm font-semibold whitespace-nowrap border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
-             >
-              <GoogleIcon /> Continue with Google
-            </button>
-            <button
-              type="button"
-              aria-label="Choose a Google account"
-              onClick={() => void onGoogleAccountChooser()}
-              disabled={busy}
-              className="h-10 w-10 shrink-0 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
-            >
+         <div
+  className={`flex items-center ${
+    mode === "signup" && !agreedTerms ? "pointer-events-none opacity-50" : ""
+  }`}
+>
+  <div className="relative flex-1">
+    <button
+      type="button"
+      onClick={() => void onGoogle()}
+      disabled={busy}
+      className="w-full flex items-center justify-center gap-2 py-2.5 pl-2 pr-12 text-sm font-semibold whitespace-nowrap border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
+    >
+      <GoogleIcon /> Continue with Google
+    </button>
 
-              {busy ? (
-                <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-slate-600" />
-              )}
-            </button>
-          </div>
+    <button
+      type="button"
+      aria-label="Choose a Google account"
+      onClick={() => void onGoogleAccountChooser()}
+      disabled={busy}
+      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
+    >
+      {busy ? (
+        <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+      ) : (
+        <ChevronDown className="h-5 w-5 text-slate-600" />
+      )}
+    </button>
+  </div>
+</div>
         </div>
-
-
 
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
