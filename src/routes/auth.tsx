@@ -8,16 +8,13 @@ import {
 import {
   describeGoogleAuthError,
   signInWithGoogle,
-  signInWithNativeGoogle,
-  waitForAuthSession,
 } from "@/lib/google-auth";
-
+import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
-
 function AuthPage() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -128,7 +125,7 @@ function AuthPage() {
   // awaited and handled here: previously the promise was fired and forgotten,
   // so a failed (or successful-but-unannounced) sign-in silently left the user
   // on this screen after picking an account.
- const onGoogleAccountChooser = async () => {
+const onGoogleAccountChooser = async () => {
   if (mode === "signup" && !agreedTerms) {
     toast.error("Please accept the Terms & Conditions to continue.");
     return;
@@ -139,27 +136,16 @@ function AuthPage() {
   setBusy(true);
 
   try {
-    const result = await Promise.race([
-      signInWithNativeGoogle(),
-      new Promise<never>((_, reject) =>
-        window.setTimeout(
-          () => reject(new Error("Google account chooser timed out")),
-          10_000
-        )
-      ),
-    ]);
+    const result = await openGoogleAccountChooser();
 
-    if (result.error) throw result.error;
-
-    if (!result.redirected) {
-      const session = await waitForAuthSession(5_000);
-
-      if (session) {
-        publishAuthenticatedSession(session);
-      }
-
+    if (result.signedIn) {
       toast.success("Welcome back!");
       leaveAuth();
+      return;
+    }
+
+    if (!result.shown) {
+      toast.error("Google account chooser could not be opened.");
     }
   } catch (error) {
     console.error(
@@ -167,26 +153,6 @@ function AuthPage() {
       describeGoogleAuthError(error),
       error
     );
-
-    // Android can finish Google login successfully while the native
-    // callback promise remains pending. Check Supabase before showing error.
-    const session = await waitForAuthSession(5_000);
-
-    if (session) {
-      publishAuthenticatedSession(session);
-      toast.success("Welcome back!");
-      leaveAuth();
-      return;
-    }
-
-    // Do not show an error just because the Android callback timed out.
-    if (
-      error instanceof Error &&
-      error.message === "Google account chooser timed out"
-    ) {
-      return;
-    }
-
     toast.error(authErrorMessage(error, "google"));
   } finally {
     setBusy(false);
