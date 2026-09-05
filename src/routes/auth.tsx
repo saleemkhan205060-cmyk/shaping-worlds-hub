@@ -127,6 +127,10 @@ function AuthPage() {
   // so a failed (or successful-but-unannounced) sign-in silently left the user
   // on this screen after picking an account.
 const onGoogleAccountChooser = async () => {
+  if (!isInstalledNativeRuntime()) {
+    await onGoogle();
+    return;
+  }
   if (mode === "signup" && !agreedTerms) {
     toast.error("Please accept the Terms & Conditions to continue.");
     return;
