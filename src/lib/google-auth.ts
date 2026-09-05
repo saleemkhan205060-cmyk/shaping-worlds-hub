@@ -342,7 +342,7 @@ async function signInWithBrowserGoogle(options: GoogleSignInOptions) {
     // stay on the CURRENT origin: pointing it at another origin (or a route the
     // SDK does not own) breaks the popup's web_message handoff and surfaces as
     // "Authentication was cancelled" in the editor preview.
-    redirect_uri: native ? getOAuthCallbackUrl() : window.location.origin,
+    redirect_uri: getOAuthCallbackUrl(),
     extraParams: options.extraParams,
   });
   // `lovable.auth` persists the returned tokens before resolving. Setting the
