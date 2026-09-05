@@ -454,33 +454,21 @@ async function resolveWithPersistedSession(
 }
 
 export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
-  return await signInWithBrowserGoogle(options);
-    try {
-      return await resolveWithPersistedSession(
-        await signInWithBrowserGoogle(options),
-        15_000,
-      );
-    } catch (error) {
-      logGoogleAuthError("browser sign-in", error);
-      return await resolveWithPersistedSession(
-        {
-          error: toDetailedError("Browser Google sign-in", error),
-          redirected: false,
-        },
-        15_000,
-      );
-    }
+  if (!isInstalledNativeRuntime()) {
+    // Web/Chrome uses the browser OAuth flow directly.
+    return await signInWithBrowserGoogle(options);
   }
 
   try {
-  return await signInWithBrowserGoogle(options);
-} catch (error) {
-  logGoogleAuthError("browser Google sign-in", error);
+    return await signInWithBrowserGoogle(options);
+  } catch (error) {
+    logGoogleAuthError("browser Google sign-in", error);
 
-  const detail = describeGoogleAuthError(error);
+    const detail = describeGoogleAuthError(error);
 
-  return {
-    error: new Error(`Google sign-in failed: ${detail}`),
-    redirected: false,
-  };
-}
+    return {
+      error: new Error(`Google sign-in failed: ${detail}`),
+      redirected: false,
+    };
+  }
+  }
