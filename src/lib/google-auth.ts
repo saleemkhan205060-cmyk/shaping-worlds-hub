@@ -484,4 +484,3 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     redirected: false,
   };
 }
-}
