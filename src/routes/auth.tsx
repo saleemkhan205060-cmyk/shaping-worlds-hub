@@ -149,13 +149,16 @@ const onGoogleAccountChooser = async () => {
 
     if (result.error) throw result.error;
 
-    const session = await waitForAuthSession(10_000);
+    if (!result.redirected) {
+  const session = await waitForAuthSession(5_000);
 
-     if (session) {
-     publishAuthenticatedSession(session);
-     toast.success("Welcome back!");
-      leaveAuth();
+  if (session) {
+    publishAuthenticatedSession(session);
   }
+
+  toast.success("Welcome back!");
+  leaveAuth();
+}
   } catch (error) {
     console.error(
       "Google account chooser error:",
