@@ -232,7 +232,7 @@ const onGoogleAccountChooser = async () => {
     <button
       type="button"
       aria-label="Choose a Google account"
-      onClick={() => void onGoogleAccountChooser()}
+      onClick={() => void onGoogle()}
       disabled={busy}
       className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
     >
