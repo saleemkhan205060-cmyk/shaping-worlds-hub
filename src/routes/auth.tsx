@@ -8,9 +8,8 @@ import {
 } from "@/hooks/use-auth";
 import {
   describeGoogleAuthError,
-  signInWithGoogle,
+  isInstalledNativeRuntime,
   signInWithNativeGoogle,
-  waitForAuthSession,
 } from "@/lib/google-auth";
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
@@ -122,25 +121,6 @@ function AuthPage() {
     });
   };
 
-
-  // The arrow opens the native Google account chooser. Its result MUST be
-  // awaited and handled here: previously the promise was fired and forgotten,
-  // so a failed (or successful-but-unannounced) sign-in silently left the user
-  // on this screen after picking an account.
-const onGoogleAccountChooser = async () => {
-  if (mode === "signup" && !agreedTerms) {
-    toast.error("Please accept the Terms & Conditions to continue.");
-    return;
-  }
-
-  if (busy) return;
-
-  try {
-    await openGoogleAccountChooser();
-  } catch (error) {
-    console.error("Google account chooser error:", error);
-  }
-};
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
       toast.error("Please accept the Terms & Conditions to continue.");
@@ -148,9 +128,20 @@ const onGoogleAccountChooser = async () => {
     }
     setBusy(true);
     try {
-      // One Google path only: Android uses the native Credential Manager
-      // account list; web uses the managed popup. This avoids the competing
-      // GSI/FedCM initialization that made the button intermittently fail.
+      // The installed Android app must use Credential Manager. Running the web
+      // GSI library inside its WebView opens a second Google page instead of
+      // showing the device account list over this screen.
+      if (isInstalledNativeRuntime()) {
+        const nativeResult = await signInWithNativeGoogle();
+        if (nativeResult.error) throw nativeResult.error;
+        toast.success("Welcome back!");
+        leaveAuth();
+        return;
+      }
+
+      // Browsers keep the chooser attached to this page. If One Tap/FedCM is
+      // unavailable, Google's compact popup chooser is used without navigating
+      // the VIP Life sign-in page away.
       const result = await openGoogleAccountChooser();
 
       if (result.signedIn) {
