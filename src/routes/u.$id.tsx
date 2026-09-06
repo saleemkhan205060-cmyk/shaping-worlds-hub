@@ -49,6 +49,9 @@ function UserProfile() {
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followers, setFollowers] = useState<ProfileRow[]>([]);
   const [followersLoading, setFollowersLoading] = useState(false);
+  const [followingOpen, setFollowingOpen] = useState(false);
+  const [following, setFollowing] = useState<ProfileRow[]>([]);
+  const [followingLoading, setFollowingLoading] = useState(false);
   const [followingUsers, setFollowingUsers] = useState<Set<string>>(new Set());
   const [followBackBusy, setFollowBackBusy] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -158,46 +161,38 @@ function UserProfile() {
       setIsFollowing(false);
     }
   };
-  const openFollowers = async () => {
-  setFollowersOpen(true);
-  setFollowersLoading(true);
+  const openFollowing = async () => {
+  setFollowingOpen(true);
+  setFollowingLoading(true);
 
   try {
     const { data: followRows, error: followsError } = await supabase
       .from("follows")
-      .select("follower_id")
-      .eq("following_id", id);
+      .select("following_id")
+      .eq("follower_id", id);
 
     if (followsError) throw followsError;
 
-    const followerIds = (followRows ?? []).map((row) => row.follower_id);
+    const followingIds = (followRows ?? []).map((row) => row.following_id);
 
-    if (followerIds.length === 0) {
-      setFollowers([]);
+    if (followingIds.length === 0) {
+      setFollowing([]);
       return;
     }
 
     const { data: profilesData, error: profilesError } = await supabase
       .from("profiles")
       .select("id, display_name, username, avatar_url, created_at, cover_url")
-      .in("id", followerIds);
+      .in("id", followingIds);
 
     if (profilesError) throw profilesError;
 
-    setFollowers((profilesData ?? []) as ProfileRow[]);
-    const { data: myFollows } = await supabase
-  .from("follows")
-  .select("following_id")
-  .eq("follower_id", user?.id ?? "");
-
-   setFollowingUsers(
-  new Set((myFollows ?? []).map((row) => row.following_id))
-);
+    setFollowing((profilesData ?? []) as ProfileRow[]);
   } catch (error) {
-    console.error("Followers load error:", error);
-    toast.error("Couldn't load followers.");
+    console.error("Following load error:", error);
+    toast.error("Couldn't load following.");
   } finally {
-    setFollowersLoading(false);
+    setFollowingLoading(false);
   }
 };
 
@@ -430,7 +425,13 @@ function UserProfile() {
             >
            <Stat label="Followers" value={String(followersCount)} />
             </button>
-            <Stat label="Following" value={String(followingCount)} />
+            <button
+            type="button"
+           onClick={openFollowing}
+          className="text-left"
+         >
+         <Stat label="Following" value={String(followingCount)} />
+        </button>
             <Stat label="Posts" value={String(posts.length)} />
           </div>
         </div>
@@ -556,6 +557,86 @@ function UserProfile() {
           </div>
         </div>
       )}
+      {followingOpen && (
+  <div
+    className="fixed inset-0 z-[500] bg-black/50 flex items-center justify-center p-4"
+    onClick={() => setFollowingOpen(false)}
+  >
+    <div
+      className="w-full max-w-md max-h-[80vh] bg-white rounded-2xl shadow-xl overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+        <h2 className="font-bold text-lg">Following</h2>
+
+        <button
+          type="button"
+          onClick={() => setFollowingOpen(false)}
+          className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="max-h-[65vh] overflow-y-auto">
+        {followingLoading ? (
+          <div className="py-10 flex justify-center">
+            <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+          </div>
+        ) : following.length === 0 ? (
+          <div className="py-10 text-center text-slate-500">
+            Not following anyone yet.
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {following.map((person) => {
+              const name =
+                person.display_name ?? person.username ?? "User";
+
+              return (
+                <div
+                  key={person.id}
+                  onClick={() => {
+                    setFollowingOpen(false);
+                    navigate({
+                      to: "/u/$id",
+                      params: { id: person.id },
+                    });
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-left cursor-pointer"
+                >
+                  {person.avatar_url ? (
+                    <img
+                      src={person.avatar_url}
+                      alt={name}
+                      className="h-11 w-11 rounded-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="h-11 w-11 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold">
+                      {name[0]?.toUpperCase()}
+                    </div>
+                  )}
+
+                  <div className="min-w-0">
+                    <p className="font-semibold truncate">{name}</p>
+
+                    {person.username && (
+                      <p className="text-sm text-slate-500 truncate">
+                        @{person.username}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
       <div className="mt-6 flex gap-2 border-b border-slate-200 overflow-x-auto">
         {TABS.map((t) => (
           <button
