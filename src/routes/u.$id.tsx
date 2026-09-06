@@ -507,15 +507,19 @@ function UserProfile() {
                             </p>
                           )}
                           <button
-                        type="button"
+                         type="button"
+                        disabled={followingUsers.has(follower.id) || followBackBusy === follower.id}
                        onClick={(e) => {
                       e.stopPropagation();
-                   // Follow back action next step mein add karenge
-                }}
-              className="mt-1 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-semibold"
-              >
-              Follow back
-                </button>
+                    }}
+                  className={`mt-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                  followingUsers.has(follower.id)
+              ? "bg-slate-100 text-slate-600"
+             : "bg-indigo-600 text-white"
+                 }`}
+                >
+                 {followingUsers.has(follower.id) ? "Following" : "Follow back"}
+                    </button>
                         </div>
                       </button>
                     );
