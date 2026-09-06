@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
+import { openGoogleAccountChooser, triggerGooglePopup } from "@/lib/google-account-chooser";
 import { supabase } from "@/integrations/supabase/client";
 import {
   publishAuthenticatedSession,
@@ -154,10 +154,29 @@ const onGoogleAccountChooser = async () => {
       const result = await openGoogleAccountChooser();
 
       if (result.signedIn) {
-      toast.success("Welcome back!");
-      leaveAuth();
-    return;
- }
+        toast.success("Welcome back!");
+        leaveAuth();
+        return;
+      }
+
+      // The One Tap prompt could not display an account list (no Google
+      // session visible to the browser, FedCM blocked, etc.). Open the
+      // popup account chooser instead — it always shows the email list.
+      if (!result.shown) {
+        const popupStarted = await triggerGooglePopup({
+          onSignedIn: () => {
+            toast.success("Welcome back!");
+            leaveAuth();
+          },
+          onError: (popupError) => {
+            console.error("Google popup sign-in error:", popupError);
+            toast.error(authErrorMessage(popupError, "google"));
+          },
+        });
+        if (!popupStarted) {
+          toast.error("Google sign-in is unavailable right now. Please use email sign-in.");
+        }
+      }
     } catch (error) {
       console.error("Google sign-in error:", describeGoogleAuthError(error), error);
       toast.error(authErrorMessage(error, "google"));
