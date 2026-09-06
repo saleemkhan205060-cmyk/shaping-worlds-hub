@@ -49,6 +49,8 @@ function UserProfile() {
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followers, setFollowers] = useState<ProfileRow[]>([]);
   const [followersLoading, setFollowersLoading] = useState(false);
+  const [followingUsers, setFollowingUsers] = useState<Set<string>>(new Set());
+  const [followBackBusy, setFollowBackBusy] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followBusy, setFollowBusy] = useState(false);
 
@@ -183,6 +185,14 @@ function UserProfile() {
     if (profilesError) throw profilesError;
 
     setFollowers((profilesData ?? []) as ProfileRow[]);
+    const { data: myFollows } = await supabase
+  .from("follows")
+  .select("following_id")
+  .eq("follower_id", user?.id ?? "");
+
+   setFollowingUsers(
+  new Set((myFollows ?? []).map((row) => row.following_id))
+);
   } catch (error) {
     console.error("Followers load error:", error);
     toast.error("Couldn't load followers.");
@@ -496,6 +506,16 @@ function UserProfile() {
                               @{follower.username}
                             </p>
                           )}
+                          <button
+                        type="button"
+                       onClick={(e) => {
+                      e.stopPropagation();
+                   // Follow back action next step mein add karenge
+                }}
+              className="mt-1 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-semibold"
+              >
+              Follow back
+                </button>
                         </div>
                       </button>
                     );
