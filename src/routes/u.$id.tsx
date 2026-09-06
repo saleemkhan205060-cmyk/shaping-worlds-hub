@@ -46,6 +46,9 @@ function UserProfile() {
   const [fsIndex, setFsIndex] = useState(0);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followers, setFollowers] = useState<ProfileRow[]>([]);
+  const [followersLoading, setFollowersLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followBusy, setFollowBusy] = useState(false);
 
@@ -153,6 +156,40 @@ function UserProfile() {
       setIsFollowing(false);
     }
   };
+  const openFollowers = async () => {
+  setFollowersOpen(true);
+  setFollowersLoading(true);
+
+  try {
+    const { data: followRows, error: followsError } = await supabase
+      .from("follows")
+      .select("follower_id")
+      .eq("following_id", id);
+
+    if (followsError) throw followsError;
+
+    const followerIds = (followRows ?? []).map((row) => row.follower_id);
+
+    if (followerIds.length === 0) {
+      setFollowers([]);
+      return;
+    }
+
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, display_name, username, avatar_url, created_at, cover_url")
+      .in("id", followerIds);
+
+    if (profilesError) throw profilesError;
+
+    setFollowers((profilesData ?? []) as ProfileRow[]);
+  } catch (error) {
+    console.error("Followers load error:", error);
+    toast.error("Couldn't load followers.");
+  } finally {
+    setFollowersLoading(false);
+  }
+};
 
   useEffect(() => {
     setLoading(true);
@@ -376,7 +413,13 @@ function UserProfile() {
           </div>
 
           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
-            <Stat label="Followers" value={String(followersCount)} />
+            <button
+            type="button"
+            onClick={openFollowers}
+            className="text-left"
+            >
+           <Stat label="Followers" value={String(followersCount)} />
+            </button>
             <Stat label="Following" value={String(followingCount)} />
             <Stat label="Posts" value={String(posts.length)} />
           </div>
