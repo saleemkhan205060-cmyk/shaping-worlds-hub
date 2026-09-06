@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { openGoogleAccountChooser, triggerGooglePopup } from "@/lib/google-account-chooser";
+import { mountGoogleSignInButton } from "@/lib/google-account-chooser";
 import { supabase } from "@/integrations/supabase/client";
 import {
   publishAuthenticatedSession,
@@ -26,6 +26,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const leavingAuthRef = useRef(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+  const [googleButtonReady, setGoogleButtonReady] = useState(false);
 
   const leaveAuth = useCallback(() => {
     if (leavingAuthRef.current) return;
@@ -64,6 +66,34 @@ function AuthPage() {
   useEffect(() => {
     if (!authLoading && user) leaveAuth();
   }, [user, authLoading, leaveAuth]);
+
+  useEffect(() => {
+    if (isInstalledNativeRuntime()) return;
+    const container = googleButtonRef.current;
+    if (!container) return;
+
+    let active = true;
+    void mountGoogleSignInButton(container, {
+      width: Math.max(240, Math.floor(container.getBoundingClientRect().width)),
+      onSignedIn: () => {
+        if (!active) return;
+        toast.success("Welcome back!");
+        leaveAuth();
+      },
+      onError: (error) => {
+        if (!active) return;
+        console.error("Google popup sign-in error:", error);
+        toast.error(authErrorMessage(error, "google"));
+      },
+    }).then((ready) => {
+      if (active) setGoogleButtonReady(ready);
+    });
+
+    return () => {
+      active = false;
+      container.replaceChildren();
+    };
+  }, [leaveAuth]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,34 +169,11 @@ function AuthPage() {
         return;
       }
 
-      // Browsers keep the chooser attached to this page. If One Tap/FedCM is
-      // unavailable, Google's compact popup chooser is used without navigating
-      // the VIP Life sign-in page away.
-      const result = await openGoogleAccountChooser();
-
-      if (result.signedIn) {
-        toast.success("Welcome back!");
-        leaveAuth();
-        return;
-      }
-
-      // The One Tap prompt could not display an account list (no Google
-      // session visible to the browser, FedCM blocked, etc.). Open the
-      // popup account chooser instead — it always shows the email list.
-      if (!result.shown) {
-        const popupStarted = await triggerGooglePopup({
-          onSignedIn: () => {
-            toast.success("Welcome back!");
-            leaveAuth();
-          },
-          onError: (popupError) => {
-            console.error("Google popup sign-in error:", popupError);
-            toast.error(authErrorMessage(popupError, "google"));
-          },
-        });
-        if (!popupStarted) {
-          toast.error("Google sign-in is unavailable right now. Please use email sign-in.");
-        }
+      // On the web the visible Google control receives the user's click
+      // directly. Programmatically clicking a hidden Google button is blocked
+      // by browser popup protection and was why no account list appeared.
+      if (!googleButtonReady) {
+        toast.error("Google sign-in is still loading. Please try again.");
       }
     } catch (error) {
       console.error("Google sign-in error:", describeGoogleAuthError(error), error);
@@ -238,12 +245,22 @@ function AuthPage() {
       <GoogleIcon /> Continue with Google
     </button>
 
+    {!isInstalledNativeRuntime() && (
+      <div
+        ref={googleButtonRef}
+        aria-hidden="true"
+        className={`absolute inset-0 z-30 overflow-hidden rounded-full opacity-[0.01] ${
+          busy || (mode === "signup" && !agreedTerms) ? "pointer-events-none" : ""
+        }`}
+      />
+    )}
+
     <button
       type="button"
       aria-label="Choose a Google account"
       onClick={() => void onGoogle()}
       disabled={busy}
-      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
+      className="absolute right-1 top-1/2 z-20 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
     >
       {busy ? (
         <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
