@@ -473,12 +473,11 @@ function UserProfile() {
                       follower.display_name ?? follower.username ?? "User";
 
                     return (
-                      <button
-                        key={follower.id}
-                        type="button"
-                        onClick={() => {
-                          setFollowersOpen(false);
-                          navigate({
+                  <div
+                   key={follower.id}
+                    onClick={() => {
+                      setFollowersOpen(false);
+                         navigate({
                             to: "/u/$id",
                             params: { id: follower.id },
                           });
@@ -502,26 +501,53 @@ function UserProfile() {
                           <p className="font-semibold truncate">{name}</p>
 
                           {follower.username && (
-                            <p className="text-sm text-slate-500 truncate">
-                              @{follower.username}
-                            </p>
-                          )}
-                          <button
-                         type="button"
-                        disabled={followingUsers.has(follower.id) || followBackBusy === follower.id}
-                       onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  className={`mt-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                  followingUsers.has(follower.id)
-              ? "bg-slate-100 text-slate-600"
-             : "bg-indigo-600 text-white"
-                 }`}
-                >
-                 {followingUsers.has(follower.id) ? "Following" : "Follow back"}
-                    </button>
+  <p className="text-sm text-slate-500 truncate">
+    @{follower.username}
+  </p>
+)}
+
+<button
+  type="button"
+  disabled={
+    followingUsers.has(follower.id) ||
+    followBackBusy === follower.id
+  }
+  onClick={async (e) => {
+    e.stopPropagation();
+
+    if (!user || followingUsers.has(follower.id)) return;
+
+    setFollowBackBusy(follower.id);
+
+    const { error } = await supabase
+      .from("follows")
+      .insert({
+        follower_id: user.id,
+        following_id: follower.id,
+      });
+
+    if (error) {
+      toast.error("Couldn't follow back. Please try again.");
+    } else {
+      setFollowingUsers((prev) => {
+        const next = new Set(prev);
+        next.add(follower.id);
+        return next;
+      });
+    }
+
+    setFollowBackBusy(null);
+  }}
+  className={`mt-1 px-3 py-1 rounded-full text-xs font-semibold ${
+    followingUsers.has(follower.id)
+      ? "bg-slate-100 text-slate-600"
+      : "bg-indigo-600 text-white"
+  }`}
+>
+  {followingUsers.has(follower.id) ? "Following" : "Follow back"}
+</button>
                         </div>
-                      </button>
+                    
                     );
                   })}
                 </div>
