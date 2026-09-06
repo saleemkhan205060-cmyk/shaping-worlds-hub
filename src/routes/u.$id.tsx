@@ -160,10 +160,11 @@ function UserProfile() {
     } else {
       setIsFollowing(false);
     }
-  };
+    };
+        const openFollowing = async () => {
         setFollowingOpen(true);
-    setFollowingLoading(true);
-
+       setFollowingLoading(true);
+          
     try {
       const { data: followRows, error: followsError } = await supabase
         .from("follows")
