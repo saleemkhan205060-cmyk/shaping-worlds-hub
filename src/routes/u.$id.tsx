@@ -425,7 +425,87 @@ function UserProfile() {
           </div>
         </div>
       </div>
+             {followersOpen && (
+        <div
+          className="fixed inset-0 z-[500] bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setFollowersOpen(false)}
+        >
+          <div
+            className="w-full max-w-md max-h-[80vh] bg-white rounded-2xl shadow-xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+              <h2 className="font-bold text-lg">Followers</h2>
 
+              <button
+                type="button"
+                onClick={() => setFollowersOpen(false)}
+                className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl"
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="max-h-[65vh] overflow-y-auto">
+              {followersLoading ? (
+                <div className="py-10 flex justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+                </div>
+              ) : followers.length === 0 ? (
+                <div className="py-10 text-center text-slate-500">
+                  No followers yet.
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100">
+                  {followers.map((follower) => {
+                    const name =
+                      follower.display_name ?? follower.username ?? "User";
+
+                    return (
+                      <button
+                        key={follower.id}
+                        type="button"
+                        onClick={() => {
+                          setFollowersOpen(false);
+                          navigate({
+                            to: "/u/$id",
+                            params: { id: follower.id },
+                          });
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-left"
+                      >
+                        {follower.avatar_url ? (
+                          <img
+                            src={follower.avatar_url}
+                            alt={name}
+                            className="h-11 w-11 rounded-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <div className="h-11 w-11 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold">
+                            {name[0]?.toUpperCase()}
+                          </div>
+                        )}
+
+                        <div className="min-w-0">
+                          <p className="font-semibold truncate">{name}</p>
+
+                          {follower.username && (
+                            <p className="text-sm text-slate-500 truncate">
+                              @{follower.username}
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <div className="mt-6 flex gap-2 border-b border-slate-200 overflow-x-auto">
         {TABS.map((t) => (
           <button
