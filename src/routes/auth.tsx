@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { openGoogleAccountChooser } from "@/lib/google-account-chooser";
+import { openGoogleAccountChooser, triggerGooglePopup } from "@/lib/google-account-chooser";
 import { supabase } from "@/integrations/supabase/client";
 import {
   publishAuthenticatedSession,
