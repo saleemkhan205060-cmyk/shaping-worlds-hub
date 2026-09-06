@@ -151,14 +151,13 @@ const onGoogleAccountChooser = async () => {
       // One Google path only: Android uses the native Credential Manager
       // account list; web uses the managed popup. This avoids the competing
       // GSI/FedCM initialization that made the button intermittently fail.
-      const result = await signInWithGoogle({
-        extraParams: { prompt: "select_account" },
-      });
-      if (result.error) throw result.error;
-      if (!result.redirected) {
-        toast.success("Welcome back!");
-        leaveAuth();
-      }
+      const result = await openGoogleAccountChooser();
+
+      if (result.signedIn) {
+      toast.success("Welcome back!");
+      leaveAuth();
+    return;
+ }
     } catch (error) {
       console.error("Google sign-in error:", describeGoogleAuthError(error), error);
       toast.error(authErrorMessage(error, "google"));
