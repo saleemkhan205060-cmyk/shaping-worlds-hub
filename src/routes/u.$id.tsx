@@ -191,12 +191,12 @@ function UserProfile() {
     } catch (error) {
       console.error("Following load error:", error);
       toast.error("Couldn't load following.");
-    } finally {
-      setFollowingLoading(false);
-    }
-  };
+      } finally {
+     setFollowingLoading(false);
+  }
+   };
 
-  useEffect(() => {
+    useEffect(() => {
     setLoading(true);
     Promise.all([
       supabase.from("profiles").select("id, username, display_name, avatar_url, created_at, updated_at, cover_url, bio, location, website, is_verified").eq("id", id).maybeSingle(),
