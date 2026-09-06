@@ -161,6 +161,40 @@ function UserProfile() {
       setIsFollowing(false);
     }
     };
+  const openFollowers = async () => {
+  setFollowersOpen(true);
+  setFollowersLoading(true);
+
+  try {
+    const { data: followRows, error } = await supabase
+      .from("follows")
+      .select("follower_id")
+      .eq("following_id", id);
+
+    if (error) throw error;
+
+    const followerIds = (followRows ?? []).map((row) => row.follower_id);
+
+    if (followerIds.length === 0) {
+      setFollowers([]);
+      return;
+    }
+
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, display_name, username, avatar_url, created_at, cover_url")
+      .in("id", followerIds);
+
+    if (profilesError) throw profilesError;
+
+    setFollowers((profilesData ?? []) as ProfileRow[]);
+  } catch (error) {
+    console.error("Followers load error:", error);
+    toast.error("Couldn't load followers.");
+  } finally {
+    setFollowersLoading(false);
+  }
+};
         const openFollowing = async () => {
         setFollowingOpen(true);
        setFollowingLoading(true);
