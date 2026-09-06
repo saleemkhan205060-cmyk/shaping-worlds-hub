@@ -547,7 +547,7 @@ function UserProfile() {
   {followingUsers.has(follower.id) ? "Following" : "Follow back"}
 </button>
                         </div>
-                    
+                    </div>
                     );
                   })}
                 </div>
