@@ -161,40 +161,39 @@ function UserProfile() {
       setIsFollowing(false);
     }
   };
-  const openFollowing = async () => {
-  setFollowingOpen(true);
-  setFollowingLoading(true);
+        setFollowingOpen(true);
+    setFollowingLoading(true);
 
-  try {
-    const { data: followRows, error: followsError } = await supabase
-      .from("follows")
-      .select("following_id")
-      .eq("follower_id", id);
+    try {
+      const { data: followRows, error: followsError } = await supabase
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", id);
 
-    if (followsError) throw followsError;
+      if (followsError) throw followsError;
 
-    const followingIds = (followRows ?? []).map((row) => row.following_id);
+      const followingIds = (followRows ?? []).map((row) => row.following_id);
 
-    if (followingIds.length === 0) {
-      setFollowing([]);
-      return;
+      if (followingIds.length === 0) {
+        setFollowing([]);
+        return;
+      }
+
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, display_name, username, avatar_url, created_at, cover_url")
+        .in("id", followingIds);
+
+      if (profilesError) throw profilesError;
+
+      setFollowing((profilesData ?? []) as ProfileRow[]);
+    } catch (error) {
+      console.error("Following load error:", error);
+      toast.error("Couldn't load following.");
+    } finally {
+      setFollowingLoading(false);
     }
-
-    const { data: profilesData, error: profilesError } = await supabase
-      .from("profiles")
-      .select("id, display_name, username, avatar_url, created_at, cover_url")
-      .in("id", followingIds);
-
-    if (profilesError) throw profilesError;
-
-    setFollowing((profilesData ?? []) as ProfileRow[]);
-  } catch (error) {
-    console.error("Following load error:", error);
-    toast.error("Couldn't load following.");
-  } finally {
-    setFollowingLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     setLoading(true);
