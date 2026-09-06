@@ -124,14 +124,13 @@ async function sha256Hex(value: string) {
     if (/USER_CANCELLED|cancelled by user/i.test(detail)) {
       throw new Error("Google account selection was cancelled");
     }
-    // The installed build's signing SHA-1 / package is not registered as an
-    // Android OAuth client in Google Cloud, so Credential Manager refuses with
-    // "Developer console is not set up correctly" (status 10 / 28444). Nothing
-    // the user can do in-app — fall back to the managed browser OAuth flow so
-    // sign-in still completes on this build.
+    // Do not replace the native account sheet with browser OAuth. That sends
+    // the user to another Google page and asks for the account a second time.
+    // Configuration failures must remain visible so the installed build's
+    // OAuth client can be corrected without changing the promised interaction.
     if (/28444|Developer console is not set up|not configured for this installed|status(?: code)?[:= ]*10\b/i.test(detail)) {
-      logGoogleAuthError("native google unconfigured, using browser flow", error);
-      return await signInWithBrowserGoogle({ extraParams: { prompt: "select_account" } });
+      logGoogleAuthError("native Google OAuth configuration", error);
+      throw new Error("Google Sign-In is not configured for this Android build");
     }
     throw error;
   }
