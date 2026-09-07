@@ -39,28 +39,75 @@ export function CommentsSheet({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
+  let cancelled = false;
+
+  const loadComments = async () => {
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase
         .from("post_comments")
         .select("id, post_id, user_id, content, created_at, is_hidden")
         .eq("post_id", postId)
         .order("created_at", { ascending: true });
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("Comments load failed:", error);
+        setItems([]);
+        return;
+      }
+
       const list = (data ?? []) as Comment[];
+
       setItems(list);
       onCountChange?.(list.length);
+
       const ids = Array.from(new Set(list.map((c) => c.user_id)));
+
       if (ids.length) {
-        const { data: ps } = await supabase
+        const { data: ps, error: profileError } = await supabase
           .from("profiles")
           .select("id, username, display_name, avatar_url")
           .in("id", ids);
+
+        if (cancelled) return;
+
+        if (profileError) {
+          console.error("Comment profiles load failed:", profileError);
+          setProfiles({});
+          return;
+        }
+
         const map: Record<string, Profile> = {};
-        (ps ?? []).forEach((p: any) => (map[p.id] = p));
+        (ps ?? []).forEach((p: any) => {
+          map[p.id] = p;
+        });
+
         setProfiles(map);
+      } else {
+        setProfiles({});
       }
-      setLoading(false);
-    })();
-  }, [postId, onCountChange]);
+    } catch (error) {
+      if (!cancelled) {
+        console.error("Comments load error:", error);
+        setItems([]);
+        setProfiles({});
+      }
+    } finally {
+      if (!cancelled) {
+        setLoading(false);
+      }
+    }
+  };
+
+  loadComments();
+
+  return () => {
+    cancelled = true;
+  };
+}, [postId]);
 
   const submit = async () => {
     if (!user) {
