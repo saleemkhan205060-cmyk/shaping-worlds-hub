@@ -37,7 +37,7 @@ export function useHistoryBackClose(onClose: () => void, enabled: boolean = true
       window.removeEventListener("popstate", onPopState);
        if (pushedRef.current) {
         pushedRef.current = false;
-       // history.back();
+       history.back();
       }
     };
   }, [enabled]);
