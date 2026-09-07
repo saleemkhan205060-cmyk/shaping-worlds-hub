@@ -68,11 +68,16 @@ public class MainActivity extends BridgeActivity
 
         WebView webView = getBridge().getWebView();
 
-        if (webView != null) {
-         webView.setBackgroundColor(Color.WHITE);
-     }
-     }
-           private void startAnalytics() {
+if (webView != null) {
+    webView.setBackgroundColor(Color.WHITE);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        webView.setImportantForAutofill(
+                View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
+        );
+    }
+}
+}         private void startAnalytics() {
             try {
             Class<?> analytics =
                     Class.forName("com.google.firebase.analytics.FirebaseAnalytics");
