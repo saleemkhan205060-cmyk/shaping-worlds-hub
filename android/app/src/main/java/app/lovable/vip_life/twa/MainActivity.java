@@ -69,9 +69,11 @@ public class MainActivity extends BridgeActivity
         WebView webView = getBridge().getWebView();
 
         if (webView != null) {
-            webView.setBackgroundColor(Color.WHITE);
-        }
-    }
+         webView.setBackgroundColor(Color.WHITE);
+
+        webView.setFocusable(true);
+       webView.setFocusableInTouchMode(true);
+     }
 
            private void startAnalytics() {
             try {
