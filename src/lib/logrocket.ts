@@ -6,7 +6,7 @@ import LogRocket from "logrocket";
 // dropped network connection). That is what made recordings stop shortly after the
 // session label/tick appeared in the dashboard.
 
-const APP_ID = "p3epoj/vip-life-app";
+const APP_ID = "vip-life/vip-life";
 
 // LogRocket ends a session after ~30 minutes of inactivity; long backgrounding in an
 // Android WebView also tears the socket down. Anything longer than this away from the
