@@ -514,7 +514,12 @@ function UserProfile() {
            onClick={openFollowing}
           className="text-left"
          >
-         <Stat label="Following" value={String(followingCount)} community />
+         <Stat
+  label="Following"
+  value={String(followingCount)}
+  community
+  locked={hideFollowing}
+/>
         </button>
             <Stat label="Likes" value={String(likesCount)} likes />
           </div>
@@ -831,12 +836,14 @@ function Stat({
   label,
   value,
   community = false,
-  likes = false,
+likes = false,
+locked = false,
 }: {
   label: string;
   value: string;
   community?: boolean;
   likes?: boolean;
+  locked?: boolean;
 }) {
   const green = community || likes;
 
@@ -848,12 +855,17 @@ function Stat({
           : "bg-slate-50 border-slate-200"
       }`}
     >
-      {likes ? (
-        <Heart className="h-5 w-5 text-white mx-auto" />
-      ) : (
-        <UsersRound className="h-5 w-5 text-white mx-auto" />
-      )}
+      <div className="flex items-center justify-center gap-1">
+  {likes ? (
+    <Heart className="h-5 w-5 text-white" />
+  ) : (
+    <UsersRound className="h-5 w-5 text-white" />
+  )}
 
+  {locked && (
+    <Lock className="h-3.5 w-3.5 text-white" />
+  )}
+</div>
       <div className={`mt-1 font-bold ${green ? "text-white" : ""}`}>
         {value}
       </div>
