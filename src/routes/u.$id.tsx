@@ -162,6 +162,38 @@ function UserProfile() {
       setIsFollowing(false);
     }
     };
+  const refreshLikes = async () => {
+  const { data: userPosts, error: postsError } = await supabase
+    .from("posts")
+    .select("id")
+    .eq("user_id", id);
+
+  if (postsError) {
+    console.error("Likes posts load error:", postsError);
+    setLikesCount(0);
+    return;
+  }
+
+  const postIds = (userPosts ?? []).map((p) => p.id);
+
+  if (postIds.length === 0) {
+    setLikesCount(0);
+    return;
+  }
+
+  const { count, error: likesError } = await supabase
+    .from("post_likes")
+    .select("id", { count: "exact", head: true })
+    .in("post_id", postIds);
+
+  if (likesError) {
+    console.error("Likes count load error:", likesError);
+    setLikesCount(0);
+    return;
+  }
+
+  setLikesCount(count ?? 0);
+};
   const openFollowers = async () => {
   setFollowersOpen(true);
   setFollowersLoading(true);
