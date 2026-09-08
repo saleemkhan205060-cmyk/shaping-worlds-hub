@@ -651,8 +651,17 @@ function UserProfile() {
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-        <h2 className="font-bold text-lg">Following</h2>
+        <div className="flex items-center gap-3">
+       <h2 className="font-bold text-lg">Following</h2>
 
+      <button
+    type="button"
+    className="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-300 transition"
+    aria-label="Hide following"
+  >
+    <span className="inline-block h-5 w-5 transform rounded-full bg-white shadow transition translate-x-0.5" />
+  </button>
+</div>
         <button
           type="button"
           onClick={() => setFollowingOpen(false)}
