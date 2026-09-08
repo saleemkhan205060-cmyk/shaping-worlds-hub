@@ -46,6 +46,7 @@ function UserProfile() {
   const [fsIndex, setFsIndex] = useState(0);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followers, setFollowers] = useState<ProfileRow[]>([]);
   const [followersLoading, setFollowersLoading] = useState(false);
@@ -466,7 +467,7 @@ function UserProfile() {
          >
          <Stat label="Following" value={String(followingCount)} community />
         </button>
-            <Stat label="Posts" value={String(posts.length)} />
+            <Stat label="Likes" value={String(likesCount)} likes />
           </div>
         </div>
       </div>
