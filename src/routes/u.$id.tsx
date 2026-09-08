@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Calendar, CheckCircle2, Play, Heart, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle, Pencil } from "lucide-react";
+import { Calendar, CheckCircle2, Play, Heart, UsersRound, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
@@ -457,14 +457,14 @@ function UserProfile() {
             onClick={openFollowers}
             className="text-left"
             >
-           <Stat label="Followers" value={String(followersCount)} />
+           <Stat label="Followers" value={String(followersCount)} community />
             </button>
             <button
             type="button"
            onClick={openFollowing}
           className="text-left"
          >
-         <Stat label="Following" value={String(followingCount)} />
+         <Stat label="Following" value={String(followingCount)} community />
         </button>
             <Stat label="Posts" value={String(posts.length)} />
           </div>
@@ -751,12 +751,40 @@ function UserProfile() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({
+  label,
+  value,
+  community = false,
+}: {
+  label: string;
+  value: string;
+  community?: boolean;
+}) {
   return (
-    <div className="rounded-xl bg-slate-50 border border-slate-200 p-3 text-center">
-      <Heart className="h-4 w-4 text-indigo-600 mx-auto" />
-      <div className="mt-1 font-bold">{value}</div>
-      <div className="text-[11px] text-slate-500">{label}</div>
+    <div
+      className={`rounded-xl border p-3 text-center ${
+        community
+          ? "bg-[#057643] border-[#057643] text-white"
+          : "bg-slate-50 border-slate-200"
+      }`}
+    >
+      {community ? (
+        <UsersRound className="h-5 w-5 text-white mx-auto" />
+      ) : (
+        <Heart className="h-4 w-4 text-indigo-600 mx-auto" />
+      )}
+
+      <div className={`mt-1 font-bold ${community ? "text-white" : ""}`}>
+        {value}
+      </div>
+
+      <div
+        className={`text-[11px] ${
+          community ? "text-white/90" : "text-slate-500"
+        }`}
+      >
+        {label}
+      </div>
     </div>
   );
 }
