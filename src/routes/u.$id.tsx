@@ -51,6 +51,7 @@ function UserProfile() {
   const [followers, setFollowers] = useState<ProfileRow[]>([]);
   const [followersLoading, setFollowersLoading] = useState(false);
   const [followingOpen, setFollowingOpen] = useState(false);
+  const [hideFollowing, setHideFollowing] = useState(false);
   const [following, setFollowing] = useState<ProfileRow[]>([]);
   const [followingLoading, setFollowingLoading] = useState(false);
   const [followingUsers, setFollowingUsers] = useState<Set<string>>(new Set());
@@ -655,12 +656,19 @@ function UserProfile() {
        <h2 className="font-bold text-lg">Following</h2>
 
       <button
-    type="button"
-    className="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-300 transition"
-    aria-label="Hide following"
-  >
-    <span className="inline-block h-5 w-5 transform rounded-full bg-white shadow transition translate-x-0.5" />
-  </button>
+  type="button"
+  onClick={() => setHideFollowing((prev) => !prev)}
+  className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
+    hideFollowing ? "bg-[#057643]" : "bg-slate-300"
+  }`}
+  aria-label="Hide following"
+>
+  <span
+    className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
+      hideFollowing ? "translate-x-6" : "translate-x-1"
+    }`}
+  />
+</button>
 </div>
         <button
           type="button"
@@ -673,19 +681,23 @@ function UserProfile() {
       </div>
 
       <div className="max-h-[65vh] overflow-y-auto">
-        {followingLoading ? (
-          <div className="py-10 flex justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
-          </div>
-        ) : following.length === 0 ? (
-          <div className="py-10 text-center text-slate-500">
-            Not following anyone yet.
-          </div>
-        ) : (
-          <div className="divide-y divide-slate-100">
-            {following.map((person) => {
-              const name =
-                person.display_name ?? person.username ?? "User";
+  {hideFollowing ? (
+    <div className="py-10 text-center text-slate-500">
+      Following list is hidden.
+    </div>
+  ) : followingLoading ? (
+    <div className="py-10 flex justify-center">
+      <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+    </div>
+  ) : following.length === 0 ? (
+    <div className="py-10 text-center text-slate-500">
+      Not following anyone yet.
+    </div>
+  ) : (
+    <div className="divide-y divide-slate-100">
+      {following.map((person) => {
+        const name =
+          person.display_name ?? person.username ?? "User";
 
               return (
                 <div
