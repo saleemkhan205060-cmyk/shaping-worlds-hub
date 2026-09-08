@@ -207,6 +207,21 @@ function UserProfile() {
     if (error) throw error;
 
     const followerIds = (followRows ?? []).map((row) => row.follower_id);
+    if (user) {
+  const { data: myFollowRows, error: myFollowError } = await supabase
+    .from("follows")
+    .select("following_id")
+    .eq("follower_id", user.id)
+    .in("following_id", followerIds);
+
+  if (myFollowError) {
+    console.error("My following load error:", myFollowError);
+  } else {
+    setFollowingUsers(
+      new Set((myFollowRows ?? []).map((row) => row.following_id))
+    );
+  }
+}
 
     if (followerIds.length === 0) {
       setFollowers([]);
@@ -603,6 +618,7 @@ function UserProfile() {
         next.add(follower.id);
         return next;
       });
+     setFollowingCount((c) => c + 1);
     }
 
     setFollowBackBusy(null);
