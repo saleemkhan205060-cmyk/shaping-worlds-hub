@@ -246,6 +246,7 @@ function UserProfile() {
       setLoading(false);
     });
     refreshFollows();
+    refreshLikes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user?.id]);
 
@@ -756,32 +757,36 @@ function Stat({
   label,
   value,
   community = false,
+  likes = false,
 }: {
   label: string;
   value: string;
   community?: boolean;
+  likes?: boolean;
 }) {
+  const green = community || likes;
+
   return (
     <div
       className={`rounded-xl border p-3 text-center ${
-        community
+        green
           ? "bg-[#057643] border-[#057643] text-white"
           : "bg-slate-50 border-slate-200"
       }`}
     >
-      {community ? (
-        <UsersRound className="h-5 w-5 text-white mx-auto" />
+      {likes ? (
+        <Heart className="h-5 w-5 text-white mx-auto" />
       ) : (
-        <Heart className="h-4 w-4 text-indigo-600 mx-auto" />
+        <UsersRound className="h-5 w-5 text-white mx-auto" />
       )}
 
-      <div className={`mt-1 font-bold ${community ? "text-white" : ""}`}>
+      <div className={`mt-1 font-bold ${green ? "text-white" : ""}`}>
         {value}
       </div>
 
       <div
         className={`text-[11px] ${
-          community ? "text-white/90" : "text-slate-500"
+          green ? "text-white/90" : "text-slate-500"
         }`}
       >
         {label}
