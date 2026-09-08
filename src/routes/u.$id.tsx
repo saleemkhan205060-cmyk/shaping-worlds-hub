@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Calendar, CheckCircle2, Play, Heart, UsersRound, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle, Pencil } from "lucide-react";
+import { Calendar, CheckCircle2, Play, Heart, UsersRound, Loader2, ArrowLeft, UserPlus, UserCheck, MessageCircle, Pencil, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { MediaActions } from "@/components/MediaActions";
@@ -653,7 +653,10 @@ function UserProfile() {
     >
   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
     <div className="flex items-center gap-3">
-      <h2 className="font-bold text-lg">Following</h2>
+      <div className="flex items-center gap-1">
+  <h2 className="font-bold text-lg">Following</h2>
+  {hideFollowing && <Lock className="h-4 w-4 text-slate-500" />}
+</div>
 
       {isSelf && (
   <button
