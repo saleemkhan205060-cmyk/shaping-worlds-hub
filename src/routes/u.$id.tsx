@@ -651,24 +651,26 @@ function UserProfile() {
       className="w-full max-w-md max-h-[80vh] bg-white rounded-2xl shadow-xl overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-        <div className="flex items-center gap-3">
-       <h2 className="font-bold text-lg">Following</h2>
+  <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+    <div className="flex items-center gap-3">
+      <h2 className="font-bold text-lg">Following</h2>
 
-      <button
-  type="button"
-  onClick={() => setHideFollowing((prev) => !prev)}
-  className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
-    hideFollowing ? "bg-[#057643]" : "bg-slate-300"
-  }`}
-  aria-label="Hide following"
->
-  <span
-    className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
-      hideFollowing ? "translate-x-6" : "translate-x-1"
+      {isSelf && (
+  <button
+    type="button"
+    onClick={() => setHideFollowing((prev) => !prev)}
+    className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
+      hideFollowing ? "bg-[#057643]" : "bg-slate-300"
     }`}
-  />
-</button>
+    aria-label="Hide following"
+  >
+    <span
+      className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
+        hideFollowing ? "translate-x-6" : "translate-x-1"
+      }`}
+    />
+  </button>
+)}
 </div>
         <button
           type="button"
@@ -681,7 +683,7 @@ function UserProfile() {
       </div>
 
       <div className="max-h-[65vh] overflow-y-auto">
-  {hideFollowing ? (
+    {hideFollowing && !isSelf ? (
     <div className="py-10 text-center text-slate-500">
       Following list is hidden.
     </div>
