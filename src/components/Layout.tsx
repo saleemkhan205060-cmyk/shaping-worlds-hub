@@ -124,7 +124,7 @@ export function Layout({
   }, [userId]);
 
   // Keep the user "online" across all routes; only drops when tab is closed.
- // useGlobalPresence(user?.id ?? null);
+     useGlobalPresence(user?.id ?? null);
 
   useEffect(() => {
     if (!userId) {
