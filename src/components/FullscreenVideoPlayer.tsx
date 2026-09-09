@@ -212,8 +212,8 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           if (e.isIntersecting && e.intersectionRatio > 0.6) {
             setActiveId(id);
             activeIdRef.current = id;
-            setPaused(false);
-            playWithCurrentSoundPreference(id, true);
+            setPaused(true);
+            v?.pause();
           } else {
             v?.pause();
           }
