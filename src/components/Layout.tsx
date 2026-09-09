@@ -243,7 +243,9 @@ export function Layout({
 
           <nav className="hidden md:flex items-center gap-1 shrink-0">
             {navItems.map((item) => {
-              const active = path === item.to;
+            const active = item.to === "/u/$id"
+             ? path.startsWith("/u/")
+             : path === item.to;
               return (
                 <Link
                key={item.to}
@@ -365,7 +367,9 @@ export function Layout({
         <div className="relative grid grid-cols-3 items-end">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
-            const active = path === item.to;
+            const active = item.to === "/u/$id"
+            ? path.startsWith("/u/")
+            : path === item.to;
             const isHome = item.to === "/";
             const showSpinner = isHome && homeReloading;
             // Insert the + button visually in the middle column by ordering
