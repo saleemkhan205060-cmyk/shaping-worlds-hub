@@ -67,21 +67,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
-  useEffect(() => {
-  const stopBackgroundPlayback = () => {
-    if (document.visibilityState !== "visible") {
-      Object.values(videoRefs.current).forEach((v) => {
-        v?.pause();
-      });
-    }
-  };
-
-  document.addEventListener("visibilitychange", stopBackgroundPlayback);
-
-  return () => {
-    document.removeEventListener("visibilitychange", stopBackgroundPlayback);
-  };
-}, []);
   const [moreOpenFor, setMoreOpenFor] = useState<string | null>(null);
   const [shareItem, setShareItem] = useState<FsItem | null>(null);
   const [thumbPickFor, setThumbPickFor] = useState<FsItem | null>(null);
