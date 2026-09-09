@@ -360,6 +360,11 @@ function UserProfile() {
 
   const videos = posts.filter((p) => p.media_type === "video");
   const photos = posts.filter((p) => p.media_type === "image");
+  const tabCounts: Record<Tab, number> = {
+  Posts: posts.length,
+  Videos: videos.length,
+  Photos: photos.length,
+};
 
   const items: Post[] =
     tab === "Videos" ? videos : tab === "Photos" ? photos : posts;
@@ -779,7 +784,14 @@ function UserProfile() {
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
-            {t}
+          {t}
+          <span
+            className={`ml-1 text-[11px] font-medium ${
+              tab === t ? "text-indigo-500" : "text-slate-400"
+            }`}
+          >
+            {tabCounts[t]}
+          </span>
           </button>
         ))}
       </div>
