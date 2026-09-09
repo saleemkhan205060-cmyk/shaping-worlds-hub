@@ -407,7 +407,7 @@ export function Layout({
                   }
                 }}
                 className={`${colClass} row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium transition ${
-                  active ? "text-indigo-600" : "text-slate-500 hover:text-slate-700"
+                  active ? "text-[#057543]" : "text-slate-500 hover:text-[#046238]"
                 }`}
               >
                 <span className="h-8 w-8 flex items-center justify-center mb-1">
