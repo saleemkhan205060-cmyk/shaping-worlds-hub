@@ -475,7 +475,7 @@ function UploadPage() {
             <button
               onClick={handleUpload}
               disabled={!file || uploading}
-             className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-green-500 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-green-400/30 hover:bg-green-600 disabled:opacity-50 disabled:shadow-none transition active:scale-[0.99]"
+             className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#057543] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-green-400/30 hover:bg-[#046238] disabled:opacity-50 disabled:shadow-none transition active:scale-[0.99]"
             >
               {uploading ? (
                 <><Loader2 className="h-4 w-4 animate-spin" /> Uploading {progress}%</>
