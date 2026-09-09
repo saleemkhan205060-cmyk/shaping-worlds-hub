@@ -830,6 +830,7 @@ export type Database = {
           cover_url: string | null
           created_at: string
           display_name: string | null
+          hide_following: boolean
           id: string
           is_banned: boolean
           is_suspended: boolean
@@ -847,6 +848,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           display_name?: string | null
+          hide_following?: boolean
           id: string
           is_banned?: boolean
           is_suspended?: boolean
@@ -864,6 +866,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           display_name?: string | null
+          hide_following?: boolean
           id?: string
           is_banned?: boolean
           is_suspended?: boolean
