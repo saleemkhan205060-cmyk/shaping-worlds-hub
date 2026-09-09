@@ -1197,8 +1197,8 @@ export function HomeFeed() {
                         playsInline
                         muted
                         loop
-                        autoPlay={false}
-                        preload="none"
+                        autoPlay
+                        preload="metadata"
                         className="w-full h-full object-cover cursor-pointer"
                         onClick={() => openFullscreen(p.id)}
                       />
