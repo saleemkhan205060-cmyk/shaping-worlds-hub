@@ -210,13 +210,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
           const id = (e.target as HTMLElement).dataset.id!;
           const v = videoRefs.current[id];
           if (e.isIntersecting && e.intersectionRatio > 0.6) {
-            setActiveId(id);
-            activeIdRef.current = id;
-            setPaused(true);
-            v?.pause();
-          } else {
-            v?.pause();
-          }
+          setActiveId(id);
+          activeIdRef.current = id;
+         setPaused(false);
+         playWithCurrentSoundPreference(id);
+         } else {
+         v?.pause();
+        }
         });
       },
       { root, threshold: [0, 0.6, 1] },
