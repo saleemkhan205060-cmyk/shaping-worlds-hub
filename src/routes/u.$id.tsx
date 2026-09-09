@@ -29,6 +29,7 @@ type ProfileRow = {
   avatar_url: string | null;
   created_at: string;
   cover_url: string | null;
+  hide_following?: boolean | null;
 };
 
 const TABS = ["Posts", "Videos", "Photos"] as const;
@@ -282,14 +283,16 @@ function UserProfile() {
     useEffect(() => {
     setLoading(true);
     Promise.all([
-      supabase.from("profiles").select("id, username, display_name, avatar_url, created_at, updated_at, cover_url, bio, location, website, is_verified").eq("id", id).maybeSingle(),
+      supabase.from("profiles").select("id, username, display_name, avatar_url, created_at, updated_at, cover_url, bio, location, website, is_verified, hide_following").eq("id", id).maybeSingle(),
       supabase
         .from("posts")
         .select("id, user_id, media_url, media_type, caption, created_at, thumbnail_url")
         .eq("user_id", id)
         .order("created_at", { ascending: false }),
     ]).then(([{ data: prof }, { data: pp }]) => {
-      setProfile((prof as ProfileRow | null) ?? null);
+      const profRow = (prof as ProfileRow | null) ?? null;
+      setProfile(profRow);
+      setHideFollowing(!!profRow?.hide_following);
       setPosts(((pp ?? []) as Post[]).filter((p) => !!p.media_url));
       setLoading(false);
     });
@@ -666,7 +669,20 @@ function UserProfile() {
       {isSelf && (
   <button
     type="button"
-    onClick={() => setHideFollowing((prev) => !prev)}
+    onClick={async () => {
+      const next = !hideFollowing;
+      setHideFollowing(next);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ hide_following: next })
+        .eq("id", id);
+      if (error) {
+        setHideFollowing(!next);
+        toast.error("Couldn't save this setting. Please try again.");
+      } else {
+        setProfile((prev) => (prev ? { ...prev, hide_following: next } : prev));
+      }
+    }}
     className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
       hideFollowing ? "bg-[#057643]" : "bg-slate-300"
     }`}
