@@ -33,6 +33,15 @@ export const SearchContext = createContext<SearchContextType>({
   query: "",
   setQuery: () => {},
 });
+interface FullscreenContextType {
+  mediaFullscreen: boolean;
+  setMediaFullscreen: (value: boolean) => void;
+}
+
+export const FullscreenContext = createContext<FullscreenContextType>({
+  mediaFullscreen: false,
+  setMediaFullscreen: () => {},
+});
 
 const FeedIcon = ({ className }: { className?: string }) => (
   <img src={feedIconUrl} alt="Feed" className={`${className ?? ""} object-contain`} />
@@ -205,13 +214,15 @@ export function Layout({
     ) : null;
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [mediaFullscreen, setMediaFullscreen] = useState(false);
 
 
   return (
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
+    <FullscreenContext.Provider value={{ mediaFullscreen, setMediaFullscreen }}>
     <div className={`min-h-screen bg-slate-50 text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
 
-      <header className={`sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 ${fullScreenMobile ? "hidden md:block" : ""}`}>
+      <header className={`sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 ${mediaFullscreen ? "hidden" : fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logoUrl} alt="VIP Life logo" className="h-12 w-12 rounded-xl object-contain" />
