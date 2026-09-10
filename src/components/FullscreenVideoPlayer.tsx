@@ -397,7 +397,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     }}
                     src={it.media_url}
                     poster={it.thumbnail_url ?? undefined}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                     loop
                     playsInline
                     muted={muted}
