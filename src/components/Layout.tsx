@@ -453,7 +453,8 @@ export function Layout({
         </div>
       </nav>
       )}
-    </div>
-    </SearchContext.Provider>
+   </div>
+</FullscreenContext.Provider>
+</SearchContext.Provider>
   );
 }
