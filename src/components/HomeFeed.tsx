@@ -17,7 +17,7 @@ import {
   Film,
   Upload,
 } from "lucide-react";
-import { SearchContext } from "@/components/Layout";
+import { SearchContext, FullscreenContext } from "@/components/Layout";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -119,6 +119,7 @@ type MarriageProfile = {
 export function HomeFeed() {
   const { user } = useAuth();
   const { query, setQuery } = useContext(SearchContext);
+  const { setMediaFullscreen } = useContext(FullscreenContext);
   const [posts, setPosts] = useState<Post[]>([]);
   const { profiles, ensureProfiles } = useProfileDirectory();
   const [loading, setLoading] = useState(true);
@@ -571,6 +572,7 @@ export function HomeFeed() {
     Object.values(videoRefs.current).forEach((v) => v?.pause());
     setFsIndex(idx);
     setFsOpen(true);
+    setMediaFullscreen(true);
   };
 
   const fsItems: FsItem[] = mediaPosts.map((p) => ({
@@ -1324,7 +1326,10 @@ export function HomeFeed() {
         <FullscreenVideoPlayer
           items={fsItems}
           startIndex={fsIndex}
-          onClose={() => setFsOpen(false)}
+          onClose={() => {
+         setFsOpen(false);
+        setMediaFullscreen(false);
+        }}
         />
       )}
 
