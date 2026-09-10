@@ -13,6 +13,12 @@ const projectRoot = resolve(__dirname, "..");
 // Run from project root:  npx vite build --config capacitor/vite.config.ts
 export default defineConfig({
   root: __dirname,
+  // Tells the shared root route to skip the <html>/<body> document shell: this
+  // bundle mounts into an existing document (capacitor/index.html).
+  define: {
+    "import.meta.env.VITE_NATIVE_SHELL": JSON.stringify("1"),
+  },
+
   envDir: projectRoot,
   publicDir: resolve(projectRoot, "public"),
   build: {
