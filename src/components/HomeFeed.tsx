@@ -671,7 +671,7 @@ export function HomeFeed() {
   };
 
   return (
-    <section className="mt-6 space-y-4">
+    <section className="mt-0 space-y-4">
       {/* Composer */}
       {user && (
         <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
