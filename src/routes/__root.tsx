@@ -150,6 +150,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  // The Capacitor (Android) build renders this router client-side into #root of
+  // capacitor/index.html, which already has its own <html>/<body>. Rendering the
+  // document shell again makes React adopt the real <html>/<body> as host nodes
+  // *above* its own container, so React's event system walks a container chain
+  // that loops forever (getClosestInstanceFromNode). That is what froze the
+  // WebView on the first text-input focus/selectionchange. Render a passthrough
+  // shell natively instead; the static HTML already provides the document.
+  if (import.meta.env.VITE_NATIVE_SHELL) {
+    return (
+      <>
+        <HeadContent />
+        {children}
+      </>
+    );
+  }
+
   return (
     <html lang="en">
       <head>
@@ -162,6 +178,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
