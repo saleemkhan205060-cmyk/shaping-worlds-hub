@@ -27,6 +27,7 @@ type Item = {
   who: string;
   text: string;
   created_at: string;
+  user_id: string;
 };
 
 type Profile = { id: string; display_name: string | null; username: string | null };
@@ -102,6 +103,7 @@ function NotificationsPage() {
         ...(likesRes.data ?? []).map((r: any) => ({
           id: `l-${r.id}`, kind: "like" as const, who: name(r.user_id),
           text: "liked your post", created_at: r.created_at,
+          user_id: r.user_id,
         })),
         ...(commentsRes.data ?? []).map((r: any) => ({
           id: `c-${r.id}`, kind: "comment" as const, who: name(r.user_id),
@@ -170,7 +172,17 @@ function NotificationsPage() {
           {items.map((n) => {
             const Icon = IconFor(n.kind);
             return (
-              <li key={n.id} className="bg-white rounded-2xl border border-slate-200 p-3 flex items-center gap-3">
+              <li
+            key={n.id}
+           onClick={() => {
+           if (n.kind === "like") {
+           window.location.assign(`/u/${n.user_id}`);
+          }
+           }}
+          className={`bg-white rounded-2xl border border-slate-200 p-3 flex items-center gap-3 ${
+          n.kind === "like" ? "cursor-pointer" : ""
+           }`}
+           >
                 <span className={`h-11 w-11 rounded-full bg-gradient-to-br ${tintFor(n.kind)} text-white flex items-center justify-center shrink-0`}>
                   <Icon className="h-5 w-5" />
                 </span>
