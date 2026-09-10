@@ -7,10 +7,7 @@
 		"androidScheme": "https",
 		"cleartext": false
 	},
-	"android": {
-		"initialFocus": true,
-		"captureInput": true
-	},
+	"android": {},
 	"plugins": {
 		"SplashScreen": {
 			"launchShowDuration": 500,
