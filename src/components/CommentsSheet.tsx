@@ -177,12 +177,6 @@ export function CommentsSheet({
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                submit();
-              }
-            }}
             placeholder={user ? "Write a comment…" : "Sign in to comment"}
             disabled={!user || busy}
             className="flex-1 h-10 px-4 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-60"
