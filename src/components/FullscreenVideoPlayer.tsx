@@ -370,7 +370,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-x-0 top-0 bottom-[76px] z-[20] bg-black">
+    <div className="fixed inset-x-0 top-0 bottom-[68px] z-[20] bg-black">
       <div
         ref={containerRef}
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
