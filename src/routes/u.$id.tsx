@@ -464,7 +464,19 @@ function UserProfile() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
+                <div className="flex items-center gap-1">
+          <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
+
+          {isSelf && (
+          <button
+            type="button"
+      className="text-slate-500 hover:text-slate-800"
+      aria-label="Change name"
+    >
+      <span className="text-sm">⌄</span>
+    </button>
+  )}
+</div>
                 <CheckCircle2 className="h-5 w-5 text-sky-500 fill-sky-500" />
                 {!isSelf && (
                   <button
