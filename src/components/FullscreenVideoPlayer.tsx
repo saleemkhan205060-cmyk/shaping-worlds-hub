@@ -386,7 +386,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
             <div
               key={it.id}
               data-id={it.id}
-              className={`relative h-full w-full snap-start snap-always flex items-center justify-center bg-black ${i > 0 ? "border-t-[6px] border-white/10" : ""}`}
+              className="relative h-full w-full snap-start snap-always flex items-center justify-center bg-black"
               style={{ height: "100dvh" }}
             >
               <MediaActions
