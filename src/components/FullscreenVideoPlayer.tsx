@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { FullscreenContext } from "@/components/Layout";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import {
@@ -57,6 +58,13 @@ type Props = {
 export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
+  const { setMediaFullscreen } = useContext(FullscreenContext);
+
+  // Hide the app header while fullscreen media is open; restore on close.
+  useEffect(() => {
+    setMediaFullscreen(true);
+    return () => setMediaFullscreen(false);
+  }, [setMediaFullscreen]);
   const initialActiveId = items[startIndex]?.id ?? "";
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});

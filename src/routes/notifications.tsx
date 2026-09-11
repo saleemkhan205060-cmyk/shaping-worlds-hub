@@ -108,10 +108,12 @@ function NotificationsPage() {
         ...(commentsRes.data ?? []).map((r: any) => ({
           id: `c-${r.id}`, kind: "comment" as const, who: name(r.user_id),
           text: `commented: ${r.content.slice(0, 80)}`, created_at: r.created_at,
+          user_id: r.user_id,
         })),
         ...(followsRes.data ?? []).map((r: any) => ({
           id: `f-${r.id}`, kind: "follow" as const, who: name(r.follower_id),
           text: "started following you", created_at: r.created_at,
+          user_id: r.follower_id,
         })),
       ].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
 
