@@ -132,8 +132,8 @@ function NotificationsPage() {
 
   return (
     <Layout>
-     <div className="mb-4 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3 -ml-2">
+     <div className="mb-4 flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2 -ml-2">
         <Link to="/" className="h-10 w-10 rounded-full bg-[#057543] border border-slate-200 flex items-center justify-center shadow-sm">
           <ArrowLeft className="h-5 w-5 text-white" />
         </Link>
