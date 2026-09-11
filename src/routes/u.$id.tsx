@@ -41,6 +41,8 @@ function UserProfile() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("Posts");
   const [profile, setProfile] = useState<ProfileRow | null>(null);
+  const [nameEditorOpen, setNameEditorOpen] = useState(false);
+  const [newName, setNewName] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [fsOpen, setFsOpen] = useState(false);
@@ -390,6 +392,54 @@ function UserProfile() {
 
   return (
     <Layout>
+      { nameEditorOpen && (
+  <div className="fixed inset-0 z-[600] bg-black/50 flex items-center justify-center p-4">
+    <div className="w-full max-w-sm bg-white rounded-2xl p-5">
+      <h2 className="text-lg font-bold mb-4">Change name</h2>
+
+      <input
+        value={newName}
+        onChange={(e) => setNewName(e.target.value)}
+        className="w-full border rounded-xl px-3 py-2"
+        placeholder="Enter your name"
+      />
+
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          type="button"
+          onClick={() => setNameEditorOpen(false)}
+          className="px-4 py-2 rounded-xl bg-slate-100"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="px-4 py-2 rounded-xl bg-[#057643] text-white"
+          onClick={async () => {
+  const trimmedName = newName.trim();
+  if (!trimmedName || !user) return;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ display_name: trimmedName })
+    .eq("id", user.id);
+
+  if (error) return;
+
+  setProfile((prev) =>
+    prev ? { ...prev, display_name: trimmedName } : prev
+  );
+
+  setNameEditorOpen(false);
+}}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       <div className="mb-3">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-indigo-600">
           <ArrowLeft className="h-4 w-4" /> Back
@@ -471,8 +521,9 @@ function UserProfile() {
     <button
       type="button"
       onClick={() => {
-        // Name change popup next step mein add hoga
-      }}
+      setNewName(displayName);
+     setNameEditorOpen(true);
+     }}
       className="ml-1 flex h-7 w-7 items-center justify-center rounded-full hover:bg-slate-100"
       aria-label="Change name"
     >
