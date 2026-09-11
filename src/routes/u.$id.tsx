@@ -465,19 +465,21 @@ function UserProfile() {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
-          <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
+  <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
 
-          {isSelf && (
-          <button
-            type="button"
-      className="text-slate-500 hover:text-slate-800"
+  {isSelf && (
+    <button
+      type="button"
+      onClick={() => {
+        // Name change popup next step mein add hoga
+      }}
+      className="ml-1 flex h-7 w-7 items-center justify-center rounded-full hover:bg-slate-100"
       aria-label="Change name"
     >
-      <span className="text-sm">⌄</span>
+      <span className="text-xl font-bold leading-none text-slate-600">⌄</span>
     </button>
   )}
 </div>
-                <CheckCircle2 className="h-5 w-5 text-sky-500 fill-sky-500" />
                 {!isSelf && (
                   <button
                     onClick={() => navigate({ to: "/messages", search: { to: id } })}
