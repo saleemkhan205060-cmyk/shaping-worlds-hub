@@ -134,14 +134,14 @@ function NotificationsPage() {
     <Layout>
      <div className="mb-4 flex items-center justify-between gap-3">
       <div className="flex items-center gap-3 -ml-2">
-        <Link to="/" className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+        <Link to="/" className="h-10 w-10 rounded-full bg-[#057543] border border-slate-200 flex items-center justify-center shadow-sm">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex items-center gap-2">
-          <span className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center text-white shadow">
+          <span className="h-9 w-9 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center text-white shadow">
             <Bell className="h-5 w-5" />
           </span>
-          <h1 className="text-2xl font-extrabold">Notifications</h1>
+         <h1 className="text-xl font-extrabold">Notifications</h1>
         </div>
       </div>
 
