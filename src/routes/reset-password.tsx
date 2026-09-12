@@ -75,7 +75,7 @@ function ResetPasswordPage() {
   const verifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = code.replace(/\D/g, "");
-    if (token.length < 6) {
+    if (token.length < 8) {
       toast.error("Please enter the 6-digit code from your email");
       return;
     }
@@ -168,11 +168,11 @@ function ResetPasswordPage() {
             <input
               inputMode="numeric"
               autoComplete="one-time-code"
-              maxLength={6}
+              maxLength={8}
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              placeholder="6-digit code"
+              placeholder="8-digit code"
               className={`${inputClass} text-center text-lg tracking-[0.5em] font-semibold`}
             />
             <button type="submit" disabled={busy} className={buttonClass}>
