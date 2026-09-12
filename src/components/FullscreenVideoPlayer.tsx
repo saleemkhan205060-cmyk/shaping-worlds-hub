@@ -474,33 +474,31 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   className="h-12 w-12 flex flex-col items-center justify-center text-white active:scale-95 transition"
   aria-label="Share"
 >
-  <svg
-    viewBox="0 0 48 48"
-    className="h-9 w-9"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-  >
-   <path
-  d="M8 36C8 21 17 11 31 11H38"
-  stroke="currentColor"
-  strokeWidth="2"
-  strokeLinecap="round"
-  strokeLinejoin="round"
-/>
-<path
-  d="M29 4L38 11L29 18"
-  stroke="currentColor"
-  strokeWidth="2"
-  strokeLinecap="round"
-  strokeLinejoin="round"
-/>
+<svg
+  viewBox="0 0 64 64"
+  className="h-14 w-14"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <path
+    d="M38 8L57 25L38 42V33H30C19 33 11 38 7 47C8 32 17 20 30 20H38V8Z"
+    stroke="white"
+    strokeWidth="4.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
 </svg>
-                
-  <span className="mt-1 text-base font-semibold leading-none">
-    Share
-  </span>
-</button>
+
+<span
+  className="mt-1 text-[25px] font-bold leading-none text-white"
+  style={{
+    textShadow: "0 2px 4px rgba(0,0,0,0.9)"
+  }}
+>
+   Share
+</span>
+             </button>
                 {it.user_id && (
                   <Link
                     to="/u/$id"
