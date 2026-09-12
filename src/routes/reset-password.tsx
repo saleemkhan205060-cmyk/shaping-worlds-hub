@@ -76,7 +76,7 @@ function ResetPasswordPage() {
     e.preventDefault();
     const token = code.replace(/\D/g, "");
     if (token.length < 8) {
-      toast.error("Please enter the 6-digit code from your email");
+      toast.error("Please enter the 8-digit code from your email");
       return;
     }
     setBusy(true);
@@ -141,7 +141,7 @@ function ResetPasswordPage() {
           {step === "email"
             ? "Enter your email and we'll send you a verification code."
             : step === "code"
-              ? `We sent a 6-digit code to ${email}`
+              ? `We sent an 8-digit code to ${email}`
               : "Choose a new password for your account."}
         </p>
 
