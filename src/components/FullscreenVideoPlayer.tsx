@@ -381,7 +381,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   className="fixed top-4 left-3 z-30 h-10 w-10 rounded-full flex items-center justify-center text-white active:scale-95"
   aria-label="Back"
 >
-  <span className="text-2xl">←</span>
+  <span className="text-4xl">←</span>
 </button>
         {items.map((it, i) => {
           const isActive = it.id === activeId;
@@ -468,6 +468,39 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   label={comments > 0 ? String(comments) : "Chat"}
                   onClick={() => setCommentsOpenFor(it.id)}
                 />
+                <button
+  type="button"
+  onClick={() => openShareSheet(it)}
+  className="h-12 w-12 flex flex-col items-center justify-center text-white active:scale-95 transition"
+  aria-label="Share"
+>
+  <svg
+    viewBox="0 0 48 48"
+    className="h-9 w-9"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      d="M9 36C9 22 17 12 31 12H37"
+      stroke="currentColor"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M28 5L37 12L28 19"
+      stroke="currentColor"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+
+  <span className="mt-1 text-base font-semibold leading-none">
+    Share
+  </span>
+</button>
                 {it.user_id && (
                   <Link
                     to="/u/$id"
@@ -509,12 +542,6 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setMoreOpenFor(null)} />
                       <div className="absolute right-0 mt-1 min-w-[140px] bg-black/80 backdrop-blur-md rounded-xl py-1 z-20 shadow-xl">
-                        <button
-                          onClick={() => openShareSheet(it)}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
-                        >
-                          <Share2 className="h-5 w-5" /> Share
-                        </button>
                         {it.media_type === "video" && (
                           <button
                             onClick={() => {
