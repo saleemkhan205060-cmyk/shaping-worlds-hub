@@ -376,6 +376,13 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
         style={{ scrollbarWidth: "none" }}
       >
+        <button
+  onClick={handleClose}
+  className="fixed top-4 left-3 z-30 h-10 w-10 rounded-full flex items-center justify-center text-white active:scale-95"
+  aria-label="Back"
+>
+  <span className="text-2xl">←</span>
+</button>
         {items.map((it, i) => {
           const isActive = it.id === activeId;
           const shouldMountMedia = Math.abs(i - activeIndex) <= 1;
