@@ -476,7 +476,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 >
 <svg
   viewBox="0 0 64 64"
-  className="h-14 w-14"
+  className="h-17 w-17"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
@@ -491,7 +491,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 </svg>
 
 <span
-  className="mt-1 text-[25px] font-bold leading-none text-white"
+  className="mt-1 text-[26px] font-bold leading-none text-white"
   style={{
     textShadow: "0 2px 4px rgba(0,0,0,0.9)"
   }}
