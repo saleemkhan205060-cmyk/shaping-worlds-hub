@@ -438,22 +438,23 @@ export function Layout({
             Upload
           </Link>
           {/* Inbox button */}
-      <Link
-  to={user ? "/messages" : "/auth"}
-  search={{ to: undefined }}
-  aria-label="Inbox"
-  className="col-start-3 row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
->
-  <span className="relative h-8 w-8 flex items-center justify-center mb-1">
-    <MessageSquare className="h-7 w-7" strokeWidth={2} />
-    {user && <Badge n={unreadMsgs} />}
-  </span>
-  Inbox
-</Link>
+          <Link
+            to={user ? "/messages" : "/auth"}
+            search={{ to: undefined }}
+            aria-label="Inbox"
+            className="col-start-3 row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
+          >
+            <span className="relative h-8 w-8 flex items-center justify-center mb-1">
+              <MessageSquare className="h-7 w-7" strokeWidth={2} />
+              {user && <Badge n={unreadMsgs} />}
+            </span>
+            Inbox
+          </Link>
         </div>
       </nav>
-   </div>
-</FullscreenContext.Provider>
-</SearchContext.Provider>
+    )}
+    </div>
+    </FullscreenContext.Provider>
+    </SearchContext.Provider>
   );
 }
