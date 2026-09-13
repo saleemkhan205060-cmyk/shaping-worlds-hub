@@ -59,6 +59,8 @@ type Props = {
 export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
+  const [followedUsers, setFollowedUsers] = useState<Record<string, boolean>>({});
+  const [showFollowed, setShowFollowed] = useState<Record<string, boolean>>({});
   const { setMediaFullscreen } = useContext(FullscreenContext);
 
   // Hide the app header while fullscreen media is open; restore on close.
@@ -343,6 +345,12 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
     }
 
     toast.success("Following");
+setFollowedUsers((prev) => ({ ...prev, [followingId]: true }));
+setShowFollowed((prev) => ({ ...prev, [followingId]: true }));
+
+setTimeout(() => {
+  setShowFollowed((prev) => ({ ...prev, [followingId]: false }));
+}, 1000);
   };
   const openShareSheet = (it: FsItem) => {
     const url = it.user_id ? buildShareUrl(`/u/${it.user_id}`) : buildShareUrl("/");
@@ -531,7 +539,8 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                   <Link
                     to="/u/$id"
                     params={{ id: it.user_id }}
-                    className="flex items-center justify-center"
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative flex items-center justify-center z-20"
                     aria-label="View profile"
                   >
                     <span className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
@@ -551,18 +560,26 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
                       />
                     </span>
                   </Link>
-                 <button
-              type="button"
-            onClick={() => followUser(it.user_id!)}
-          className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90"
-         aria-label="Follow"
-         >
-             <Plus className="h-3.5 w-3.5" strokeWidth={3} />
-            </button>
+               {showFollowed[it.user_id] ? (
+             <span
+          className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white"
+       aria-label="Followed"
+    >
+    ✓
+  </span>
+) : !followedUsers[it.user_id] ? (
+  <button
+    type="button"
+    onClick={() => followUser(it.user_id!)}
+    className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90"
+    aria-label="Follow"
+    >
+      <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+        </button>
+          ) : null}
                  </div>
                 )}
               </div>
-
 
               {isActive && (
                 <div className="absolute top-4 right-3 z-20">
