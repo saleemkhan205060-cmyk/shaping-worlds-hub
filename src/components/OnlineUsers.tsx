@@ -83,7 +83,9 @@ export function OnlineUsers() {
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           <span className={`h-2.5 w-2.5 rounded-full ${STATUS_META[myStatus].dot} shadow-[0_0_0_3px_rgba(16,185,129,0.18)]`} />
-          <h2 className="font-bold text-slate-800 text-sm sm:text-base">Online Users</h2>
+          <h2 className="font-bold text-slate-800 text-sm sm:text-base">
+          Online Users ({onlineIds.length})
+         </h2>
         </div>
         <Link to="/search" search={{ q: "", tab: "people" }} className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-700 flex items-center gap-0.5">
           See All <span aria-hidden>›</span>
