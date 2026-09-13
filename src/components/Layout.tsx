@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
-import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search, Plus } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search, Plus, MessageSquare } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -437,26 +437,15 @@ export function Layout({
             </span>
             Upload
           </Link>
-           {/* Inbox button */}
-<Link
+          {/* Inbox button */}
+      <Link
   to={user ? "/messages" : "/auth"}
   search={{ to: undefined }}
   aria-label="Inbox"
   className="col-start-3 row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
 >
   <span className="relative h-8 w-8 flex items-center justify-center mb-1">
-    <svg
-      viewBox="0 0 24 24"
-      className="h-7 w-7"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8A2.5 2.5 0 0 1 17.5 17H9l-5 3v-13.5Z" />
-      <path d="M9 10.5h6" />
-    </svg>
+    <MessageSquare className="h-7 w-7" strokeWidth={2} />
     {user && <Badge n={unreadMsgs} />}
   </span>
   Inbox
