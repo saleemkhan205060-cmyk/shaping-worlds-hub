@@ -535,7 +535,7 @@ setTimeout(() => {
 </span>
              </button>
                 {it.user_id && (
-               <div className="relative">
+               <div className="relative h-10 w-10">
                   <Link
                     to="/u/$id"
                     params={{ id: it.user_id }}
