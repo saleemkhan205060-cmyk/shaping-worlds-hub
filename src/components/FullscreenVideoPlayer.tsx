@@ -571,7 +571,7 @@ setTimeout(() => {
   <button
     type="button"
     onClick={() => followUser(it.user_id!)}
-    className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90"
+    className="absolute -right-1 bottom-1 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90"
     aria-label="Follow"
     >
       <Plus className="h-3.5 w-3.5" strokeWidth={3} />
