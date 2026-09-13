@@ -283,19 +283,6 @@ export function Layout({
               <Bell className="h-7 w-7" />
               <Badge n={unreadNotifs} />
             </Link>
-            {mounted && user && (
-              <>
-                <Link
-                  to="/messages"
-                  search={{ to: undefined }}
-                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center"
-                  aria-label="Messages"
-                >
-                  <img src={chatIconUrl} alt="Chat" className="h-10 w-10 object-contain" />
-                  <Badge n={unreadMsgs} />
-                </Link>
-              </>
-            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -375,7 +362,7 @@ export function Layout({
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="relative grid grid-cols-3 items-end">
+        <div className="relative grid grid-cols-4 items-end">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
             const active = item.to === "/u/$id"
@@ -384,7 +371,7 @@ export function Layout({
             const isHome = item.to === "/";
             const showSpinner = isHome && homeReloading;
             // Insert the + button visually in the middle column by ordering
-            const colClass = idx === 0 ? "col-start-1" : "col-start-3";
+            const colClass = idx === 0 ? "col-start-1" : "col-start-4";
             return (
               <Link
                 key={item.to}
@@ -450,6 +437,32 @@ export function Layout({
             </span>
             Upload
           </Link>
+           {/* Inbox button */}
+        {mounted && user && (
+       <Link
+      to="/messages"
+    search={{ to: undefined }}
+    aria-label="Inbox"
+    className="col-start-3 row-start-1 flex flex-col items-center justify-end py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
+  >
+    <span className="relative h-8 w-8 flex items-center justify-center mb-1">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-7 w-7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8A2.5 2.5 0 0 1 17.5 17H9l-5 3v-13.5Z" />
+        <path d="M9 10.5h6" />
+      </svg>
+      <Badge n={unreadMsgs} />
+    </span>
+    Inbox
+  </Link>
+)}
         </div>
       </nav>
       )}
