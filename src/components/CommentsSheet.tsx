@@ -185,7 +185,7 @@ export function CommentsSheet({
            }}
             placeholder={user ? "Write a comment…" : "Sign in to comment"}
             disabled={!user || busy}
-            className="flex-1 h-10 px-4 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-60"
+            className="flex-1 h-10 px-4 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-60 relative z-[10000]"
           />
           <button
             onClick={submit}
