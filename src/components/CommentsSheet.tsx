@@ -134,7 +134,7 @@ export function CommentsSheet({
     setText("");
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={handleClose}>
       <div
         className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col"
@@ -197,6 +197,7 @@ export function CommentsSheet({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
