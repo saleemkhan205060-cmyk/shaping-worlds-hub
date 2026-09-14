@@ -36,8 +36,8 @@ android {
         applicationId "app.lovable.vip_life.twa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 53
-        versionName "1.0.48"
+        versionCode 54
+        versionName "1.0.49"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
