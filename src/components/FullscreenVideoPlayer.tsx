@@ -344,7 +344,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
       return;
     }
 
-    toast.success("Following");
+    toast.success("Following", { style: { width: "120px", minWidth: "0" } });
 setFollowedUsers((prev) => ({ ...prev, [followingId]: true }));
 setShowFollowed((prev) => ({ ...prev, [followingId]: true }));
 
