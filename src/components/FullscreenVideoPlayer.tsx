@@ -60,6 +60,25 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
   const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
   const [followedUsers, setFollowedUsers] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+  if (!user) return;
+
+  const loadFollowedUsers = async () => {
+    const { data } = await supabase
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", user.id);
+
+    const followed: Record<string, boolean> = {};
+    (data ?? []).forEach((row) => {
+      followed[row.following_id] = true;
+    });
+
+    setFollowedUsers(followed);
+  };
+
+  loadFollowedUsers();
+}, [user]);
   const [showFollowed, setShowFollowed] = useState<Record<string, boolean>>({});
   const { setMediaFullscreen } = useContext(FullscreenContext);
 
