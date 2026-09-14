@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { X, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -133,7 +134,7 @@ export function CommentsSheet({
     setText("");
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center sm:justify-center bg-black/50" onClick={handleClose}>
       <div
         className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col"
@@ -196,6 +197,7 @@ export function CommentsSheet({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
