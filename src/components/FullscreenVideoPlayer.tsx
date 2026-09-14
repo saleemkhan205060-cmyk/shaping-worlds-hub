@@ -337,14 +337,14 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
     if (error) {
       if (error.code === "23505") {
-        toast.info("Already following", { style: { width: "120px", minWidth: "0" } });
+        toast.info("Already following", { style: { width: "120px", minWidth: "0", height: "auto", padding: "6px 12px" } });
       } else {
         toast.error("Couldn't follow");
       }
       return;
     }
 
-    toast.success("Following", { style: { width: "120px", minWidth: "0" } });
+    toast.success("Following", { style: { width: "120px", minWidth: "0", height: "auto", padding: "6px 12px" } });
 setFollowedUsers((prev) => ({ ...prev, [followingId]: true }));
 setShowFollowed((prev) => ({ ...prev, [followingId]: true }));
 
