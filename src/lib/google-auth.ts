@@ -458,10 +458,10 @@ export async function signInWithGoogle(options: GoogleSignInOptions = {}) {
     return await signInWithBrowserGoogle(options);
   }
 
-  try {
-    return await signInWithBrowserGoogle(options);
-  } catch (error) {
-    logGoogleAuthError("browser Google sign-in", error);
+    try {
+    return await signInWithNativeGoogle();
+   } catch (error) {
+    logGoogleAuthError("native Google sign-in", error);
 
     const detail = describeGoogleAuthError(error);
 
