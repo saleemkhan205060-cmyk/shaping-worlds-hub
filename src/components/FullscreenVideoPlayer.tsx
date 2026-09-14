@@ -561,22 +561,22 @@ setTimeout(() => {
                     </span>
                   </Link>
                {showFollowed[it.user_id] ? (
-             <span
-          className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white"
-       aria-label="Followed"
-    >
+            <span
+       className="absolute right-0 -bottom-1 z-50 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white animate-in fade-in zoom-in duration-300"
+    aria-label="Followed"
+  >
     ✓
   </span>
 ) : !followedUsers[it.user_id] ? (
   <button
     type="button"
     onClick={() => followUser(it.user_id!)}
-    className="absolute right-0 -bottom-1 z-50 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90"
-    aria-label="Follow"
-    >
-      <Plus className="h-3.5 w-3.5" strokeWidth={3} />
-        </button>
-          ) : null}
+    className="absolute right-0 -bottom-1 z-50 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90 transition-all duration-300"
+      aria-label="Follow"
+      >
+         <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+          </button>
+           ) : null}
                  </div>
                 )}
               </div>
