@@ -337,7 +337,7 @@ export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
 
     if (error) {
       if (error.code === "23505") {
-        toast.info("Already following");
+        toast.info("Already following", { style: { width: "120px", minWidth: "0" } });
       } else {
         toast.error("Couldn't follow");
       }
