@@ -1165,7 +1165,7 @@ export function HomeFeed() {
                       <img
                         src={p.media_url}
                         alt={p.caption ?? "Post"}
-                        className="w-full aspect-[9/16] max-w-[420px] mx-auto object-cover bg-slate-100"
+                        className="w-full aspect-[4/5] max-w-[420px] mx-auto object-cover bg-slate-100"
                         loading="lazy"
                       />
                       <span className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
@@ -1183,7 +1183,7 @@ export function HomeFeed() {
                     onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
                   >
                   <div
-                    className="relative bg-black aspect-[9/16] max-w-[420px] mx-auto"
+                    className="relative bg-black aspect-[4/5] max-w-[420px] mx-auto"
                     data-postid={p.id}
                     ref={(el) => {
                       videoWrapRefs.current[p.id] = el;
