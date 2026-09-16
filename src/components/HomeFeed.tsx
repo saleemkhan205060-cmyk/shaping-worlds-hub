@@ -1300,7 +1300,7 @@ export function HomeFeed() {
                   {hasMedia && (
                     <button
                       onClick={() => openFullscreen(p.id)}
-                      className="ml-auto flex items-center hover:text-indigo-600"
+                      className="ml-auto flex items-center hover:text-indigo-600 lg:hidden"
                       aria-label="Open fullscreen"
                     >
                       <Maximize2 className="h-4 w-4" />
