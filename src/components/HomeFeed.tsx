@@ -1183,7 +1183,7 @@ export function HomeFeed() {
                     onDeleted={(id) => setPosts((prev) => prev.filter((x) => x.id !== id))}
                   >
                   <div
-                    className="relative bg-black aspect-[4/5]"
+                    className="relative bg-black aspect-[9/16] max-w-[420px] mx-auto"
                     data-postid={p.id}
                     ref={(el) => {
                       videoWrapRefs.current[p.id] = el;
