@@ -59,6 +59,8 @@ function UserProfile() {
   const [followingLoading, setFollowingLoading] = useState(false);
   const [followingUsers, setFollowingUsers] = useState<Set<string>>(new Set());
   const [followBackBusy, setFollowBackBusy] = useState<string | null>(null);
+  const [followingActionBusy, setFollowingActionBusy] = useState<string | null>(null);
+  const [followingStatus, setFollowingStatus] = useState<Set<string>>(new Set());
   const [isFollowing, setIsFollowing] = useState(false);
   const [followBusy, setFollowBusy] = useState(false);
 
@@ -272,7 +274,7 @@ function UserProfile() {
         .in("id", followingIds);
 
       if (profilesError) throw profilesError;
-
+      setFollowingStatus(new Set(followingIds));
       setFollowing((profilesData ?? []) as ProfileRow[]);
     } catch (error) {
       console.error("Following load error:", error);
@@ -829,6 +831,70 @@ function UserProfile() {
                       </p>
                     )}
                   </div>
+                  <button
+  type="button"
+  onClick={async (e) => {
+  e.stopPropagation();
+
+  if (!user || followingActionBusy === person.id) return;
+
+  setFollowingActionBusy(person.id);
+
+  const isCurrentlyFollowing = followingStatus.has(person.id);
+
+  if (isCurrentlyFollowing) {
+    const { error } = await supabase
+      .from("follows")
+      .delete()
+      .eq("follower_id", user.id)
+      .eq("following_id", person.id);
+
+    if (error) {
+      console.error("Unfollow error:", error);
+      toast.error("Couldn't unfollow. Please try again.");
+    } else {
+      setFollowingStatus((prev) => {
+        const next = new Set(prev);
+        next.delete(person.id);
+        return next;
+      });
+
+      toast.success("Unfollowed");
+    }
+  } else {
+    const { error } = await supabase
+      .from("follows")
+      .insert({
+        follower_id: user.id,
+        following_id: person.id,
+      });
+
+    if (error) {
+      console.error("Follow error:", error);
+      toast.error("Couldn't follow. Please try again.");
+    } else {
+      setFollowingStatus((prev) => {
+        const next = new Set(prev);
+        next.add(person.id);
+        return next;
+      });
+
+      toast.success("Following");
+    }
+  }
+
+  setFollowingActionBusy(null);
+}}
+ className="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"
+>
+  {followingActionBusy === person.id ? (
+    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+  ) : followingStatus.has(person.id) ? (
+    "Following"
+  ) : (
+    "Follow"
+  )}
+</button>
                 </div>
               );
             })}
