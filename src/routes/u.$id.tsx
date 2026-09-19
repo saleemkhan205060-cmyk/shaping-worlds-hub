@@ -822,7 +822,7 @@ function UserProfile() {
                     </div>
                   )}
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="font-semibold truncate">{name}</p>
 
                     {person.username && (
