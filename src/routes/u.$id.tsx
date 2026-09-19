@@ -665,11 +665,12 @@ function UserProfile() {
                         <div className="min-w-0 flex-1">
                           <p className="font-semibold truncate">{name}</p>
 
-                          {follower.username && (
+                         {follower.username && (
   <p className="text-sm text-slate-500 truncate">
     @{follower.username}
   </p>
 )}
+</div>
 
 <button
   type="button"
