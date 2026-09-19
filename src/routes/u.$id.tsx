@@ -711,12 +711,11 @@ function UserProfile() {
       : "bg-indigo-600 text-white"
   }`}
 >
-  {followingUsers.has(follower.id) ? "Following" : "Follow back"}
+   {followingUsers.has(follower.id) ? "Following" : "Follow back"}
 </button>
-                        </div>
                     </div>
-                    );
-                  })}
+                  );
+                })}
                 </div>
               )}
             </div>
