@@ -96,29 +96,30 @@ function MarriagePage() {
 
   return (
     <Layout>
+      <div className="min-h-screen bg-[#003D25]">
       <div className="mb-4 flex items-center gap-3">
         {selected ? (
           <button
             onClick={() => setSelectedId(null)}
-            className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm"
+            className="h-10 w-10 rounded-full bg-[#005A35] border border-[#19D66B] text-white flex items-center justify-center shadow-sm"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
         ) : (
-          <Link to="/" className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+           <Link to="/" className="h-10 w-10 rounded-full bg-[#005A35] border border-[#19D66B] text-white flex items-center justify-center shadow-sm">
             <ArrowLeft className="h-5 w-5" />
           </Link>
         )}
         <div className="flex items-center gap-2 flex-1">
-          <span className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow">
+          <span className="h-10 w-10 rounded-full bg-[#00C853] flex items-center justify-center text-white shadow">
             <Gem className="h-5 w-5" />
           </span>
-          <h1 className="text-2xl font-extrabold">Marriage</h1>
+          <h1 className="text-2xl font-extrabold text-white">Marriage</h1>
         </div>
         {!selected && (
           <Link
             to="/marriage/edit"
-            className="inline-flex items-center gap-1.5 px-4 h-10 rounded-full bg-pink-600 text-white text-sm font-semibold hover:bg-pink-700"
+            className="inline-flex items-center gap-1.5 px-4 h-10 rounded-full bg-[#00C853] text-white text-sm font-semibold hover:bg-[#19D66B]"
           >
             <Pencil className="h-4 w-4" />
             {hasOwn ? "Edit" : "Create"}
@@ -128,27 +129,27 @@ function MarriagePage() {
 
       {!selected && (
         <div className="relative mb-5">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#7CFF3B]" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             type="search"
             placeholder="Search by name, country, profession…"
-            className="w-full h-12 pl-11 pr-4 rounded-full bg-slate-100 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            className="w-full h-12 pl-11 pr-4 rounded-full bg-[#005A35] border border-[#19D66B] text-white placeholder:text-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-[#7CFF3B]"
           />
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center py-16 text-slate-400">
+        <div className="flex justify-center py-16 text-[#7CFF3B]">
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
       ) : selected ? (
         <DetailCard card={selected} isSelf={user?.id === selected.user_id} onMessage={() => openChat(selected.user_id)} />
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-slate-500">
+        <div className="text-center py-16 text-white/80">
           <p className="font-semibold">No marriage profiles yet.</p>
-          <p className="text-sm mt-1">Be the first — create your profile.</p>
+          <p className="text-sm mt-1 text-white/70">Be the first — create your profile.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3">
@@ -158,9 +159,9 @@ function MarriagePage() {
               <button
                 key={c.user_id}
                 onClick={() => setSelectedId(c.user_id)}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition text-left"
+                className="bg-[#005A35] rounded-2xl border border-[#19D66B] overflow-hidden shadow-sm hover:shadow-md transition text-left"
               >
-                <div className="aspect-square w-full bg-slate-100">
+                <div className="aspect-square w-full bg-[#005A35]">
                   {c.profile?.avatar_url ? (
                     <img
                       src={c.profile.avatar_url}
@@ -169,25 +170,26 @@ function MarriagePage() {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="h-full w-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-4xl font-bold">
+                    <div className="h-full w-full bg-[#00C853] flex items-center justify-center text-white text-4xl font-bold">
                       {name[0]?.toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div className="p-3">
-                  <p className="font-bold text-sm truncate">
+                  <p className="font-bold text-sm truncate text-white">
                     {name}
                     {c.age ? ` • ${c.age}` : ""}
                   </p>
                   {c.country && (
-                    <p className="text-xs text-pink-600 truncate mt-0.5">{c.country}</p>
+                    <p className="text-xs text-[#7CFF3B] truncate mt-0.5">{c.country}</p>
                   )}
                 </div>
               </button>
             );
           })}
         </div>
-      )}
+     )}
+     </div>
     </Layout>
   );
 }
@@ -195,7 +197,7 @@ function MarriagePage() {
 function DetailCard({ card: c, isSelf, onMessage }: { card: Card; isSelf: boolean; onMessage: () => void }) {
   const name = c.profile?.display_name ?? c.profile?.username ?? "User";
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+    <div className="bg-[#005A35] rounded-2xl border border-[#19D66B] overflow-hidden shadow-sm flex flex-col">
       <div className="p-5 flex items-center gap-4">
         {c.profile?.avatar_url ? (
           <img
@@ -210,12 +212,12 @@ function DetailCard({ card: c, isSelf, onMessage }: { card: Card; isSelf: boolea
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="font-bold text-lg truncate">
+          <p className="font-bold text-lg truncate text-white">
             {name}
             {c.age ? `, ${c.age}` : ""}
           </p>
           {c.country && (
-            <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+            <p className="text-xs text-white/80 flex items-center gap-1 mt-0.5">
               <MapPin className="h-3 w-3" />
               {c.country}
             </p>
@@ -235,20 +237,20 @@ function DetailCard({ card: c, isSelf, onMessage }: { card: Card; isSelf: boolea
         )}
       </div>
 
-      {c.about && <p className="px-5 pb-4 text-sm text-slate-600 whitespace-pre-wrap">{c.about}</p>}
+      {c.about && <p className="px-5 pb-4 text-sm text-white/90 whitespace-pre-wrap">{c.about}</p>}
 
       <div className="mt-auto border-t border-slate-100 p-3 flex gap-2">
         <Link
           to="/u/$id"
           params={{ id: c.user_id }}
-          className="flex-1 h-10 rounded-full border border-slate-200 text-sm font-semibold inline-flex items-center justify-center hover:bg-slate-50"
+          className="flex-1 h-10 rounded-full border border-[#19D66B] text-white text-sm font-semibold inline-flex items-center justify-center hover:bg-[#00C853]"
         >
           View Profile
         </Link>
         {!isSelf && (
           <button
             onClick={onMessage}
-            className="flex-1 h-10 rounded-full bg-pink-600 text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5 hover:bg-pink-700"
+            className="flex-1 h-10 rounded-full bg-[#00C853] text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5 hover:bg-[#19D66B]"
           >
             <MessageCircle className="h-4 w-4" />
             Message
@@ -261,7 +263,7 @@ function DetailCard({ card: c, isSelf, onMessage }: { card: Card; isSelf: boolea
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="px-2.5 py-1 rounded-full bg-pink-50 text-pink-700 border border-pink-100">
+    <span className="px-2.5 py-1 rounded-full bg-[#00C853] text-white border border-[#19D66B]">
       {children}
     </span>
   );
