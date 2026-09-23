@@ -64,9 +64,31 @@ function MarriagePage() {
   const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [interestCount, setInterestCount] = useState(0);
+  const [interestOpen, setInterestOpen] = useState(false);
   useEffect(() => {
-    let alive = true;
-    void (async () => {
+  if (!user) {
+    setInterestCount(0);
+    return;
+  }
+
+  const loadInterestCount = async () => {
+    const { count, error } = await supabase
+      .from("marriage_interests" as never)
+      .select("id", { count: "exact", head: true })
+      .eq("target_user_id", user.id);
+
+    if (!error) {
+      setInterestCount(count ?? 0);
+    }
+  };
+
+  void loadInterestCount();
+}, [user]);
+
+useEffect(() => {
+  let alive = true;
+  void (async () => {
       setLoading(true);
       const { data: mp } = await supabase
         .from("marriage_profiles")
