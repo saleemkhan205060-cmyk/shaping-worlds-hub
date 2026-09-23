@@ -356,7 +356,7 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
 
 {card.marital_status && (
   <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
-    <Ring className="h-3.5 w-3.5 shrink-0" />
+    <HeartHandshake className="h-3.5 w-3.5 shrink-0" />
     <span>{card.marital_status}</span>
   </p>
 )}
