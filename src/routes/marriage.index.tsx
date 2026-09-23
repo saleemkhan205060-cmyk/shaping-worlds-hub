@@ -66,6 +66,7 @@ function MarriagePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [interestCount, setInterestCount] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
+  const [interestedUsers, setInterestedUsers] = useState<Profile[]>([]);
   useEffect(() => {
   if (!user) {
     setInterestCount(0);
@@ -73,15 +74,53 @@ function MarriagePage() {
   }
 
   const loadInterestCount = async () => {
-    const { count, error } = await supabase
-      .from("marriage_interests" as never)
-      .select("id", { count: "exact", head: true })
-      .eq("target_user_id", user.id);
+  const table = supabase.from("marriage_interests" as never) as any;
 
-    if (!error) {
-      setInterestCount(count ?? 0);
-    }
-  };
+  const { count, error } = await table
+    .select("id", { count: "exact", head: true })
+    .eq("target_user_id", user.id);
+
+  if (!error) {
+    setInterestCount(count ?? 0);
+  }
+
+  const { data: interests, error: interestsError } = await table
+    .select("user_id")
+    .eq("target_user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (interestsError) {
+    console.error("Failed to load interested users:", interestsError);
+    return;
+  }
+
+  const userIds = (interests ?? []).map((item: { user_id: string }) => item.user_id);
+
+  if (userIds.length === 0) {
+    setInterestedUsers([]);
+    return;
+  }
+
+  const { data: profiles, error: profilesError } = await supabase
+    .from("profiles")
+    .select("id, display_name, username, avatar_url")
+    .in("id", userIds);
+
+  if (profilesError) {
+    console.error("Failed to load interested profiles:", profilesError);
+    return;
+  }
+
+  const profileMap = new Map(
+    (profiles ?? []).map((profile) => [profile.id, profile])
+  );
+
+  setInterestedUsers(
+    userIds
+      .map((id) => profileMap.get(id))
+      .filter((profile): profile is Profile => !!profile)
+  );
+};
 
   void loadInterestCount();
 }, [user]);
@@ -142,7 +181,61 @@ useEffect(() => {
     <Layout>
       <section className="min-h-screen bg-[#003D25] text-white">
         <div className="mx-auto w-full max-w-[390px] px-3 pb-8 pt-3">
-          {selected ? (
+          {interestOpen ? (
+  <div className="mb-4 rounded-3xl border border-[#19D66B] bg-[#005A35] p-4">
+    <div className="mb-4 flex items-center justify-between">
+      <h2 className="text-lg font-bold">Interested</h2>
+      <button
+        type="button"
+        onClick={() => setInterestOpen(false)}
+        className="rounded-full bg-white/10 px-3 py-1 text-sm"
+      >
+        Close
+      </button>
+    </div>
+
+    <div className="space-y-3">
+  {interestedUsers.length > 0 ? (
+    interestedUsers.map((person) => (
+      <button
+        key={person.id}
+        type="button"
+        onClick={() => {
+          setInterestOpen(false);
+          setSelectedId(person.id);
+        }}
+        className="flex w-full items-center gap-3 rounded-2xl bg-[#00643C] p-3 text-left hover:bg-[#007A49]"
+      >
+        <AvatarImg
+          src={person.avatar_url}
+          alt={person.display_name ?? person.username ?? "User"}
+          className="h-11 w-11 shrink-0 rounded-full object-cover"
+        />
+
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-white">
+            {person.display_name ?? person.username ?? "User"}
+          </p>
+          {person.username && (
+            <p className="truncate text-xs text-white/60">
+              @{person.username}
+            </p>
+          )}
+        </div>
+
+        <ChevronRight className="h-4 w-4 shrink-0 text-white/60" />
+      </button>
+    ))
+  ) : (
+    <p className="text-sm text-white/70">
+      No one has shown interest yet.
+    </p>
+  )}
+</div>
+  </div>
+) : null}
+
+{selected ? (
             <>
               <div className="mb-4 flex items-center gap-3">
                 <Button
@@ -202,6 +295,21 @@ useEffect(() => {
       >
         Create Profile
       </button>
+      <button
+  type="button"
+  onClick={() => {
+    setMenuOpen(false);
+    setInterestOpen(true);
+  }}
+  className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-white hover:bg-[#00643C]"
+>
+  <span>Interested</span>
+  {interestCount > 0 && (
+    <span className="rounded-full bg-[#00C853] px-2 py-0.5 text-xs">
+      {interestCount}
+    </span>
+  )}
+</button>
     </div>
         )}
         </div>
