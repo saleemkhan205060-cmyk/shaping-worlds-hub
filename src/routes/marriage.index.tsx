@@ -200,11 +200,9 @@ function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
     <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
       <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
         <AvatarImg src={card.profile?.avatar_url} alt={name} fallback={name} className="h-full w-full object-cover text-2xl" />
-        <span className="absolute right-1.5 top-1.5 h-3.5 w-3.5 rounded-full bg-[#35F16B]" />
-        <span className="absolute bottom-1.5 left-0 flex h-7 min-w-7 items-center justify-center rounded-full bg-[#42E96D] px-1 text-xs font-semibold text-white">DP</span>
-        <span className="absolute bottom-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/55 text-white">
-          <Heart className="h-4 w-4" strokeWidth={2} />
-        </span>
+        <span className="absolute -bottom-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#35F16B] text-white shadow-md">
+         <Heart className="h-4 w-4" strokeWidth={2} />
+         </span>
       </div>
 
       <div className="px-0.5 pb-0.5 pt-2">
