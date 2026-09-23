@@ -115,7 +115,7 @@ function MarriagePage() {
   return (
     <Layout>
       <section className="min-h-screen bg-[#003D25] text-white">
-        <div className="mx-auto w-full max-w-[740px] px-2 pb-8 pt-4 sm:px-4">
+        <div className="mx-auto w-full max-w-[390px] px-3 pb-8 pt-3">
           {selected ? (
             <>
               <div className="mb-4 flex items-center gap-3">
@@ -139,34 +139,34 @@ function MarriagePage() {
             </>
           ) : (
             <>
-              <div className="relative mb-6 aspect-[3.26/1] w-full overflow-hidden rounded-[28px] border border-[#19D66B]">
+              <div className="relative mb-3 aspect-[3.26/1] w-full overflow-hidden rounded-[16px] border border-[#19D66B]">
                 <img src="/kkk23.jpg" alt="Marriage Banner" className="h-full w-full object-cover" />
               </div>
 
-              <div className="relative mb-6 h-[76px]">
-                <Search className="pointer-events-none absolute left-7 top-1/2 z-10 h-8 w-8 -translate-y-1/2 text-white" strokeWidth={2} />
+              <div className="relative mb-3 h-[46px]">
+                <Search className="pointer-events-none absolute left-4 top-1/2 z-10 h-6 w-6 -translate-y-1/2 text-white" strokeWidth={2} />
                 <input
                   value={q}
                   onChange={(event) => setQ(event.target.value)}
                   type="search"
                   placeholder="Search by name, country, age..."
-                  className="h-full w-full rounded-full border-2 border-[#19D66B] bg-[#005A35] pl-[76px] pr-[84px] text-lg text-white outline-none placeholder:text-white/90 focus:ring-0"
+                  className="h-full w-full rounded-full border border-[#19D66B] bg-[#005A35] pl-12 pr-14 text-sm text-white outline-none placeholder:text-white/90 focus:ring-0"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   aria-label="Filter profiles"
-                  className="absolute right-0 top-0 h-full w-[82px] rounded-full bg-[#00643C] text-white hover:bg-[#00643C] hover:text-white"
+                  className="absolute right-0 top-0 h-full w-[50px] rounded-full bg-[#00643C] text-white hover:bg-[#00643C] hover:text-white"
                 >
-                  <SlidersHorizontal className="h-8 w-8" strokeWidth={2.25} />
+                  <SlidersHorizontal className="h-5 w-5" strokeWidth={2.25} />
                 </Button>
               </div>
 
-              <div className="mb-3 flex items-center justify-between px-1">
-                <h2 className="text-[25px] font-bold leading-none">Featured Profiles</h2>
-                <Button type="button" variant="ghost" className="h-9 gap-1 px-0 text-lg font-semibold text-[#7CFF3B] hover:bg-transparent hover:text-[#7CFF3B]">
-                  View All <ChevronRight className="h-5 w-5" strokeWidth={3} />
+              <div className="mb-2 flex items-center justify-between px-0.5">
+                <h2 className="text-[18px] font-bold leading-none">Featured Profiles</h2>
+                <Button type="button" variant="ghost" className="h-7 gap-0.5 px-0 text-sm font-semibold text-[#7CFF3B] hover:bg-transparent hover:text-[#7CFF3B]">
+                  View All <ChevronRight className="h-4 w-4" strokeWidth={3} />
                 </Button>
               </div>
 
@@ -180,7 +180,7 @@ function MarriagePage() {
                   <p className="mt-1 text-sm text-white/70">Be the first — create your profile.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="grid grid-cols-2 gap-2">
                   {filtered.map((card) => (
                     <ProfileCard key={card.user_id} card={card} onOpen={() => setSelectedId(card.user_id)} />
                   ))}
@@ -197,38 +197,38 @@ function MarriagePage() {
 function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
   const name = card.profile?.display_name ?? card.profile?.username ?? "User";
   return (
-    <article className="overflow-hidden rounded-[28px] border border-[#086B43] bg-[#005A35] p-3 shadow-sm sm:p-4">
-      <div className="relative aspect-[1.38/1] overflow-hidden rounded-[22px] bg-[#007A49]">
-        <AvatarImg src={card.profile?.avatar_url} alt={name} fallback={name} className="h-full w-full object-cover text-4xl" />
-        <span className="absolute right-2 top-2 h-5 w-5 rounded-full bg-[#35F16B]" />
-        <span className="absolute bottom-2 left-0 flex h-11 min-w-11 items-center justify-center rounded-full bg-[#42E96D] px-2 text-lg font-semibold text-white">DP</span>
-        <span className="absolute bottom-2 right-2 flex h-11 w-11 items-center justify-center rounded-full bg-black/55 text-white">
-          <Heart className="h-7 w-7" strokeWidth={2} />
+    <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
+      <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
+        <AvatarImg src={card.profile?.avatar_url} alt={name} fallback={name} className="h-full w-full object-cover text-2xl" />
+        <span className="absolute right-1.5 top-1.5 h-3.5 w-3.5 rounded-full bg-[#35F16B]" />
+        <span className="absolute bottom-1.5 left-0 flex h-7 min-w-7 items-center justify-center rounded-full bg-[#42E96D] px-1 text-xs font-semibold text-white">DP</span>
+        <span className="absolute bottom-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/55 text-white">
+          <Heart className="h-4 w-4" strokeWidth={2} />
         </span>
       </div>
 
-      <div className="px-1 pb-1 pt-3">
-        <h3 className="truncate text-xl font-bold leading-tight text-white">{name}</h3>
-        <p className="mt-2 flex min-w-0 items-center gap-2 text-base text-white/80">
-          <UserRound className="h-5 w-5 shrink-0 fill-white text-white" />
+      <div className="px-0.5 pb-0.5 pt-2">
+        <h3 className="truncate text-[15px] font-bold leading-tight text-white">{name}</h3>
+        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-white/80">
+          <UserRound className="h-4 w-4 shrink-0 fill-white text-white" />
           <span className="truncate">{card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; Female</span>
         </p>
-        <p className="mt-2 flex min-w-0 items-center gap-2 text-base text-white/80">
-          <MapPin className="h-5 w-5 shrink-0 fill-white text-white" />
+        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-white/80">
+          <MapPin className="h-4 w-4 shrink-0 fill-white text-white" />
           <span className="truncate">{card.country ?? "—"} &nbsp;•&nbsp; {card.profession ?? "—"}</span>
         </p>
-        <p className="mt-2 flex min-w-0 items-center gap-2 text-base text-white/80">
-          <Heart className="h-5 w-5 shrink-0 fill-white text-white" />
+        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-white/80">
+          <Heart className="h-4 w-4 shrink-0 fill-white text-white" />
           <span className="truncate">Looking for {card.looking_for ?? "—"}</span>
         </p>
         <Button
           type="button"
           variant="outline"
           onClick={onOpen}
-          className="mt-4 h-12 w-full rounded-full border-2 border-[#7CFF3B] bg-transparent text-lg font-semibold text-white hover:bg-transparent hover:text-white"
+          className="mt-2.5 h-8 w-full rounded-full border border-[#7CFF3B] bg-transparent text-xs font-semibold text-white hover:bg-transparent hover:text-white"
         >
           <span className="flex-1 text-center">View Profile</span>
-          <ChevronRight className="h-6 w-6 text-[#7CFF3B]" strokeWidth={2.5} />
+          <ChevronRight className="h-4 w-4 text-[#7CFF3B]" strokeWidth={2.5} />
         </Button>
       </div>
     </article>
