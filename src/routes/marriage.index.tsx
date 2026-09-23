@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { ArrowLeft, Gem, MapPin, Briefcase, Heart, MessageCircle, Loader2, Pencil, Search } from "lucide-react";
+import { ArrowLeft, Gem, MapPin, Briefcase, Heart, MessageCircle, Loader2, Pencil, Search, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -95,49 +95,90 @@ function MarriagePage() {
   const selected = selectedId ? cards.find((c) => c.user_id === selectedId) ?? null : null;
 
   return (
-    <Layout>
-      <div className="min-h-screen bg-[#003D25]">
-      <div className="mb-4 flex items-center gap-3">
-        {selected ? (
+  <Layout>
+    <div className="min-h-screen bg-[#003D25]">
+
+      {/* Back button when viewing a profile */}
+      {selected && (
+        <div className="mb-4 flex items-center gap-3">
           <button
             onClick={() => setSelectedId(null)}
             className="h-10 w-10 rounded-full bg-[#005A35] border border-[#19D66B] text-white flex items-center justify-center shadow-sm"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-        ) : (
-           <Link to="/" className="h-10 w-10 rounded-full bg-[#005A35] border border-[#19D66B] text-white flex items-center justify-center shadow-sm">
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-        )}
-        <div className="flex items-center gap-2 flex-1">
-          <span className="h-10 w-10 rounded-full bg-[#00C853] flex items-center justify-center text-white shadow">
-            <Gem className="h-5 w-5" />
-          </span>
-          <h1 className="text-2xl font-extrabold text-white">Marriage</h1>
+
+          <h1 className="text-xl font-bold text-white">
+            Marriage Profile
+          </h1>
         </div>
-        {!selected && (
-          <Link
-            to="/marriage/edit"
-            className="inline-flex items-center gap-1.5 px-4 h-10 rounded-full bg-[#00C853] text-white text-sm font-semibold hover:bg-[#19D66B]"
-          >
-            <Pencil className="h-4 w-4" />
-            {hasOwn ? "Edit" : "Create"}
-          </Link>
-        )}
-      </div>
+      )}
 
       {!selected && (
-        <div className="relative mb-5">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#7CFF3B]" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            type="search"
-            placeholder="Search by name, country, profession…"
-            className="w-full h-12 pl-11 pr-4 rounded-full bg-[#005A35] border border-[#19D66B] text-white placeholder:text-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-[#7CFF3B]"
-          />
-        </div>
+        <>
+          {/* Marriage Hero Banner */}
+          <div className="mb-5 overflow-hidden rounded-3xl border border-[#19D66B] bg-[#005A35] relative min-h-[190px]">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#003D25] via-[#005A35] to-[#00C853]/40" />
+
+            <div className="relative z-10 p-6 flex items-center min-h-[190px]">
+              <div className="max-w-[65%]">
+                <p className="text-white text-2xl font-extrabold leading-tight">
+                  Find Your
+                </p>
+
+                <p className="text-[#7CFF3B] text-3xl font-extrabold leading-tight">
+                  Life Partner
+                </p>
+
+                <p className="mt-3 text-white/90 text-sm">
+                  Real People • Genuine Profiles
+                </p>
+
+                <p className="text-white/90 text-sm">
+                  Worldwide
+                </p>
+              </div>
+
+              <div className="absolute right-0 bottom-0 w-[42%] h-full">
+                <div className="absolute inset-0 bg-gradient-to-l from-[#00C853]/50 to-transparent" />
+              </div>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="relative mb-8">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-white/80" />
+
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              type="search"
+              placeholder="Search by name, country, age..."
+              className="w-full h-14 pl-14 pr-16 rounded-full bg-[#005A35] border border-[#19D66B] text-white placeholder:text-white/60 text-sm focus:outline-none focus:ring-2 focus:ring-[#7CFF3B]"
+            />
+
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-[#00C853] text-white flex items-center justify-center"
+            >
+              <SlidersHorizontal className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Featured Profiles heading */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">
+              Featured Profiles
+            </h2>
+
+            <button
+              type="button"
+              className="text-[#7CFF3B] text-sm font-semibold"
+            >
+              View All <span className="ml-1">›</span>
+            </button>
+          </div>
+        </>
       )}
 
       {loading ? (
