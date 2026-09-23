@@ -8,6 +8,7 @@ import {
   Loader2,
   MapPin,
   MessageCircle,
+  Pencil,
   Search,
   SlidersHorizontal,
   UserRound,
@@ -270,18 +271,15 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
   return (
     <div className="flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
       <div className="flex items-center gap-4 p-5">
+        <div className="relative h-20 w-20 shrink-0">
         <AvatarImg src={marriagePhoto || card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
         {isSelf && (
-       <label className="cursor-pointer rounded-full border border-[#19D66B] bg-[#00C853] px-3 py-1 text-xs font-semibold text-white hover:bg-[#19D66B]">
-       Change Photo
-      <input
-      type="file"
-      accept="image/*"
-      onChange={handleMarriagePhotoChange}
-      className="hidden"
-    />
-    </label>
-     )}
+        <label className="absolute bottom-0 right-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 border-[#005A35] bg-[#00C853] text-white shadow">
+      <Pencil className="h-3.5 w-3.5" />
+      <input type="file" accept="image/*" onChange={handleMarriagePhotoChange} className="hidden" />
+     </label>
+    )}
+  </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-lg font-bold text-white">{name}{card.age ? `, ${card.age}` : ""}</p>
           {card.country && <p className="mt-1 flex items-center gap-1 text-xs text-white/80"><MapPin className="h-3 w-3" />{card.country}</p>}
