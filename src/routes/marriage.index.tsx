@@ -225,8 +225,8 @@ fallback={name}
 className="h-full w-full object-cover text-2xl"
 /> </div>
 
-```
     <div className="min-w-0 flex-1 py-1">
+
       <h3 className="truncate text-[16px] font-bold text-white">
         {name}
       </h3>
