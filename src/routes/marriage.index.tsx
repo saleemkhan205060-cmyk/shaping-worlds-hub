@@ -305,21 +305,66 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
 };
   return (
     <div className="flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
-      <div className="flex items-center gap-4 p-5">
-        <div className="relative h-20 w-20 shrink-0">
-        <AvatarImg src={marriagePhoto || card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
-        {isSelf && (
-        <label className="absolute bottom-0 right-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-md backdrop-blur-xl">
-      <Pencil className="h-3.5 w-3.5" />
-      <input type="file" accept="image/*" onChange={handleMarriagePhotoChange} className="hidden" />
-     </label>
+      <div className="flex gap-4 p-5">
+  <div className="relative h-32 w-28 shrink-0">
+    <AvatarImg
+      src={marriagePhoto || card.profile?.avatar_url}
+      alt={name}
+      fallback={name}
+      className="h-32 w-28 rounded-2xl bg-[#00C853] object-cover text-2xl"
+    />
+    {isSelf && (
+      <label className="absolute bottom-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-md backdrop-blur-xl">
+        <Pencil className="h-3.5 w-3.5" />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleMarriagePhotoChange}
+          className="hidden"
+        />
+      </label>
     )}
   </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-lg font-bold text-white">{name}{card.age ? `, ${card.age}` : ""}</p>
-          {card.country && <p className="mt-1 flex items-center gap-1 text-xs text-white/80"><MapPin className="h-3 w-3" />{card.country}</p>}
-        </div>
-      </div>
+
+  <div className="min-w-0 flex-1">
+    <p className="truncate text-lg font-bold text-white">
+      {name}
+    </p>
+
+    {card.age && (
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-white/80">
+        <UserRound className="h-3.5 w-3.5" />
+        {card.age} years • Female
+      </p>
+    )}
+
+    {card.country && (
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-white/80">
+        <MapPin className="h-3.5 w-3.5" />
+        {card.country}
+      </p>
+    )}
+
+    {card.profession && (
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-white/80">
+        <Briefcase className="h-3.5 w-3.5" />
+        {card.profession}
+      </p>
+    )}
+
+    {card.marital_status && (
+      <p className="mt-2 text-xs text-white/80">
+        Marital Status: {card.marital_status}
+      </p>
+    )}
+
+    {card.religion && (
+      <p className="mt-2 text-xs text-white/80">
+        Religion: {card.religion}
+      </p>
+    )}
+  </div>
+</div>
       <div className="flex flex-wrap gap-2 px-5 pb-3 text-xs">
         {card.looking_for && <Tag>Looking for {card.looking_for}</Tag>}
         {card.marital_status && <Tag>{card.marital_status}</Tag>}
