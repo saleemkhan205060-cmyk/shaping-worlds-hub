@@ -61,7 +61,7 @@ function MarriagePage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     let alive = true;
     void (async () => {
@@ -154,16 +154,33 @@ function MarriagePage() {
                   placeholder="Search by name, country, age..."
                   className="h-full w-full rounded-full border border-[#19D66B] bg-[#005A35] pl-12 pr-14 text-sm text-white outline-none placeholder:text-white/90 focus:ring-0"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Filter profiles"
-                  className="absolute right-0 top-0 h-full w-[50px] rounded-full bg-[#00643C] text-white hover:bg-[#00643C] hover:text-white"
-                >
-                  <SlidersHorizontal className="h-5 w-5" strokeWidth={2.25} />
-                </Button>
-              </div>
+                <div className="absolute right-0 top-0">
+  <Button
+    type="button"
+    variant="ghost"
+    size="icon"
+    aria-label="Marriage menu"
+    onClick={() => setMenuOpen((open) => !open)}
+    className="h-[46px] w-[50px] rounded-full bg-[#00643C] text-white hover:bg-[#00643C] hover:text-white"
+  >
+    <SlidersHorizontal className="h-5 w-5" strokeWidth={2.25} />
+  </Button>
+
+  {menuOpen && (
+    <div className="absolute right-0 top-[50px] z-50 w-[170px] overflow-hidden rounded-2xl border border-[#19D66B] bg-[#005A35] shadow-xl">
+      <button
+        type="button"
+        onClick={() => {
+          setMenuOpen(false);
+          navigate({ to: "/marriage/edit" });
+        }}
+        className="w-full px-4 py-3 text-left text-sm font-semibold text-white hover:bg-[#00643C]"
+      >
+        Create Profile
+      </button>
+    </div>
+  )}
+</div>
 
               <div className="mb-2 flex items-center justify-between px-0.5">
                 <h2 className="text-[18px] font-bold leading-none">Featured Profiles</h2>
