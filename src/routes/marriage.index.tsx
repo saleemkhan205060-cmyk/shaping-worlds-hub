@@ -306,14 +306,23 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
   event.target.value = "";
 };
   return (
-    <div className="flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
+    <div className="relative flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
+      {isSelf && (
+      <Link
+      to="/marriage/edit"
+     className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
+    aria-label="Edit marriage profile"
+  >
+    <Pencil className="h-4 w-4" />
+    </Link>
+   )}
       <div className="flex gap-4 p-5">
-  <div className="relative h-32 w-28 shrink-0">
-    <AvatarImg
-      src={marriagePhoto || card.profile?.avatar_url}
-      alt={name}
-      fallback={name}
-      className="h-32 w-28 rounded-2xl bg-[#00C853] object-cover text-2xl"
+        <div className="relative h-32 w-28 shrink-0">
+         <AvatarImg
+         src={marriagePhoto || card.profile?.avatar_url}
+         alt={name}
+         fallback={name}
+       className="h-32 w-28 rounded-2xl bg-[#00C853] object-cover text-2xl"
     />
     {isSelf && (
       <label className="absolute bottom-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-md backdrop-blur-xl">
@@ -368,6 +377,9 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
   </p>
 )}
   </div>
+</div>
+      <div className="flex flex-wrap gap-2 px-5 pb-3 text-xs">
+  {card.looking_for && <Tag>Looking for {card.looking_for}</Tag>}
 </div>
       {card.about && <p className="whitespace-pre-wrap px-5 pb-4 text-sm text-white/90">{card.about}</p>}
       <div className="mt-auto flex gap-2 border-t border-[#19D66B] p-3">
