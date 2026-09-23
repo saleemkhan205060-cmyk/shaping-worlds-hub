@@ -204,15 +204,15 @@ function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
 
       <div className="px-0.5 pb-0.5 pt-2">
         <h3 className="truncate text-[15px] font-bold leading-tight text-white">{name}</h3>
-        <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[9px] text-white/80">
+        <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[10px] text-white/80">
           <UserRound className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">{card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; Female</span>
         </p>
-        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[9px] text-white/80">
+        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[10px] text-white/80">
           <MapPin className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">{card.country ?? "—"} &nbsp;•&nbsp; {card.profession ?? "—"}</span>
         </p>
-        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[9px] text-white/80">
+        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[10px] text-white/80">
           <Heart className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">Looking for {card.looking_for ?? "—"}</span>
         </p>
