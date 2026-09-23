@@ -130,7 +130,7 @@ function MarriagePage() {
                   Life Partner
                 </p>
 
-                <p className="mt-3 text-white/90 text-sm">
+                <p className="mt-3 text-white/90 text-sm whitespace-nowrap">
                   Real People • Genuine Profiles
                 </p>
 
