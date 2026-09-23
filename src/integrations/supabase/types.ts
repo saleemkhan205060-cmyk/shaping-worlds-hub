@@ -335,6 +335,7 @@ export type Database = {
           age: number | null
           country: string | null
           created_at: string
+          gender: string | null
           id: string
           looking_for: string | null
           marital_status: string | null
@@ -350,6 +351,7 @@ export type Database = {
           age?: number | null
           country?: string | null
           created_at?: string
+          gender?: string | null
           id?: string
           looking_for?: string | null
           marital_status?: string | null
@@ -365,6 +367,7 @@ export type Database = {
           age?: number | null
           country?: string | null
           created_at?: string
+          gender?: string | null
           id?: string
           looking_for?: string | null
           marital_status?: string | null
