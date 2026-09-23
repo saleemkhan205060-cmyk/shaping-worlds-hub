@@ -17,7 +17,7 @@ import { AvatarImg } from "@/components/AvatarImg";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-
+import { uploadToStorage } from "@/lib/resumable-upload";
 export const Route = createFileRoute("/marriage/")({
   component: MarriagePage,
   head: () => ({
@@ -233,10 +233,55 @@ function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
 
 function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; onMessage: () => void }) {
   const name = card.profile?.display_name ?? card.profile?.username ?? "User";
+  const [marriagePhoto, setMarriagePhoto] = useState(card.marriage_avatar_url);
+  const handleMarriagePhotoChange = async (
+  event: React.ChangeEvent<HTMLInputElement>,
+) => {
+  const file = event.target.files?.[0];
+  if (!file || !isSelf) return;
+
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${card.user_id}/marriage/marriage-${Date.now()}.${ext}`;
+
+  try {
+    await uploadToStorage({
+      bucket: "media",
+      path,
+      file,
+    });
+
+    const { data } = supabase.storage.from("media").getPublicUrl(path);
+    const marriageAvatarUrl = data.publicUrl;
+
+    const { error } = await supabase
+      .from("marriage_profiles")
+      .update({ marriage_avatar_url: marriageAvatarUrl })
+      .eq("user_id", card.user_id);
+
+    if (error) throw error;
+
+    setMarriagePhoto(marriageAvatarUrl);
+  } catch (error) {
+    console.error("Marriage photo upload failed:", error);
+  }
+
+  event.target.value = "";
+};
   return (
     <div className="flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
       <div className="flex items-center gap-4 p-5">
-        <AvatarImg src={card.marriage_avatar_url || card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
+        <AvatarImg src={marriagePhoto || card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
+        {isSelf && (
+       <label className="cursor-pointer rounded-full border border-[#19D66B] bg-[#00C853] px-3 py-1 text-xs font-semibold text-white hover:bg-[#19D66B]">
+       Change Photo
+      <input
+      type="file"
+      accept="image/*"
+      onChange={handleMarriagePhotoChange}
+      className="hidden"
+    />
+    </label>
+     )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-lg font-bold text-white">{name}{card.age ? `, ${card.age}` : ""}</p>
           {card.country && <p className="mt-1 flex items-center gap-1 text-xs text-white/80"><MapPin className="h-3 w-3" />{card.country}</p>}
