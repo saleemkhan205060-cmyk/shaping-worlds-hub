@@ -126,7 +126,7 @@ function MarriagePage() {
                   Find Your
                 </p>
 
-                <p className="text-[#7CFF3B] text-3xl font-extrabold leading-tight">
+                <p className="text-[#7CFF3B] text-3xl font-extrabold leading-tight whitespace-nowrap">
                   Life Partner
                 </p>
 
