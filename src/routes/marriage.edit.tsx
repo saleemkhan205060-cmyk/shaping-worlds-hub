@@ -226,7 +226,7 @@ function MarriageEditPage() {
             placeholder="e.g. Engineer"
           />
 
-          <FieldSelect icon={Ring} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
+          <FieldSelect icon={Heart} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
             <option value="">Select</option>
             {MARITAL.map((o) => (
               <option key={o} value={o}>
