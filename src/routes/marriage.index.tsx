@@ -399,3 +399,55 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
 function Tag({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full border border-[#19D66B] bg-[#00C853] px-2.5 py-1 text-white">{children}</span>;
 }
+
+function InterestedButton({ targetId }: { targetId: string }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [interested, setInterested] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    let alive = true;
+    const table = supabase.from("marriage_interests" as never) as any;
+    void table
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("target_user_id", targetId)
+      .maybeSingle()
+      .then(({ data }: { data: unknown }) => {
+        if (alive) setInterested(!!data);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [user, targetId]);
+
+  const toggle = async () => {
+    if (!user) {
+      navigate({ to: "/auth" });
+      return;
+    }
+    if (busy) return;
+    setBusy(true);
+    const table = supabase.from("marriage_interests" as never) as any;
+    const { error } = interested
+      ? await table.delete().eq("user_id", user.id).eq("target_user_id", targetId)
+      : await table.insert({ user_id: user.id, target_user_id: targetId });
+    if (!error) setInterested(!interested);
+    else console.error("Interest update failed:", error);
+    setBusy(false);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      disabled={busy}
+      className="inline-flex items-center gap-1.5 rounded-full bg-[#00C853] px-3 py-1.5 font-semibold text-white hover:bg-[#19D66B]"
+    >
+      <Heart className={interested ? "h-3.5 w-3.5 fill-white" : "h-3.5 w-3.5"} />
+      {interested ? "Interested ✓" : "Interested"}
+    </button>
+  );
+}
