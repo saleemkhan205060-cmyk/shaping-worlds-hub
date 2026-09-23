@@ -34,6 +34,7 @@ export const Route = createFileRoute("/marriage/")({
 
 type MarriageRow = {
   user_id: string;
+  marriage_avatar_url: string | null;
   age: number | null;
   looking_for: string | null;
   country: string | null;
@@ -66,7 +67,7 @@ function MarriagePage() {
       setLoading(true);
       const { data: mp } = await supabase
         .from("marriage_profiles")
-        .select("user_id, age, looking_for, country, profession, marital_status, religion, about")
+        .select("user_id, marriage_avatar_url, age, looking_for, country, profession, marital_status, religion, about")
         .order("updated_at", { ascending: false })
         .limit(100);
       const rows = (mp ?? []) as MarriageRow[];
@@ -199,7 +200,7 @@ function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
   return (
     <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
       <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
-        <AvatarImg src={card.profile?.avatar_url} alt={name} fallback={name} className="h-full w-full object-cover text-2xl" />
+        <AvatarImg src={card.marriage_avatar_url || card.profile?.avatar_url} alt={name} fallback={name} className="h-full w-full object-cover text-2xl" />
       </div>
 
       <div className="px-0.5 pb-0.5 pt-2">
@@ -235,7 +236,7 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
   return (
     <div className="flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
       <div className="flex items-center gap-4 p-5">
-        <AvatarImg src={card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
+        <AvatarImg src={card.marriage_avatar_url || card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-lg font-bold text-white">{name}{card.age ? `, ${card.age}` : ""}</p>
           {card.country && <p className="mt-1 flex items-center gap-1 text-xs text-white/80"><MapPin className="h-3 w-3" />{card.country}</p>}
