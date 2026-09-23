@@ -5,6 +5,7 @@ import {
   Briefcase,
   ChevronRight,
   Heart,
+  HeartHandshake,
   Loader2,
   MapPin,
   MessageCircle,
