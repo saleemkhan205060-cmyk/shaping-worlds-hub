@@ -116,35 +116,14 @@ function MarriagePage() {
 
       {!selected && (
         <>
-          {/* Marriage Hero Banner */}
-          <div className="mb-5 overflow-hidden rounded-3xl border border-[#19D66B] bg-[#005A35] relative min-h-[190px]">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#003D25] via-[#005A35] to-[#00C853]/40" />
-
-            <div className="relative z-10 p-6 flex items-center min-h-[190px]">
-              <div className="max-w-[65%]">
-                <p className="text-white text-2xl font-extrabold leading-tight">
-                  Find Your
-                </p>
-
-                <p className="text-[#7CFF3B] text-3xl font-extrabold leading-tight whitespace-nowrap">
-                  Life Partner
-                </p>
-
-                <p className="mt-3 text-white/90 text-sm whitespace-nowrap">
-                  Real People • Genuine Profiles
-                </p>
-
-                <p className="text-white/90 text-sm">
-                  Worldwide
-                </p>
-              </div>
-
-              <div className="absolute right-0 bottom-0 w-[42%] h-full">
-                <div className="absolute inset-0 bg-gradient-to-l from-[#00C853]/50 to-transparent" />
-              </div>
-            </div>
-          </div>
-
+    {/* Marriage Hero Banner */}
+    <div className="mb-5 overflow-hidden rounded-3xl border border-[#19D66B] relative min-h-[190px]">
+      <img
+      src="/marriage-banner.jpg"
+      alt="Marriage Banner"
+     className="absolute inset-0 w-full h-full object-cover"
+   />
+ </div>
           {/* Search */}
           <div className="relative mb-8">
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-white/80" />
