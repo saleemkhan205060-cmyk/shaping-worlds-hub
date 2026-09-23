@@ -369,12 +369,6 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
 )}
   </div>
 </div>
-      <div className="flex flex-wrap gap-2 px-5 pb-3 text-xs">
-        {card.looking_for && <Tag>Looking for {card.looking_for}</Tag>}
-        {card.marital_status && <Tag>{card.marital_status}</Tag>}
-        {card.religion && <Tag>{card.religion}</Tag>}
-        {card.profession && <Tag><Briefcase className="mr-1 inline h-3 w-3" />{card.profession}</Tag>}
-      </div>
       {card.about && <p className="whitespace-pre-wrap px-5 pb-4 text-sm text-white/90">{card.about}</p>}
       <div className="mt-auto flex gap-2 border-t border-[#19D66B] p-3">
         <Button asChild variant="outline" className="h-10 flex-1 rounded-full border-[#19D66B] bg-transparent text-white hover:bg-[#00C853] hover:text-white">
