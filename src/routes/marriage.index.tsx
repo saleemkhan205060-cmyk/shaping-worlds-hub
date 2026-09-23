@@ -200,23 +200,20 @@ function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
     <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
       <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
         <AvatarImg src={card.profile?.avatar_url} alt={name} fallback={name} className="h-full w-full object-cover text-2xl" />
-        <span className="absolute -bottom-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#35F16B] text-white shadow-md">
-         <Heart className="h-4 w-4" strokeWidth={2} />
-         </span>
       </div>
 
       <div className="px-0.5 pb-0.5 pt-2">
         <h3 className="truncate text-[15px] font-bold leading-tight text-white">{name}</h3>
-        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-white/80">
-          <UserRound className="h-4 w-4 shrink-0 fill-white text-white" />
+        <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[9px] text-white/80">
+          <UserRound className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">{card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; Female</span>
         </p>
-        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-white/80">
-          <MapPin className="h-4 w-4 shrink-0 fill-white text-white" />
+        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[9px] text-white/80">
+          <MapPin className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">{card.country ?? "—"} &nbsp;•&nbsp; {card.profession ?? "—"}</span>
         </p>
-        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-white/80">
-          <Heart className="h-4 w-4 shrink-0 fill-white text-white" />
+        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[9px] text-white/80">
+          <Heart className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">Looking for {card.looking_for ?? "—"}</span>
         </p>
         <Button
