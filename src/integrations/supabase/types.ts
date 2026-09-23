@@ -338,6 +338,7 @@ export type Database = {
           id: string
           looking_for: string | null
           marital_status: string | null
+          marriage_avatar_url: string | null
           profession: string | null
           religion: string | null
           status: string
@@ -352,6 +353,7 @@ export type Database = {
           id?: string
           looking_for?: string | null
           marital_status?: string | null
+          marriage_avatar_url?: string | null
           profession?: string | null
           religion?: string | null
           status?: string
@@ -366,6 +368,7 @@ export type Database = {
           id?: string
           looking_for?: string | null
           marital_status?: string | null
+          marriage_avatar_url?: string | null
           profession?: string | null
           religion?: string | null
           status?: string
