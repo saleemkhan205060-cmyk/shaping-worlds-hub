@@ -119,7 +119,7 @@ function MarriagePage() {
     {/* Marriage Hero Banner */}
     <div className="mb-5 overflow-hidden rounded-3xl border border-[#19D66B] relative min-h-[190px]">
       <img
-      src="/marriage-banner.jpg"
+      src="/kkk23.jpg"
       alt="Marriage Banner"
      className="absolute inset-0 w-full h-full object-cover"
    />
