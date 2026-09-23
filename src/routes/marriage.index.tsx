@@ -215,65 +215,57 @@ function MarriagePage() {
 }
 
 function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
-const name = card.profile?.display_name ?? card.profile?.username ?? "User";
+  const name = card.profile?.display_name ?? card.profile?.username ?? "User";
+  return (
+    <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
+      <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
+        <AvatarImg
+          src={card.marriage_avatar_url || card.profile?.avatar_url}
+          alt={name}
+          fallback={name}
+          className="h-full w-full object-cover text-2xl"
+        />
+      </div>
 
-return ( <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm"> <div className="flex gap-3"> <div className="relative h-[150px] w-[120px] shrink-0 overflow-hidden rounded-[12px] bg-[#007A49]">
-<AvatarImg
-src={card.marriage_avatar_url || card.profile?.avatar_url}
-alt={name}
-fallback={name}
-className="h-full w-full object-cover text-2xl"
-/> </div>
+      <div className="px-0.5 pb-0.5 pt-2">
+        <h3 className="truncate text-[15px] font-bold leading-tight text-white">
+          {name}
+        </h3>
 
-    <div className="min-w-0 flex-1 py-1">
+        <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[10px] text-white/80">
+          <UserRound className="h-3 w-3 shrink-0 fill-white text-white" />
+          <span className="truncate">
+            {card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; Female
+          </span>
+        </p>
 
-      <h3 className="truncate text-[16px] font-bold text-white">
-        {name}
-      </h3>
+        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[10px] text-white/80">
+          <MapPin className="h-3 w-3 shrink-0 fill-white text-white" />
+          <span className="truncate">
+            {card.country ?? "—"} &nbsp;•&nbsp; {card.profession ?? "—"}
+          </span>
+        </p>
 
-      <p className="mt-2 flex items-center gap-1.5 text-[11px] text-white/80">
-        <UserRound className="h-3.5 w-3.5 shrink-0 fill-white text-white" />
-        <span className="truncate">
-          {card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; Female
-        </span>
-      </p>
+        <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[10px] text-white/80">
+          <Heart className="h-3 w-3 shrink-0 fill-white text-white" />
+          <span className="truncate">
+            Looking for {card.looking_for ?? "—"}
+          </span>
+        </p>
 
-      <p className="mt-2 flex items-center gap-1.5 text-[11px] text-white/80">
-        <MapPin className="h-3.5 w-3.5 shrink-0 text-white" />
-        <span className="truncate">{card.country ?? "—"}</span>
-      </p>
-
-      <p className="mt-2 flex items-center gap-1.5 text-[11px] text-white/80">
-        <Briefcase className="h-3.5 w-3.5 shrink-0 text-white" />
-        <span className="truncate">{card.profession ?? "—"}</span>
-      </p>
-
-      <p className="mt-2 flex items-center gap-1.5 text-[11px] text-white/80">
-        <Heart className="h-3.5 w-3.5 shrink-0 fill-white text-white" />
-        <span className="truncate">{card.marital_status ?? "—"}</span>
-      </p>
-
-      <p className="mt-2 flex items-center gap-1.5 text-[11px] text-white/80">
-        <span className="shrink-0">☪</span>
-        <span className="truncate">{card.religion ?? "—"}</span>
-      </p>
-    </div>
-  </div>
-
-  <Button
-    type="button"
-    variant="outline"
-    onClick={onOpen}
-    className="mt-2.5 h-8 w-full rounded-full border border-[#7CFF3B] bg-transparent text-xs font-semibold text-white hover:bg-transparent hover:text-white"
-  >
-    <span className="flex-1 text-center">View Profile</span>
-    <ChevronRight className="h-4 w-4 text-[#7CFF3B]" strokeWidth={2.5} />
-  </Button>
-</article>
-);
-
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onOpen}
+          className="mt-2.5 h-8 w-full rounded-full border border-[#7CFF3B] bg-transparent text-xs font-semibold text-white hover:bg-transparent hover:text-white"
+        >
+          <span className="flex-1 text-center">View Profile</span>
+          <ChevronRight className="h-4 w-4 text-[#7CFF3B]" strokeWidth={2.5} />
+        </Button>
+      </div>
+    </article>
+  );
 }
-
 
 function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; onMessage: () => void }) {
   const name = card.profile?.display_name ?? card.profile?.username ?? "User";
