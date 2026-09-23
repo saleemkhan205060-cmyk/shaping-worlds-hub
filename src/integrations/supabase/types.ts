@@ -329,6 +329,27 @@ export type Database = {
         }
         Relationships: []
       }
+      marriage_interests: {
+        Row: {
+          created_at: string
+          id: string
+          target_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          target_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          target_user_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       marriage_profiles: {
         Row: {
           about: string | null
