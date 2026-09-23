@@ -274,7 +274,7 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
         <div className="relative h-20 w-20 shrink-0">
         <AvatarImg src={marriagePhoto || card.profile?.avatar_url} alt={name} fallback={name} className="h-20 w-20 rounded-full bg-[#00C853] object-cover text-2xl" />
         {isSelf && (
-        <label className="absolute bottom-0 right-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 border-[#005A35] bg-[#00C853] text-white shadow">
+        <label className="absolute bottom-0 right-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-md backdrop-blur-xl">
       <Pencil className="h-3.5 w-3.5" />
       <input type="file" accept="image/*" onChange={handleMarriagePhotoChange} className="hidden" />
      </label>
