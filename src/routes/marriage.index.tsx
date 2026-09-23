@@ -383,15 +383,7 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
     <Tag>Looking for {card.looking_for}</Tag>
   )}
 
-  {!isSelf && (
-    <button
-      type="button"
-      className="inline-flex items-center gap-1.5 rounded-full bg-[#00C853] px-3 py-1.5 font-semibold text-white hover:bg-[#19D66B]"
-    >
-      <Heart className="h-3.5 w-3.5" />
-      Interested
-    </button>
-  )}
+  {!isSelf && <InterestedButton targetId={card.user_id} />}
 </div>
       {card.about && <p className="whitespace-pre-wrap px-5 pb-4 text-sm text-white/90">{card.about}</p>}
       <div className="mt-auto flex gap-2 border-t border-[#19D66B] p-3">
