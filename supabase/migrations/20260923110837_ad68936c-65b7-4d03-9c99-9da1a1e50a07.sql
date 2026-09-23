@@ -1,0 +1,1 @@
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS marriage_avatar_url text;
