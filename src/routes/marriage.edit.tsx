@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowLeft, Calendar, Users, MapPin, Briefcase, Heart, Moon, FileText, Save, Loader2, Search, ChevronDown } from "lucide-react";
+import { ArrowLeft, Calendar, Users, MapPin, Briefcase, Heart, Ring, Moon, FileText, Save, Loader2, Search, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -48,6 +48,7 @@ function MarriageEditPage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
   const [age, setAge] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
   const [lookingFor, setLookingFor] = useState<string>("");
   const [country, setCountry] = useState<string>("");
   const [countryOpen, setCountryOpen] = useState(false);
@@ -71,6 +72,7 @@ function MarriageEditPage() {
       setDisplayName(prof?.display_name ?? prof?.username ?? "");
       if (mp) {
         setAge(mp.age?.toString() ?? "");
+        setGender(mp.gender ?? "");
         setLookingFor(mp.looking_for ?? "");
         setCountry(mp.country ?? "");
         setProfession(mp.profession ?? "");
@@ -96,6 +98,7 @@ function MarriageEditPage() {
         {
           user_id: user.id,
           age: ageNum,
+          gender: gender || null,
           looking_for: lookingFor || null,
           country: country.trim() || null,
           profession: profession.trim() || null,
@@ -163,7 +166,11 @@ function MarriageEditPage() {
               </option>
             ))}
           </FieldSelect>
-
+         <FieldSelect icon={Users} label="Gender" value={gender} onChange={setGender}>
+         <option value="">Select</option>
+          <option value="Male">Male</option>
+           <option value="Female">Female</option>
+           </FieldSelect>
           <FieldSelect icon={Users} label="Looking For" value={lookingFor} onChange={setLookingFor}>
             <option value="">Select</option>
             {LOOKING_FOR.map((o) => (
@@ -219,7 +226,7 @@ function MarriageEditPage() {
             placeholder="e.g. Engineer"
           />
 
-          <FieldSelect icon={Heart} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
+          <FieldSelect icon={Ring} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
             <option value="">Select</option>
             {MARITAL.map((o) => (
               <option key={o} value={o}>
