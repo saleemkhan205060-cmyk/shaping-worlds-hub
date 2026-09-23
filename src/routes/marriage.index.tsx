@@ -179,8 +179,9 @@ function MarriagePage() {
         Create Profile
       </button>
     </div>
-  )}
-</div>
+        )}
+        </div>
+        </div>
 
               <div className="mb-2 flex items-center justify-between px-0.5">
                 <h2 className="text-[18px] font-bold leading-none">Featured Profiles</h2>
