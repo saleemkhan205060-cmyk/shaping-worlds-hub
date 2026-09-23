@@ -270,9 +270,8 @@ className="h-full w-full object-cover text-2xl"
     <ChevronRight className="h-4 w-4 text-[#7CFF3B]" strokeWidth={2.5} />
   </Button>
 </article>
-```
-
 );
+
 }
 
 
