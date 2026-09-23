@@ -37,6 +37,7 @@ type MarriageRow = {
   user_id: string;
   marriage_avatar_url: string | null;
   age: number | null;
+  gender: string | null;
   looking_for: string | null;
   country: string | null;
   profession: string | null;
@@ -68,7 +69,7 @@ function MarriagePage() {
       setLoading(true);
       const { data: mp } = await supabase
         .from("marriage_profiles")
-        .select("user_id, marriage_avatar_url, age, looking_for, country, profession, marital_status, religion, about")
+        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about")
         .order("updated_at", { ascending: false })
         .limit(100);
       const rows = (mp ?? []) as MarriageRow[];
@@ -235,7 +236,7 @@ function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
         <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[10px] text-white/80">
           <UserRound className="h-3 w-3 shrink-0 fill-white text-white" />
           <span className="truncate">
-            {card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; Female
+          {card.age ? `${card.age} years` : "—"} &nbsp;•&nbsp; {card.gender ?? "—"}
           </span>
         </p>
 
@@ -332,37 +333,39 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
     </p>
 
     {card.age && (
-      <p className="mt-2 flex items-center gap-1.5 text-xs text-white/80">
-        <UserRound className="h-3.5 w-3.5" />
-        {card.age} years • Female
-      </p>
-    )}
+  <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
+    <UserRound className="h-3.5 w-3.5 shrink-0" />
+    <span>{card.age} years • {card.gender ?? "—"}</span>
+  </p>
+)}
 
-    {card.country && (
-      <p className="mt-2 flex items-center gap-1.5 text-xs text-white/80">
-        <MapPin className="h-3.5 w-3.5" />
-        {card.country}
-      </p>
-    )}
+{card.country && (
+  <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
+    <MapPin className="h-3.5 w-3.5 shrink-0" />
+    <span>{card.country}</span>
+  </p>
+)}
 
-    {card.profession && (
-      <p className="mt-2 flex items-center gap-1.5 text-xs text-white/80">
-        <Briefcase className="h-3.5 w-3.5" />
-        {card.profession}
-      </p>
-    )}
+{card.profession && (
+  <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
+    <Briefcase className="h-3.5 w-3.5 shrink-0" />
+    <span>{card.profession}</span>
+  </p>
+)}
 
-    {card.marital_status && (
-      <p className="mt-2 text-xs text-white/80">
-        Marital Status: {card.marital_status}
-      </p>
-    )}
+{card.marital_status && (
+  <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
+    <Ring className="h-3.5 w-3.5 shrink-0" />
+    <span>{card.marital_status}</span>
+  </p>
+)}
 
-    {card.religion && (
-      <p className="mt-2 text-xs text-white/80">
-        Religion: {card.religion}
-      </p>
-    )}
+{card.religion && (
+  <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
+    <Heart className="h-3.5 w-3.5 shrink-0" />
+    <span>{card.religion}</span>
+  </p>
+)}
   </div>
 </div>
       <div className="flex flex-wrap gap-2 px-5 pb-3 text-xs">
