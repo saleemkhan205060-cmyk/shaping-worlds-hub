@@ -135,7 +135,13 @@ useEffect(() => {
         .order("updated_at", { ascending: false })
         .limit(100);
       const rows = (mp ?? []) as MarriageRow[];
-      const ids = rows.map((row) => row.user_id);
+     const sortedRows = user
+  ? [
+      ...rows.filter((row) => row.user_id === user.id),
+      ...rows.filter((row) => row.user_id !== user.id),
+    ]
+  : rows;
+      const ids = sortedRows.map((row) => row.user_id);
       const profileMap: Record<string, Profile> = {};
 
       if (ids.length) {
@@ -147,7 +153,12 @@ useEffect(() => {
       }
 
       if (!alive) return;
-      setCards(rows.map((row) => ({ ...row, profile: profileMap[row.user_id] ?? null })));
+      setCards(
+     sortedRows.map((row) => ({
+    ...row,
+    profile: profileMap[row.user_id] ?? null,
+     }))
+   );
       setLoading(false);
     })();
     return () => {
@@ -334,7 +345,13 @@ useEffect(() => {
               ) : (
                 <div className="grid grid-cols-2 gap-2">
                   {filtered.map((card) => (
-                    <ProfileCard key={card.user_id} card={card} onOpen={() => setSelectedId(card.user_id)} />
+                  <ProfileCard
+                   key={card.user_id}
+                    card={card}
+                    onOpen={() => setSelectedId(card.user_id)}
+                    interestCount={interestCount}
+                    onInterestClick={() => setInterestOpen(true)}
+                   />
                   ))}
                 </div>
               )}
@@ -346,11 +363,41 @@ useEffect(() => {
   );
 }
 
-function ProfileCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
-  const name = card.profile?.display_name ?? card.profile?.username ?? "User";
-  return (
+function ProfileCard({
+   card,
+     onOpen,
+     interestCount,
+   onInterestClick,
+}: {
+  card: Card;
+    onOpen: () => void;
+    interestCount: number;
+  onInterestClick: () => void;
+}) {
+  const { user } = useAuth();
+   const name = card.profile?.display_name ?? card.profile?.username ?? "User";
+    return (
     <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
       <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
+        {user?.id === card.user_id && (
+        <button
+        type="button"
+        onClick={(e) => {
+        e.stopPropagation();
+       onInterestClick();
+    }}
+    className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
+    aria-label="View interested users"
+  >
+    <Heart className="h-5 w-5 fill-white text-white" />
+
+    {interestCount > 0 && (
+      <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#FF2D55] px-1 text-[10px] font-bold text-white">
+        {interestCount}
+        </span>
+       )}
+     </button>
+   )}
         <AvatarImg
           src={card.marriage_avatar_url || card.profile?.avatar_url}
           alt={name}
