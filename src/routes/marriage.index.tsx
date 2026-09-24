@@ -274,13 +274,34 @@ useEffect(() => {
           isSelf={user?.id === selected.user_id}
          />
 
-      <div className="-mx-2 mt-1 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-3 text-white">
+      <div className="-mx-2 mt-0 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-3 text-white">
          <h3 className="mb-1 text-sm font-bold">About</h3>
-        <p className="text-sm leading-relaxed text-white/85">
-       {selected.bio
-    ? selected.bio.split(/\s+/).slice(0, 100).join(" ")
-    : "No bio available."}
-  </p>
+        <textarea
+       value={bio}
+       onChange={(e) => setBio(e.target.value)}
+     className="w-full bg-transparent text-sm text-white outline-none resize-none"
+    placeholder="Write about yourself..."
+     />
+        {isSelf && (
+  <button
+    type="button"
+    onClick={async () => {
+      const { error } = await supabase
+        .from("marriage_profiles")
+        .update({ bio })
+        .eq("user_id", card.user_id);
+
+      if (!error) {
+        toast.success("Bio saved");
+      } else {
+        toast.error("Could not save bio");
+      }
+    }}
+    className="mt-2 rounded-full bg-[#19D66B] px-4 py-1.5 text-sm font-semibold text-white"
+  >
+    Save
+  </button>
+)}
      </div>
             </>
           ) : (
@@ -466,6 +487,7 @@ function ProfileCard({
 function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; onMessage: () => void }) {
   const name = card.profile?.display_name ?? card.profile?.username ?? "User";
   const [marriagePhoto, setMarriagePhoto] = useState(card.marriage_avatar_url);
+  const [bio, setBio] = useState(card.bio ?? "");
   const handleMarriagePhotoChange = async (
   event: React.ChangeEvent<HTMLInputElement>,
 ) => {
