@@ -377,7 +377,7 @@ function ProfileCard({
   const { user } = useAuth();
    const name = card.profile?.display_name ?? card.profile?.username ?? "User";
     return (
-    <article className="overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
+    <article className="relative z-10 overflow-hidden rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm">
       <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
         {user?.id === card.user_id && (
         <button
