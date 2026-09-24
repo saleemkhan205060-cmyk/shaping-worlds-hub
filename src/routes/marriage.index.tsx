@@ -282,7 +282,7 @@ useEffect(() => {
          value={bio}
          onChange={(e) => {
        const value = e.target.value;
-      const words = value.trim().split(/\s+/).filter(Boolean);
+      const words = value.match(/[\p{L}\p{N}]+/gu) || [];
 
     if (words.length > 100) {
     setBioError("Maximum 100 words allowed.");
@@ -303,7 +303,7 @@ useEffect(() => {
   </p>
 )}
        <p className="mt-1 text-xs text-white/70">
-       {bio.trim().split(/\s+/).filter(Boolean).length}/100 words
+       {(bio.match(/[\p{L}\p{N}]+/gu) || []).length}/100 words
      </p>
       {user?.id === selected.user_id && (
      <button
