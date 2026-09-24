@@ -486,7 +486,7 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
   event.target.value = "";
 };
   return (
-    <div className="relative flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
+    <div className="relative -mx-2 flex flex-col overflow-hidden rounded-[28px] border border-[#19D66B] bg-[#005A35] shadow-sm">
       {isSelf && (
       <Link
       to="/marriage/edit"
