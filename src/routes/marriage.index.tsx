@@ -94,7 +94,7 @@ function MarriagePage() {
     return;
   }
 
-  const userIds = (interests ?? []).map((item: { user_id: string }) => item.user_id);
+  const userIds: string[] = (interests ?? []).map((item: { user_id: string }) => item.user_id);
 
   if (userIds.length === 0) {
     setInterestedUsers([]);
@@ -117,8 +117,8 @@ function MarriagePage() {
 
   setInterestedUsers(
     userIds
-      .map((id) => profileMap.get(id))
-      .filter((profile): profile is Profile => !!profile)
+      .map((id: string) => profileMap.get(id))
+      .filter((profile: Profile | undefined): profile is Profile => !!profile)
   );
 };
 
@@ -386,7 +386,7 @@ function ProfileCard({
         e.stopPropagation();
        onInterestClick();
     }}
-    className="absolute -bottom-4 right-2 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
+    className="absolute bottom-2 right-2 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
     aria-label="View interested users"
   >
     <Heart className="h-5 w-5 fill-[#FF2D55] text-[#FF2D55]" />
