@@ -66,7 +66,6 @@ function MarriagePage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bio, setBio] = useState("");
   const [bioError, setBioError] = useState("");
-  const [bioSaved, setBioSaved] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [interestCount, setInterestCount] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
@@ -306,33 +305,6 @@ useEffect(() => {
        <p className="mt-1 text-xs text-white/70">
        {bio.length}/100 characters
      </p>
-      {user?.id === selected.user_id && (
-     <button
-    type="button"
-    onClick={async () => {
-  const { error } = await supabase
-    .from("marriage_profiles")
-    .update({ about: bio })
-    .eq("user_id", selected.user_id);
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-      setBioSaved(true);
-    setTimeout(() => setBioSaved(false), 2000);
-
-  setCards((prev) =>
-    prev.map((c) =>
-      c.user_id === selected.user_id ? { ...c, about: bio } : c
-    )
-  );
-}}
-    className="mt-2 rounded-md bg-[#19D66B] px-1.5 py-0 text-xs font-bold text-[#003D25]"
-  >
-    Save
-  </button>
-)}
      </div>
             </>
           ) : (
