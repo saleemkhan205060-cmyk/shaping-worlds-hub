@@ -89,7 +89,7 @@ export function MarriageAlbum({ ownerId, isSelf }: { ownerId: string; isSelf: bo
 
   return (
     <>
-      <div className="-mx-2 mt-3 flex h-[120px] items-center gap-[9px] overflow-x-auto rounded-[20px] border border-[#19D66B] bg-[#005A35] px-[10px]">
+      <div className="-mx-2 mt-2 flex h-[90px] items-center gap-[9px] overflow-x-auto rounded-[20px] border border-[#19D66B] bg-[#005A35] px-[10px]">
         {photos.map((p) => (
           <button
             key={p.id}
@@ -98,7 +98,7 @@ export function MarriageAlbum({ ownerId, isSelf }: { ownerId: string; isSelf: bo
             className="h-[70px] w-[75px] shrink-0 overflow-hidden rounded-[10px] bg-[#003D25]"
             aria-label="Open photo"
           >
-            <img src={p.photo_url} alt="" loading="lazy" className="h-full w-full object-contain" />
+            <img src={p.photo_url} alt="" loading="lazy" className="h-full w-full object-cover" />
           </button>
         ))}
         {isSelf && photos.length < MAX && (
