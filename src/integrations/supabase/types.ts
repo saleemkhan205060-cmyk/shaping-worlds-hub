@@ -381,15 +381,37 @@ export type Database = {
         Row: {
           about: string | null
           age: number | null
+          city: string | null
+          company: string | null
           country: string | null
           created_at: string
+          date_of_birth: string | null
+          diet: string | null
+          drinking: string | null
+          education: string | null
+          family_location: string | null
+          family_type: string | null
+          family_values: string | null
           gender: string | null
+          height: string | null
+          hobbies: string | null
           id: string
+          income: string | null
+          living_in: string | null
           looking_for: string | null
           marital_status: string | null
           marriage_avatar_url: string | null
+          mother_tongue: string | null
+          nationality: string | null
+          other_expectations: string | null
+          pref_age: string | null
+          pref_education: string | null
+          pref_location: string | null
+          pref_profession: string | null
           profession: string | null
           religion: string | null
+          siblings: string | null
+          smoking: string | null
           status: string
           updated_at: string
           user_id: string
@@ -397,15 +419,37 @@ export type Database = {
         Insert: {
           about?: string | null
           age?: number | null
+          city?: string | null
+          company?: string | null
           country?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          diet?: string | null
+          drinking?: string | null
+          education?: string | null
+          family_location?: string | null
+          family_type?: string | null
+          family_values?: string | null
           gender?: string | null
+          height?: string | null
+          hobbies?: string | null
           id?: string
+          income?: string | null
+          living_in?: string | null
           looking_for?: string | null
           marital_status?: string | null
           marriage_avatar_url?: string | null
+          mother_tongue?: string | null
+          nationality?: string | null
+          other_expectations?: string | null
+          pref_age?: string | null
+          pref_education?: string | null
+          pref_location?: string | null
+          pref_profession?: string | null
           profession?: string | null
           religion?: string | null
+          siblings?: string | null
+          smoking?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -413,15 +457,37 @@ export type Database = {
         Update: {
           about?: string | null
           age?: number | null
+          city?: string | null
+          company?: string | null
           country?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          diet?: string | null
+          drinking?: string | null
+          education?: string | null
+          family_location?: string | null
+          family_type?: string | null
+          family_values?: string | null
           gender?: string | null
+          height?: string | null
+          hobbies?: string | null
           id?: string
+          income?: string | null
+          living_in?: string | null
           looking_for?: string | null
           marital_status?: string | null
           marriage_avatar_url?: string | null
+          mother_tongue?: string | null
+          nationality?: string | null
+          other_expectations?: string | null
+          pref_age?: string | null
+          pref_education?: string | null
+          pref_location?: string | null
+          pref_profession?: string | null
           profession?: string | null
           religion?: string | null
+          siblings?: string | null
+          smoking?: string | null
           status?: string
           updated_at?: string
           user_id?: string
