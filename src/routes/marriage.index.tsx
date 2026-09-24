@@ -158,7 +158,7 @@ useEffect(() => {
       setLoading(true);
       const { data: mp } = await supabase
         .from("marriage_profiles")
-        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about")
+        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations")
         .order("updated_at", { ascending: false })
         .limit(100);
       const rows = (mp ?? []) as MarriageRow[];
@@ -337,6 +337,20 @@ useEffect(() => {
       <p className="text-xs text-white/60">Age</p>
       <p className="text-sm font-medium">{selected.age ?? "Not added"}</p>
     </div>
+    <div>
+  <p className="text-xs text-white/60">Date of Birth</p>
+  <p className="text-sm font-medium">{selected.date_of_birth ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Height</p>
+  <p className="text-sm font-medium">{selected.height ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Mother Tongue</p>
+  <p className="text-sm font-medium">{selected.mother_tongue ?? "Not added"}</p>
+</div>
 
     <div>
       <p className="text-xs text-white/60">Gender</p>
