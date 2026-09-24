@@ -94,7 +94,7 @@ function MarriagePage() {
     return;
   }
 
-  const userIds = (interests ?? []).map((item: { user_id: string }) => item.user_id);
+  const userIds: string[] = (interests ?? []).map((item: { user_id: string }) => item.user_id);
 
   if (userIds.length === 0) {
     setInterestedUsers([]);
@@ -117,8 +117,8 @@ function MarriagePage() {
 
   setInterestedUsers(
     userIds
-      .map((id) => profileMap.get(id))
-      .filter((profile): profile is Profile => !!profile)
+      .map((id: string) => profileMap.get(id))
+      .filter((profile: Profile | undefined): profile is Profile => !!profile)
   );
 };
 
