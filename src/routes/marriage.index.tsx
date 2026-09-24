@@ -305,7 +305,9 @@ useEffect(() => {
        <p className="mt-1 text-xs text-white/70">
        {bio.length}/100 characters
      </p>
-        <div className="mt-3 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-4 text-white">
+      </div>
+              
+     <div className="mt-3 -mx-2 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-4 text-white">
   <h3 className="mb-4 text-base font-bold">Personal Information</h3>
 
   <div className="flex flex-col gap-3">
