@@ -346,6 +346,7 @@ useEffect(() => {
       <p className="text-sm font-medium">{selected.looking_for ?? "Not added"}</p>
     </div>
      </div>
+       </div>
          </>
           ) : (
             <>
