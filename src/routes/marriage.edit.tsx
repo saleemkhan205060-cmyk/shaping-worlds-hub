@@ -445,21 +445,13 @@ other_expectations: otherExpectations.trim() || null,
          placeholder="e.g. ABC Company"
          />
           <FieldInput
-          icon={Wallet}
-          label="Income"
-          optional
-          value={income}
-         onChange={setIncome}
-         placeholder="e.g. 5000 SAR"
-         />
-          <FieldInput
-  icon={Wallet}
-  label="Income"
-  optional
-  value={income}
-  onChange={setIncome}
-  placeholder="e.g. 5000 SAR"
-/>
+          icon={Briefcase}
+        label="Income"
+        optional
+       value={income}
+      onChange={setIncome}
+    placeholder="e.g. 5000 SAR"
+   />
 
 <FieldInput
   icon={Users}
