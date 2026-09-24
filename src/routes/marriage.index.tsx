@@ -193,7 +193,7 @@ useEffect(() => {
   return (
     <Layout>
       <section className="min-h-screen bg-[#003D25] text-white">
-        <div className="mx-auto w-full max-w-[390px] px-3 pb-8 pt-3">
+        <div className="mx-auto w-full max-w-[410px] px-3 pb-8 pt-3">
           {interestOpen ? (
   <div className="mb-4 rounded-3xl border border-[#19D66B] bg-[#005A35] p-4">
     <div className="mb-4 flex items-center justify-between">
