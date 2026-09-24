@@ -283,8 +283,11 @@ useEffect(() => {
      className="w-full bg-transparent text-sm text-white outline-none resize-none"
     placeholder="Write about yourself..."
      />
-        {user?.id === selected.user_id && (
-  <button
+        <p className="mt-1 text-xs text-white/70">
+  {bio.trim().split(/\s+/).filter(Boolean).length}/100 words
+     </p>
+      {user?.id === selected.user_id && (
+     <button
     type="button"
     onClick={async () => {
   const { error } = await supabase
@@ -303,7 +306,7 @@ useEffect(() => {
     )
   );
 }}
-    className="mt-2 rounded-lg bg-[#19D66B] px-4 py-2 text-sm font-bold text-[#003D25]"
+    className="mt-2 rounded-lg bg-[#19D66B] px-2 py-1 text-sm font-bold text-[#003D25]"
   >
     Save
   </button>
@@ -609,7 +612,6 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
 
   {!isSelf && <InterestedButton targetId={card.user_id} />}
 </div>
-      {card.about && <p className="whitespace-pre-wrap px-5 pb-4 text-sm text-white/90">{card.about}</p>}
       <div className="mt-auto flex gap-2 border-t border-[#19D66B] p-3">
         <Button asChild variant="outline" className="h-10 flex-1 rounded-full border-[#19D66B] bg-transparent text-white hover:bg-[#00C853] hover:text-white">
           <Link to="/u/$id" params={{ id: card.user_id }}>View Profile</Link>
