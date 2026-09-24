@@ -64,6 +64,7 @@ function MarriagePage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [bio, setBio] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [interestCount, setInterestCount] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
@@ -467,7 +468,6 @@ function ProfileCard({
 function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; onMessage: () => void }) {
   const name = card.profile?.display_name ?? card.profile?.username ?? "User";
   const [marriagePhoto, setMarriagePhoto] = useState(card.marriage_avatar_url);
-  const [bio, setBio] = useState(card.bio ?? "");
   const handleMarriagePhotoChange = async (
   event: React.ChangeEvent<HTMLInputElement>,
 ) => {
