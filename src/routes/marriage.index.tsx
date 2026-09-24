@@ -283,6 +283,31 @@ useEffect(() => {
      className="w-full bg-transparent text-sm text-white outline-none resize-none"
     placeholder="Write about yourself..."
      />
+        {user?.id === selected.user_id && (
+  <button
+    type="button"
+    onClick={async () => {
+  const { error } = await supabase
+    .from("marriage_profiles")
+    .update({ about: bio })
+    .eq("user_id", selected.user_id);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setCards((prev) =>
+    prev.map((c) =>
+      c.user_id === selected.user_id ? { ...c, about: bio } : c
+    )
+  );
+}}
+    className="mt-2 rounded-lg bg-[#19D66B] px-4 py-2 text-sm font-bold text-[#003D25]"
+  >
+    Save
+  </button>
+)}
      </div>
             </>
           ) : (
@@ -367,7 +392,10 @@ useEffect(() => {
                   <ProfileCard
                    key={card.user_id}
                     card={card}
-                    onOpen={() => setSelectedId(card.user_id)}
+                    onOpen={() => {
+                    setSelectedId(card.user_id);
+                     setBio(card.about ?? "");
+                    }
                     interestCount={interestCount}
                     onInterestClick={() => setInterestOpen(true)}
                    />
