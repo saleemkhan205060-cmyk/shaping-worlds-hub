@@ -106,7 +106,7 @@ export function MarriageAlbum({ ownerId, isSelf }: { ownerId: string; isSelf: bo
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={busy}
-            className="flex h-[100px] w-[100px] shrink-0 flex-col items-center justify-center gap-1 rounded-[10px] border border-dashed border-[#19D66B] text-xs text-white/80"
+            className="flex h-[70px] w-[75px] shrink-0 flex-col items-center justify-center gap-1 rounded-[10px] border border-dashed border-[#19D66B] text-xs text-white/80"
             aria-label="Add photo"
           >
             {busy ? <Loader2 className="h-6 w-6 animate-spin" /> : <Plus className="h-6 w-6" />}
