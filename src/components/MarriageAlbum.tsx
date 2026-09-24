@@ -89,7 +89,7 @@ export function MarriageAlbum({ ownerId, isSelf }: { ownerId: string; isSelf: bo
 
   return (
     <>
-      <div className="-mx-2 mt-2 flex h-[90px] items-center gap-[9px] overflow-x-auto rounded-[20px] border border-[#19D66B] bg-[#005A35] px-[10px]">
+      <div className="-mx-2 mt-0.5 flex h-[90px] items-center gap-[9px] overflow-x-auto rounded-[20px] border border-[#19D66B] bg-[#005A35] px-[10px]">
         {photos.map((p) => (
           <button
             key={p.id}
