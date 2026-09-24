@@ -65,6 +65,7 @@ function MarriagePage() {
   const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bio, setBio] = useState("");
+  const [bioError, setBioError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [interestCount, setInterestCount] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
@@ -280,15 +281,29 @@ useEffect(() => {
         <textarea
          value={bio}
          onChange={(e) => {
-         e.target.style.height = "auto";
-         e.target.style.height = `${e.target.scrollHeight}px`;
-       setBio(e.target.value);
-      }}
+       const value = e.target.value;
+      const words = value.trim().split(/\s+/).filter(Boolean);
+
+    if (words.length > 100) {
+    setBioError("Maximum 100 words allowed.");
+    return;
+  }
+
+  setBioError("");
+  e.target.style.height = "auto";
+  e.target.style.height = `${e.target.scrollHeight}px`;
+  setBio(value);
+}}
     className="w-full min-h-[40px] bg-transparent text-sm text-white outline-none resize-none overflow-hidden"
-   placeholder="Write about yourself..."
+     placeholder="Write about yourself..."
       />
-        <p className="mt-1 text-xs text-white/70">
-  {bio.trim().split(/\s+/).filter(Boolean).length}/100 words
+        {bioError && (
+    <p className="mt-1 text-xs font-medium text-red-400">
+    {bioError}
+  </p>
+)}
+       <p className="mt-1 text-xs text-white/70">
+       {bio.trim().split(/\s+/).filter(Boolean).length}/100 words
      </p>
       {user?.id === selected.user_id && (
      <button
