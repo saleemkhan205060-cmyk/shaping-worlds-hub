@@ -95,7 +95,7 @@ export function MarriageAlbum({ ownerId, isSelf }: { ownerId: string; isSelf: bo
             key={p.id}
             type="button"
             onClick={() => setPreview(p)}
-            className="h-[100px] w-[100px] shrink-0 overflow-hidden rounded-[10px] bg-[#003D25]"
+            className="h-[70px] w-[75px] shrink-0 overflow-hidden rounded-[10px] bg-[#003D25]"
             aria-label="Open photo"
           >
             <img src={p.photo_url} alt="" loading="lazy" className="h-full w-full object-contain" />
