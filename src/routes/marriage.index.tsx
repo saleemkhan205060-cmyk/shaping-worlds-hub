@@ -313,6 +313,7 @@ useEffect(() => {
   onClick={() => {
     setMenuOpen(false);
     setInterestOpen(true);
+    setInterestCount(0);
   }}
   className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-white hover:bg-[#00643C]"
 >
