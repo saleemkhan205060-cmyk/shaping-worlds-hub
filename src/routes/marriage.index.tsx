@@ -396,7 +396,7 @@ function ProfileCard({
             e.stopPropagation();
             onInterestClick();
           }}
-          className="absolute top-[46%] -right-2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/10 text-white"
+          className="absolute top-[46%] -right-2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/10 text-white"
           aria-label="View interested users"
         >
           <Heart className="h-5 w-5 fill-[#FF2D55] text-[#FF2D55]" />
