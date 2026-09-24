@@ -494,7 +494,7 @@ other_expectations: otherExpectations.trim() || null,
 />
 
 <FieldSelect
-  icon={Wine}
+  icon={Heart}
   label="Drinking"
   value={drinking}
   onChange={setDrinking}
