@@ -45,7 +45,29 @@ type MarriageRow = {
   profession: string | null;
   marital_status: string | null;
   religion: string | null;
-  about: string | null;
+    about: string | null;
+  date_of_birth: string | null;
+  height: string | null;
+  mother_tongue: string | null;
+  city: string | null;
+  living_in: string | null;
+  nationality: string | null;
+  education: string | null;
+  company: string | null;
+  income: string | null;
+  family_type: string | null;
+  family_values: string | null;
+  siblings: string | null;
+  family_location: string | null;
+  smoking: string | null;
+  drinking: string | null;
+  diet: string | null;
+  hobbies: string | null;
+  pref_age: string | null;
+  pref_location: string | null;
+  pref_education: string | null;
+  pref_profession: string | null;
+  other_expectations: string | null;
 };
 
 type Profile = {
