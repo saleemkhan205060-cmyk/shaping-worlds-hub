@@ -391,15 +391,13 @@ function ProfileCard({
   >
     <Heart className="h-5 w-5 fill-[#FF2D55] text-[#FF2D55]" />
 
-    {interestCount > 0 && (
-     <span className="absolute -right-1 -top-1 text-[11px] font-bold text-white">
-      {interestCount}
-       </span>
-         {interestCount}
+       {interestCount > 0 && (
+        <span className="absolute -right-1 -top-1 text-[11px] font-bold text-white">
+        {interestCount}
         </span>
        )}
-     </button>
-   )}
+    </button>
+       )}
         <AvatarImg
           src={card.marriage_avatar_url || card.profile?.avatar_url}
           alt={name}
