@@ -57,7 +57,7 @@ type Profile = {
 type Card = MarriageRow & { profile: Profile | null };
 
 function MarriagePage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
@@ -126,6 +126,8 @@ function MarriagePage() {
 }, [user]);
 
 useEffect(() => {
+  if (authLoading) return;
+
   let alive = true;
   void (async () => {
       setLoading(true);
@@ -164,7 +166,7 @@ useEffect(() => {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [authLoading, user?.id]);
 
   const filtered = cards.filter((card) => {
     if (!q.trim()) return true;
