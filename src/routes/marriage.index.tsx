@@ -395,7 +395,7 @@ useEffect(() => {
                     onOpen={() => {
                     setSelectedId(card.user_id);
                      setBio(card.about ?? "");
-                    }
+                    }}
                     interestCount={interestCount}
                     onInterestClick={() => setInterestOpen(true)}
                    />
