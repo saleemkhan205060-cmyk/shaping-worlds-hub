@@ -282,7 +282,7 @@ useEffect(() => {
          value={bio}
          onChange={(e) => {
        const value = e.target.value;
-      const words = value.match(/[\p{L}\p{N}]+/gu) || [];
+      const words = value.trim() ? value.trim().split(/\s+/) : [];
 
     if (words.length > 100) {
     setBioError("Maximum 100 words allowed.");
