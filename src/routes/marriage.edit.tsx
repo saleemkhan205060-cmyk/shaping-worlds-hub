@@ -57,6 +57,29 @@ function MarriageEditPage() {
   const [religion, setReligion] = useState<string>("");
   const [about, setAbout] = useState<string>("");
 
+const [dateOfBirth, setDateOfBirth] = useState<string>("");
+const [height, setHeight] = useState<string>("");
+const [motherTongue, setMotherTongue] = useState<string>("");
+const [city, setCity] = useState<string>("");
+const [livingIn, setLivingIn] = useState<string>("");
+const [nationality, setNationality] = useState<string>("");
+const [education, setEducation] = useState<string>("");
+const [company, setCompany] = useState<string>("");
+const [income, setIncome] = useState<string>("");
+const [familyType, setFamilyType] = useState<string>("");
+const [familyValues, setFamilyValues] = useState<string>("");
+const [siblings, setSiblings] = useState<string>("");
+const [familyLocation, setFamilyLocation] = useState<string>("");
+const [smoking, setSmoking] = useState<string>("");
+const [drinking, setDrinking] = useState<string>("");
+const [diet, setDiet] = useState<string>("");
+const [hobbies, setHobbies] = useState<string>("");
+const [prefAge, setPrefAge] = useState<string>("");
+const [prefLocation, setPrefLocation] = useState<string>("");
+const [prefEducation, setPrefEducation] = useState<string>("");
+const [prefProfession, setPrefProfession] = useState<string>("");
+const [otherExpectations, setOtherExpectations] = useState<string>("");
+
   useEffect(() => {
     if (!authLoading && !user) navigate({ to: "/auth" });
   }, [authLoading, user, navigate]);
@@ -78,7 +101,30 @@ function MarriageEditPage() {
         setProfession(mp.profession ?? "");
         setMaritalStatus(mp.marital_status ?? "");
         setReligion(mp.religion ?? "");
-        setAbout(mp.about ?? "");
+setAbout(mp.about ?? "");
+
+setDateOfBirth(mp.date_of_birth ?? "");
+setHeight(mp.height ?? "");
+setMotherTongue(mp.mother_tongue ?? "");
+setCity(mp.city ?? "");
+setLivingIn(mp.living_in ?? "");
+setNationality(mp.nationality ?? "");
+setEducation(mp.education ?? "");
+setCompany(mp.company ?? "");
+setIncome(mp.income ?? "");
+setFamilyType(mp.family_type ?? "");
+setFamilyValues(mp.family_values ?? "");
+setSiblings(mp.siblings ?? "");
+setFamilyLocation(mp.family_location ?? "");
+setSmoking(mp.smoking ?? "");
+setDrinking(mp.drinking ?? "");
+setDiet(mp.diet ?? "");
+setHobbies(mp.hobbies ?? "");
+setPrefAge(mp.pref_age ?? "");
+setPrefLocation(mp.pref_location ?? "");
+setPrefEducation(mp.pref_education ?? "");
+setPrefProfession(mp.pref_profession ?? "");
+setOtherExpectations(mp.other_expectations ?? "");
       }
       setLoading(false);
     })();
@@ -105,6 +151,28 @@ function MarriageEditPage() {
           marital_status: maritalStatus || null,
           religion: religion || null,
           about: about.trim() || null,
+          date_of_birth: dateOfBirth || null,
+height: height.trim() || null,
+mother_tongue: motherTongue.trim() || null,
+city: city.trim() || null,
+living_in: livingIn.trim() || null,
+nationality: nationality.trim() || null,
+education: education.trim() || null,
+company: company.trim() || null,
+income: income.trim() || null,
+family_type: familyType.trim() || null,
+family_values: familyValues.trim() || null,
+siblings: siblings.trim() || null,
+family_location: familyLocation.trim() || null,
+smoking: smoking.trim() || null,
+drinking: drinking.trim() || null,
+diet: diet.trim() || null,
+hobbies: hobbies.trim() || null,
+pref_age: prefAge.trim() || null,
+pref_location: prefLocation.trim() || null,
+pref_education: prefEducation.trim() || null,
+pref_profession: prefProfession.trim() || null,
+other_expectations: otherExpectations.trim() || null,
         },
         { onConflict: "user_id" }
       );
@@ -158,6 +226,9 @@ function MarriageEditPage() {
         </div>
 
         <div className="space-y-3">
+          <div className="mb-2">
+         <h2 className="text-lg font-bold text-slate-900">Basic Information</h2>
+          </div>
           <FieldSelect icon={Calendar} label="Age" value={age} onChange={setAge}>
             <option value="">Select age</option>
             {Array.from({ length: 82 }, (_, i) => 18 + i).map((n) => (
@@ -166,6 +237,29 @@ function MarriageEditPage() {
               </option>
             ))}
           </FieldSelect>
+          <FieldInput
+  icon={Calendar}
+  label="Date of Birth"
+  value={dateOfBirth}
+  onChange={setDateOfBirth}
+  placeholder="YYYY-MM-DD"
+/>
+
+<FieldInput
+  icon={Users}
+  label="Height"
+  value={height}
+  onChange={setHeight}
+  placeholder="e.g. 5'8"
+/>
+
+<FieldInput
+  icon={Users}
+  label="Mother Tongue"
+  value={motherTongue}
+  onChange={setMotherTongue}
+  placeholder="e.g. Urdu"
+/>
          <FieldSelect icon={Users} label="Gender" value={gender} onChange={setGender}>
          <option value="">Select</option>
           <option value="Male">Male</option>
