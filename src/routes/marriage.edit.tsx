@@ -253,13 +253,13 @@ function MarriageEditPage() {
             </div>
             <textarea
               value={about}
-              maxLength={500}
+              maxLength={100}
               onChange={(e) => setAbout(e.target.value)}
               rows={4}
               placeholder="Write something about yourself…"
               className="w-full resize-none text-sm bg-transparent focus:outline-none placeholder:text-slate-400"
             />
-            <div className="text-right text-xs text-slate-400">{about.length}/500</div>
+            <div className="text-right text-xs text-slate-400">{about.length}/100</div>
           </div>
         </div>
 
