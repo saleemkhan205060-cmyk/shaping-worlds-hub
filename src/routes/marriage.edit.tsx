@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 import { Layout } from "../components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,7 +12,57 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 export const Route = createFileRoute("/marriage/edit")({
   component: MarriageEditPage,
 });
+const DATE_OF_BIRTH_MIN = new Date(1940, 0, 1);
+const DATE_OF_BIRTH_MAX = new Date();
 
+function DateOfBirthPicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const selectedDate = value ? new Date(`${value}T00:00:00`) : undefined;
+
+  return (
+    <>
+      <FieldRow icon={Calendar} label="Date of Birth">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-sm text-right text-slate-900 flex items-center gap-1"
+        >
+          {selectedDate ? (
+            format(selectedDate, "dd MMM yyyy")
+          ) : (
+            <span className="text-slate-400">Select date</span>
+          )}
+          <ChevronDown className="h-4 w-4 text-slate-400" />
+        </button>
+      </FieldRow>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogTitle>Select Date of Birth</DialogTitle>
+
+          <input
+            type="date"
+            min={format(DATE_OF_BIRTH_MIN, "yyyy-MM-dd")}
+            max={format(DATE_OF_BIRTH_MAX, "yyyy-MM-dd")}
+            value={value}
+            onChange={(e) => {
+              setOpen(false);
+              onChange(e.target.value);
+            }}
+            className="w-full h-12 rounded-xl border border-slate-200 px-3 text-base"
+          />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 const LOOKING_FOR = ["Male", "Female"];
 const MARITAL = ["Single", "Divorced", "Widowed"];
 const RELIGIONS = ["Islam", "Christianity", "Hinduism", "Sikhism", "Buddhism", "Judaism", "Other", "Prefer not to say"];
@@ -233,17 +284,15 @@ other_expectations: otherExpectations.trim() || null,
             <option value="">Select age</option>
             {Array.from({ length: 82 }, (_, i) => 18 + i).map((n) => (
               <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </FieldSelect>
-          <FieldInput
-  icon={Calendar}
-  label="Date of Birth"
+           {n}
+         </option>
+        ))}
+      </FieldSelect>
+
+   <DateOfBirthPicker
   value={dateOfBirth}
   onChange={setDateOfBirth}
-  placeholder="YYYY-MM-DD"
-/>
+    />
 
 <FieldInput
   icon={Users}
