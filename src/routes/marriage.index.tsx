@@ -325,7 +325,7 @@ useEffect(() => {
     )
   );
 }}
-    className="mt-2 rounded-md bg-[#19D66B] px-1.5 py-0.5 text-xs font-bold text-[#003D25]"
+    className="mt-2 rounded-md bg-[#19D66B] px-1.5 py-0 text-xs font-bold text-[#003D25]"
   >
     Save
   </button>
