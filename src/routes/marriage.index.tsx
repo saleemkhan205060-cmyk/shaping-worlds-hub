@@ -278,11 +278,15 @@ useEffect(() => {
       <div className="-mx-2 mt-0 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-3 text-white">
          <h3 className="mb-1 text-sm font-bold">About</h3>
         <textarea
-       value={bio}
-       onChange={(e) => setBio(e.target.value)}
-     className="w-full bg-transparent text-sm text-white outline-none resize-none"
-    placeholder="Write about yourself..."
-     />
+         value={bio}
+         onChange={(e) => {
+         e.target.style.height = "auto";
+         e.target.style.height = `${e.target.scrollHeight}px`;
+       setBio(e.target.value);
+      }}
+    className="w-full min-h-[40px] bg-transparent text-sm text-white outline-none resize-none overflow-hidden"
+   placeholder="Write about yourself..."
+      />
         <p className="mt-1 text-xs text-white/70">
   {bio.trim().split(/\s+/).filter(Boolean).length}/100 words
      </p>
