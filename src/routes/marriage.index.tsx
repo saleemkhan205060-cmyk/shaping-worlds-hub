@@ -345,10 +345,8 @@ useEffect(() => {
       <p className="text-xs text-white/60">Looking For</p>
       <p className="text-sm font-medium">{selected.looking_for ?? "Not added"}</p>
     </div>
-  </div>
-</div>
      </div>
-            </>
+         </>
           ) : (
             <>
               <div className="relative mb-3 aspect-[3.26/1] w-full overflow-hidden rounded-[16px] border border-[#19D66B]">
