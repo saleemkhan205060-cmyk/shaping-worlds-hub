@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { uploadToStorage } from "@/lib/resumable-upload";
+import { MarriageAlbum } from "@/components/MarriageAlbum";
 export const Route = createFileRoute("/marriage/")({
   component: MarriagePage,
   head: () => ({
@@ -268,6 +269,7 @@ useEffect(() => {
                 isSelf={user?.id === selected.user_id}
                 onMessage={() => openChat(selected.user_id)}
               />
+              <MarriageAlbum ownerId={selected.user_id} isSelf={user?.id === selected.user_id} />
             </>
           ) : (
             <>
