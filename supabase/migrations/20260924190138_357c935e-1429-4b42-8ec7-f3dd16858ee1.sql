@@ -1,0 +1,23 @@
+-- Add 22 optional detail fields to marriage_profiles (all nullable, no existing columns touched)
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS date_of_birth date;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS height text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS mother_tongue text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS city text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS living_in text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS nationality text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS education text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS company text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS income text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS family_type text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS family_values text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS siblings text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS family_location text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS smoking text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS drinking text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS diet text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS hobbies text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS pref_age text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS pref_location text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS pref_education text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS pref_profession text;
+ALTER TABLE public.marriage_profiles ADD COLUMN IF NOT EXISTS other_expectations text;
