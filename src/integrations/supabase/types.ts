@@ -350,6 +350,33 @@ export type Database = {
         }
         Relationships: []
       }
+      marriage_photos: {
+        Row: {
+          created_at: string
+          id: string
+          photo_path: string
+          photo_url: string
+          position: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo_path: string
+          photo_url: string
+          position?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo_path?: string
+          photo_url?: string
+          position?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       marriage_profiles: {
         Row: {
           about: string | null
