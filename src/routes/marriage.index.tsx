@@ -386,16 +386,16 @@ function ProfileCard({
         e.stopPropagation();
        onInterestClick();
     }}
-    className="absolute top-2 right-2 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
+    className="absolute -bottom-4 right-2 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
     aria-label="View interested users"
   >
     <Heart className="h-5 w-5 fill-[#FF2D55] text-[#FF2D55]" />
 
        {interestCount > 0 && (
-        <span className="absolute -right-1 -top-1 text-[11px] font-bold text-white">
-        {interestCount}
-        </span>
-       )}
+       <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white">
+    {interestCount}
+  </span>
+)}
     </button>
        )}
         <AvatarImg
