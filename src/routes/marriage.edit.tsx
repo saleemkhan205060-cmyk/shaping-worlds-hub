@@ -294,20 +294,59 @@ other_expectations: otherExpectations.trim() || null,
   onChange={setDateOfBirth}
     />
 
-<FieldInput
-  icon={Users}
-  label="Height"
-  value={height}
-  onChange={setHeight}
-  placeholder="e.g. 5'8"
-/>
+<FieldRow icon={Users} label="Height">
+  <select
+    value={height}
+    onChange={(e) => setHeight(e.target.value)}
+    className="w-full bg-transparent text-sm text-slate-900 outline-none"
+  >
+    <option value="">Select height</option>
+    <option value="4'10">4'10"</option>
+    <option value="4'11">4'11"</option>
+    <option value="5'0">5'0"</option>
+    <option value="5'1">5'1"</option>
+    <option value="5'2">5'2"</option>
+    <option value="5'3">5'3"</option>
+    <option value="5'4">5'4"</option>
+    <option value="5'5">5'5"</option>
+    <option value="5'6">5'6"</option>
+    <option value="5'7">5'7"</option>
+    <option value="5'8">5'8"</option>
+    <option value="5'9">5'9"</option>
+    <option value="5'10">5'10"</option>
+    <option value="5'11">5'11"</option>
+    <option value="6'0">6'0"</option>
+    <option value="6'1">6'1"</option>
+    <option value="6'2">6'2"</option>
+    <option value="6'3">6'3"</option>
+    <option value="6'4">6'4"</option>
+    <option value="6'5">6'5"</option>
+    <option value="6'6">6'6"</option>
+  </select>
+</FieldRow>
 
-<FieldInput
+    <FieldSelect
   icon={Users}
   label="Mother Tongue"
   value={motherTongue}
   onChange={setMotherTongue}
-  placeholder="e.g. Urdu"
+  options={[
+    "Urdu",
+    "Punjabi",
+    "Sindhi",
+    "Pashto",
+    "Balochi",
+    "Arabic",
+    "English",
+    "Bengali",
+    "Hindi",
+    "Gujarati",
+    "Tamil",
+    "Telugu",
+    "Malayalam",
+    "Marathi",
+    "Other",
+  ]}
 />
          <FieldSelect icon={Users} label="Gender" value={gender} onChange={setGender}>
          <option value="">Select</option>
@@ -335,6 +374,14 @@ other_expectations: otherExpectations.trim() || null,
               </button>
             </FieldRow>
           </div>
+
+          <FieldInput
+         icon={MapPin}
+         label="City"
+         value={city}
+         onChange={setCity}
+         placeholder="e.g. Jeddah"
+         />
 
           <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
             <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
@@ -368,7 +415,155 @@ other_expectations: otherExpectations.trim() || null,
             onChange={setProfession}
             placeholder="e.g. Engineer"
           />
+          <FieldInput
+           icon={MapPin}
+           label="Living In"
+           value={livingIn}
+           onChange={setLivingIn}
+           placeholder="e.g. Saudi Arabia"
+          />
+          <FieldInput
+         icon={Globe}
+         label="Nationality"
+         value={nationality}
+         onChange={setNationality}
+         placeholder="e.g. Pakistani"
+        />
+          <FieldInput
+         icon={GraduationCap}
+         label="Education"
+         value={education}
+         onChange={setEducation}
+        placeholder="e.g. Bachelor's"
+         />
+          <FieldInput
+          icon={Briefcase}
+          label="Company / Work"
+          optional
+          value={company}
+          onChange={setCompany}
+         placeholder="e.g. ABC Company"
+         />
+          <FieldInput
+          icon={Wallet}
+          label="Income"
+          optional
+          value={income}
+         onChange={setIncome}
+         placeholder="e.g. 5000 SAR"
+         />
+          <FieldInput
+  icon={Wallet}
+  label="Income"
+  optional
+  value={income}
+  onChange={setIncome}
+  placeholder="e.g. 5000 SAR"
+/>
 
+<FieldInput
+  icon={Users}
+  label="Family Type"
+  value={familyType}
+  onChange={setFamilyType}
+  placeholder="e.g. Nuclear"
+/>
+
+<FieldInput
+  icon={Heart}
+  label="Family Values"
+  value={familyValues}
+  onChange={setFamilyValues}
+  placeholder="e.g. Traditional"
+/>
+
+<FieldInput
+  icon={Users}
+  label="Siblings"
+  value={siblings}
+  onChange={setSiblings}
+  placeholder="e.g. 2 brothers, 1 sister"
+/>
+
+<FieldInput
+  icon={MapPin}
+  label="Family Location"
+  value={familyLocation}
+  onChange={setFamilyLocation}
+  placeholder="e.g. Lahore, Pakistan"
+/>
+
+<FieldSelect
+  icon={Ban}
+  label="Smoking"
+  value={smoking}
+  onChange={setSmoking}
+  options={["Non-smoker", "Occasionally", "Regularly"]}
+/>
+
+<FieldSelect
+  icon={Wine}
+  label="Drinking"
+  value={drinking}
+  onChange={setDrinking}
+  options={["Never", "Occasionally", "Regularly"]}
+/>
+
+<FieldSelect
+  icon={Utensils}
+  label="Diet"
+  value={diet}
+  onChange={setDiet}
+  options={["Vegetarian", "Non-vegetarian", "Vegan", "Other"]}
+/>
+
+<FieldInput
+  icon={Heart}
+  label="Hobbies & Interests"
+  value={hobbies}
+  onChange={setHobbies}
+  placeholder="e.g. Travel, Reading"
+/>
+
+<FieldInput
+  icon={Calendar}
+  label="Preferred Age"
+  value={prefAge}
+  onChange={setPrefAge}
+  placeholder="e.g. 25-35"
+/>
+
+<FieldInput
+  icon={MapPin}
+  label="Preferred Location"
+  value={prefLocation}
+  onChange={setPrefLocation}
+  placeholder="e.g. Saudi Arabia"
+/>
+
+<FieldInput
+  icon={GraduationCap}
+  label="Preferred Education"
+  value={prefEducation}
+  onChange={setPrefEducation}
+  placeholder="e.g. Bachelor's"
+/>
+
+<FieldInput
+  icon={Briefcase}
+  label="Preferred Profession"
+  value={prefProfession}
+  onChange={setPrefProfession}
+  placeholder="e.g. Engineer"
+/>
+
+<FieldInput
+  icon={MessageCircle}
+  label="Other Expectations"
+  value={otherExpectations}
+  onChange={setOtherExpectations}
+  placeholder="Any other expectations"
+/>
           <FieldSelect icon={Heart} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
             <option value="">Select</option>
             {MARITAL.map((o) => (
