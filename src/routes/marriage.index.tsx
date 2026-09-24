@@ -372,6 +372,111 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.company ?? "Not added"}</p>
 </div>
 
+    <div>
+  <p className="text-xs text-white/60">City</p>
+  <p className="text-sm font-medium">{selected.city ?? "Not added"}</p>
+</div>
+
+    <div>
+  <p className="text-xs text-white/60">Living In</p>
+  <p className="text-sm font-medium">{selected.living_in ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Nationality</p>
+  <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Education</p>
+  <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
+</div>
+
+    <div>
+  <p className="text-xs text-white/60">Income</p>
+  <p className="text-sm font-medium">{selected.income ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Family Type</p>
+  <p className="text-sm font-medium">{selected.family_type ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Family Values</p>
+  <p className="text-sm font-medium">{selected.family_values ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Siblings</p>
+  <p className="text-sm font-medium">{selected.siblings ?? "Not added"}</p>
+</div>
+
+    <div>
+  <p className="text-xs text-white/60">Family Location</p>
+  <p className="text-sm font-medium">{selected.family_location ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Smoking</p>
+  <p className="text-sm font-medium">{selected.smoking ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Drinking</p>
+  <p className="text-sm font-medium">{selected.drinking ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Diet</p>
+  <p className="text-sm font-medium">{selected.diet ?? "Not added"}</p>
+</div>
+
+    <div>
+  <p className="text-xs text-white/60">Hobbies & Interests</p>
+  <p className="text-sm font-medium">{selected.hobbies ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Preferred Age</p>
+  <p className="text-sm font-medium">{selected.pref_age ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Preferred Location</p>
+  <p className="text-sm font-medium">{selected.pref_location ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Preferred Education</p>
+  <p className="text-sm font-medium">{selected.pref_education ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Preferred Profession</p>
+  <p className="text-sm font-medium">{selected.pref_profession ?? "Not added"}</p>
+</div>
+
+    <div>
+  <p className="text-xs text-white/60">Other Expectations</p>
+  <p className="text-sm font-medium">{selected.other_expectations ?? "Not added"}</p>
+</div>
+    
+<div>
+  <p className="text-xs text-white/60">Living In</p>
+  <p className="text-sm font-medium">{selected.living_in ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Nationality</p>
+  <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
+</div>
+
+<div>
+  <p className="text-xs text-white/60">Education</p>
+  <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
+</div>
+
 <div>
   <p className="text-xs text-white/60">Education</p>
   <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
