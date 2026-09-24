@@ -269,7 +269,19 @@ useEffect(() => {
                 isSelf={user?.id === selected.user_id}
                 onMessage={() => openChat(selected.user_id)}
               />
-              <MarriageAlbum ownerId={selected.user_id} isSelf={user?.id === selected.user_id} />
+              <MarriageAlbum
+             ownerId={selected.user_id}
+          isSelf={user?.id === selected.user_id}
+         />
+
+      <div className="-mx-2 mt-1 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-3 text-white">
+         <h3 className="mb-1 text-sm font-bold">About</h3>
+        <p className="text-sm leading-relaxed text-white/85">
+       {selected.bio
+    ? selected.bio.split(/\s+/).slice(0, 100).join(" ")
+    : "No bio available."}
+  </p>
+     </div>
             </>
           ) : (
             <>
