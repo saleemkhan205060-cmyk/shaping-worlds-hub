@@ -66,6 +66,7 @@ function MarriagePage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bio, setBio] = useState("");
   const [bioError, setBioError] = useState("");
+  const [bioSaved, setBioSaved] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [interestCount, setInterestCount] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
@@ -303,7 +304,7 @@ useEffect(() => {
   </p>
 )}
        <p className="mt-1 text-xs text-white/70">
-       {(bio.match(/[\p{L}\p{N}]+/gu) || []).length}/100 words
+       {bio.length}/100 characters
      </p>
       {user?.id === selected.user_id && (
      <button
@@ -318,6 +319,8 @@ useEffect(() => {
     console.error(error);
     return;
   }
+      setBioSaved(true);
+    setTimeout(() => setBioSaved(false), 2000);
 
   setCards((prev) =>
     prev.map((c) =>
