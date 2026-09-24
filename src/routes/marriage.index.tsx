@@ -301,10 +301,50 @@ useEffect(() => {
     <p className="mt-1 text-xs font-medium text-red-400">
     {bioError}
   </p>
-)}
+     )}
        <p className="mt-1 text-xs text-white/70">
        {bio.length}/100 characters
      </p>
+        <div className="mt-3 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-4 text-white">
+  <h3 className="mb-4 text-base font-bold">Personal Information</h3>
+
+  <div className="flex flex-col gap-3">
+    <div>
+      <p className="text-xs text-white/60">Age</p>
+      <p className="text-sm font-medium">{selected.age ?? "Not added"}</p>
+    </div>
+
+    <div>
+      <p className="text-xs text-white/60">Gender</p>
+      <p className="text-sm font-medium">{selected.gender ?? "Not added"}</p>
+    </div>
+
+    <div>
+      <p className="text-xs text-white/60">Country</p>
+      <p className="text-sm font-medium">{selected.country ?? "Not added"}</p>
+    </div>
+
+    <div>
+      <p className="text-xs text-white/60">Profession</p>
+      <p className="text-sm font-medium">{selected.profession ?? "Not added"}</p>
+    </div>
+
+    <div>
+      <p className="text-xs text-white/60">Marital Status</p>
+      <p className="text-sm font-medium">{selected.marital_status ?? "Not added"}</p>
+    </div>
+
+    <div>
+      <p className="text-xs text-white/60">Religion</p>
+      <p className="text-sm font-medium">{selected.religion ?? "Not added"}</p>
+    </div>
+
+    <div>
+      <p className="text-xs text-white/60">Looking For</p>
+      <p className="text-sm font-medium">{selected.looking_for ?? "Not added"}</p>
+    </div>
+  </div>
+</div>
      </div>
             </>
           ) : (
