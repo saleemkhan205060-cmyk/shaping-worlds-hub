@@ -285,7 +285,7 @@ export function Layout({
           <div className="flex items-center gap-1 sm:gap-2">
             <Link
               to="/notifications"
-              className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
+              className="relative h-10 w-10 rounded-full hover:bg-[#005A35] flex items-center justify-center text-white"
               aria-label="Notifications"
             >
               <Bell className="h-7 w-7" />
@@ -296,7 +296,7 @@ export function Layout({
                 <button
                   type="button"
                   aria-label="Menu"
-                  className="relative h-12 w-12 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-700"
+                  className="relative h-10 w-10 rounded-full hover:bg-[#005A35] flex items-center justify-center text-white"
                 >
                   <Menu className="h-7 w-7" />
                 </button>
