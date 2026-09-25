@@ -330,7 +330,8 @@ useEffect(() => {
       </div>
               
      <div className="-mx-2 rounded-[20px] border border-[#19D66B] bg-[#005A35] px-4 py-4 text-white">
-  <h3 className="mb-4 text-base font-bold">Personal Information</h3>
+  <h3 className="mb-1 text-base font-bold">👤 About You</h3>
+<p className="mb-4 text-xs text-white/70">Tell others about yourself</p>
 
   <div className="flex flex-col gap-3">
     <div>
@@ -436,7 +437,13 @@ useEffect(() => {
   <p className="text-xs text-white/60">Hobbies & Interests</p>
   <p className="text-sm font-medium">{selected.hobbies ?? "Not added"}</p>
 </div>
-
+<div className="pt-4 border-t border-white/20">
+  <h3 className="mb-1 text-base font-bold">💚 Partner Preferences</h3>
+  <p className="mb-4 text-xs text-white/70">
+    What you are looking for in a partner
+  </p>
+</div>
+    
 <div>
   <p className="text-xs text-white/60">Preferred Age</p>
   <p className="text-sm font-medium">{selected.pref_age ?? "Not added"}</p>
