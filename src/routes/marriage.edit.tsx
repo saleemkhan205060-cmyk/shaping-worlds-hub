@@ -686,13 +686,17 @@ function FieldSelect({
 }) {
   return (
     <FieldRow icon={icon} label={label} optional={optional}>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="text-sm text-right bg-transparent focus:outline-none appearance-none pr-1"
-      >
-        {children}
-      </select>
+      <div className="relative flex items-center">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="text-sm text-right bg-transparent focus:outline-none appearance-none pr-7 cursor-pointer"
+        >
+          {children}
+        </select>
+
+        <ChevronDown className="absolute right-0 h-4 w-4 text-slate-400 pointer-events-none" />
+      </div>
     </FieldRow>
   );
 }
