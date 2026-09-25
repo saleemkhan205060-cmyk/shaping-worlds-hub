@@ -917,12 +917,12 @@ export function HomeFeed() {
               ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
               : t.id === "marriage"
               ? { active: "bg-pink-500 text-white border-pink-500", inactive: "bg-white text-pink-600 border-pink-200 hover:bg-pink-50" }
-              : { active: "bg-indigo-600 text-white border-indigo-600", inactive: "bg-white text-slate-600 border-slate-200 hover:bg-slate-50" };
+              : { active: "bg-[#19D66B] text-[#003D25] border-[#19D66B]", inactive: "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]" };
           return (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-semibold border min-w-[68px] transition ${
+              className={`shrink-0 px-3 py-1 rounded-xl text-xs font-semibold border min-w-[68px] transition ${
                 active ? color.active + " shadow-sm" : color.inactive
               }`}
             >
