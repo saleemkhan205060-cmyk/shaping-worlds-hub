@@ -106,7 +106,7 @@ export function OnlineUsers() {
               className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-emerald-500 border-2 border-white"
             />
           </div>
-          <span className="mt-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 truncate max-w-full">
+          <span className="mt-1.5 text-[11px] sm:text-xs font-semibold text-white truncate max-w-full">
             Marriage
           </span>
         </Link>
@@ -125,7 +125,7 @@ export function OnlineUsers() {
                 {u?.avatar_url ? (
                   <img src={u.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
                 ) : (
-                  <div className="h-full w-full flex items-center justify-center text-slate-500 font-bold">
+                  <div className="h-full w-full flex items-center justify-center text-white font-bold">
                     {first[0]?.toUpperCase()}
                   </div>
                 )}
