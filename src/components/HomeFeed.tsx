@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   Video as VideoIcon,
   Send,
+  Share2,
   X,
   Search,
   Heart,
@@ -42,7 +43,7 @@ import { uploadToStorage } from "@/lib/resumable-upload";
 import { Progress } from "@/components/ui/progress";
 import { FullscreenVideoEditor } from "@/components/FullscreenVideoEditor";
 import likeSoundAsset from "@/assets/like.mp3.asset.json";
-import shareIconAsset from "@/assets/share-icon.png.asset.json";
+import { Navigation2 } from "lucide-react";
 import { resolveAssetUrl } from "@/lib/asset-url";
 import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
 
@@ -1294,7 +1295,7 @@ export function HomeFeed() {
                     className="flex flex-col items-center gap-0.5 text-white hover:text-[#19D66B]"
                     aria-label="Share"
                   >
-                    <img src={resolveAssetUrl(shareIconAsset.url)} alt="Share" className="h-7 w-7 object-contain" />
+                    <Share2 className="h-6 w-6" />
                     <span className="text-[11px] font-semibold tabular-nums">{shareCounts[p.id] ?? 0}</span>
                   </button>
                   {hasMedia && (
