@@ -1027,7 +1027,7 @@ export function HomeFeed() {
             const comments = commentCounts[p.id] ?? 0;
             const hasMedia = (p.media_type === "image" || p.media_type === "video") && p.media_url;
             return (
-              <article key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <article key={p.id} className="bg-[#005A35] rounded-2xl border border-[#19D66B] overflow-hidden shadow-sm">
                 <div className="flex items-center gap-2 px-4 py-1">
                   <Link
                     to="/u/$id"
