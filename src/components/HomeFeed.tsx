@@ -909,10 +909,10 @@ export function HomeFeed() {
         {TABS.map((t) => {
           const active = tab === t.id;
           const color =
-            t.id === "videos"
-              ? { active: "bg-rose-500 text-white border-rose-500", inactive: "bg-white text-rose-600 border-rose-200 hover:bg-rose-50" }
-              : t.id === "photos"
-              ? { active: "bg-emerald-500 text-white border-emerald-500", inactive: "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50" }
+               t.id === "videos"
+               ? { active: "bg-[#19D66B] text-[#003D25] border-[#19D66B]", inactive: "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]" }
+               : t.id === "photos"
+               ? { active: "bg-[#19D66B] text-[#003D25] border-[#19D66B]", inactive: "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]" }
               : t.id === "users"
               ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
               : t.id === "marriage"
