@@ -853,7 +853,7 @@ export function HomeFeed() {
               <button
                 type="button"
                 onClick={() => setPrivacyOpen((v) => !v)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#19D66B] bg-[#004A2D] text-xs font-semibold text-white hover:bg-[#005A35]"
                 aria-haspopup="menu"
                 aria-expanded={privacyOpen}
               >
