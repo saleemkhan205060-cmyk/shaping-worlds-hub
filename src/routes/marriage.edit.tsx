@@ -130,7 +130,12 @@ const [prefLocation, setPrefLocation] = useState<string>("");
 const [prefEducation, setPrefEducation] = useState<string>("");
 const [prefProfession, setPrefProfession] = useState<string>("");
 const [otherExpectations, setOtherExpectations] = useState<string>("");
-
+const [prefLivingIn, setPrefLivingIn] = useState<string>("");
+const [prefNationality, setPrefNationality] = useState<string>("");
+const [prefEducation2, setPrefEducation2] = useState<string>("");
+const [prefIncome, setPrefIncome] = useState<string>("");
+const [prefCity, setPrefCity] = useState<string>("");
+const [prefMaritalStatus, setPrefMaritalStatus] = useState<string>("");
   useEffect(() => {
     if (!authLoading && !user) navigate({ to: "/auth" });
   }, [authLoading, user, navigate]);
@@ -176,6 +181,12 @@ setPrefLocation(mp.pref_location ?? "");
 setPrefEducation(mp.pref_education ?? "");
 setPrefProfession(mp.pref_profession ?? "");
 setOtherExpectations(mp.other_expectations ?? "");
+setPrefLivingIn(mp.pref_living_in ?? "");
+setPrefNationality(mp.pref_nationality ?? "");
+setPrefEducation2(mp.pref_education_2 ?? "");
+setPrefIncome(mp.pref_income ?? "");
+setPrefCity(mp.pref_city ?? "");
+setPrefMaritalStatus(mp.pref_marital_status ?? "");
       }
       setLoading(false);
     })();
@@ -224,6 +235,12 @@ pref_location: prefLocation.trim() || null,
 pref_education: prefEducation.trim() || null,
 pref_profession: prefProfession.trim() || null,
 other_expectations: otherExpectations.trim() || null,
+pref_living_in: prefLivingIn.trim() || null,
+pref_nationality: prefNationality.trim() || null,
+pref_education_2: prefEducation2.trim() || null,
+pref_income: prefIncome.trim() || null,
+pref_city: prefCity.trim() || null,
+pref_marital_status: prefMaritalStatus.trim() || null,
         },
         { onConflict: "user_id" }
       );
@@ -546,7 +563,55 @@ other_expectations: otherExpectations.trim() || null,
   label="Other Expectations"
   value={otherExpectations}
   onChange={setOtherExpectations}
-  placeholder="Any other expectations"
+placeholder="Any other expectations"
+/>
+
+<FieldInput
+  icon={MapPin}
+  label="Living In"
+  value={prefLivingIn}
+  onChange={setPrefLivingIn}
+  placeholder="Enter nationality"
+/>
+
+<FieldInput
+  icon={Globe}
+  label="Nationality"
+  value={prefNationality}
+  onChange={setPrefNationality}
+  placeholder="Enter nationality"
+/>
+
+<FieldInput
+  icon={GraduationCap}
+  label="Education"
+  value={prefEducation2}
+  onChange={setPrefEducation2}
+  placeholder="e.g. Bachelor's"
+/>
+
+<FieldInput
+  icon={Wallet}
+  label="Income"
+  value={prefIncome}
+  onChange={setPrefIncome}
+  placeholder="e.g. 5000 SAR"
+/>
+
+<FieldInput
+  icon={MapPin}
+  label="City"
+  value={prefCity}
+  onChange={setPrefCity}
+  placeholder="Enter city"
+/>
+
+<FieldInput
+  icon={Heart}
+  label="Marital Status"
+  value={prefMaritalStatus}
+  onChange={setPrefMaritalStatus}
+  placeholder="e.g. Single"
 />
           <FieldSelect icon={Heart} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
             <option value="">Select</option>
