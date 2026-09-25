@@ -375,13 +375,24 @@ other_expectations: otherExpectations.trim() || null,
             </FieldRow>
           </div>
 
-          <FieldInput
-         icon={MapPin}
-         label="City"
-         value={city}
-         onChange={setCity}
-         placeholder="e.g. Jeddah"
-         />
+           <FieldSelect
+  icon={MapPin}
+  label="City"
+  value={city}
+  onChange={setCity}
+>
+  <option value="">Select</option>
+  <option value="Jeddah">Jeddah</option>
+  <option value="Riyadh">Riyadh</option>
+  <option value="Makkah">Makkah</option>
+  <option value="Madinah">Madinah</option>
+  <option value="Dammam">Dammam</option>
+  <option value="Khobar">Khobar</option>
+  <option value="Taif">Taif</option>
+  <option value="Abha">Abha</option>
+  <option value="Tabuk">Tabuk</option>
+  <option value="Other">Other</option>
+</FieldSelect>
 
           <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
             <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
