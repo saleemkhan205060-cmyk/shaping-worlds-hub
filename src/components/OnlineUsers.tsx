@@ -79,7 +79,7 @@ export function OnlineUsers() {
   if (orderedIds.length === 0 || (!me && onlineIds.length === 0)) return null;
 
   return (
-    <section className="mb-1 bg-white/70 rounded-3xl border border-slate-200/60 shadow-sm p-3 sm:p-4">
+    <section className="mb-1 bg-[#005A35] rounded-3xl border border-[#19D66B] shadow-sm px-3 py-2 sm:px-4 sm:py-2">
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           <span className={`h-2.5 w-2.5 rounded-full ${STATUS_META[myStatus].dot} shadow-[0_0_0_3px_rgba(16,185,129,0.18)]`} />
