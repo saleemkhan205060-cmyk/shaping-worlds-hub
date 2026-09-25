@@ -550,7 +550,7 @@ other_expectations: otherExpectations.trim() || null,
 />
 
 <FieldInput
-  icon={MessageCircle}
+  icon={Heart}
   label="Other Expectations"
   value={otherExpectations}
   onChange={setOtherExpectations}
