@@ -429,6 +429,11 @@ useEffect(() => {
   <p className="text-xs text-white/60">Hobbies & Interests</p>
   <p className="text-sm font-medium">{selected.hobbies ?? "Not added"}</p>
 </div>
+
+ <div>
+  <p className="text-xs text-white/60">Religion</p>
+  <p className="text-sm font-medium">{selected.religion ?? "Not added"}</p>
+</div>
     
 <div className="pt-4 border-t border-white/20">
   <h3 className="mb-1 text-base font-bold">💚 Partner Preferences</h3>
