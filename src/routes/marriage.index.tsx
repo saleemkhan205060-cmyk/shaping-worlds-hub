@@ -68,6 +68,9 @@ type MarriageRow = {
   pref_education: string | null;
   pref_profession: string | null;
   other_expectations: string | null;
+  pref_income: string | null;
+  pref_height: string | null;
+  pref_religion: string | null;
 };
 
 type Profile = {
@@ -158,8 +161,7 @@ useEffect(() => {
       setLoading(true);
       const { data: mp } = await supabase
         .from("marriage_profiles")
-        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations, pref_income")
-        .order("updated_at", { ascending: false })
+        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations, pref_income, pref_height, pref_religion")
         .limit(100);
       const rows = (mp ?? []) as MarriageRow[];
      const sortedRows = user
@@ -494,7 +496,7 @@ useEffect(() => {
 
     <div>
       <p className="text-xs text-white/60">Religion</p>
-      <p className="text-sm font-medium">{selected.religion ?? "Not added"}</p>
+      <p className="text-sm font-medium">{selected.pref_religion ?? "Not added"}</p>
     </div>
 
      </div>
