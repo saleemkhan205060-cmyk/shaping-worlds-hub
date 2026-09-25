@@ -247,7 +247,7 @@ export function Layout({
             <button
               type="button"
               onClick={() => navigate({ to: "/search", search: { q: "", tab: "all" } })}
-              className="group flex items-center gap-2 h-11 w-full max-w-md px-4 rounded-full bg-gradient-to-r from-indigo-50 to-pink-50 hover:from-indigo-100 hover:to-pink-100 border border-indigo-100 transition shadow-sm"
+              className="group flex items-center gap-2 h-9 w-full max-w-md px-4 rounded-full bg-[#004A2D] hover:bg-[#005A35] border border-[#19D66B] transition shadow-sm"
               aria-label="Search"
             >
               <span className="h-7 w-7 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 text-white flex items-center justify-center shrink-0 shadow">
