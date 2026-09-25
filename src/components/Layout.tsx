@@ -225,11 +225,15 @@ export function Layout({
       <header className={`sticky top-0 z-30 bg-[#003D25] backdrop-blur border-b border-slate-200 ${mediaFullscreen ? "hidden" : fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img
-             src={logoUrl}
-             alt="VIP Life logo"
-             className="h-12 w-12 rounded-full bg-white p-1 object-contain"
-             />
+            <div className="h-12 w-12 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full bg-white p-1 flex items-center justify-center">
+           <img
+           src={logoUrl}
+          alt="VIP Life logo"
+         className="h-9 w-9 object-contain"
+        />
+       </div>
+          </div>
             <div className="leading-tight hidden xs:block sm:block">
               <div className="font-extrabold text-base tracking-tight">VIP</div>
               <div className="font-extrabold text-base -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
