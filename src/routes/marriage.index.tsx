@@ -338,10 +338,6 @@ useEffect(() => {
       <p className="text-xs text-white/60">Age</p>
       <p className="text-sm font-medium">{selected.age ?? "Not added"}</p>
     </div>
-    <div>
-  <p className="text-xs text-white/60">Date of Birth</p>
-  <p className="text-sm font-medium">{selected.date_of_birth ?? "Not added"}</p>
-</div>
 
 <div>
   <p className="text-xs text-white/60">Height</p>
@@ -458,11 +454,6 @@ useEffect(() => {
   <p className="text-xs text-white/60">Other Expectations</p>
   <p className="text-sm font-medium">{selected.other_expectations ?? "Not added"}</p>
 </div>
-    
-<div>
-  <p className="text-xs text-white/60">Living In</p>
-  <p className="text-sm font-medium">{selected.living_in ?? "Not added"}</p>
-</div>
 
 <div>
   <p className="text-xs text-white/60">Nationality</p>
@@ -484,15 +475,6 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.city ?? "Not added"}</p>
 </div>
 
-<div>
-  <p className="text-xs text-white/60">Living In</p>
-  <p className="text-sm font-medium">{selected.living_in ?? "Not added"}</p>
-</div>
-
-<div>
-  <p className="text-xs text-white/60">Nationality</p>
-  <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
-</div>
     <div>
       <p className="text-xs text-white/60">Marital Status</p>
       <p className="text-sm font-medium">{selected.marital_status ?? "Not added"}</p>
