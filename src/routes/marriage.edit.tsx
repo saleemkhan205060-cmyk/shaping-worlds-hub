@@ -254,7 +254,7 @@ other_expectations: otherExpectations.trim() || null,
           <Link to="/marriage" className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <h1 className="text-xl font-extrabold flex-1 text-center">Marriage Profile</h1>
+          <h1 className="text-xl font-extrabold flex-1 text-center text-white">Marriage Profile</h1>
         </div>
 
         <div className="flex flex-col items-center mb-6">
@@ -265,13 +265,13 @@ other_expectations: otherExpectations.trim() || null,
               {(displayName || "U")[0]?.toUpperCase()}
             </div>
           )}
-          <p className="mt-3 font-semibold">{displayName || "Your profile"}</p>
-          <p className="text-xs text-slate-500">Using your account profile photo</p>
+          <p className="mt-3 font-semibold text-white">{displayName || "Your profile"}</p>
+          <p className="text-xs text-white/70">Using your account profile photo</p>
         </div>
 
         <div className="space-y-3">
           <div className="mb-2">
-         <h2 className="text-lg font-bold text-slate-900">Basic Information</h2>
+         <h2 className="text-lg font-bold text-white">Basic Information</h2>
           </div>
           <FieldSelect icon={Calendar} label="Age" value={age} onChange={setAge}>
             <option value="">Select age</option>
