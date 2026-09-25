@@ -255,13 +255,6 @@ other_expectations: otherExpectations.trim() || null,
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-xl font-extrabold flex-1 text-center">Marriage Profile</h1>
-          <button
-            onClick={save}
-            disabled={saving}
-            className="text-pink-600 font-semibold disabled:opacity-50"
-          >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
-          </button>
         </div>
 
         <div className="flex flex-col items-center mb-6">
