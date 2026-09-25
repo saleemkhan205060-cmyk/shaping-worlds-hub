@@ -389,10 +389,10 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
 </div>
 
-  <div>
+ <div>
   <p className="text-xs text-white/60">Income</p>
-  <p className="text-sm font-medium">{selected.pref_income ?? "Not added"}</p>
-</div>
+  <p className="text-sm font-medium">{selected.income ?? "Not added"}</p>
+ </div>
 
 <div>
   <p className="text-xs text-white/60">Family Type</p>
@@ -467,7 +467,7 @@ useEffect(() => {
 
 <div>
   <p className="text-xs text-white/60">Income</p>
-  <p className="text-sm font-medium">{selected.income ?? "Not added"}</p>
+  <p className="text-sm font-medium">{selected.pref_income ?? "Not added"}</p>
 </div>
 
 <div>
