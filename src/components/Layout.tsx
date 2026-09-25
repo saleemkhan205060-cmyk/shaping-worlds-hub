@@ -220,7 +220,7 @@ export function Layout({
   return (
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
     <FullscreenContext.Provider value={{ mediaFullscreen, setMediaFullscreen }}>
-    <div className={`min-h-screen bg-slate-50 text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
+    <div className={`min-h-screen bg-[#003D25] text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
 
       <header className={`sticky top-0 z-30 bg-[#003D25] backdrop-blur border-b border-slate-200 ${mediaFullscreen ? "hidden" : fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
