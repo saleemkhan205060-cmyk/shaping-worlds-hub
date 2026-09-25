@@ -194,7 +194,7 @@ export function OnlineUsers() {
           );
 
           const label = (
-            <span className="mt-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 truncate max-w-full">
+            <span className="mt-1.5 text-[11px] sm:text-xs font-semibold text-white truncate max-w-full">
               {isMe ? "You" : first}
             </span>
           );
