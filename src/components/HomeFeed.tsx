@@ -683,7 +683,7 @@ export function HomeFeed() {
             rows={2}
             maxLength={500}
             placeholder="Share something with the world…"
-            className="w-full resize-none text-sm focus:outline-none placeholder:text-slate-400"
+            className="w-full resize-none text-sm text-white focus:outline-none placeholder:text-white/60"
           />
           {preview && file && (
             <div className="relative mt-2 rounded-xl overflow-hidden bg-slate-100">
