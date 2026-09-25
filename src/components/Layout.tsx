@@ -228,7 +228,7 @@ export function Layout({
             <img
              src={logoUrl}
              alt="VIP Life logo"
-             className="h-12 w-12 rounded-full bg-white p-1 object-contain"
+             className="h-10 w-10 rounded-full bg-white p-1 object-contain"
              />
             <div className="leading-tight hidden xs:block sm:block">
               <div className="font-extrabold text-base tracking-tight">VIP</div>
