@@ -226,7 +226,7 @@ export function Layout({
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="h-12 w-12 flex items-center justify-center">
-            <div className="h-10 w-10 rounded-full bg-white p-1 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full border-2 border-white flex items-center justify-center">
            <img
            src={logoUrl}
           alt="VIP Life logo"
