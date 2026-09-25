@@ -1032,7 +1032,7 @@ export function HomeFeed() {
                   <Link
                     to="/u/$id"
                     params={{ id: p.user_id }}
-                    className="flex items-center gap-3 flex-1 min-w-0 hover:bg-slate-50 transition rounded-lg -mx-1 px-1 py-0"
+                    className="flex items-center gap-3 flex-1 min-w-0 transition rounded-lg -mx-1 px-1 py-0"
                   >
                     <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
                       <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
