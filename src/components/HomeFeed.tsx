@@ -1241,10 +1241,10 @@ export function HomeFeed() {
                   </div>
                   </MediaActions>
                 )}
-                <div className="flex items-center gap-5 px-4 py-2 text-sm text-slate-600">
+                <div className="flex items-center gap-5 px-4 py-2 text-sm text-white">
                   <button
                     onClick={() => toggleLike(p.id)}
-                    className={`flex flex-col items-center gap-0.5 transition ${isLiked ? "text-rose-500" : "hover:text-rose-500"}`}
+                    className={`flex flex-col items-center gap-0.5 transition ${isLiked ? "text-rose-500" : "text-white hover:text-[#19D66B]"}`}
                     aria-label={isLiked ? "Unlike" : "Like"}
                   >
                     <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500" : ""}`} />
@@ -1252,7 +1252,7 @@ export function HomeFeed() {
                   </button>
                   <button
                     onClick={() => setCommentsOpenFor(p.id)}
-                    className="flex flex-col items-center gap-0.5 hover:text-indigo-600"
+                    className="flex flex-col items-center gap-0.5 text-white hover:text-[#19D66B]"
                     aria-label="Open comments"
                   >
                     <MessageCircle className="h-6 w-6" />
@@ -1291,7 +1291,7 @@ export function HomeFeed() {
                         }
                       });
                     }}
-                    className="flex flex-col items-center gap-0.5 hover:text-indigo-600"
+                    className="flex flex-col items-center gap-0.5 text-white hover:text-[#19D66B]"
                     aria-label="Share"
                   >
                     <img src={resolveAssetUrl(shareIconAsset.url)} alt="Share" className="h-7 w-7 object-contain" />
