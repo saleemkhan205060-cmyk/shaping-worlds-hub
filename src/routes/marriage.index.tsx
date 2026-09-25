@@ -564,14 +564,6 @@ useEffect(() => {
       >
         Create Profile
       </button>
->
-  <span>Interested</span>
-  {interestCount > 0 && (
-    <span className="rounded-full bg-[#00C853] px-2 py-0.5 text-xs">
-      {interestCount}
-    </span>
-  )}
-</button>
     </div>
         )}
         </div>
