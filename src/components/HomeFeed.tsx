@@ -979,9 +979,9 @@ export function HomeFeed() {
                     <AvatarImg src={prof?.avatar_url} alt={name} className="h-full w-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">{name}</p>
-                    <p className="text-xs text-slate-500 truncate">
-                      {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
+                    <p className="text-sm font-semibold text-white truncate">{name}</p>
+                    <p className="text-xs text-white truncate">
+                    {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
                     </p>
                   </div>
                 </Link>
