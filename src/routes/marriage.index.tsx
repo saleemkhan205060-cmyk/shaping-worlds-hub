@@ -450,16 +450,6 @@ useEffect(() => {
 </div>
 
 <div>
-  <p className="text-xs text-white/60">Preferred Location</p>
-  <p className="text-sm font-medium">{selected.pref_location ?? "Not added"}</p>
-</div>
-
-<div>
-  <p className="text-xs text-white/60">Preferred Education</p>
-  <p className="text-sm font-medium">{selected.pref_education ?? "Not added"}</p>
-</div>
-
-<div>
   <p className="text-xs text-white/60">Preferred Profession</p>
   <p className="text-sm font-medium">{selected.pref_profession ?? "Not added"}</p>
 </div>
@@ -477,11 +467,6 @@ useEffect(() => {
 <div>
   <p className="text-xs text-white/60">Nationality</p>
   <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
-</div>
-
-<div>
-  <p className="text-xs text-white/60">Education</p>
-  <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
 </div>
 
 <div>
