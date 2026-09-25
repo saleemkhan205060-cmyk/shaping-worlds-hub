@@ -334,6 +334,12 @@ useEffect(() => {
 <p className="mb-4 text-xs text-white/70">Tell others about yourself</p>
 
   <div className="flex flex-col gap-3">
+
+    <div>
+      <p className="text-xs text-white/60">Gender</p>
+      <p className="text-sm font-medium">{selected.gender ?? "Not added"}</p>
+    </div>
+    
     <div>
       <p className="text-xs text-white/60">Age</p>
       <p className="text-sm font-medium">{selected.age ?? "Not added"}</p>
@@ -349,15 +355,15 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.mother_tongue ?? "Not added"}</p>
 </div>
 
-    <div>
-      <p className="text-xs text-white/60">Gender</p>
-      <p className="text-sm font-medium">{selected.gender ?? "Not added"}</p>
-    </div>
+ <div>
+   <p className="text-xs text-white/60">Nationality</p>
+    <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
+   </div>
 
-    <div>
-      <p className="text-xs text-white/60">Country</p>
-      <p className="text-sm font-medium">{selected.country ?? "Not added"}</p>
-    </div>
+ <div>
+  <p className="text-xs text-white/60">City</p>
+  <p className="text-sm font-medium">{selected.city ?? "Not added"}</p>
+</div>
 
     <div>
       <p className="text-xs text-white/60">Profession</p>
@@ -370,18 +376,8 @@ useEffect(() => {
 </div>
 
     <div>
-  <p className="text-xs text-white/60">City</p>
-  <p className="text-sm font-medium">{selected.city ?? "Not added"}</p>
-</div>
-
-    <div>
   <p className="text-xs text-white/60">Living In</p>
   <p className="text-sm font-medium">{selected.living_in ?? "Not added"}</p>
-</div>
-
-<div>
-  <p className="text-xs text-white/60">Nationality</p>
-  <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
 </div>
 
 <div>
