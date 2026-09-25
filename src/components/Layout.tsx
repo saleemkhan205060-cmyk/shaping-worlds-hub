@@ -250,7 +250,7 @@ export function Layout({
               className="group flex items-center gap-2 h-9 w-full max-w-md px-4 rounded-full bg-[#004A2D] hover:bg-[#005A35] border border-[#19D66B] transition shadow-sm"
               aria-label="Search"
             >
-              <span className="h-7 w-7 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 text-white flex items-center justify-center shrink-0 shadow">
+              <span className="h-7 w-7 rounded-full bg-[#19D66B] text-[#003D25] flex items-center justify-center shrink-0 shadow">
                 <Search className="h-4 w-4" strokeWidth={3} />
               </span>
               <span className="text-sm font-medium text-slate-500 truncate">
