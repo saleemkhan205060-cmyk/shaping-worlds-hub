@@ -230,7 +230,7 @@ export function Layout({
            <img
            src={logoUrl}
           alt="VIP Life logo"
-         className="h-9 w-9 object-contain"
+         className="h-11 w-11 object-contain"
         />
        </div>
           </div>
