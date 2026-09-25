@@ -367,7 +367,7 @@ export function Layout({
 
 {!hideMobileNav && (
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#003D25] backdrop-blur border-t border-[#19D66B]"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="relative grid grid-cols-4 items-end">
