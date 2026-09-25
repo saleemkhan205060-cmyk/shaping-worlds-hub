@@ -1039,7 +1039,7 @@ export function HomeFeed() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <p className="text-sm font-semibold truncate hover:text-indigo-600">{name}</p>
+                        <p className="text-sm font-semibold text-white truncate hover:text-[#19D66B]">{name}</p>
                         {(p.media_type === "image" || p.media_type === "video") && (
                           user?.id === p.user_id ? (
                             <div className="relative">
