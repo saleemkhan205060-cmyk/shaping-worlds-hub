@@ -405,8 +405,14 @@ export type Database = {
           nationality: string | null
           other_expectations: string | null
           pref_age: string | null
+          pref_city: string | null
           pref_education: string | null
+          pref_education_2: string | null
+          pref_income: string | null
+          pref_living_in: string | null
           pref_location: string | null
+          pref_marital_status: string | null
+          pref_nationality: string | null
           pref_profession: string | null
           profession: string | null
           religion: string | null
@@ -443,8 +449,14 @@ export type Database = {
           nationality?: string | null
           other_expectations?: string | null
           pref_age?: string | null
+          pref_city?: string | null
           pref_education?: string | null
+          pref_education_2?: string | null
+          pref_income?: string | null
+          pref_living_in?: string | null
           pref_location?: string | null
+          pref_marital_status?: string | null
+          pref_nationality?: string | null
           pref_profession?: string | null
           profession?: string | null
           religion?: string | null
@@ -481,8 +493,14 @@ export type Database = {
           nationality?: string | null
           other_expectations?: string | null
           pref_age?: string | null
+          pref_city?: string | null
           pref_education?: string | null
+          pref_education_2?: string | null
+          pref_income?: string | null
+          pref_living_in?: string | null
           pref_location?: string | null
+          pref_marital_status?: string | null
+          pref_nationality?: string | null
           pref_profession?: string | null
           profession?: string | null
           religion?: string | null

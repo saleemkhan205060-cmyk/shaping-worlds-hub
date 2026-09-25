@@ -722,13 +722,15 @@ function FieldSelect({
   value,
   onChange,
   children,
+  options,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   optional?: boolean;
   value: string;
   onChange: (v: string) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  options?: string[];
 }) {
   return (
     <FieldRow icon={icon} label={label} optional={optional}>
@@ -738,7 +740,16 @@ function FieldSelect({
           onChange={(e) => onChange(e.target.value)}
           className="text-sm text-right bg-transparent focus:outline-none appearance-none pr-7 cursor-pointer"
         >
-          {children}
+          {children ?? (
+            <>
+              <option value="">Select</option>
+              {options?.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </>
+          )}
         </select>
 
         <ChevronDown className="absolute right-0 h-4 w-4 text-slate-400 pointer-events-none" />
