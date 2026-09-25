@@ -425,13 +425,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
             placeholder="e.g. Engineer"
           />
           <FieldInput
-           icon={MapPin}
-           label="Living In"
-           value={livingIn}
-           onChange={setLivingIn}
-           placeholder="e.g. Saudi Arabia"
-          />
-          <FieldInput
          icon={Globe}
          label="Nationality"
          value={nationality}
@@ -535,22 +528,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
 />
 
 <FieldInput
-  icon={MapPin}
-  label="Preferred Location"
-  value={prefLocation}
-  onChange={setPrefLocation}
-  placeholder="e.g. Saudi Arabia"
-/>
-
-<FieldInput
-  icon={GraduationCap}
-  label="Preferred Education"
-  value={prefEducation}
-  onChange={setPrefEducation}
-  placeholder="e.g. Bachelor's"
-/>
-
-<FieldInput
   icon={Briefcase}
   label="Preferred Profession"
   value={prefProfession}
@@ -580,14 +557,6 @@ placeholder="Any other expectations"
   value={prefNationality}
   onChange={setPrefNationality}
   placeholder="Enter nationality"
-/>
-
-<FieldInput
-  icon={GraduationCap}
-  label="Education"
-  value={prefEducation2}
-  onChange={setPrefEducation2}
-  placeholder="e.g. Bachelor's"
 />
 
 <FieldInput
