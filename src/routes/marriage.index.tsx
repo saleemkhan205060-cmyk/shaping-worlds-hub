@@ -429,11 +429,6 @@ useEffect(() => {
   <p className="text-xs text-white/60">Hobbies & Interests</p>
   <p className="text-sm font-medium">{selected.hobbies ?? "Not added"}</p>
 </div>
-
-    <div>
-      <p className="text-xs text-white/60">Looking For</p>
-      <p className="text-sm font-medium">{selected.looking_for ?? "Not added"}</p>
-    </div>
     
 <div className="pt-4 border-t border-white/20">
   <h3 className="mb-1 text-base font-bold">💚 Partner Preferences</h3>
@@ -441,12 +436,27 @@ useEffect(() => {
     What you are looking for in a partner
   </p>
 </div>
+
+<div>
+  <p className="text-xs text-white/60">Gender</p>
+  <p className="text-sm font-medium">{selected.looking_for ?? "Not added"}</p>
+</div>
     
 <div>
   <p className="text-xs text-white/60">Preferred Age</p>
   <p className="text-sm font-medium">{selected.pref_age ?? "Not added"}</p>
 </div>
 
+ <div>
+  <p className="text-xs text-white/60">Preferred Height</p>
+  <p className="text-sm font-medium">{selected.pref_height ?? "Not added"}</p>
+</div>
+
+ <div>
+  <p className="text-xs text-white/60">Education</p>
+  <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
+</div>
+    
 <div>
   <p className="text-xs text-white/60">Preferred Profession</p>
   <p className="text-sm font-medium">{selected.pref_profession ?? "Not added"}</p>
@@ -457,19 +467,14 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.other_expectations ?? "Not added"}</p>
 </div>
 
+ <div>
+  <p className="text-xs text-white/60">Income</p>
+  <p className="text-sm font-medium">{selected.pref_income ?? "Not added"}</p>
+</div>
+    
 <div>
   <p className="text-xs text-white/60">Nationality</p>
   <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
-</div>
-
-<div>
-  <p className="text-xs text-white/60">Education</p>
-  <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
-</div>
-
-<div>
-  <p className="text-xs text-white/60">Income</p>
-  <p className="text-sm font-medium">{selected.pref_income ?? "Not added"}</p>
 </div>
 
 <div>
