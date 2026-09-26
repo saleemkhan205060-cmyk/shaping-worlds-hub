@@ -438,6 +438,14 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     placeholder="e.g. 5000 SAR"
    />
 
+  <FieldInput
+    icon={MapPin}
+     label="Living In"
+    value={livingIn}
+    onChange={setLivingIn}
+   placeholder="Enter living location"
+ />
+
 <FieldInput
   icon={Users}
   label="Family Type"
