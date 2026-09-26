@@ -357,8 +357,15 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     "Malayalam",
     "Marathi",
     "Other",
-  ]}
+    ]}
 />
+  <FieldInput
+     icon={Globe}
+     label="Nationality"
+      value={nationality}
+      onChange={setNationality}
+      placeholder="Enter nationality"
+     />
           <FieldSelect icon={Users} label="Looking For" value={lookingFor} onChange={setLookingFor}>
             <option value="">Select</option>
             {LOOKING_FOR.map((o) => (
@@ -420,13 +427,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
             onChange={setProfession}
             placeholder="e.g. Engineer"
           />
-          <FieldInput
-         icon={Globe}
-         label="Nationality"
-         value={nationality}
-         onChange={setNationality}
-         placeholder="e.g. Pakistani"
-        />
+        
           <FieldInput
          icon={GraduationCap}
          label="Education"
