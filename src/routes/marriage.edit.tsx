@@ -510,6 +510,21 @@ pref_marital_status: prefMaritalStatus.trim() || null,
   placeholder="e.g. Travel, Reading"
 />
 
+ <FieldSelect
+   icon={Moon}
+   label="Religion"
+   optional
+   value={religion}
+   onChange={setReligion}
+>
+  <option value="">Select</option>
+  {RELIGIONS.map((o) => (
+    <option key={o} value={o}>
+      {o}
+    </option>
+  ))}
+</FieldSelect>
+          
   <FieldSelect icon={Users} label="Gender" value={lookingFor} onChange={setLookingFor}>
   <option value="">Select</option>
   {LOOKING_FOR.map((o) => (
