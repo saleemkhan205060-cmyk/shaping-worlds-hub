@@ -291,7 +291,27 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           <div className="mb-2">
          <h2 className="text-lg font-bold text-white">Basic Information</h2>
           </div>
+           <div className="bg-white border border-slate-200 rounded-2xl p-4">
+  <div className="flex items-center gap-3 mb-2">
+    <span className="h-9 w-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center">
+      <FileText className="h-5 w-5" />
+    </span>
+    <span className="font-semibold">About Me</span>
+  </div>
 
+  <textarea
+    value={about}
+    maxLength={100}
+    onChange={(e) => setAbout(e.target.value)}
+    rows={4}
+    placeholder="Write something about yourself…"
+    className="w-full resize-none text-sm bg-transparent focus:outline-none placeholder:text-slate-400"
+  />
+
+  <div className="text-right text-xs text-slate-400">
+    {about.length}/100
+  </div>
+</div>
           <FieldSelect icon={Users} label="Gender" value={gender} onChange={setGender}>
            <option value="">Select</option>
           <option value="Male">Male</option>
@@ -635,25 +655,6 @@ placeholder="Any other expectations"
               </option>
             ))}
           </FieldSelect>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="h-9 w-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center">
-                <FileText className="h-5 w-5" />
-              </span>
-              <span className="font-semibold">About Me</span>
-            </div>
-            <textarea
-              value={about}
-              maxLength={100}
-              onChange={(e) => setAbout(e.target.value)}
-              rows={4}
-              placeholder="Write something about yourself…"
-              className="w-full resize-none text-sm bg-transparent focus:outline-none placeholder:text-slate-400"
-            />
-            <div className="text-right text-xs text-slate-400">{about.length}/100</div>
-          </div>
-        </div>
 
         <button
           onClick={save}
