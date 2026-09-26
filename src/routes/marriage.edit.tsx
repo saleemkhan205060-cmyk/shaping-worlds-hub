@@ -379,7 +379,15 @@ pref_marital_status: prefMaritalStatus.trim() || null,
        onChange={setCity}
        placeholder="Enter city"
        />
-
+          
+       <FieldInput
+         icon={GraduationCap}
+         label="Education"
+         value={education}
+         onChange={setEducation}
+        placeholder="e.g. Bachelor's"
+         />
+          
           <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
             <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
               <DialogTitle className="sr-only">Select Country</DialogTitle>
@@ -413,13 +421,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
             placeholder="e.g. Engineer"
           />
         
-          <FieldInput
-         icon={GraduationCap}
-         label="Education"
-         value={education}
-         onChange={setEducation}
-        placeholder="e.g. Bachelor's"
-         />
           <FieldInput
           icon={Briefcase}
           label="Company / Work"
