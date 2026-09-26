@@ -290,6 +290,12 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           <div className="mb-2">
          <h2 className="text-lg font-bold text-white">Basic Information</h2>
           </div>
+
+          <FieldSelect icon={Users} label="Gender" value={gender} onChange={setGender}>
+           <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+         </FieldSelect>
           <FieldSelect icon={Calendar} label="Age" value={age} onChange={setAge}>
             <option value="">Select age</option>
             {Array.from({ length: 82 }, (_, i) => 18 + i).map((n) => (
@@ -298,11 +304,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
          </option>
         ))}
       </FieldSelect>
-
-   <DateOfBirthPicker
-  value={dateOfBirth}
-  onChange={setDateOfBirth}
-    />
 
 <FieldRow icon={Users} label="Height">
   <select
@@ -358,11 +359,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     "Other",
   ]}
 />
-         <FieldSelect icon={Users} label="Gender" value={gender} onChange={setGender}>
-         <option value="">Select</option>
-          <option value="Male">Male</option>
-           <option value="Female">Female</option>
-           </FieldSelect>
           <FieldSelect icon={Users} label="Looking For" value={lookingFor} onChange={setLookingFor}>
             <option value="">Select</option>
             {LOOKING_FOR.map((o) => (
