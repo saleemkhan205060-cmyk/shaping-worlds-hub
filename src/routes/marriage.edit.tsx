@@ -524,6 +524,10 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     </option>
   ))}
 </FieldSelect>
+
+ <div className="pt-4 pb-1">
+  <h2 className="text-lg font-bold text-white">Partner Preferences</h2>
+</div>
           
   <FieldSelect icon={Users} label="Gender" value={lookingFor} onChange={setLookingFor}>
   <option value="">Select</option>
