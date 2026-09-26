@@ -126,6 +126,7 @@ const [drinking, setDrinking] = useState<string>("");
 const [diet, setDiet] = useState<string>("");
 const [hobbies, setHobbies] = useState<string>("");
 const [prefAge, setPrefAge] = useState<string>("");
+const [prefHeight, setPrefHeight] = useState<string>("");
 const [prefLocation, setPrefLocation] = useState<string>("");
 const [prefEducation, setPrefEducation] = useState<string>("");
 const [prefProfession, setPrefProfession] = useState<string>("");
