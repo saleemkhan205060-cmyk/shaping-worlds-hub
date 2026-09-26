@@ -381,28 +381,12 @@ pref_marital_status: prefMaritalStatus.trim() || null,
   </select>
 </FieldRow>
 
-    <FieldSelect
+   <FieldInput
   icon={Users}
   label="Mother Tongue"
   value={motherTongue}
   onChange={setMotherTongue}
-  options={[
-    "Urdu",
-    "Punjabi",
-    "Sindhi",
-    "Pashto",
-    "Balochi",
-    "Arabic",
-    "English",
-    "Bengali",
-    "Hindi",
-    "Gujarati",
-    "Tamil",
-    "Telugu",
-    "Malayalam",
-    "Marathi",
-    "Other",
-    ]}
+  placeholder="e.g. Urdu, Arabic, English"
 />
    <FieldSelect
   icon={Heart}
