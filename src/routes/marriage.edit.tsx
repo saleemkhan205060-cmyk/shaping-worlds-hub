@@ -525,9 +525,12 @@ pref_marital_status: prefMaritalStatus.trim() || null,
   ))}
 </FieldSelect>
 
- <div className="pt-4 pb-1">
+ <div className="pt-4 pb-1 text-center">
   <h2 className="text-lg font-bold text-white">Partner Preferences</h2>
-</div>
+  <p className="text-sm text-white/70">
+    What you are looking for in a partner
+  </p>
+ </div>
           
   <FieldSelect icon={Users} label="Gender" value={lookingFor} onChange={setLookingFor}>
   <option value="">Select</option>
@@ -545,7 +548,22 @@ pref_marital_status: prefMaritalStatus.trim() || null,
   onChange={setPrefAge}
   placeholder="e.g. 25-35"
 />
-
+    <FieldInput
+     icon={Users}
+     label="Preferred Height"
+     value={prefHeight}
+     onChange={setPrefHeight}
+    placeholder="e.g. 5'4 - 6'0"
+  />
+          
+<FieldInput
+  icon={GraduationCap}
+  label="Preferred Education"
+  value={prefEducation}
+  onChange={setPrefEducation}
+  placeholder="e.g. Bachelor's"
+/>
+          
 <FieldInput
   icon={Briefcase}
   label="Preferred Profession"
@@ -562,12 +580,12 @@ pref_marital_status: prefMaritalStatus.trim() || null,
 placeholder="Any other expectations"
 />
 
-<FieldInput
-  icon={MapPin}
-  label="Living In"
-  value={prefLivingIn}
-  onChange={setPrefLivingIn}
-  placeholder="Enter nationality"
+ <FieldInput
+  icon={Wallet}
+  label="Income"
+  value={prefIncome}
+  onChange={setPrefIncome}
+  placeholder="e.g. 5000 SAR"
 />
 
 <FieldInput
@@ -576,14 +594,6 @@ placeholder="Any other expectations"
   value={prefNationality}
   onChange={setPrefNationality}
   placeholder="Enter nationality"
-/>
-
-<FieldInput
-  icon={Wallet}
-  label="Income"
-  value={prefIncome}
-  onChange={setPrefIncome}
-  placeholder="e.g. 5000 SAR"
 />
 
 <FieldInput
