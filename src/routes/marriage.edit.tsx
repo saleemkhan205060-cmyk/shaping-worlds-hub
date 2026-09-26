@@ -701,11 +701,13 @@ function FieldRow({
       <span className="h-9 w-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
         <Icon className="h-5 w-5" />
       </span>
-      <span className="font-semibold text-sm">
+      <span className="font-semibold text-sm whitespace-nowrap shrink-0">
         {label}
         {optional && <span className="text-slate-400 font-normal"> (Optional)</span>}
       </span>
-      <div className="flex-1 flex justify-end">{children}</div>
+      <div className="flex-1 min-w-0 flex justify-end overflow-hidden">
+     {children}
+   </div>
     </div>
   );
 }
@@ -731,7 +733,7 @@ function FieldInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="text-sm text-right bg-transparent focus:outline-none w-40 placeholder:text-slate-400"
+        className="text-sm text-right bg-transparent focus:outline-none w-full max-w-[180px] placeholder:text-slate-400"
       />
     </FieldRow>
   );
