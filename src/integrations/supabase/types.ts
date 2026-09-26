@@ -408,12 +408,14 @@ export type Database = {
           pref_city: string | null
           pref_education: string | null
           pref_education_2: string | null
+          pref_height: string | null
           pref_income: string | null
           pref_living_in: string | null
           pref_location: string | null
           pref_marital_status: string | null
           pref_nationality: string | null
           pref_profession: string | null
+          pref_religion: string | null
           profession: string | null
           religion: string | null
           siblings: string | null
@@ -452,12 +454,14 @@ export type Database = {
           pref_city?: string | null
           pref_education?: string | null
           pref_education_2?: string | null
+          pref_height?: string | null
           pref_income?: string | null
           pref_living_in?: string | null
           pref_location?: string | null
           pref_marital_status?: string | null
           pref_nationality?: string | null
           pref_profession?: string | null
+          pref_religion?: string | null
           profession?: string | null
           religion?: string | null
           siblings?: string | null
@@ -496,12 +500,14 @@ export type Database = {
           pref_city?: string | null
           pref_education?: string | null
           pref_education_2?: string | null
+          pref_height?: string | null
           pref_income?: string | null
           pref_living_in?: string | null
           pref_location?: string | null
           pref_marital_status?: string | null
           pref_nationality?: string | null
           pref_profession?: string | null
+          pref_religion?: string | null
           profession?: string | null
           religion?: string | null
           siblings?: string | null
