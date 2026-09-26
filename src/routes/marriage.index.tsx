@@ -357,6 +357,13 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.mother_tongue ?? "Not added"}</p>
 </div>
 
+<div>
+  <p className="text-xs text-white/60">Marital Status</p>
+  <p className="text-sm font-medium">
+    {selected.marital_status ?? "Not added"}
+  </p>
+</div>
+
  <div>
    <p className="text-xs text-white/60">Nationality</p>
     <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
