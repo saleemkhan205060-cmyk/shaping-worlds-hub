@@ -665,6 +665,7 @@ placeholder="Any other expectations"
           Save Profile
         </button>
       </div>
+      </div>
     </Layout>
   );
 }
