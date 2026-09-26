@@ -255,6 +255,30 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     navigate({ to: "/marriage" });
   };
 
+   const deleteProfile = async () => {
+    if (!user) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your Marriage profile?"
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await supabase
+      .from("marriage_profiles")
+      .delete()
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error(error);
+      toast.error("Couldn't delete your profile. Please try again.");
+      return;
+    }
+
+    toast.success("Marriage profile deleted");
+    navigate({ to: "/marriage" });
+  };
+
   if (authLoading || loading) {
     return (
       <Layout>
@@ -661,9 +685,16 @@ placeholder="Any other expectations"
           disabled={saving}
           className="mt-6 w-full h-14 rounded-2xl bg-pink-600 text-white font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 hover:bg-pink-700"
         >
-          {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-          Save Profile
+   {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+    Save Profile
         </button>
+          <button
+          type="button"
+           onClick={deleteProfile}
+           className="mt-3 w-full h-14 rounded-2xl bg-red-600 text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-red-700"
+           >
+            Delete Profile
+            </button>
       </div>
       </div>
     </Layout>
