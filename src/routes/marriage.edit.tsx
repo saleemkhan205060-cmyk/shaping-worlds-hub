@@ -360,6 +360,20 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     "Other",
     ]}
 />
+   <FieldSelect
+  icon={Heart}
+  label="Marital Status"
+  value={maritalStatus}
+  onChange={setMaritalStatus}
+>
+  <option value="">Select</option>
+  {MARITAL.map((o) => (
+    <option key={o} value={o}>
+      {o}
+    </option>
+  ))}
+</FieldSelect>
+          
   <div onClick={() => setCountryOpen(true)}>
   <FieldRow icon={Globe} label="Nationality">
     <button
@@ -603,14 +617,6 @@ placeholder="Any other expectations"
   value={prefCity}
   onChange={setPrefCity}
   placeholder="Enter city"
-/>
-
-<FieldInput
-  icon={Heart}
-  label="Marital Status"
-  value={prefMaritalStatus}
-  onChange={setPrefMaritalStatus}
-  placeholder="e.g. Single"
 />
           <FieldSelect icon={Heart} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
             <option value="">Select</option>
