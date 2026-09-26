@@ -697,7 +697,7 @@ function FieldRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl px-4 h-14 flex items-center gap-3">
+    <div className="bg-white border border-slate-200 rounded-2xl px-4 h-11 flex items-center gap-3">
       <span className="h-9 w-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
         <Icon className="h-5 w-5" />
       </span>
