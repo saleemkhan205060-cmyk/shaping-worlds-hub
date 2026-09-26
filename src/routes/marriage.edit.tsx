@@ -443,7 +443,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
                       key={c}
                       value={c}
                       onSelect={() => {
-                        setCountry(c);
+                        setNationality(c);
                         setCountryOpen(false);
                       }}
                     >
