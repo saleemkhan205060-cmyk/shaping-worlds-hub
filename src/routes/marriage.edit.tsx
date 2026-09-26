@@ -359,13 +359,26 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     "Other",
     ]}
 />
-  <FieldInput
-     icon={Globe}
-     label="Nationality"
-      value={nationality}
-      onChange={setNationality}
-      placeholder="Enter nationality"
-     />
+  <div onClick={() => setCountryOpen(true)}>
+  <FieldRow icon={Globe} label="Nationality">
+    <button
+      type="button"
+      onClick={() => setCountryOpen(true)}
+      className="text-sm text-right bg-transparent focus:outline-none flex items-center gap-1 text-slate-900"
+    >
+     {nationality || <span className="text-slate-400">Select nationality</span>}
+      <ChevronDown className="h-4 w-4 text-slate-400" />
+    </button>
+  </FieldRow>
+</div>
+
+   <FieldInput
+   icon={MapPin}
+    label="City"
+     value={city}
+       onChange={setCity}
+       placeholder="Enter city"
+       />
           <FieldSelect icon={Users} label="Looking For" value={lookingFor} onChange={setLookingFor}>
             <option value="">Select</option>
             {LOOKING_FOR.map((o) => (
@@ -375,26 +388,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
             ))}
           </FieldSelect>
 
-          <div onClick={() => setCountryOpen(true)}>
-            <FieldRow icon={MapPin} label="Country">
-              <button
-                type="button"
-                onClick={() => setCountryOpen(true)}
-                className="text-sm text-right bg-transparent focus:outline-none flex items-center gap-1 text-slate-900"
-              >
-                {country || <span className="text-slate-400">Select country</span>}
-                <ChevronDown className="h-4 w-4 text-slate-400" />
-              </button>
-            </FieldRow>
-          </div>
-
-      <FieldInput
-  icon={MapPin}
-  label="City"
-  value={city}
-    onChange={setCity}
-       placeholder="Enter city"
-       />
           <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
             <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
               <DialogTitle className="sr-only">Select Country</DialogTitle>
