@@ -202,12 +202,6 @@ function NotificationsPage() {
        {timeAgo(n.created_at)} ago
        </p>
         </div>
-
-        <img
-          src={profileMap[n.user_id]?.avatar_url || "/placeholder.svg"}
-          alt={n.who}
-           className="h-8 w-8 rounded-full object-cover border border-[#7CFF3B] shrink-0"
-             />
                 
               </li>
             );
