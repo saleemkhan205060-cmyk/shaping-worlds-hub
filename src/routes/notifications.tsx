@@ -190,13 +190,25 @@ function NotificationsPage() {
            n.kind === "like" ? "cursor-pointer" : ""
            }`}
            >
-            <span className={`h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] text-white flex items-center justify-center shrink-0`}>
-               <Icon className="h-5 w-5" />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white"><span className="font-bold">{n.who}</span> {n.text}</p>
-                  <p className="text-xs text-white/70">{timeAgo(n.created_at)} ago</p>
-                </div>
+           <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] text-white flex items-center justify-center shrink-0">
+           <Icon className="h-5 w-5" />
+           </span>
+
+       <div className="flex-1 min-w-0">
+       <p className="text-sm text-white">
+     <span className="font-bold">{n.who}</span> {n.text}
+   </p>
+      <p className="text-xs text-white/70">
+       {timeAgo(n.created_at)} ago
+       </p>
+        </div>
+
+        <img
+          src={profileMap[n.user_id]?.avatar_url || "/placeholder.svg"}
+          alt={n.who}
+           className="h-8 w-8 rounded-full object-cover border border-[#7CFF3B] shrink-0"
+             />
+                
               </li>
             );
           })}
