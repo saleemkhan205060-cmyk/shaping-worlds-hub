@@ -26,6 +26,7 @@ type Item = {
   id: string;
   kind: "like" | "comment" | "follow";
   who: string;
+  avatar_url: string | null;
   text: string;
   created_at: string;
   user_id: string;
@@ -108,16 +109,19 @@ function NotificationsPage() {
       const merged: Item[] = [
         ...(likesRes.data ?? []).map((r: any) => ({
           id: `l-${r.id}`, kind: "like" as const, who: name(r.user_id),
+          avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
           text: "liked your post", created_at: r.created_at,
           user_id: r.user_id,
         })),
         ...(commentsRes.data ?? []).map((r: any) => ({
           id: `c-${r.id}`, kind: "comment" as const, who: name(r.user_id),
+          avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
           text: `commented: ${r.content.slice(0, 80)}`, created_at: r.created_at,
           user_id: r.user_id,
         })),
         ...(followsRes.data ?? []).map((r: any) => ({
           id: `f-${r.id}`, kind: "follow" as const, who: name(r.follower_id),
+          avatar_url: profileMap[r.follower_id]?.avatar_url ?? null,
           text: "started following you", created_at: r.created_at,
           user_id: r.follower_id,
         })),
@@ -206,7 +210,7 @@ function NotificationsPage() {
 
         <div className="h-9 w-9 rounded-full overflow-hidden bg-slate-200 shrink-0">
         <AvatarImg
-          src={profileMap[n.user_id]?.avatar_url}
+          src={n.avatar_url}
          alt={n.who}
          className="h-full w-full object-cover"
        />
