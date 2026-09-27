@@ -24,7 +24,7 @@ export const Route = createFileRoute("/notifications")({
 
 type Item = {
   id: string;
-  kind: "like" | "comment" | "follow";
+  kind: "like" | "comment" | "follow" | "interested";
   who: string;
   avatar_url: string | null;
   text: string;
@@ -75,7 +75,7 @@ function NotificationsPage() {
       const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", user.id);
       const postIds = (myPosts ?? []).map((p) => p.id);
 
-      const [likesRes, commentsRes, followsRes] = await Promise.all([
+      const [likesRes, commentsRes, followsRes, interestsRes] = await Promise.all([
         postIds.length
           ? supabase.from("post_likes").select("id,user_id,post_id,created_at")
               .in("post_id", postIds).neq("user_id", user.id)
@@ -89,12 +89,18 @@ function NotificationsPage() {
         supabase.from("follows").select("id,follower_id,created_at")
           .eq("following_id", user.id)
           .order("created_at", { ascending: false }).limit(50),
+           supabase.from("marriage_interests")
+          .select("id,user_id,target_user_id,created_at")
+          .eq("target_user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(50),
       ]);
 
       const userIds = new Set<string>();
       (likesRes.data ?? []).forEach((r: any) => userIds.add(r.user_id));
       (commentsRes.data ?? []).forEach((r: any) => userIds.add(r.user_id));
       (followsRes.data ?? []).forEach((r: any) => userIds.add(r.follower_id));
+      (interestsRes.data ?? []).forEach((r: any) => userIds.add(r.user_id));
 
       let profileMap: Record<string, Profile> = {};
       if (userIds.size) {
@@ -125,6 +131,16 @@ function NotificationsPage() {
           text: "started following you", created_at: r.created_at,
           user_id: r.follower_id,
         })),
+
+      ...(interestsRes.data ?? []).map((r: any) => ({
+        id: `i-${r.id}`,
+        kind: "interested" as const,
+        who: name(r.user_id),
+       avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
+       text: "is interested in your marriage profile",
+       created_at: r.created_at,
+       user_id: r.user_id,
+    })),
       ].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
 
       setItems(merged);
@@ -137,9 +153,15 @@ function NotificationsPage() {
     : k === "comment" ? "from-sky-500 to-indigo-500"
     : "from-emerald-500 to-teal-500";
 
-  const IconFor = (k: Item["kind"]) =>
-    k === "like" ? Heart : k === "comment" ? MessageCircle : UserPlus;
-
+    const IconFor = (k: Item["kind"]) =>
+     k === "like"
+    ? Heart
+    : k === "comment"
+    ? MessageCircle
+    : k === "interested"
+    ? Heart
+    : UserPlus;
+ 
   return (
     <Layout>
      <div className="mb-4 flex items-center justify-between gap-2">
