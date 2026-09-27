@@ -181,16 +181,16 @@ function NotificationsPage() {
            window.location.assign(`/u/${n.user_id}`);
           }
            }}
-          className={`bg-white rounded-2xl border border-slate-200 p-3 flex items-center gap-3 ${
-          n.kind === "like" ? "cursor-pointer" : ""
+          className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-2 flex items-center gap-3 ${
+           n.kind === "like" ? "cursor-pointer" : ""
            }`}
            >
-                <span className={`h-11 w-11 rounded-full bg-gradient-to-br ${tintFor(n.kind)} text-white flex items-center justify-center shrink-0`}>
+                <span className={`h-9 w-9 rounded-full bg-[#00C853] text-white flex items-center justify-center shrink-0`}>
                   <Icon className="h-5 w-5" />
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm"><span className="font-bold">{n.who}</span> {n.text}</p>
-                  <p className="text-xs text-slate-500">{timeAgo(n.created_at)} ago</p>
+                  <p className="text-sm text-white"><span className="font-bold">{n.who}</span> {n.text}</p>
+                  <p className="text-xs text-white/70">{timeAgo(n.created_at)} ago</p>
                 </div>
               </li>
             );
