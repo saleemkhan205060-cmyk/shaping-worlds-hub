@@ -34,7 +34,6 @@ type Profile = {
   id: string;
   display_name: string | null;
   username: string | null;
-  avatar_url: string | null;
 };
 
 function timeAgo(iso: string) {
@@ -97,7 +96,7 @@ function NotificationsPage() {
       let profileMap: Record<string, Profile> = {};
       if (userIds.size) {
         const { data: profs } = await supabase.from("profiles")
-          .select("id,display_name,username,avatar_url")
+          .select("id,display_name,username")
           .in("id", Array.from(userIds));
         (profs ?? []).forEach((p) => { profileMap[p.id] = p as Profile; });
       }
