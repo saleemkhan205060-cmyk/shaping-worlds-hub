@@ -35,6 +35,7 @@ type Profile = {
   id: string;
   display_name: string | null;
   username: string | null;
+  avatar_url: string | null;
 };
 
 function timeAgo(iso: string) {
@@ -97,7 +98,7 @@ function NotificationsPage() {
       let profileMap: Record<string, Profile> = {};
       if (userIds.size) {
         const { data: profs } = await supabase.from("profiles")
-          .select("id,display_name,username")
+          .select("id,display_name,username,avatar_url")
           .in("id", Array.from(userIds));
         (profs ?? []).forEach((p) => { profileMap[p.id] = p as Profile; });
       }
@@ -202,6 +203,14 @@ function NotificationsPage() {
        {timeAgo(n.created_at)} ago
        </p>
         </div>
+
+        <div className="h-9 w-9 rounded-full overflow-hidden bg-slate-200 shrink-0">
+        <AvatarImg
+          src={profileMap[n.user_id]?.avatar_url}
+         alt={n.who}
+         className="h-full w-full object-cover"
+       />
+       </div>
                 
               </li>
             );
