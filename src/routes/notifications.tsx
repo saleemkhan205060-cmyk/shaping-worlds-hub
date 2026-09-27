@@ -196,11 +196,6 @@ function NotificationsPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white"><span className="font-bold">{n.who}</span> {n.text}</p>
                   <p className="text-xs text-white/70">{timeAgo(n.created_at)} ago</p>
-                  <img
-                  src={profileMap[n.user_id]?.avatar_url || "/placeholder.svg"}
-                  alt={n.who}
-                  className="h-9 w-9 rounded-full object-cover border border-[#7CFF3B] shrink-0"
-                  />
                 </div>
               </li>
             );
