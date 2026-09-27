@@ -5,7 +5,7 @@ import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } fro
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  isNotificationChimeEnabled,
+ isNotificationChimeEnabled,
   setNotificationChimeEnabled,
   subscribeNotificationChimePref,
   playSoftChime,
