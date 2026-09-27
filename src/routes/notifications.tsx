@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
+import { AvatarImg } from "../components/AvatarImg";
 import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
