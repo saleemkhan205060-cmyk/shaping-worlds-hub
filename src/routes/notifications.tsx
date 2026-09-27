@@ -30,7 +30,12 @@ type Item = {
   user_id: string;
 };
 
-type Profile = { id: string; display_name: string | null; username: string | null };
+type Profile = {
+  id: string;
+  display_name: string | null;
+  username: string | null;
+  avatar_url: string | null;
+};
 
 function timeAgo(iso: string) {
   const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
@@ -92,7 +97,7 @@ function NotificationsPage() {
       let profileMap: Record<string, Profile> = {};
       if (userIds.size) {
         const { data: profs } = await supabase.from("profiles")
-          .select("id,display_name,username")
+          .select("id,display_name,username,avatar_url")
           .in("id", Array.from(userIds));
         (profs ?? []).forEach((p) => { profileMap[p.id] = p as Profile; });
       }
@@ -185,12 +190,17 @@ function NotificationsPage() {
            n.kind === "like" ? "cursor-pointer" : ""
            }`}
            >
-                <span className={`h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] text-white flex items-center justify-center shrink-0`}>
-                  <Icon className="h-5 w-5" />
+            <span className={`h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] text-white flex items-center justify-center shrink-0`}>
+               <Icon className="h-5 w-5" />
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white"><span className="font-bold">{n.who}</span> {n.text}</p>
                   <p className="text-xs text-white/70">{timeAgo(n.created_at)} ago</p>
+                  <img
+                  src={profileMap[n.user_id]?.avatar_url || "/placeholder.svg"}
+                  alt={n.who}
+                  className="h-9 w-9 rounded-full object-cover border border-[#7CFF3B] shrink-0"
+                  />
                 </div>
               </li>
             );
