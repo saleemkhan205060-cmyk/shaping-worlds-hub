@@ -54,10 +54,16 @@ type Props = {
   items: FsItem[];
   startIndex: number;
   onClose: () => void;
+  useHistoryBack?: boolean;
 };
 
-export function FullscreenVideoPlayer({ items, startIndex, onClose }: Props) {
-  const handleClose = useHistoryBackClose(onClose);
+export function FullscreenVideoPlayer({
+  items,
+  startIndex,
+  onClose,
+  useHistoryBack = true,
+}: Props) {
+  const handleClose = useHistoryBackClose(onClose, useHistoryBack);
   const { user } = useAuth();
   const [followedUsers, setFollowedUsers] = useState<Record<string, boolean>>({});
   useEffect(() => {
