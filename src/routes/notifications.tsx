@@ -1,8 +1,7 @@
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import { AvatarImg } from "../components/AvatarImg";
 import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
@@ -60,6 +59,7 @@ function NotificationsPage() {
   const [chimeOn, setChimeOn] = useState(true);
  const [fsItem, setFsItem] = useState<FsItem | null>(null);
  const [commentsFor, setCommentsFor] = useState<string | null>(null);
+ const fsItems = useMemo(() => (fsItem ? [fsItem] : []), [fsItem]);
  const postMapRef = useRef<Record<string, any>>({});
 
   useEffect(() => {
@@ -334,17 +334,13 @@ const thumbOf = (id: string) => {
          </ul>
           )}
 
-       {fsItem &&
-      createPortal(
-       <div className="fixed inset-0 z-[9998]">
-      <FullscreenVideoPlayer
-        items={[fsItem]}
+         {fsItems.length > 0 && (
+       <FullscreenVideoPlayer
+        items={fsItems}
         startIndex={0}
         onClose={() => setFsItem(null)}
-      />
-    </div>,
-    document.body
-      )}
+        />
+        )}
 
        {commentsFor && (
         <CommentsSheet
