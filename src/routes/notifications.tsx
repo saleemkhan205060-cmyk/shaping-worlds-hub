@@ -1,7 +1,8 @@
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Layout } from "../components/Layout";
 import { AvatarImg } from "../components/AvatarImg";
 import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
@@ -32,7 +33,9 @@ type Item = {
   text: string;
   created_at: string;
   user_id: string;
- post_id?: string;
+  post_id?: string;
+  thumb?: string | null;
+  post_type?: "image" | "video" | "text";
 };
 
 type Profile = {
@@ -57,6 +60,7 @@ function NotificationsPage() {
   const [chimeOn, setChimeOn] = useState(true);
  const [fsItem, setFsItem] = useState<FsItem | null>(null);
  const [commentsFor, setCommentsFor] = useState<string | null>(null);
+ const postMapRef = useRef<Record<string, any>>({});
 
   useEffect(() => {
     setChimeOn(isNotificationChimeEnabled());
@@ -70,12 +74,8 @@ function NotificationsPage() {
     if (next) playSoftChime(`pref-${Date.now()}`);
   };
 
- const openPost = async (postId: string) => {
-  const { data: p } = await supabase
-    .from("posts")
-    .select("id,user_id,media_url,media_type,caption,created_at,thumbnail_url")
-    .eq("id", postId)
-    .maybeSingle();
+ const openPost = (postId: string) => {
+  const p = postMapRef.current[postId];
 
   if (!p) return;
 
@@ -98,8 +98,28 @@ function NotificationsPage() {
 
     (async () => {
       setBusy(true);
-      const { data: myPosts } = await supabase.from("posts").select("id").eq("user_id", user.id);
-      const postIds = (myPosts ?? []).map((p) => p.id);
+      const { data: myPosts } = await supabase
+  .from("posts")
+  .select("id,user_id,media_url,media_type,caption,created_at,thumbnail_url")
+  .eq("user_id", user.id);
+
+const postIds = (myPosts ?? []).map((p) => p.id);
+
+const postMap: Record<string, any> = {};
+(myPosts ?? []).forEach((p) => {
+  postMap[p.id] = p;
+});
+
+postMapRef.current = postMap;
+
+const thumbOf = (id: string) => {
+  const p = postMap[id];
+  if (!p) return null;
+
+  return p.media_type === "image"
+    ? p.media_url
+    : p.thumbnail_url ?? null;
+    };
 
       const [likesRes, commentsRes, followsRes, interestsRes] = await Promise.all([
         postIds.length
@@ -139,19 +159,30 @@ function NotificationsPage() {
         profileMap[id]?.display_name || profileMap[id]?.username || "Someone";
 
       const merged: Item[] = [
-        ...(likesRes.data ?? []).map((r: any) => ({
-          id: `l-${r.id}`, kind: "like" as const, who: name(r.user_id),
-          avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-          text: "liked your post", created_at: r.created_at,
-          user_id: r.user_id,
-        })),
+       ...(likesRes.data ?? []).map((r: any) => ({
+        id: `l-${r.id}`,
+        kind: "like" as const,
+        who: name(r.user_id),
+        avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
+        text: "liked your post",
+       created_at: r.created_at,
+        user_id: r.user_id,
+       post_id: r.post_id,
+        thumb: thumbOf(r.post_id),
+         post_type: postMap[r.post_id]?.media_type,
+         })),
         ...(commentsRes.data ?? []).map((r: any) => ({
-          id: `c-${r.id}`, kind: "comment" as const, who: name(r.user_id),
-          avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-          text: `commented: ${r.content.slice(0, 80)}`, created_at: r.created_at,
-          user_id: r.user_id,
+       id: `c-${r.id}`,
+       kind: "comment" as const,
+       who: name(r.user_id),
+         avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
+       text: `commented: ${r.content.slice(0, 80)}`,
+       created_at: r.created_at,
+        user_id: r.user_id,
          post_id: r.post_id,
-        })),
+          thumb: thumbOf(r.post_id),
+          post_type: postMap[r.post_id]?.media_type,
+          })),
         ...(followsRes.data ?? []).map((r: any) => ({
           id: `f-${r.id}`, kind: "follow" as const, who: name(r.follower_id),
           avatar_url: profileMap[r.follower_id]?.avatar_url ?? null,
@@ -236,12 +267,17 @@ function NotificationsPage() {
               <li
             key={n.id}
             onClick={() => {
-           if (n.kind === "comment" && n.post_id) {
-           openPost(n.post_id);
-           }
-           }}
+             if (
+           (n.kind === "like" || n.kind === "comment") &&
+            n.post_id
+            ) {
+            openPost(n.post_id);
+              }
+            }}
           className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
-           n.kind === "comment" ? "cursor-pointer" : ""
+           (n.kind === "like" || n.kind === "comment")
+            ? "cursor-pointer"
+             : ""
            }`}
            >
       <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] flex items-center justify-center shrink-0">
@@ -254,7 +290,27 @@ function NotificationsPage() {
          />
      </span>
 
-       <div className="flex-1 min-w-0">
+   {(n.kind === "like" || n.kind === "comment") && (
+  <div className="h-11 w-11 rounded-xl overflow-hidden bg-[#003D25] border border-[#7CFF3B] shrink-0">
+    {n.thumb ? (
+      <img
+        src={n.thumb}
+        alt="Post"
+        className="h-full w-full object-cover"
+      />
+    ) : n.post_type === "video" ? (
+      <video
+        src={`${postMapRef.current[n.post_id!]?.media_url}#t=0.1`}
+        className="h-full w-full object-cover"
+        muted
+        playsInline
+      />
+    ) : (
+      <MessageCircle className="h-5 w-5 text-white m-auto mt-3" />
+    )}
+  </div>
+)}
+    <div className="flex-1 min-w-0">
        <p className="text-sm text-white">
      <span className="font-bold">{n.who}</span> {n.text}
    </p>
@@ -277,13 +333,17 @@ function NotificationsPage() {
          </ul>
           )}
 
-       {fsItem && (
-        <FullscreenVideoPlayer
-          items={[fsItem]}
-          startIndex={0}
-          onClose={() => setFsItem(null)}
-        />
-       )}
+       {fsItem &&
+      createPortal(
+       <div className="fixed inset-0 z-[9998]">
+      <FullscreenVideoPlayer
+        items={[fsItem]}
+        startIndex={0}
+        onClose={() => setFsItem(null)}
+      />
+    </div>,
+    document.body
+      )}
 
        {commentsFor && (
         <CommentsSheet
