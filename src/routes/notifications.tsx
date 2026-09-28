@@ -271,25 +271,26 @@ function NotificationsPage() {
        />
        </div>
                 
-         </li>
+       </li>
          );
           })}
          </ul>
+        )
 
        {fsItem && (
         <FullscreenVideoPlayer
-         items={[fsItem]}
-        startIndex={0}
-        onClose={() => setFsItem(null)}
+          items={[fsItem]}
+          startIndex={0}
+          onClose={() => setFsItem(null)}
         />
-        )}
+       )}
 
-         {commentsFor && (
-          <CommentsSheet
-            postId={commentsFor}
-            onClose={() => setCommentsFor(null)}
-          />
-        )}
+       {commentsFor && (
+        <CommentsSheet
+          postId={commentsFor}
+          onClose={() => setCommentsFor(null)}
+        />
+       )}
     </Layout>
   );
 }
