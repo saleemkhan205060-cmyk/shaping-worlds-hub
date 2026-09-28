@@ -274,8 +274,8 @@ function NotificationsPage() {
        </li>
          );
           })}
-         </ul>
-        )
+          </ul>
+          )}
 
        {fsItem && (
         <FullscreenVideoPlayer
