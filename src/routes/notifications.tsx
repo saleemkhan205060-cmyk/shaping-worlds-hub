@@ -1,6 +1,6 @@
 import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
 import { CommentsSheet } from "@/components/CommentsSheet";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import { AvatarImg } from "../components/AvatarImg";
@@ -54,6 +54,7 @@ function timeAgo(iso: string) {
 
 function NotificationsPage() {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(true);
   const [chimeOn, setChimeOn] = useState(true);
@@ -267,16 +268,27 @@ const thumbOf = (id: string) => {
               <li
             key={n.id}
             onClick={() => {
-             if (
-           (n.kind === "like" || n.kind === "comment") &&
-            n.post_id
-            ) {
-            openPost(n.post_id);
-              }
-            }}
+          if (
+         (n.kind === "like" || n.kind === "comment") &&
+         n.post_id
+         ) {
+        openPost(n.post_id);
+        } else if (
+    n.kind === "follow" ||
+    n.kind === "interested"
+  ) {
+    navigate({
+      to: "/u/$id",
+      params: { id: n.user_id },
+       });
+        }
+         }}
           className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
-           (n.kind === "like" || n.kind === "comment")
-            ? "cursor-pointer"
+           (n.kind === "like" ||
+           n.kind === "comment" ||
+            n.kind === "follow" ||
+             n.kind === "interested")
+             ? "cursor-pointer"
              : ""
            }`}
            >
