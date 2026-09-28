@@ -334,12 +334,13 @@ const thumbOf = (id: string) => {
          </ul>
           )}
 
-         {fsItems.length > 0 && (
+        {fsItems.length > 0 && (
        <FullscreenVideoPlayer
         items={fsItems}
-        startIndex={0}
-        onClose={() => setFsItem(null)}
-        />
+         startIndex={0}
+          onClose={() => setFsItem(null)}
+          useHistoryBack={false}
+          />
         )}
 
        {commentsFor && (
