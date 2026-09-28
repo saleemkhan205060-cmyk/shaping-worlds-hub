@@ -211,10 +211,14 @@ function NotificationsPage() {
               <li
             key={n.id}
             onClick={() => {
-            if (n.kind === "like" || n.kind === "follow") {
-            window.location.assign(`/u/${n.user_id}`);
-           }
-           }}
+             if (n.kind === "like") {
+              window.location.assign(`/u/${n.user_id}`);
+              }
+
+             if (n.kind === "comment" && n.post_id) {
+             window.location.assign(`/post/${n.post_id}`);
+            }
+            }}
           className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
            n.kind === "comment" ? "cursor-pointer" : ""
            }`}
