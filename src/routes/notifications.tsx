@@ -273,13 +273,15 @@ const thumbOf = (id: string) => {
          n.post_id
          ) {
         openPost(n.post_id);
-        } else if (
-    n.kind === "follow" ||
-    n.kind === "interested"
-  ) {
-    navigate({
-      to: "/u/$id",
+        } else if (n.kind === "follow") {
+       navigate({
+     to: "/u/$id",
       params: { id: n.user_id },
+       });
+      } else if (n.kind === "interested") {
+       navigate({
+      to: "/marriage",
+      search: { profile: n.user_id },
        });
         }
          }}
