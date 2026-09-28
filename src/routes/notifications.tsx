@@ -276,12 +276,12 @@ function NotificationsPage() {
           })}
          </ul>
 
-        {fsItem && (
-          <FullscreenVideoPlayer
-            items={[fsItem]}
-            startIndex={0}
-            onClose={() => setFsItem(null)}
-          />
+       {fsItem && (
+        <FullscreenVideoPlayer
+         items={[fsItem]}
+        startIndex={0}
+        onClose={() => setFsItem(null)}
+        />
         )}
 
          {commentsFor && (
