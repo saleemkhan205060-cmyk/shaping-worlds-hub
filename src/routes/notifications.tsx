@@ -290,10 +290,19 @@ const thumbOf = (id: string) => {
          />
      </span>
 
-   {(n.kind === "like" || n.kind === "comment") && (
-  <div className="h-11 w-11 rounded-xl overflow-hidden bg-[#003D25] border border-[#7CFF3B] shrink-0">
-    {n.thumb ? (
-      <img
+    <div className="flex-1 min-w-0">
+       <p className="text-sm text-white">
+     <span className="font-bold">{n.who}</span> {n.text}
+   </p>
+      <p className="text-xs text-white/70">
+       {timeAgo(n.created_at)} ago
+       </p>
+        </div>
+
+        {(n.kind === "like" || n.kind === "comment") ? (
+       <div className="h-11 w-11 rounded-xl overflow-hidden bg-[#003D25] border border-[#7CFF3B] shrink-0">
+        {n.thumb ? (
+         <img
         src={n.thumb}
         alt="Post"
         className="h-full w-full object-cover"
@@ -309,23 +318,15 @@ const thumbOf = (id: string) => {
       <MessageCircle className="h-5 w-5 text-white m-auto mt-3" />
     )}
   </div>
-)}
-    <div className="flex-1 min-w-0">
-       <p className="text-sm text-white">
-     <span className="font-bold">{n.who}</span> {n.text}
-   </p>
-      <p className="text-xs text-white/70">
-       {timeAgo(n.created_at)} ago
-       </p>
-        </div>
-
-        <div className="h-9 w-9 rounded-full overflow-hidden bg-slate-200 shrink-0">
-        <AvatarImg
-          src={n.avatar_url}
-         alt={n.who}
-         className="h-full w-full object-cover"
-       />
-       </div>
+) : (
+  <div className="h-9 w-9 rounded-full overflow-hidden bg-slate-200 shrink-0">
+    <AvatarImg
+      src={n.avatar_url}
+      alt={n.who}
+      className="h-full w-full object-cover"
+    />
+  </div>
+     )}
                 
        </li>
          );
