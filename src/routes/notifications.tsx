@@ -218,13 +218,13 @@ function NotificationsPage() {
            }`}
            >
       <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] flex items-center justify-center shrink-0">
-       <Icon
+        <Icon
         className={`h-5 w-5 ${
-         n.kind === "like"
-        ? "text-red-500 stroke-white"
-        : "text-white"
-        }`}
-     />
+        n.kind === "like"
+        ? "text-red-500 fill-red-500 stroke-white"
+         : "text-white"
+         }`}
+         />
      </span>
 
        <div className="flex-1 min-w-0">
