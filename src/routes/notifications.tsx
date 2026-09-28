@@ -30,6 +30,7 @@ type Item = {
   text: string;
   created_at: string;
   user_id: string;
+ post_id?: string;
 };
 
 type Profile = {
@@ -124,6 +125,7 @@ function NotificationsPage() {
           avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
           text: `commented: ${r.content.slice(0, 80)}`, created_at: r.created_at,
           user_id: r.user_id,
+         post_id: r.post_id,
         })),
         ...(followsRes.data ?? []).map((r: any) => ({
           id: `f-${r.id}`, kind: "follow" as const, who: name(r.follower_id),
@@ -214,7 +216,7 @@ function NotificationsPage() {
            }
            }}
           className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
-           n.kind === "like" || n.kind === "follow" ? "cursor-pointer" : ""
+           n.kind === "comment" ? "cursor-pointer" : ""
            }`}
            >
       <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] flex items-center justify-center shrink-0">
