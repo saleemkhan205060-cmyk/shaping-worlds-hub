@@ -217,19 +217,15 @@ function NotificationsPage() {
            n.kind === "like" ? "cursor-pointer" : ""
            }`}
            >
-           <span
-           className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 ${
-           n.kind === "like"
-         ? "bg-red-500 border-2 border-white text-red-500"
-      : "bg-[#005A35] border border-[#7CFF3B] text-white"
-  }`}
->
-  <Icon
-    className={`h-5 w-5 ${
-      n.kind === "like" ? "text-red-500" : "text-white"
-    }`}
-  />
-    </span>
+      <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] flex items-center justify-center shrink-0">
+       <Icon
+        className={`h-5 w-5 ${
+         n.kind === "like"
+        ? "text-red-500 stroke-white"
+        : "text-white"
+        }`}
+     />
+     </span>
 
        <div className="flex-1 min-w-0">
        <p className="text-sm text-white">
