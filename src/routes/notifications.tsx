@@ -208,13 +208,13 @@ function NotificationsPage() {
             return (
               <li
             key={n.id}
-           onClick={() => {
-           if (n.kind === "like") {
-           window.location.assign(`/u/${n.user_id}`);
-          }
+            onClick={() => {
+            if (n.kind === "like" || n.kind === "follow") {
+            window.location.assign(`/u/${n.user_id}`);
+           }
            }}
           className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
-           n.kind === "like" ? "cursor-pointer" : ""
+           n.kind === "like" || n.kind === "follow" ? "cursor-pointer" : ""
            }`}
            >
       <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#7CFF3B] flex items-center justify-center shrink-0">
