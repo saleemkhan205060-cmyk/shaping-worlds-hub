@@ -628,25 +628,6 @@ function ProfileCard({
         />
       </div>
 
-      {user?.id === card.user_id && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onInterestClick();
-          }}
-          className="absolute top-[46%] -right-2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/10 text-white"
-          aria-label="View interested users"
-        >
-          <Heart className="h-5 w-5 fill-[#FF2D55] text-[#FF2D55]" />
-          {interestCount > 0 && (
-            <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white">
-              {interestCount}
-            </span>
-          )}
-        </button>
-      )}
-
       <div className="px-0.5 pb-0.5 pt-2">
         <h3 className="truncate text-[15px] font-bold leading-tight text-white">
           {name}
