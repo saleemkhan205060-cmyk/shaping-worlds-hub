@@ -1,3 +1,5 @@
+import { FullscreenVideoPlayer, type FsItem } from "@/components/FullscreenVideoPlayer";
+import { CommentsSheet } from "@/components/CommentsSheet";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
@@ -53,6 +55,8 @@ function NotificationsPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(true);
   const [chimeOn, setChimeOn] = useState(true);
+ const [fsItem, setFsItem] = useState<FsItem | null>(null);
+ const [commentsFor, setCommentsFor] = useState<string | null>(null);
 
   useEffect(() => {
     setChimeOn(isNotificationChimeEnabled());
@@ -66,6 +70,27 @@ function NotificationsPage() {
     if (next) playSoftChime(`pref-${Date.now()}`);
   };
 
+ const openPost = async (postId: string) => {
+  const { data: p } = await supabase
+    .from("posts")
+    .select("id,user_id,media_url,media_type,caption,created_at,thumbnail_url")
+    .eq("id", postId)
+    .maybeSingle();
+
+  if (!p) return;
+
+  if (
+    (p.media_type === "image" || p.media_type === "video") &&
+    p.media_url
+  ) {
+    setFsItem({
+      ...p,
+      media_type: p.media_type,
+    } as FsItem);
+  } else {
+    setCommentsFor(p.id);
+  }
+};
 
   useEffect(() => {
     if (loading) return;
@@ -211,10 +236,10 @@ function NotificationsPage() {
               <li
             key={n.id}
             onClick={() => {
-            if (n.kind === "like") {
-            window.location.assign(`/u/${n.user_id}`);
-            }
-            }}
+           if (n.kind === "comment" && n.post_id) {
+           openPost(n.post_id);
+           }
+           }}
           className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
            n.kind === "comment" ? "cursor-pointer" : ""
            }`}
@@ -246,11 +271,25 @@ function NotificationsPage() {
        />
        </div>
                 
-              </li>
-            );
+         </li>
+         );
           })}
-        </ul>
-      )}
+         </ul>
+
+        {fsItem && (
+          <FullscreenVideoPlayer
+            items={[fsItem]}
+            startIndex={0}
+            onClose={() => setFsItem(null)}
+          />
+        )}
+
+         {commentsFor && (
+          <CommentsSheet
+            postId={commentsFor}
+            onClose={() => setCommentsFor(null)}
+          />
+        )}
     </Layout>
   );
 }
