@@ -23,6 +23,9 @@ import { uploadToStorage } from "@/lib/resumable-upload";
 import { MarriageAlbum } from "@/components/MarriageAlbum";
 export const Route = createFileRoute("/marriage/")({
   component: MarriagePage,
+  validateSearch: (s: Record<string, unknown>) => ({
+    profile: typeof s.profile === "string" ? s.profile : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Marriage — VIP Style" },
@@ -85,6 +88,7 @@ type Card = MarriageRow & { profile: Profile | null };
 function MarriagePage() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { profile } = Route.useSearch();
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -189,12 +193,15 @@ useEffect(() => {
     profile: profileMap[row.user_id] ?? null,
      }))
    );
+    if (profile && sortedRows.some((row) => row.user_id === profile)) {
+      setSelectedId(profile);
+      }
       setLoading(false);
     })();
     return () => {
       alive = false;
     };
-  }, [authLoading, user?.id]);
+  }, [authLoading, user?.id, profile]);
 
   const filtered = cards.filter((card) => {
     if (!q.trim()) return true;
