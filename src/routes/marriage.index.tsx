@@ -291,7 +291,10 @@ useEffect(() => {
                   variant="ghost"
                   size="icon"
                   aria-label="Back"
-                  onClick={() => setSelectedId(null)}
+                  onClick={() => {
+                   setSelectedId(null);
+                    navigate({ to: "/marriage", search: {} });
+                     }}
                   className="h-10 w-10 rounded-full border border-[#19D66B] bg-[#005A35] text-white hover:bg-[#005A35] hover:text-white"
                 >
                   <ArrowLeft className="h-5 w-5" />
