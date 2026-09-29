@@ -232,7 +232,7 @@ const thumbOf = (id: string) => {
           <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#19D66B] flex items-center justify-center text-white shadow">
             <Bell className="h-5 w-5" />
           </span>
-         <h1 className="text-xl font-extrabold">Notifications</h1>
+         <h1 className="text-xl font-extrabold text-white">Notifications</h1>
         </div>
       </div>
 
