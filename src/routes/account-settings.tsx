@@ -4,6 +4,7 @@ import {
   FileText,
   Info,
   ChevronRight,
+  UserRound,
 } from "lucide-react";
 
 export const Route = createFileRoute("/account-settings")({
@@ -37,6 +38,23 @@ function AccountSettingsPage() {
         </div>
 
         <div className="overflow-hidden rounded-3xl border border-[#19D66B] bg-[#005A35]">
+          <Link
+       to="/account-edit"
+  className="flex items-center gap-3 px-5 py-4 text-white hover:bg-[#006B3F] transition"
+>
+  <UserRound className="h-5 w-5 text-[#7CFF3B]" />
+
+  <span className="flex-1">
+    <span className="block font-semibold">Edit Account</span>
+    <span className="block text-sm text-white/70">
+      Edit your profile and account information
+    </span>
+  </span>
+
+   <ChevronRight className="h-5 w-5 text-white/70" />
+      </Link>
+
+         <div className="border-t border-[#19D66B]/40" />
           <Link
             to="/privacy"
             className="flex items-center gap-3 px-5 py-4 text-white hover:bg-[#006B3F] transition"
