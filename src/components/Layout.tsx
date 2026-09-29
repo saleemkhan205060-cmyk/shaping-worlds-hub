@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useMemo, createContext, useContext } from "react";
-import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search, Plus, MessageSquare } from "lucide-react";
+import { Home, User, Bell, LogOut, LogIn, Menu, Languages, Check, Loader2, Search, Plus, MessageSquare, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -302,6 +302,9 @@ export function Layout({
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => navigate({ to: "/account-settings" })}>
+                <Settings className="h-4 w-4 mr-2" /> Account Settings
+                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setLangOpen(true)}>
                   <Languages className="h-4 w-4 mr-2" /> {t("menu.language")}
                 </DropdownMenuItem>
