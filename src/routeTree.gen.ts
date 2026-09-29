@@ -23,6 +23,8 @@ import { Route as MarriageRouteImport } from './routes/marriage'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AccountSettingsRouteImport } from './routes/account-settings'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MarriageIndexRouteImport } from './routes/marriage.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -117,6 +119,16 @@ const AppRoute = AppRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountSettingsRoute = AccountSettingsRouteImport.update({
+  id: '/account-settings',
+  path: '/account-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -249,6 +261,8 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account-settings': typeof AccountSettingsRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRoute
   '/auth': typeof AuthRoute
@@ -290,6 +304,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account-settings': typeof AccountSettingsRoute
   '/app': typeof AppRoute
   '/auth': typeof AuthRoute
   '/messages': typeof MessagesRoute
@@ -330,6 +346,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account-settings': typeof AccountSettingsRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRoute
   '/auth': typeof AuthRoute
@@ -373,6 +391,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/account-settings'
     | '/admin'
     | '/app'
     | '/auth'
@@ -414,6 +434,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/account-settings'
     | '/app'
     | '/auth'
     | '/messages'
@@ -453,6 +475,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/account-settings'
     | '/admin'
     | '/app'
     | '/auth'
@@ -495,6 +519,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AccountSettingsRoute: typeof AccountSettingsRoute
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRoute
   AuthRoute: typeof AuthRoute
@@ -617,6 +643,20 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account-settings': {
+      id: '/account-settings'
+      path: '/account-settings'
+      fullPath: '/account-settings'
+      preLoaderRoute: typeof AccountSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -849,6 +889,8 @@ const MarriageRouteWithChildren = MarriageRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AccountSettingsRoute: AccountSettingsRoute,
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRoute,
   AuthRoute: AuthRoute,

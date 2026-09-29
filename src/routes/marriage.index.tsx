@@ -23,9 +23,8 @@ import { uploadToStorage } from "@/lib/resumable-upload";
 import { MarriageAlbum } from "@/components/MarriageAlbum";
 export const Route = createFileRoute("/marriage/")({
   component: MarriagePage,
-  validateSearch: (s: Record<string, unknown>) => ({
-    profile: typeof s.profile === "string" ? s.profile : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>) =>
+    typeof s.profile === "string" ? { profile: s.profile } : {},
   head: () => ({
     meta: [
       { title: "Marriage — VIP Style" },
