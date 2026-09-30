@@ -681,7 +681,7 @@ placeholder="Any other expectations"
   <button
       type="button"
        onClick={deleteProfile}
-        className="flex-1 h-11 rounded-xl bg-[#003D25] text-red-400 border border-red-400/60 font-bold inline-flex items-center justify-center gap-2 hover:bg-red-500/10"
+       className="flex-1 h-11 rounded-xl bg-red-600 text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-red-700"
       >
         Delete Profile
        </button>
