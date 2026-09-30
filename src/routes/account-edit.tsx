@@ -237,17 +237,17 @@ function AccountEditPage() {
           </h1>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {/* BASIC INFORMATION */}
           <div className="rounded-2xl border border-[#19D66B] bg-[#005A35] p-4">
             <h2 className="mb-3 text-base font-bold text-white">
               Basic Information
             </h2>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* NAME */}
               <div>
-                <label className="mb-1 block text-xs font-medium text-white">
+                <label className="mb-0.5 block text-xs font-medium text-white">
                   Name
                 </label>
 
