@@ -32,12 +32,12 @@ function DateOfBirthPicker({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="text-sm text-right text-slate-900 flex items-center gap-1"
+          className="text-sm text-right text-white flex items-center gap-1"
         >
           {selectedDate ? (
             format(selectedDate, "dd MMM yyyy")
           ) : (
-            <span className="text-slate-400">Select date</span>
+            <span className="text-white/40">Select date</span>
           )}
           <ChevronDown className="h-4 w-4 text-slate-400" />
         </button>
@@ -697,11 +697,11 @@ function FieldRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl px-4 h-11 flex items-center gap-3">
-      <span className="h-9 w-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+    <div className="bg-[#005A35] border border-[#19D66B] rounded-2xl px-4 h-11 flex items-center gap-3">
+      <span className="h-9 w-9 rounded-xl bg-[#003D25] text-[#7CFF3B] border border-[#19D66B]/60 flex items-center justify-center shrink-0">
         <Icon className="h-5 w-5" />
       </span>
-      <span className="font-semibold text-sm whitespace-nowrap shrink-0">
+      <span className="font-semibold text-sm text-white whitespace-nowrap shrink-0">
         {label}
         {optional && <span className="text-slate-400 font-normal"> (Optional)</span>}
       </span>
@@ -733,7 +733,7 @@ function FieldInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="text-sm text-right bg-transparent focus:outline-none w-full max-w-[180px] placeholder:text-slate-400"
+        className="text-sm text-right text-white bg-transparent focus:outline-none w-full max-w-[180px] placeholder:text-white/40"
       />
     </FieldRow>
   );
@@ -762,7 +762,7 @@ function FieldSelect({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="text-sm text-right bg-transparent focus:outline-none appearance-none pr-7 cursor-pointer"
+          className="text-sm text-right text-white bg-transparent focus:outline-none appearance-none pr-7 cursor-pointer"
         >
           {children ?? (
             <>
