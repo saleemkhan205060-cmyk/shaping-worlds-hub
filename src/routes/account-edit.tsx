@@ -33,7 +33,7 @@ function AccountEditPage() {
 
   const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
-  const [emailVisibility, setEmailVisibility] = useState("Public");
+  const [emailVisibility, setEmailVisibility] = useState("Private");
   const [gender, setGender] = useState("");
   const [languages, setLanguages] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
@@ -67,7 +67,7 @@ function AccountEditPage() {
           supabase
             .from("profile_about")
             .select(
-              "dob, email, gender, languages, marital_status, education, profession, country",
+              "dob, email, email_private, gender, languages, marital_status, education, profession, country",
             )
             .eq("user_id", user.id)
             .maybeSingle(),
@@ -88,6 +88,9 @@ function AccountEditPage() {
       if (aboutResult.data) {
         setDob(aboutResult.data.dob ?? "");
         setEmail(aboutResult.data.email ?? "");
+        setEmailVisibility(
+          aboutResult.data.email_private ? "Private" : "Public",
+        );
         setCountry(aboutResult.data.country ?? "");
         setGender(aboutResult.data.gender ?? "");
         setLanguages(aboutResult.data.languages ?? "");
@@ -148,6 +151,7 @@ function AccountEditPage() {
           user_id: user.id,
           dob: dob.trim(),
           email: email.trim(),
+          email_private: emailVisibility === "Private",
           country: country.trim(),
           gender: gender.trim(),
           languages: languages.trim(),
