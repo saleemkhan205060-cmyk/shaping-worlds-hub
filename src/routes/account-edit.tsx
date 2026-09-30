@@ -27,6 +27,7 @@ function AccountEditPage() {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
+  const [country, setCountry] = useState("");
   const [website, setWebsite] = useState("");
 
   const [dob, setDob] = useState("");
