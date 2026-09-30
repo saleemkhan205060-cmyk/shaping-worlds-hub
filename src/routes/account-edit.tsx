@@ -26,7 +26,6 @@ function AccountEditPage() {
 
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
-  const [location, setLocation] = useState("");
   const [country, setCountry] = useState("");
   const [website, setWebsite] = useState("");
 
@@ -58,7 +57,7 @@ function AccountEditPage() {
         await Promise.all([
           supabase
             .from("profiles")
-            .select("display_name, bio, location, website")
+            .select("display_name, bio, website")
             .eq("id", user.id)
             .maybeSingle(),
 
@@ -80,7 +79,6 @@ function AccountEditPage() {
       if (profileResult.data) {
         setName(profileResult.data.display_name ?? "");
         setBio(profileResult.data.bio ?? "");
-        setLocation(profileResult.data.location ?? "");
         setWebsite(profileResult.data.website ?? "");
       }
 
@@ -130,7 +128,6 @@ function AccountEditPage() {
       .update({
         display_name: name.trim(),
         bio: bio.trim(),
-        location: location.trim(),
         website: website.trim(),
       })
       .eq("id", user.id);
@@ -218,19 +215,18 @@ function AccountEditPage() {
             </h2>
 
             <div className="space-y-4">
-
               <div>
-          <label className="mb-1.5 block text-sm font-medium text-white">
-        Location
-      </label>
-  <input
-     type="text"
-      value={location}
-       onChange={(e) => setLocation(e.target.value)}
-         placeholder="Enter your location"
-          className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-           />
-             </div>
+                <label className="mb-1.5 block text-sm font-medium text-white">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                />
+              </div>
 
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-white">
@@ -331,13 +327,13 @@ function AccountEditPage() {
 
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-white">
-                  Location
+                  City
                 </label>
                 <input
                   type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Enter your location"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="Enter your city"
                   className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
