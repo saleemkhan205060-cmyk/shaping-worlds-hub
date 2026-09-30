@@ -293,8 +293,8 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     <Layout>
       <div className="max-w-xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <Link to="/marriage" className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-            <ArrowLeft className="h-5 w-5" />
+          <Link to="/marriage" className="h-10 w-10 rounded-full bg-[#005A35] border border-[#19D66B] flex items-center justify-center shadow-sm">
+            <ArrowLeft className="h-5 w-5 text-white" />
           </Link>
           <h1 className="text-xl font-extrabold flex-1 text-center text-white">Marriage Profile</h1>
         </div>
@@ -315,12 +315,12 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           <div className="mb-2">
          <h2 className="text-lg font-bold text-white">Basic Information</h2>
           </div>
-           <div className="bg-white border border-slate-200 rounded-2xl p-4">
+           <div className="bg-[#005A35] border border-[#19D66B] rounded-2xl p-4">
   <div className="flex items-center gap-3 mb-2">
-    <span className="h-9 w-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center">
+    <span className="h-9 w-9 rounded-xl bg-[#003D25] text-[#7CFF3B] border border-[#19D66B]/60 flex items-center justify-center">
       <FileText className="h-5 w-5" />
     </span>
-    <span className="font-semibold">About Me</span>
+    <span className="font-semibold text-white">About Me</span>
   </div>
 
   <textarea
@@ -329,10 +329,10 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     onChange={(e) => setAbout(e.target.value)}
     rows={4}
     placeholder="Write something about yourself…"
-    className="w-full resize-none text-sm bg-transparent focus:outline-none placeholder:text-slate-400"
+    className="w-full resize-none text-sm text-white bg-transparent focus:outline-none placeholder:text-white/40"
   />
 
-  <div className="text-right text-xs text-slate-400">
+  <div className="text-right text-xs text-white/45">
     {about.length}/100
   </div>
 </div>
@@ -667,15 +667,14 @@ placeholder="Any other expectations"
         <button
           onClick={save}
           disabled={saving}
-          className="mt-6 w-full h-14 rounded-2xl bg-pink-600 text-white font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 hover:bg-pink-700"
-        >
+className="mt-4 w-full h-11 rounded-xl bg-[#19D66B] text-[#003D25] font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 hover:bg-[#7CFF3B]"        >
    {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
     Save Profile
         </button>
           <button
           type="button"
            onClick={deleteProfile}
-           className="mt-3 w-full h-14 rounded-2xl bg-red-600 text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-red-700"
+           className="mt-2 w-full h-11 rounded-xl bg-red-600 text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-red-700"
            >
             Delete Profile
             </button>
