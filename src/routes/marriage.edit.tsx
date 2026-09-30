@@ -664,20 +664,28 @@ placeholder="Any other expectations"
             ))}
           </FieldSelect>
 
-        <button
-          onClick={save}
-          disabled={saving}
-className="mt-4 w-full h-11 rounded-xl bg-[#19D66B] text-[#003D25] font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 hover:bg-[#7CFF3B]"        >
-   {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-    Save Profile
-        </button>
+          <div className="mt-4 rounded-2xl bg-[#005A35] border border-[#19D66B] p-2">
           <button
-          type="button"
-           onClick={deleteProfile}
-           className="mt-2 w-full h-11 rounded-xl bg-red-600 text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-red-700"
-           >
+            onClick={save}
+            disabled={saving}
+            className="w-full h-11 rounded-xl bg-[#19D66B] text-[#003D25] font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 hover:bg-[#7CFF3B]"
+          >
+            {saving ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Save className="h-5 w-5" />
+            )}
+            Save Profile
+          </button>
+
+          <button
+            type="button"
+            onClick={deleteProfile}
+            className="mt-2 w-full h-11 rounded-xl bg-red-600 text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-red-700"
+          >
             Delete Profile
-            </button>
+          </button>
+        </div>
       </div>
       </div>
     </Layout>
