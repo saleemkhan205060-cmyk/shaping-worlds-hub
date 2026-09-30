@@ -218,18 +218,19 @@ function AccountEditPage() {
             </h2>
 
             <div className="space-y-4">
+
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
-              </div>
+          <label className="mb-1.5 block text-sm font-medium text-white">
+        Location
+      </label>
+  <input
+     type="text"
+      value={location}
+       onChange={(e) => setLocation(e.target.value)}
+         placeholder="Enter your location"
+          className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+           />
+             </div>
 
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-white">
@@ -404,7 +405,7 @@ function AccountEditPage() {
                   type="text"
                   value={languages}
                   onChange={(e) => setLanguages(e.target.value)}
-                  placeholder="e.g. Urdu, English, Arabic"
+                  placeholder="Enter your language"
                   className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -431,19 +432,6 @@ function AccountEditPage() {
                     ▼
                   </span>
                 </div>
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
-                  City
-                </label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="Enter your city"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
               </div>
 
               <div>
