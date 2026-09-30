@@ -65,7 +65,7 @@ function AccountEditPage() {
           supabase
             .from("profile_about")
             .select(
-              "dob, email, gender, languages, marital_status, education, profession",
+              "dob, email, gender, languages, marital_status, education, profession, country",
             )
             .eq("user_id", user.id)
             .maybeSingle(),
@@ -87,6 +87,7 @@ function AccountEditPage() {
       if (aboutResult.data) {
         setDob(aboutResult.data.dob ?? "");
         setEmail(aboutResult.data.email ?? "");
+        setCountry(aboutResult.data.country ?? "");
         setGender(aboutResult.data.gender ?? "");
         setLanguages(aboutResult.data.languages ?? "");
         setMaritalStatus(aboutResult.data.marital_status ?? "");
@@ -115,7 +116,10 @@ function AccountEditPage() {
 
     const parsedAge = age.trim() ? Number(age) : null;
 
-    if (parsedAge !== null && (!Number.isInteger(parsedAge) || parsedAge < 1)) {
+    if (
+      parsedAge !== null &&
+      (!Number.isInteger(parsedAge) || parsedAge < 1)
+    ) {
       setSaveMessage("Please enter a valid age.");
       setSaving(false);
       return;
@@ -144,6 +148,7 @@ function AccountEditPage() {
           user_id: user.id,
           dob: dob.trim(),
           email: email.trim(),
+          country: country.trim(),
           gender: gender.trim(),
           languages: languages.trim(),
           marital_status: maritalStatus.trim(),
@@ -245,6 +250,86 @@ function AccountEditPage() {
 
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-white">
+                  Country
+                </label>
+
+                <div className="relative">
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="Afghanistan">Afghanistan</option>
+                    <option value="Albania">Albania</option>
+                    <option value="Algeria">Algeria</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Bahrain">Bahrain</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Canada">Canada</option>
+                    <option value="China">China</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="France">France</option>
+                    <option value="Germany">Germany</option>
+                    <option value="India">India</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Iran">Iran</option>
+                    <option value="Iraq">Iraq</option>
+                    <option value="Ireland">Ireland</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Jordan">Jordan</option>
+                    <option value="Kuwait">Kuwait</option>
+                    <option value="Lebanon">Lebanon</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Morocco">Morocco</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Oman">Oman</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Palestine">Palestine</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="Qatar">Qatar</option>
+                    <option value="Russia">Russia</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Sri Lanka">Sri Lanka</option>
+                    <option value="Sudan">Sudan</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Syria">Syria</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="Tunisia">Tunisia</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Ukraine">Ukraine</option>
+                    <option value="United Arab Emirates">
+                      United Arab Emirates
+                    </option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="United States">United States</option>
+                    <option value="Yemen">Yemen</option>
+                  </select>
+
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                    ▼
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-white">
                   Location
                 </label>
                 <input
@@ -279,13 +364,22 @@ function AccountEditPage() {
                 <label className="mb-1.5 block text-sm font-medium text-white">
                   Gender
                 </label>
-                <input
-                  type="text"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  placeholder="Male / Female"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
+
+                <div className="relative">
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                    ▼
+                  </span>
+                </div>
               </div>
 
               <div>
@@ -319,13 +413,24 @@ function AccountEditPage() {
                 <label className="mb-1.5 block text-sm font-medium text-white">
                   Marital Status
                 </label>
-                <input
-                  type="text"
-                  value={maritalStatus}
-                  onChange={(e) => setMaritalStatus(e.target.value)}
-                  placeholder="e.g. Single, Married"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
+
+                <div className="relative">
+                  <select
+                    value={maritalStatus}
+                    onChange={(e) => setMaritalStatus(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                  >
+                    <option value="">Select Marital Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                  </select>
+
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                    ▼
+                  </span>
+                </div>
               </div>
 
               <div>
@@ -384,13 +489,26 @@ function AccountEditPage() {
                 <label className="mb-1.5 block text-sm font-medium text-white">
                   Religion
                 </label>
-                <input
-                  type="text"
-                  value={religion}
-                  onChange={(e) => setReligion(e.target.value)}
-                  placeholder="e.g. Islam"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
+
+                <div className="relative">
+                  <select
+                    value={religion}
+                    onChange={(e) => setReligion(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                  >
+                    <option value="">Select Religion</option>
+                    <option value="Islam">Islam</option>
+                    <option value="Christianity">Christianity</option>
+                    <option value="Hinduism">Hinduism</option>
+                    <option value="Sikhism">Sikhism</option>
+                    <option value="Buddhism">Buddhism</option>
+                    <option value="Other">Other</option>
+                  </select>
+
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                    ▼
+                  </span>
+                </div>
               </div>
 
               <div>
