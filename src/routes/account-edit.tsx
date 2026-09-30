@@ -33,7 +33,7 @@ function AccountEditPage() {
 
   const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
-  const [emailVisibility, setEmailVisibility] = useState("Public");
+  const [emailVisibility, setEmailVisibility] = useState("Private");
   const [gender, setGender] = useState("");
   const [languages, setLanguages] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
@@ -67,7 +67,7 @@ function AccountEditPage() {
           supabase
             .from("profile_about")
             .select(
-              "dob, email, gender, languages, marital_status, education, profession, country",
+              "dob, email, email_private, gender, languages, marital_status, education, profession, country",
             )
             .eq("user_id", user.id)
             .maybeSingle(),
