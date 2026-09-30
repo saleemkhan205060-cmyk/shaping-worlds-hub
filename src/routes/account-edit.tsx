@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -23,6 +23,8 @@ function AccountEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
@@ -31,6 +33,7 @@ function AccountEditPage() {
 
   const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
+  const [emailVisibility, setEmailVisibility] = useState("Public");
   const [gender, setGender] = useState("");
   const [languages, setLanguages] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
@@ -184,6 +187,32 @@ function AccountEditPage() {
     setSaving(false);
   };
 
+  const handleDelete = async () => {
+    if (!user) return;
+
+    setDeleting(true);
+    setSaveMessage("");
+
+    /*
+     * IMPORTANT:
+     * Supabase Auth users cannot be permanently deleted safely
+     * from the browser with supabase.auth.admin.deleteUser().
+     *
+     * Actual permanent account deletion should be handled by
+     * a secure Supabase Edge Function or database RPC.
+     *
+     * For now we close the confirmation after the user confirms.
+     * We will connect the real delete action separately.
+     */
+
+    setSaveMessage(
+      "Delete confirmation received. Account deletion needs to be connected securely.",
+    );
+
+    setDeleting(false);
+    setDeleteOpen(false);
+  };
+
   if (authLoading || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#003D25]">
@@ -193,60 +222,67 @@ function AccountEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#003D25] px-4 py-6">
+    <div className="min-h-screen bg-[#003D25] px-3 py-5 sm:px-4 sm:py-6">
       <div className="mx-auto max-w-2xl">
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3">
           <Link
             to="/account-settings"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#19D66B] bg-[#005A35] text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#19D66B] bg-[#005A35] text-white transition hover:bg-[#007342]"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4.5 w-4.5" />
           </Link>
 
-          <h1 className="text-2xl font-extrabold text-white">
+          <h1 className="text-xl font-extrabold text-white sm:text-2xl">
             Edit Account
           </h1>
         </div>
 
-        <div className="space-y-4">
-          <div className="rounded-3xl border border-[#19D66B] bg-[#005A35] p-5">
-            <h2 className="mb-4 text-lg font-bold text-white">
+        <div className="space-y-3">
+          {/* BASIC INFORMATION */}
+          <div className="rounded-2xl border border-[#19D66B] bg-[#005A35] p-4">
+            <h2 className="mb-3 text-base font-bold text-white">
               Basic Information
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
+              {/* NAME */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Name
                 </label>
+
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Enter your name"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* BIO */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Bio
                 </label>
+
                 <textarea
-                  rows={4}
+                  rows={2}
                   maxLength={80}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Tell people about yourself"
-                  className="w-full resize-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="min-h-[58px] w-full resize-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
-                <p className="mt-1 text-xs text-white/50">
+
+                <p className="mt-0.5 text-[10px] text-white/45">
                   Maximum 80 characters
                 </p>
               </div>
 
+              {/* COUNTRY */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Country
                 </label>
 
@@ -254,7 +290,7 @@ function AccountEditPage() {
                   <select
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                    className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
                     <option value="">Select Country</option>
                     <option value="Afghanistan">Afghanistan</option>
@@ -319,46 +355,52 @@ function AccountEditPage() {
                     <option value="Yemen">Yemen</option>
                   </select>
 
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
                     ▼
                   </span>
                 </div>
               </div>
 
+              {/* CITY */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   City
                 </label>
+
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Enter your city"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* WEBSITE */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Website
                 </label>
+
                 <input
                   type="url"
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
                   placeholder="https://example.com"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#19D66B] bg-[#005A35] p-5">
-            <h2 className="mb-4 text-lg font-bold text-white">About You</h2>
+          {/* ABOUT YOU */}
+          <div className="rounded-2xl border border-[#19D66B] bg-[#005A35] p-4">
+            <h2 className="mb-3 text-base font-bold text-white">About You</h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
+              {/* GENDER */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Gender
                 </label>
 
@@ -366,48 +408,53 @@ function AccountEditPage() {
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                    className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
 
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
                     ▼
                   </span>
                 </div>
               </div>
 
+              {/* AGE */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Age
                 </label>
+
                 <input
                   type="number"
                   min="1"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
                   placeholder="Enter your age"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* LANGUAGE */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Language
                 </label>
+
                 <input
                   type="text"
                   value={languages}
                   onChange={(e) => setLanguages(e.target.value)}
                   placeholder="Enter your language"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* MARITAL STATUS */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Marital Status
                 </label>
 
@@ -415,7 +462,7 @@ function AccountEditPage() {
                   <select
                     value={maritalStatus}
                     onChange={(e) => setMaritalStatus(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                    className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
                     <option value="">Select Marital Status</option>
                     <option value="Single">Single</option>
@@ -424,53 +471,60 @@ function AccountEditPage() {
                     <option value="Widowed">Widowed</option>
                   </select>
 
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
                     ▼
                   </span>
                 </div>
               </div>
 
+              {/* EDUCATION */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Education
                 </label>
+
                 <input
                   type="text"
                   value={education}
                   onChange={(e) => setEducation(e.target.value)}
                   placeholder="Enter your education"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* PROFESSION */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Profession
                 </label>
+
                 <input
                   type="text"
                   value={profession}
                   onChange={(e) => setProfession(e.target.value)}
                   placeholder="Enter your profession"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* LIVING IN */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Living In
                 </label>
+
                 <input
                   type="text"
                   value={livingIn}
                   onChange={(e) => setLivingIn(e.target.value)}
                   placeholder="e.g. Saudi Arabia"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* RELIGION */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Religion
                 </label>
 
@@ -478,7 +532,7 @@ function AccountEditPage() {
                   <select
                     value={religion}
                     onChange={(e) => setReligion(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 pr-10 text-white outline-none focus:border-[#7CFF3B]"
+                    className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
                     <option value="">Select Religion</option>
                     <option value="Islam">Islam</option>
@@ -489,57 +543,146 @@ function AccountEditPage() {
                     <option value="Other">Other</option>
                   </select>
 
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
                     ▼
                   </span>
                 </div>
               </div>
 
+              {/* DATE OF BIRTH */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Date of Birth
                 </label>
+
                 <input
                   type="text"
                   value={dob}
                   onChange={(e) => setDob(e.target.value)}
                   placeholder="e.g. 1995-04-12"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
 
+              {/* EMAIL */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
+                <label className="mb-1 block text-xs font-medium text-white">
                   Email
                 </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full rounded-xl border border-[#19D66B]/60 bg-[#003D25] px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
+
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="h-10 min-w-0 flex-1 rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                  />
+
+                  <div className="relative w-[112px] shrink-0">
+                    <select
+                      value={emailVisibility}
+                      onChange={(e) =>
+                        setEmailVisibility(e.target.value)
+                      }
+                      className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-2 pr-7 text-xs font-medium text-white outline-none focus:border-[#7CFF3B]"
+                    >
+                      <option value="Public">Public</option>
+                      <option value="Private">Private</option>
+                    </select>
+
+                    <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-white">
+                      ▼
+                    </span>
+                  </div>
+                </div>
+
+                <p className="mt-1 text-[10px] text-white/45">
+                  Choose whether your email is public or private.
+                </p>
               </div>
             </div>
           </div>
 
+          {/* SAVE MESSAGE */}
           {saveMessage && (
-            <div className="rounded-xl border border-[#19D66B] bg-[#005A35] px-4 py-3 text-center text-sm font-medium text-white">
+            <div className="rounded-xl border border-[#19D66B] bg-[#005A35] px-3 py-2 text-center text-xs font-medium text-white">
               {saveMessage}
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#19D66B] px-5 py-3 font-bold text-[#003D25] transition hover:bg-[#7CFF3B] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <Save className="h-5 w-5" />
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
+          {/* SAVE + DELETE CONTAINER */}
+          <div className="flex items-center gap-2 rounded-2xl border border-[#19D66B] bg-[#005A35] p-2">
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving || deleting}
+              className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-[#19D66B] px-3 text-sm font-bold text-[#003D25] transition hover:bg-[#7CFF3B] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Save className="h-4 w-4" />
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+
+            <div className="h-7 w-px bg-[#19D66B]/40" />
+
+            <button
+              type="button"
+              onClick={() => setDeleteOpen(true)}
+              disabled={saving || deleting}
+              className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-red-400/70 bg-red-500/15 px-3 text-sm font-bold text-red-300 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* DELETE CONFIRMATION POPUP */}
+      {deleteOpen && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-sm rounded-2xl border border-[#19D66B] bg-[#005A35] p-5 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white">
+                Delete Account?
+              </h3>
+
+              <button
+                type="button"
+                onClick={() => setDeleteOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#003D25] text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <p className="mb-5 text-sm leading-5 text-white/75">
+              Are you sure you want to delete your account? This action
+              cannot be undone.
+            </p>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteOpen(false)}
+                disabled={deleting}
+                className="h-10 flex-1 rounded-lg border border-[#19D66B]/60 bg-[#003D25] text-sm font-semibold text-white transition hover:bg-[#004C30]"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-bold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {deleting ? "Deleting..." : "Confirm Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
