@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { deleteOwnAccount } from "@/lib/account.functions";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Save, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +21,8 @@ export const Route = createFileRoute("/account-edit")({
 
 function AccountEditPage() {
   const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const deleteAccountFn = useServerFn(deleteOwnAccount);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -197,24 +201,15 @@ function AccountEditPage() {
     setDeleting(true);
     setSaveMessage("");
 
-    /*
-     * IMPORTANT:
-     * Supabase Auth users cannot be permanently deleted safely
-     * from the browser with supabase.auth.admin.deleteUser().
-     *
-     * Actual permanent account deletion should be handled by
-     * a secure Supabase Edge Function or database RPC.
-     *
-     * For now we close the confirmation after the user confirms.
-     * We will connect the real delete action separately.
-     */
-
-    setSaveMessage(
-      "Delete confirmation received. Account deletion needs to be connected securely.",
-    );
-
-    setDeleting(false);
-    setDeleteOpen(false);
+    try {
+      await deleteAccountFn();
+      await supabase.auth.signOut();
+      navigate({ to: "/auth" });
+    } catch (e) {
+      setSaveMessage(e instanceof Error ? e.message : "Could not delete account.");
+      setDeleting(false);
+      setDeleteOpen(false);
+    }
   };
 
   if (authLoading || loading) {
