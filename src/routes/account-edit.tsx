@@ -88,6 +88,9 @@ function AccountEditPage() {
       if (aboutResult.data) {
         setDob(aboutResult.data.dob ?? "");
         setEmail(aboutResult.data.email ?? "");
+        setEmailVisibility(
+          aboutResult.data.email_private ? "Private" : "Public",
+        );
         setCountry(aboutResult.data.country ?? "");
         setGender(aboutResult.data.gender ?? "");
         setLanguages(aboutResult.data.languages ?? "");
@@ -148,6 +151,7 @@ function AccountEditPage() {
           user_id: user.id,
           dob: dob.trim(),
           email: email.trim(),
+          email_private: emailVisibility === "Private",
           country: country.trim(),
           gender: gender.trim(),
           languages: languages.trim(),
