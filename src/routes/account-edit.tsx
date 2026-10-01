@@ -622,13 +622,14 @@ function AccountEditPage() {
             </button>
 
             <button
-              type="button"
+             type="button"
               onClick={() => setDeleteOpen(true)}
-              disabled={saving || deleting}
-              className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-[#19D66B] hover:bg-red-600/15 px-3 text-sm font-bold text-red-300 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
-              <Trash2 className="h-4 w-4" />
-              Delete
-            </button>
+             disabled={saving || deleting}
+             className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-[#19D66B] hover:bg-red-600/15 px-3 text-sm font-bold text-red-300 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+             >
+             <Trash2 className="h-4 w-4" />
+            Delete
+           </button>
           </div>
         </div>
       </div>
