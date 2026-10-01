@@ -259,25 +259,25 @@ function AccountEditPage() {
                 />
               </div>
 
-              {/* BIO */}
-              <div>
-                <label className="mb-1 block text-xs font-medium text-white">
-                  Bio
-                </label>
+             {/* ABOUT */}
+             <div>
+             <label className="mb-1 block text-xs font-medium text-white">
+            About
+            </label>
 
-                <textarea
-                  rows={2}
-                  maxLength={80}
-                  value={bio}
+             <textarea
+               rows={5}
+                maxLength={2000}
+                 value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  placeholder="Tell people about yourself"
-                  className="min-h-[58px] w-full resize-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
-                />
+                   placeholder="Tell people about yourself..."
+                   className="min-h-[120px] w-full resize-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 py-2 text-sm leading-5 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                   />
 
-                <p className="mt-0.5 text-[10px] text-white/45">
-                  Maximum 80 characters
+                  <p className="mt-0.5 text-[10px] text-white/45">
+                  Maximum 2000 characters
                 </p>
-              </div>
+                </div>
 
               {/* COUNTRY */}
               <div>
