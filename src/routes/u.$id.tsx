@@ -37,6 +37,7 @@ const TABS = ["Posts", "Videos", "Photos"] as const;
 type Tab = (typeof TABS)[number];
 
 function UserProfile() {
+  const [aboutOpen, setAboutOpen] = useState(false);
   const { id } = Route.useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -577,15 +578,17 @@ function UserProfile() {
             </span>
           </div>
           {profile.bio && (
-      
-          <div className="mt-4">
-         <h3 className="text-sm font-bold text-slate-800">About</h3>
-        <p className="mt-1 text-sm leading-5 text-slate-600 whitespace-pre-wrap">
-      {profile.bio}
-       </p>
-       </div>
-         )}
-          <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
+         <div className="mt-4">
+        <button
+      type="button"
+      onClick={() => setAboutOpen(true)}
+      className="rounded-lg border border-[#19D66B] bg-[#005A35] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#003D25]"
+       >
+      About
+        </button>
+         </div>
+          )}
+           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
             <button
             type="button"
             onClick={openFollowers}
@@ -994,7 +997,29 @@ function UserProfile() {
           items={fsItems}
           startIndex={fsIndex}
           onClose={() => setFsOpen(false)}
-        />
+          />
+         )}
+
+        {aboutOpen && profile?.bio && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-md rounded-2xl border border-[#19D66B] bg-[#005A35] p-5 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">About</h2>
+
+              <button
+                type="button"
+                onClick={() => setAboutOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#19D66B] text-white hover:bg-[#003D25]"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="whitespace-pre-wrap text-sm leading-6 text-white">
+              {profile.bio}
+            </p>
+          </div>
+        </div>
       )}
     </Layout>
   );
