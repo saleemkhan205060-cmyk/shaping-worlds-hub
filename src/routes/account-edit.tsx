@@ -616,8 +616,9 @@ function AccountEditPage() {
               onClick={handleSave}
               disabled={saving || deleting}
               className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-[#19D66B] bg-[#19D66B] px-3 text-sm font-bold text-[#003D25] transition hover:bg-[#7CFF3B] disabled:cursor-not-allowed disabled:opacity-60"
-              <Save className="h-4 w-4" />
-              {saving ? "Saving..." : "Save Changes"}
+            >
+             <Save className="h-4 w-4" />
+             {saving ? "Saving..." : "Save Changes"}
             </button>
 
             <button
