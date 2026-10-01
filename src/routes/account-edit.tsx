@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { deleteOwnAccount } from "@/lib/account.functions";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Trash2, X } from "lucide-react";
+import { ArrowLeft, Lock, Save, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
