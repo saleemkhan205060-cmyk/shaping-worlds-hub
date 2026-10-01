@@ -622,8 +622,6 @@ function AccountEditPage() {
               {saving ? "Saving..." : "Save Changes"}
             </button>
 
-            <div className="h-7 w-px bg-[#19D66B]/40" />
-
             <button
               type="button"
               onClick={() => setDeleteOpen(true)}
