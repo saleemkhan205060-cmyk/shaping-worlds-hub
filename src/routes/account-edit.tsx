@@ -611,12 +611,12 @@ function AccountEditPage() {
           )}
 
           {/* SAVE + DELETE CONTAINER */}
-          <div className="flex items-center gap-2 rounded-2xl border border-[#19D66B] bg-[#005A35] p-2">
+          <div className="flex items-center gap-2 rounded-2xl border border-[#19D66B] bg-[#005A35] p-1">
             <button
               type="button"
               onClick={handleSave}
               disabled={saving || deleting}
-              className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-[#19D66B] px-3 text-sm font-bold text-[#003D25] transition hover:bg-[#7CFF3B] disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg bg-[#19D66B] px-3 text-sm font-bold text-[#003D25] transition hover:bg-[#7CFF3B] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Save className="h-4 w-4" />
               {saving ? "Saving..." : "Save Changes"}
@@ -626,7 +626,7 @@ function AccountEditPage() {
               type="button"
               onClick={() => setDeleteOpen(true)}
               disabled={saving || deleting}
-              className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-red-400/70 bg-red-500/15 px-3 text-sm font-bold text-red-300 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-red-400/70 hover:bg-red-600/15 px-3 text-sm font-bold text-red-300 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Trash2 className="h-4 w-4" />
               Delete
