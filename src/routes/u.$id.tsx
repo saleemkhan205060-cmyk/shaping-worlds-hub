@@ -27,6 +27,7 @@ type ProfileRow = {
   display_name: string | null;
   username: string | null;
   avatar_url: string | null;
+  bio: string | null;
   created_at: string;
   cover_url: string | null;
   hide_following?: boolean | null;
@@ -575,7 +576,15 @@ function UserProfile() {
               <Calendar className="h-4 w-4" /> Joined {joined}
             </span>
           </div>
-
+          {profile.bio && (
+      
+          <div className="mt-4">
+         <h3 className="text-sm font-bold text-slate-800">About</h3>
+        <p className="mt-1 text-sm leading-5 text-slate-600 whitespace-pre-wrap">
+      {profile.bio}
+       </p>
+       </div>
+         )}
           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
             <button
             type="button"
