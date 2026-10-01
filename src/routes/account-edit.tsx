@@ -579,21 +579,23 @@ function AccountEditPage() {
                   />
 
                   <div className="relative w-[112px] shrink-0">
-                    <select
-                      value={emailVisibility}
-                      onChange={(e) =>
-                        setEmailVisibility(e.target.value)
-                      }
-                      className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-2 pr-7 text-xs font-medium text-white outline-none focus:border-[#7CFF3B]"
-                    >
-                      <option value="Public">Public</option>
-                      <option value="Private">Private</option>
-                    </select>
+                 <select
+                 value={emailVisibility}
+               onChange={(e) => setEmailVisibility(e.target.value)}
+        className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-2 pr-7 text-xs font-medium text-white outline-none focus:border-[#7CFF3B]"
+       >
+      <option value="Public">Public</option>
+         <option value="Private">Private</option>
+         </select>
 
-                    <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-white">
-                      ▼
-                    </span>
-                  </div>
+           {emailVisibility === "Private" && (
+            <Lock className="pointer-events-none absolute right-6 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#7CFF3B]" />
+               )}
+
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-white">
+              ▼
+              </span>
+               </div>
                 </div>
 
                 <p className="mt-1 text-[10px] text-white/45">
