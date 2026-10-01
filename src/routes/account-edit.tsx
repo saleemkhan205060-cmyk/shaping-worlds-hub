@@ -611,6 +611,7 @@ function AccountEditPage() {
           )}
 
           {/* SAVE + DELETE CONTAINER */}
+          <div className="flex gap-2">
             <button
               type="button"
               onClick={handleSave}
