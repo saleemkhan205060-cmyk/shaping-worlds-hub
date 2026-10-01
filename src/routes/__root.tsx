@@ -8,6 +8,7 @@ import {
   useRouterState,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { GA_MEASUREMENT_ID, initAnalytics, trackPageView } from "@/lib/analytics";
 import { Toaster } from "@/components/ui/sonner";
@@ -75,7 +76,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
 
