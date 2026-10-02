@@ -590,7 +590,7 @@ function UploadPage() {
                   maxLength={120}
                   rows={3}
                   placeholder="Say something about it..."
-                  className="mt-2 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm text-white outline-none focus:border-indigo-400"
+                  className="mt-2 w-full resize-none rounded-xl border border-slate-200 bg-[#003D25] px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 focus:border-indigo-400"
                 />
               </div>
               <div>
