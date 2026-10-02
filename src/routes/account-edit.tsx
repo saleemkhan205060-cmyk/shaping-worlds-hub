@@ -271,11 +271,11 @@ function AccountEditPage() {
                  value={bio}
                   onChange={(e) => setBio(e.target.value)}
                    placeholder="Tell people about yourself..."
-                   className="min-h-[120px] w-full resize-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 py-2 text-sm leading-5 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
+                   className="min-h-[60px] w-full resize-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 py-2 text-sm leading-5 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                    />
 
                   <p className="mt-0.5 text-[10px] text-white/45">
-                  Maximum 2000 characters
+                  Maximum 100 characters
                 </p>
                 </div>
 
