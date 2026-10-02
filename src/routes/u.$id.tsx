@@ -310,7 +310,7 @@ function UserProfile() {
     .maybeSingle(),
 
   supabase
-    .from("profile_about")
+    .from("profile_about_public")
     .select("dob, email, email_private, gender, languages, marital_status, education, profession, country")
     .eq("user_id", id)
     .maybeSingle(),
