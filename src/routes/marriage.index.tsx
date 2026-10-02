@@ -499,7 +499,7 @@ useEffect(() => {
     
 <div>
   <p className="text-xs text-white/60">Nationality</p>
-  <p className="text-sm font-medium">{selected.nationality ?? "Not added"}</p>
+  <p className="text-sm font-medium">{selected.pref_nationality ?? "Not added"}</p>
 </div>
 
 <div>
