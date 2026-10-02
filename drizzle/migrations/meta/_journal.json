@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790955387798,
+      "tag": "0000_profile_about_public_security_invoker_off",
+      "breakpoints": true
+    }
+  ]
+}
