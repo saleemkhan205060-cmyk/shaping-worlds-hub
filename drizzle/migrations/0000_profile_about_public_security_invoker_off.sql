@@ -1,0 +1,1 @@
+ALTER VIEW public.profile_about_public SET (security_invoker = off);
