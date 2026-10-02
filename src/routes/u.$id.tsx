@@ -31,6 +31,20 @@ type ProfileRow = {
   created_at: string;
   cover_url: string | null;
   hide_following?: boolean | null;
+  website?: string | null;
+  country?: string | null;
+  city?: string | null;
+  dob?: string | null;
+  email?: string | null;
+  email_private?: boolean | null;
+  gender?: string | null;
+  languages?: string | null;
+  marital_status?: string | null;
+  education?: string | null;
+  profession?: string | null;
+  age?: number | null;
+  living_in?: string | null;
+  religion?: string | null;
 };
 
 const TABS = ["Posts", "Videos", "Photos"] as const;
@@ -288,16 +302,51 @@ function UserProfile() {
 
     useEffect(() => {
     setLoading(true);
-    Promise.all([
-      supabase.from("profiles").select("id, username, display_name, avatar_url, created_at, updated_at, cover_url, bio, location, website, is_verified, hide_following").eq("id", id).maybeSingle(),
-      supabase
-        .from("posts")
-        .select("id, user_id, media_url, media_type, caption, created_at, thumbnail_url")
-        .eq("user_id", id)
-        .order("created_at", { ascending: false }),
-    ]).then(([{ data: prof }, { data: pp }]) => {
-      const profRow = (prof as ProfileRow | null) ?? null;
-      setProfile(profRow);
+   Promise.all([
+  supabase
+    .from("profiles")
+    .select("id, username, display_name, avatar_url, created_at, cover_url, bio, website, hide_following")
+    .eq("id", id)
+    .maybeSingle(),
+
+  supabase
+    .from("profile_about")
+    .select("dob, email, email_private, gender, languages, marital_status, education, profession, country")
+    .eq("user_id", id)
+    .maybeSingle(),
+
+  supabase
+    .from("marriage_profiles")
+    .select("age, city, living_in, religion")
+    .eq("user_id", id)
+    .maybeSingle(),
+
+  supabase
+    .from("posts")
+    .select("id, user_id, media_url, media_type, caption, created_at, thumbnail_url")
+    .eq("user_id", id)
+    .order("created_at", { ascending: false }),
+]).then(([{ data: prof }, { data: about }, { data: marriage }, { data: pp }]) => {
+  const profRow = prof
+    ? ({
+        ...prof,
+        country: about?.country ?? null,
+        dob: about?.dob ?? null,
+        email: about?.email ?? null,
+        email_private: about?.email_private ?? true,
+        gender: about?.gender ?? null,
+        languages: about?.languages ?? null,
+        marital_status: about?.marital_status ?? null,
+        education: about?.education ?? null,
+        profession: about?.profession ?? null,
+        age: marriage?.age ?? null,
+        city: marriage?.city ?? null,
+        living_in: marriage?.living_in ?? null,
+        religion: marriage?.religion ?? null,
+      } as ProfileRow)
+    : null;
+
+  setProfile(profRow);
       setHideFollowing(!!profRow?.hide_following);
       setPosts(((pp ?? []) as Post[]).filter((p) => !!p.media_url));
       setLoading(false);
@@ -577,7 +626,7 @@ function UserProfile() {
               <Calendar className="h-4 w-4" /> Joined {joined}
             </span>
           </div>
-          {profile.bio && (
+          {profile && (
          <div className="mt-4">
         <button
       type="button"
@@ -1000,27 +1049,68 @@ function UserProfile() {
           />
          )}
 
-        {aboutOpen && profile?.bio && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#19D66B] bg-[#005A35] p-5 shadow-xl">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">About</h2>
+        {aboutOpen && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6"
+    onClick={() => setAboutOpen(false)}
+  >
+    <div
+      className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#19D66B] bg-[#005A35] shadow-xl"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex shrink-0 items-center justify-between border-b border-[#19D66B] px-5 py-4">
+        <h2 className="text-lg font-bold text-white">About</h2>
 
-              <button
-                type="button"
-                onClick={() => setAboutOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#19D66B] text-white hover:bg-[#003D25]"
+        <button
+          type="button"
+          onClick={() => setAboutOpen(false)}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-[#19D66B] text-white hover:bg-[#003D25]"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="overflow-y-auto p-5">
+        <div className="space-y-3">
+          {[
+            ["Name", profile.display_name],
+            ["About", profile.bio],
+            ["Country", profile.country],
+            ["City", profile.city],
+            ["Website", profile.website],
+            ["Gender", profile.gender],
+            ["Age", profile.age != null ? String(profile.age) : null],
+            ["Language", profile.languages],
+            ["Marital Status", profile.marital_status],
+            ["Education", profile.education],
+            ["Profession", profile.profession],
+            ["Living In", profile.living_in],
+            ["Religion", profile.religion],
+            ["Date of Birth", profile.dob],
+            ...(profile.email && !profile.email_private
+              ? [["Email", profile.email]]
+              : []),
+          ]
+            .filter(([, value]) => value != null && String(value).trim() !== "")
+            .map(([label, value]) => (
+              <div
+                key={label as string}
+                className="rounded-xl border border-[#19D66B]/50 bg-[#003D25] px-3 py-2.5"
               >
-                ✕
-              </button>
-            </div>
+                <div className="text-xs font-semibold text-[#7CFF3B]">
+                  {label}
+                </div>
 
-            <p className="whitespace-pre-wrap text-sm leading-6 text-white">
-              {profile.bio}
-            </p>
-          </div>
+                <div className="mt-0.5 break-words whitespace-pre-wrap text-sm leading-6 text-white">
+                  {String(value)}
+                </div>
+              </div>
+            ))}
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
     </Layout>
   );
 }
