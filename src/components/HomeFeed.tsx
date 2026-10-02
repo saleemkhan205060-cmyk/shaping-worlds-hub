@@ -1122,7 +1122,7 @@ export function HomeFeed() {
                 {p.caption && p.media_type !== "text" && p.media_type !== "video" && (
                   <div className="relative px-4 pb-2">
                     <p
-                      className="text-sm whitespace-pre-wrap select-none"
+                      className="text-sm whitespace-pre-wrap select-none text-white"
                       onPointerDown={() => startCaptionPress(p)}
                       onPointerUp={cancelCaptionPress}
                       onPointerLeave={cancelCaptionPress}
