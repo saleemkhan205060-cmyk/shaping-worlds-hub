@@ -646,7 +646,7 @@ placeholder="Any other expectations"
   onChange={setPrefCity}
   placeholder="Enter city"
 />
-          <FieldSelect icon={Heart} label="Marital Status" value={maritalStatus} onChange={setMaritalStatus}>
+          <FieldSelect icon={Heart} label="Marital Status" value={prefMaritalStatus} onChange={setPrefMaritalStatus}>
             <option value="">Select</option>
             {MARITAL.map((o) => (
               <option key={o} value={o}>
