@@ -166,7 +166,7 @@ useEffect(() => {
       setLoading(true);
       const { data: mp } = await supabase
         .from("marriage_profiles")
-        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations, pref_income, pref_height, pref_religion, pref_city, pref_nationality
+        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations, pref_income, pref_height, pref_religion, pref_city, pref_nationality")
         .order("created_at", { ascending: false })
         .limit(100);
       const rows = (mp ?? []) as MarriageRow[];
