@@ -568,22 +568,9 @@ function UserProfile() {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
-  <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
+                <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
 
-  {isSelf && (
-    <button
-      type="button"
-      onClick={() => {
-      setNewName(displayName);
-     setNameEditorOpen(true);
-     }}
-      className="ml-1 flex h-7 w-7 items-center justify-center rounded-full hover:bg-slate-100"
-      aria-label="Change name"
-    >
-      <span className="text-xl font-bold leading-none text-slate-600">⌄</span>
-    </button>
-  )}
-</div>
+              </div>
                 {!isSelf && (
                   <button
                     onClick={() => navigate({ to: "/messages", search: { to: id } })}
