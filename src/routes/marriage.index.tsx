@@ -479,8 +479,8 @@ useEffect(() => {
 
  <div>
   <p className="text-xs text-white/60">Education</p>
-  <p className="text-sm font-medium">{selected.education ?? "Not added"}</p>
-</div>
+  <p className="text-sm font-medium">{selected.pref_education ?? "Not added"}</p>
+  </div>
     
 <div>
   <p className="text-xs text-white/60">Preferred Profession</p>
