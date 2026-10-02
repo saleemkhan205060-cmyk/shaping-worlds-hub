@@ -378,7 +378,7 @@ function UploadPage() {
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              maxLength={120}
+              maxLength={80}
               placeholder="Give your video a title..."
               className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-indigo-400"
             />
@@ -587,10 +587,10 @@ function UploadPage() {
                 <textarea
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
-                  maxLength={500}
+                  maxLength={120}
                   rows={3}
                   placeholder="Say something about it..."
-                  className="mt-2 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-indigo-400"
+                  className="mt-2 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm text-white outline-none focus:border-indigo-400"
                 />
               </div>
               <div>
