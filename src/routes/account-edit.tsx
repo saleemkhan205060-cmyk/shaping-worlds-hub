@@ -267,7 +267,7 @@ function AccountEditPage() {
 
              <textarea
                rows={5}
-                maxLength={2000}
+                maxLength={100}
                  value={bio}
                   onChange={(e) => setBio(e.target.value)}
                    placeholder="Tell people about yourself..."
