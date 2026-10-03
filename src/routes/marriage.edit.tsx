@@ -539,7 +539,6 @@ pref_marital_status: prefMaritalStatus.trim() || null,
         <option value="Other">Other</option>
       </select>
     </div>
-  </div>
 </FieldRow>
 
   <FieldInput
