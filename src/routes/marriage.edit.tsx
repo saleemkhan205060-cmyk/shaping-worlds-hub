@@ -506,7 +506,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
          />
           <div className="flex items-center gap-3">
   <span className="h-9 w-9 rounded-xl bg-[#003D25] text-[#7CFF3B] border border-[#19D66B]/60 flex items-center justify-center">
-    <Briefcase className="h-5 w-5" />
+    <CircleDollarSign className="h-5 w-5" />
   </span>
 
   <div className="flex-1">
