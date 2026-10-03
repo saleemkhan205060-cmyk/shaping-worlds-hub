@@ -350,44 +350,55 @@ pref_marital_status: prefMaritalStatus.trim() || null,
         ))}
       </FieldSelect>
 
-<FieldRow icon={Users} label="Height">
-  <select
-    value={height}
-    onChange={(e) => setHeight(e.target.value)}
-    className="w-full bg-transparent text-sm text-slate-900 outline-none"
-  >
-    <option value="">Select height</option>
-    <option value="4'10">4'10"</option>
-    <option value="4'11">4'11"</option>
-    <option value="5'0">5'0"</option>
-    <option value="5'1">5'1"</option>
-    <option value="5'2">5'2"</option>
-    <option value="5'3">5'3"</option>
-    <option value="5'4">5'4"</option>
-    <option value="5'5">5'5"</option>
-    <option value="5'6">5'6"</option>
-    <option value="5'7">5'7"</option>
-    <option value="5'8">5'8"</option>
-    <option value="5'9">5'9"</option>
-    <option value="5'10">5'10"</option>
-    <option value="5'11">5'11"</option>
-    <option value="6'0">6'0"</option>
-    <option value="6'1">6'1"</option>
-    <option value="6'2">6'2"</option>
-    <option value="6'3">6'3"</option>
-    <option value="6'4">6'4"</option>
-    <option value="6'5">6'5"</option>
-    <option value="6'6">6'6"</option>
-  </select>
-</FieldRow>
-
-   <FieldInput
+<FieldSelect
+  icon={Users}
+  label="Height"
+  value={height}
+  onChange={setHeight}
+>
+  <option value="">Select height</option>
+  <option value="4'10">4'10"</option>
+  <option value="4'11">4'11"</option>
+  <option value="5'0">5'0"</option>
+  <option value="5'1">5'1"</option>
+  <option value="5'2">5'2"</option>
+  <option value="5'3">5'3"</option>
+  <option value="5'4">5'4"</option>
+  <option value="5'5">5'5"</option>
+  <option value="5'6">5'6"</option>
+  <option value="5'7">5'7"</option>
+  <option value="5'8">5'8"</option>
+  <option value="5'9">5'9"</option>
+  <option value="5'10">5'10"</option>
+  <option value="5'11">5'11"</option>
+  <option value="6'0">6'0"</option>
+  <option value="6'1">6'1"</option>
+  <option value="6'2">6'2"</option>
+  <option value="6'3">6'3"</option>
+  <option value="6'4">6'4"</option>
+  <option value="6'5">6'5"</option>
+  <option value="6'6">6'6"</option>
+</FieldSelect>
+          
+   <FieldSelect
   icon={Users}
   label="Mother Tongue"
   value={motherTongue}
   onChange={setMotherTongue}
-  placeholder="e.g. Urdu, Arabic, English"
-/>
+>
+  <option value="">Select language</option>
+  <option value="Urdu">Urdu</option>
+  <option value="Arabic">Arabic</option>
+  <option value="English">English</option>
+  <option value="Punjabi">Punjabi</option>
+  <option value="Hindi">Hindi</option>
+  <option value="Bengali">Bengali</option>
+  <option value="Tamil">Tamil</option>
+  <option value="Telugu">Telugu</option>
+  <option value="Malayalam">Malayalam</option>
+  <option value="Other">Other</option>
+</FieldSelect>
+          
    <FieldSelect
   icon={Heart}
   label="Marital Status"
@@ -423,13 +434,20 @@ pref_marital_status: prefMaritalStatus.trim() || null,
        placeholder="Enter city"
        />
           
-       <FieldInput
-         icon={GraduationCap}
-         label="Education"
-         value={education}
-         onChange={setEducation}
-        placeholder="e.g. Bachelor's"
-         />
+       <FieldSelect
+        icon={GraduationCap}
+        label="Education"
+        value={education}
+        onChange={setEducation}
+        >
+       <option value="">Select education</option>
+      <option value="High School">High School</option>
+      <option value="Diploma">Diploma</option>
+      <option value="Bachelor's">Bachelor's</option>
+      <option value="Master's">Master's</option>
+      <option value="PhD">PhD</option>
+       <option value="Other">Other</option>
+       </FieldSelect>
           
           <Dialog open={countryOpen} onOpenChange={setCountryOpen}>
             <DialogContent className="p-0 gap-0 overflow-hidden max-w-sm">
@@ -455,14 +473,25 @@ pref_marital_status: prefMaritalStatus.trim() || null,
             </DialogContent>
           </Dialog>
 
-          <FieldInput
-            icon={Briefcase}
-            label="Profession"
-            optional
-            value={profession}
-            onChange={setProfession}
-            placeholder="e.g. Engineer"
-          />
+          <FieldSelect
+        icon={Briefcase}
+     label="Profession"
+    optional
+  value={profession}
+  onChange={setProfession}
+>
+  <option value="">Select profession</option>
+  <option value="Engineer">Engineer</option>
+  <option value="Doctor">Doctor</option>
+  <option value="Teacher">Teacher</option>
+  <option value="Business">Business</option>
+  <option value="Government Employee">Government Employee</option>
+  <option value="Private Employee">Private Employee</option>
+    <option value="IT Professional">IT Professional</option>
+     <option value="Accountant">Accountant</option>
+      <option value="Lawyer">Lawyer</option>
+       <option value="Other">Other</option>
+         </FieldSelect>
         
           <FieldInput
           icon={Briefcase}
@@ -472,14 +501,52 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           onChange={setCompany}
          placeholder="e.g. ABC Company"
          />
-          <FieldInput
-          icon={Briefcase}
-        label="Income"
-        optional
-       value={income}
-      onChange={setIncome}
-    placeholder="e.g. 5000 SAR"
-   />
+          <div className="flex items-center gap-3">
+  <span className="h-9 w-9 rounded-xl bg-[#003D25] text-[#7CFF3B] border border-[#19D66B]/60 flex items-center justify-center">
+    <Briefcase className="h-5 w-5" />
+  </span>
+
+  <div className="flex-1">
+    <div className="text-sm font-semibold text-white">
+      Income <span className="text-white/50 text-xs">(Optional)</span>
+    </div>
+
+    <div className="flex gap-2 mt-1">
+      <input
+        value={income.split(" ")[0] || ""}
+        onChange={(e) => {
+          const currency = income.split(" ")[1] || "SAR";
+          setIncome(`${e.target.value} ${currency}`);
+        }}
+        placeholder="Amount"
+        className="flex-1 h-9 rounded-lg bg-[#003D25] border border-[#19D66B]/60 px-3 text-sm text-white placeholder:text-white/40 focus:outline-none"
+      />
+
+      <select
+        value={income.split(" ")[1] || "SAR"}
+        onChange={(e) => {
+          const amount = income.split(" ")[0] || "";
+          setIncome(`${amount} ${e.target.value}`);
+        }}
+        className="w-20 h-9 rounded-lg bg-[#003D25] border border-[#19D66B]/60 px-2 text-sm text-white focus:outline-none"
+      >
+        <option value="SAR">SAR</option>
+        <option value="PKR">PKR</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="AED">AED</option>
+        <option value="INR">INR</option>
+        <option value="BDT">BDT</option>
+        <option value="CNY">CNY</option>
+        <option value="JPY">JPY</option>
+        <option value="CAD">CAD</option>
+        <option value="AUD">AUD</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+  </div>
+</div>
 
   <FieldInput
     icon={MapPin}
@@ -489,29 +556,46 @@ pref_marital_status: prefMaritalStatus.trim() || null,
    placeholder="Enter living location"
  />
 
-<FieldInput
+<FieldSelect
   icon={Users}
   label="Family Type"
   value={familyType}
   onChange={setFamilyType}
-  placeholder="e.g. Nuclear"
-/>
+>
+  <option value="">Select family type</option>
+  <option value="Nuclear">Nuclear</option>
+  <option value="Joint">Joint</option>
+  <option value="Extended">Extended</option>
+  <option value="Other">Other</option>
+</FieldSelect>
 
-<FieldInput
+<FieldSelect
   icon={Heart}
   label="Family Values"
   value={familyValues}
   onChange={setFamilyValues}
-  placeholder="e.g. Traditional"
-/>
+>
+  <option value="">Select family values</option>
+  <option value="Traditional">Traditional</option>
+  <option value="Moderate">Moderate</option>
+  <option value="Liberal">Liberal</option>
+  <option value="Other">Other</option>
+</FieldSelect>
 
-<FieldInput
+<FieldSelect
   icon={Users}
   label="Siblings"
   value={siblings}
   onChange={setSiblings}
-  placeholder="e.g. 2 brothers, 1 sister"
-/>
+>
+  <option value="">Select</option>
+  <option value="None">None</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5+">5+</option>
+</FieldSelect>
 
 <FieldInput
   icon={MapPin}
