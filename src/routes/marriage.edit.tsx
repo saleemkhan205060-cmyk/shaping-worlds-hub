@@ -137,6 +137,7 @@ const [prefEducation2, setPrefEducation2] = useState<string>("");
 const [prefIncome, setPrefIncome] = useState<string>("");
 const [prefCity, setPrefCity] = useState<string>("");
 const [prefMaritalStatus, setPrefMaritalStatus] = useState<string>("");
+  const [prefReligion, setPrefReligion] = useState<string>("");
   useEffect(() => {
     if (!authLoading && !user) navigate({ to: "/auth" });
   }, [authLoading, user, navigate]);
