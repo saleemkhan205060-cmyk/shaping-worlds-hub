@@ -189,6 +189,7 @@ setPrefEducation2(mp.pref_education_2 ?? "");
 setPrefIncome(mp.pref_income ?? "");
 setPrefCity(mp.pref_city ?? "");
 setPrefMaritalStatus(mp.pref_marital_status ?? "");
+ setPrefReligion(mp.pref_religion ?? "");
       }
       setLoading(false);
     })();
@@ -642,8 +643,8 @@ pref_marital_status: prefMaritalStatus.trim() || null,
    icon={Moon}
    label="Religion"
    optional
-   value={religion}
-   onChange={setReligion}
+   value={prefReligion}
+   onChange={setPrefReligion}
 >
   <option value="">Select</option>
   {RELIGIONS.map((o) => (
