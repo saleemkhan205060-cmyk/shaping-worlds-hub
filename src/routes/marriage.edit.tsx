@@ -504,17 +504,8 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           onChange={setCompany}
          placeholder="e.g. ABC Company"
          />
-          <div className="flex items-center gap-3">
-  <span className="h-9 w-9 rounded-xl bg-[#003D25] text-[#7CFF3B] border border-[#19D66B]/60 flex items-center justify-center">
-    <CircleDollarSign className="h-5 w-5" />
-  </span>
-
-  <div className="flex-1">
-    <div className="text-sm font-semibold text-white">
-      Income <span className="text-white/50 text-xs">(Optional)</span>
-    </div>
-
-    <div className="flex gap-2 mt-1">
+        <FieldRow icon={CircleDollarSign} label="Income" optional>
+       <div className="flex gap-2 mt-1">
       <input
         value={income.split(" ")[0] || ""}
         onChange={(e) => {
@@ -549,7 +540,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
       </select>
     </div>
   </div>
-</div>
+</FieldRow>
 
   <FieldInput
     icon={MapPin}
