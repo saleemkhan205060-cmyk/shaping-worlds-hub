@@ -244,6 +244,7 @@ pref_education_2: prefEducation2.trim() || null,
 pref_income: prefIncome.trim() || null,
 pref_city: prefCity.trim() || null,
 pref_marital_status: prefMaritalStatus.trim() || null,
+          pref_religion: prefReligion.trim() || null,
         },
         { onConflict: "user_id" }
       );
