@@ -644,8 +644,8 @@ pref_marital_status: prefMaritalStatus.trim() || null,
    icon={Moon}
    label="Religion"
    optional
-   value={prefReligion}
-   onChange={setPrefReligion}
+   value={religion}
+   onChange={setReligion}
 >
   <option value="">Select</option>
   {RELIGIONS.map((o) => (
@@ -779,7 +779,7 @@ placeholder="Any other expectations"
             ))}
           </FieldSelect>
 
-          <FieldSelect icon={Moon} label="Religion" optional value={religion} onChange={setReligion}>
+          <FieldSelect icon={Moon} label="Religion" optional value={prefReligion} onChange={setPrefReligion}>
             <option value="">Select</option>
             {RELIGIONS.map((o) => (
               <option key={o} value={o}>
