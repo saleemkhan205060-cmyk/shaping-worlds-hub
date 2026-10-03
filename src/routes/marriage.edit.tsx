@@ -407,7 +407,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
     <button
       type="button"
       onClick={() => setCountryOpen(true)}
-      className="text-sm text-right bg-transparent focus:outline-none flex items-center gap-1 text-slate-900"
+      className="w-full max-w-[180px] h-9 rounded-lg bg-[#003D25] border border-[#19D66B]/60 px-3 text-sm text-white text-left focus:outline-none flex items-center justify-between gap-2"
     >
      {nationality || <span className="text-slate-400">Select nationality</span>}
       <ChevronDown className="h-4 w-4 text-slate-400" />
@@ -765,11 +765,11 @@ function FieldSelect({
 }) {
   return (
     <FieldRow icon={icon} label={label} optional={optional}>
-      <div className="relative flex items-center">
+      <div className="relative flex items-center w-full max-w-[180px]">
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="text-sm text-right text-white bg-transparent focus:outline-none appearance-none pr-7 cursor-pointer"
+          className="w-full h-9 rounded-lg bg-[#003D25] border border-[#19D66B]/60 px-3 pr-8 text-sm text-white text-left focus:outline-none appearance-none cursor-pointer"
         >
           {children ?? (
             <>
@@ -783,7 +783,7 @@ function FieldSelect({
           )}
         </select>
 
-        <ChevronDown className="absolute right-0 h-4 w-4 text-slate-400 pointer-events-none" />
+        <ChevronDown className="absolute right-3 h-4 w-4 text-[#7CFF3B] pointer-events-none" />
       </div>
     </FieldRow>
   );
