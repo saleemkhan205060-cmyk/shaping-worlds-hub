@@ -513,7 +513,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           setIncome(`${e.target.value} ${currency}`);
         }}
         placeholder="Amount"
-        className="w-[115px] h-9 rounded-lg bg-[#003D25] border border-[#19D66B]/60 pl-4 pr-3 text-sm text-white placeholder:text-white/40 focus:outline-none"
+        className="w-[90px] h-9 rounded-lg bg-[#003D25] border border-[#19D66B]/60 pl-4 pr-3 text-sm text-white placeholder:text-white/40 focus:outline-none"
       />
 
       <select
