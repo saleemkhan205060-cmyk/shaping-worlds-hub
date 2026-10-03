@@ -584,36 +584,67 @@ pref_marital_status: prefMaritalStatus.trim() || null,
   ))}
 </FieldSelect>
           
-<FieldInput
+<FieldSelect
   icon={Calendar}
   label="Preferred Age"
   value={prefAge}
   onChange={setPrefAge}
-  placeholder="e.g. 25-35"
-/>
-    <FieldInput
-     icon={Users}
-     label="Preferred Height"
-     value={prefHeight}
-     onChange={setPrefHeight}
-    placeholder="e.g. 5'4 - 6'0"
-  />
+>
+  <option value="">Select age</option>
+  <option value="18-25">18-25</option>
+  <option value="25-30">25-30</option>
+  <option value="30-35">30-35</option>
+  <option value="35-40">35-40</option>
+  <option value="40-50">40-50</option>
+  <option value="50+">50+</option>
+</FieldSelect>
           
-<FieldInput
+    <FieldSelect
+  icon={Users}
+  label="Preferred Height"
+  value={prefHeight}
+  onChange={setPrefHeight}
+>
+  <option value="">Select height</option>
+  <option value="4'10 - 5'0">4'10" - 5'0"</option>
+  <option value="5'0 - 5'4">5'0" - 5'4"</option>
+  <option value="5'4 - 5'8">5'4" - 5'8"</option>
+  <option value="5'8 - 6'0">5'8" - 6'0"</option>
+  <option value="6'0+">6'0"+</option>
+</FieldSelect>
+          
+<FieldSelect
   icon={GraduationCap}
   label="Preferred Education"
   value={prefEducation}
   onChange={setPrefEducation}
-  placeholder="e.g. Bachelor's"
-/>
+>
+  <option value="">Select education</option>
+  <option value="High School">High School</option>
+  <option value="Diploma">Diploma</option>
+  <option value="Bachelor's">Bachelor's</option>
+  <option value="Master's">Master's</option>
+  <option value="PhD">PhD</option>
+</FieldSelect>
           
-<FieldInput
+<FieldSelect
   icon={Briefcase}
   label="Preferred Profession"
   value={prefProfession}
   onChange={setPrefProfession}
-  placeholder="e.g. Engineer"
-/>
+>
+  <option value="">Select profession</option>
+  <option value="Engineer">Engineer</option>
+  <option value="Doctor">Doctor</option>
+  <option value="Teacher">Teacher</option>
+  <option value="Business">Business</option>
+  <option value="Government Employee">Government Employee</option>
+  <option value="Private Employee">Private Employee</option>
+  <option value="IT Professional">IT Professional</option>
+  <option value="Accountant">Accountant</option>
+  <option value="Lawyer">Lawyer</option>
+  <option value="Other">Other</option>
+</FieldSelect>
 
 <FieldInput
   icon={Heart}
@@ -631,13 +662,19 @@ placeholder="Any other expectations"
   placeholder="e.g. 5000 SAR"
 />
 
-<FieldInput
+<FieldSelect
   icon={Globe}
   label="Nationality"
   value={prefNationality}
   onChange={setPrefNationality}
-  placeholder="Enter nationality"
-/>
+>
+  <option value="">Select nationality</option>
+  {COUNTRIES.map((country) => (
+    <option key={country} value={country}>
+      {country}
+    </option>
+  ))}
+</FieldSelect>
 
 <FieldInput
   icon={MapPin}
