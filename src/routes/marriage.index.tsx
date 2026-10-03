@@ -508,10 +508,10 @@ useEffect(() => {
   <p className="text-sm font-medium">{selected.pref_city ?? "Not added"}</p>
 </div>
     
-    <div>
-      <p className="text-xs text-white/60">Marital Status</p>
-      <p className="text-sm font-medium">{selected.marital_status ?? "Not added"}</p>
-    </div>
+  <div>
+     <p className="text-xs text-white/60">Marital Status</p>
+      <p className="text-sm font-medium">{selected.pref_marital_status ?? "Not added"}</p>
+   </div>
 
     <div>
       <p className="text-xs text-white/60">Religion</p>
