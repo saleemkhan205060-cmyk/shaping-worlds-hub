@@ -586,8 +586,8 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex bg-[#edf0e4]" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-              <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-black/5">
-                <div className="flex items-center gap-1.5">
+                <header className="shrink-0 bg-[#edf0e4] px-2 pt-1 pb-1 md:px-2">
+                  <div className="flex items-center gap-1.5">
                   <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-black/5">
                     <button
                       onClick={() => setActivePeer(null)}
