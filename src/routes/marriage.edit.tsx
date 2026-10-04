@@ -504,7 +504,7 @@ pref_marital_status: prefMaritalStatus.trim() || null,
           onChange={setCompany}
          placeholder="e.g. ABC Company"
          />
-        <FieldRow icon={CircleDollarSign} label="Income" optional>
+        <FieldRow icon={CircleDollarSign} label="Income">
        <div className="flex gap-2">
       <input
         value={income.split(" ")[0] || ""}
