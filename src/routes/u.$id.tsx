@@ -577,10 +577,9 @@ function UserProfile() {
                     className="relative ml-1 focus:outline-none"
                     aria-label="Send message"
                   >
-                    <div className="h-9 w-9 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30 ring-2 ring-white/80">
+                    <div className="h-9 w-9 rounded-full bg-[#057643] flex items-center justify-center shadow-md ring-2 ring-white/80">
                       <MessageCircle className="h-5 w-5 text-white" />
                     </div>
-                    <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-red-500 border-2 border-white" />
                   </button>
                 )}
               </div>
