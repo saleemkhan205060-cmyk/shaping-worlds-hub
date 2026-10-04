@@ -547,8 +547,8 @@ function UserProfile() {
                 {displayName[0]?.toUpperCase()}
               </div>
             )}
-              {isSelf && (
-  <button
+         {isSelf && (
+    <button
     type="button"
     onClick={() => avatarInputRef.current?.click()}
     className="absolute bottom-1 right-1 z-30 h-7 w-7 rounded-full bg-[#057640] shadow-md flex items-center justify-center"
@@ -571,42 +571,11 @@ function UserProfile() {
                 <h1 className="text-xl sm:text-2xl font-extrabold">{displayName}</h1>
 
               </div>
-                {!isSelf && (
-                  <button
-                    onClick={() => navigate({ to: "/messages", search: { to: id } })}
-                    className="relative ml-1 focus:outline-none"
-                    aria-label="Send message"
-                  >
-                    <div className="h-9 w-9 rounded-full bg-[#057643] flex items-center justify-center shadow-md ring-2 ring-white/80">
-                      <MessageCircle className="h-5 w-5 text-white" />
-                    </div>
-                  </button>
-                )}
               </div>
               <p className="text-sm text-slate-500">@{handle}</p>
             </div>
-            {!isSelf && (
-              <button
-                onClick={toggleFollow}
-                disabled={followBusy}
-                className={`inline-flex w-fit items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold transition disabled:opacity-60 ${
-                  isFollowing
-                    ? "bg-[#003D25] text-white hover:bg-[#005A35]"
-                    : "bg-[#057643] text-white hover:bg-[#005A35]"
-                }`}
-              >
-                {followBusy ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : isFollowing ? (
-                  <UserCheck className="h-4 w-4" />
-                ) : (
-                  <UserPlus className="h-4 w-4" />
-                )}
-                {isFollowing ? "Following" : "Follow"}
-              </button>
-            )}
+          
           </div>
-
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" /> Joined {joined}
