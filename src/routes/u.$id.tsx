@@ -613,19 +613,51 @@ function UserProfile() {
             </span>
           </div>
           {profile && (
-         <div className="mt-4">
-        <button
+  <div className="mt-4 flex items-center gap-2">
+    <button
       type="button"
       onClick={() => setAboutOpen(true)}
-      className="rounded-lg border border-[#19D66B] bg-[#005A35] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#003D25]"
-       >
+      className="inline-flex w-fit items-center rounded-full border border-[#19D66B] bg-[#005A35] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#003D25]"
+    >
       About
-        </button>
-         </div>
+    </button>
+
+    {!isSelf && (
+      <>
+        <button
+          onClick={toggleFollow}
+          disabled={followBusy}
+          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition disabled:opacity-60 ${
+            isFollowing
+              ? "bg-[#003D25] text-white hover:bg-[#005A35]"
+              : "bg-[#057643] text-white hover:bg-[#005A35]"
+          }`}
+        >
+          {followBusy ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : isFollowing ? (
+            <UserCheck className="h-4 w-4" />
+          ) : (
+            <UserPlus className="h-4 w-4" />
           )}
-           <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
-            <button
-            type="button"
+          {isFollowing ? "Following" : "Follow"}
+        </button>
+
+        <button
+          onClick={() => navigate({ to: "/messages", search: { to: id } })}
+          className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#003D25] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#005A35]"
+          aria-label="Send message"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Message
+        </button>
+      </>
+    )}
+  </div>
+)}
+  <div className="mt-5 grid grid-cols-3 gap-3 max-w-md">
+     <button
+       type="button"
             onClick={openFollowers}
             className="text-left"
             >
