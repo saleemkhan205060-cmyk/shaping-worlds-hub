@@ -482,23 +482,32 @@ function Messages() {
 
   return (
     <Layout hideMobileNav={!!activePeer} fullScreenMobile={!!activePeer}>
-      <div className={`bg-white border-slate-200 overflow-hidden flex flex-col md:flex-row md:border md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${activePeer ? "h-full" : "h-[calc(100dvh-68px-56px)] -mb-24 border"}`}>
+      <div
+       className={`bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${
+        activePeer
+      ? "h-full"
+      : "h-[calc(100dvh-68px-56px)] -mb-24 rounded-2xl"
+       }`}
+        >
         {/* Sidebar */}
         <aside
           className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
-          <div className="p-3 border-b border-slate-200 flex items-center gap-2">
-            <h2 className="font-bold text-base flex-1">Messages</h2>
+          <div className="px-3 py-3 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2">
+            <h2 className="font-bold text-[18px] text-white flex-1">
+            Messages
+            </h2>
+
             <button
-              onClick={() => setSearchOpen((o) => !o)}
-              className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center"
-              aria-label="New chat"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-          </div>
+           onClick={() => setSearchOpen((o) => !o)}
+           className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+          aria-label="New chat"
+          >
+       <Search className="h-4 w-4" />
+        </button>
+         </div>
           {searchOpen && (
             <div className="p-3 border-b border-slate-200">
               <input
