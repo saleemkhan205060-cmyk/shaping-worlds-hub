@@ -362,7 +362,7 @@ export function Layout({
     className={
       fullScreenMobile
     ? "fixed inset-0 z-40 overflow-hidden bg-[#003D25] md:static md:z-auto md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6"
-    : "max-w-6xl mx-auto px-3 sm:px-4 py-0 md:py-6 min-h-[100dvh]"
+    : "max-w-6xl mx-auto px-3 sm:px-4 py-0 md:py-6 h-[calc(100dvh+70px)]"
     }
    >
   {children}
