@@ -480,14 +480,14 @@ function Messages() {
     );
   }
 
-  return (
+    return (
     <Layout hideMobileNav={!!activePeer} fullScreenMobile={!!activePeer}>
       <div
-       className={`bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${
-        activePeer
-      ? "h-full"
-      : "h-[calc(100dvh-68px-56px)] rounded-2xl"
-       }`}
+       className={`bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl ${
+      activePeer
+      ? "h-full min-h-0"
+      : "h-[calc(100dvh-68px)] rounded-2xl"
+       } md:h-[calc(100vh-4rem)] md:min-h-[600px]`}
         >
         {/* Sidebar */}
         <aside
