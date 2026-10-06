@@ -486,7 +486,7 @@ function Messages() {
        className={`bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl md:h-[calc(100vh-4rem)] md:min-h-[600px] ${
         activePeer
       ? "h-full"
-      : "h-[calc(100dvh-68px-56px)] -mb-24 rounded-2xl"
+      : "h-[calc(100dvh-68px-56px)] rounded-2xl"
        }`}
         >
         {/* Sidebar */}
