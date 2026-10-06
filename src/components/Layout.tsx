@@ -360,11 +360,11 @@ export function Layout({
 
   <main
     className={
-      fullScreenMobile
-    ? "fixed inset-0 z-40 overflow-hidden bg-[#003D25] md:static md:z-auto md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6"
-    : "max-w-6xl mx-auto px-3 sm:px-4 py-0 md:py-6"
-    }
-   >
+     fullScreenMobile
+      ? "fixed inset-0 z-40 overflow-hidden bg-[#003D25] md:static md:z-auto md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6"
+      : "max-w-6xl mx-auto px-3 sm:px-4 py-6"
+      }
+     >
   {children}
 </main>
 
