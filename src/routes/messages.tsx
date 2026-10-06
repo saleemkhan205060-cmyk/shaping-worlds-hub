@@ -483,7 +483,7 @@ function Messages() {
     return (
     <Layout hideMobileNav={!!activePeer} fullScreenMobile={!!activePeer}>
       <div
-       className={`bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl ${
+       className={`touch-none bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl ${
         activePeer
          ? "h-[100dvh] min-h-0"
          : "h-[calc(100dvh-68px-56px)] rounded-2xl"
