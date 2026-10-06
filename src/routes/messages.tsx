@@ -495,7 +495,7 @@ function Messages() {
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
-          <div className="px-3 py-3 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2">
+          <div className="shrink-0 px-3 py-3 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2">
             <h2 className="font-bold text-[18px] text-white flex-1">
             Messages
             </h2>
