@@ -879,7 +879,7 @@ function Messages() {
                               onClick={onClick}
                               className="flex flex-col items-center gap-1.5"
                             >
-                             <span className={`h-14 w-14 rounded-2xl border border-[#19D66B]/20 shadow-[0_4px_12px_rgba(0,61,37,0.08)] flex items-center justify-center ${bg} transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_6px_16px_rgba(25,214,107,0.18)]}>
+                             <span className={`h-14 w-14 rounded-2xl border border-[#19D66B]/20 shadow-[0_4px_12px_rgba(0,61,37,0.08)] flex items-center justify-center ${bg} transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_6px_16px_rgba(25,214,107,0.18)]}`}>
                                 <Icon className={`h-7 w-7 ${fg}`} strokeWidth={2.2} />
                               </span>
                               <span className="text-[11px] font-semibold text-[#003D25] tracking-wide">{label}</span>
