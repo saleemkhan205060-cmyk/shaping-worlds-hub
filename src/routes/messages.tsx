@@ -565,7 +565,6 @@ function Messages() {
                         onClick={() => setActivePeer(c.peer)}
                         className={`w-full text-left px-3 py-3 flex items-center gap-3 border-b border-slate-100 hover:bg-slate-50 ${
                           activePeer === c.peer
-                         activePeer === c.peer
                         ? "bg-gradient-to-r from-[#DFF7E8] via-[#EAFBF0] to-white border-l-4 border-[#19D66B] shadow-[inset_0_0_18px_rgba(25,214,107,0.08),_0_3px_10px_rgba(0,61,37,0.06)]"
                         : ""
                         }`}
