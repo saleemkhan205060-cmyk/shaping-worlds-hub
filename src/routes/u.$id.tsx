@@ -19,7 +19,7 @@ export const Route = createFileRoute("/u/$id")({
     ],
   }),
 
-  component: ProfilePage,
+  component: UserProfile,
 });
 
 type Post = {
