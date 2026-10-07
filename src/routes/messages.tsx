@@ -614,12 +614,12 @@ function Messages() {
                     >
                       <ArrowLeft className="h-6 w-6" />
                     </button>
-                    <div className="relative shrink-0">
-                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)]"
-                 <div className="rounded-full bg-[#075E54] p-[1px]">
-                <Avatar p={profiles[activePeer]} size="h-10 w-10 text-sm" />
-              </div>
-              </div>
+                   <div className="relative shrink-0">
+                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)]">
+                  <div className="rounded-full bg-[#075E54] p-[1px]">
+                  <Avatar p={profiles[activePeer]} size="h-10 w-10 text-sm" />
+                  </div>
+                  </div>
 
              <span
             className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-[#7CFF3B] border-2 border-[#075E54] shadow-[0_0_6px_rgba(124,255,59,0.7)]"
