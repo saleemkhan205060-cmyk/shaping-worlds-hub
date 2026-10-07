@@ -515,7 +515,7 @@ function Messages() {
                 value={searchQ}
                 onChange={(e) => setSearchQ(e.target.value)}
                 placeholder="Search users…"
-                className="w-full h-9 px-3 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full h-9 px-3 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-[#19D66B]"
               />
               {searchResults.length > 0 && (
                 <ul className="mt-2 max-h-60 overflow-y-auto space-y-1">
@@ -528,7 +528,7 @@ function Messages() {
                           setSearchOpen(false);
                           setSearchQ("");
                         }}
-                        className="w-full text-left px-2 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-2"
+                        className="w-full text-left px-2 py-2 rounded-lg hover:bg-[#F0FBF4] active:bg-[#DFF7E8] transition-all duration-200 flex items-center gap-2"
                       >
                         <Avatar p={p} />
                         <span className="text-sm font-medium truncate">
@@ -542,6 +542,11 @@ function Messages() {
             </div>
           )}
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+             <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-[#19D66B]/10 blur-3xl" />
+             <div className="absolute top-1/3 -right-24 h-80 w-80 rounded-full bg-[#7CFF3B]/5 blur-3xl" />
+             <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[#005A35]/5 blur-3xl" />
+             </div>
             {loadingMsgs ? (
               <div className="flex justify-center py-8 text-slate-400">
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -559,7 +564,9 @@ function Messages() {
                       <button
                         onClick={() => setActivePeer(c.peer)}
                         className={`w-full text-left px-3 py-3 flex items-center gap-3 border-b border-slate-100 hover:bg-slate-50 ${
-                          activePeer === c.peer ? "bg-indigo-50" : ""
+                          activePeer === c.peer
+                          ? "bg-gradient-to-r from-[#DFF7E8] via-[#EAFBF0] to-white border-l-4 border-[#19D66B] shadow-[inset_0_0_18px_rgba(25,214,107,0.08)]"
+                        : ""
                         }`}
                       >
                         <Avatar p={p} />
@@ -578,9 +585,11 @@ function Messages() {
                           </p>
                         </div>
                         {c.unread > 0 && (
-                          <span className="h-5 min-w-5 px-1.5 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center">
-                            {c.unread}
-                          </span>
+                        <span
+                        className="h-5 min-w-5 px-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-[10px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(25,214,107,0.35)]"
+                          >
+                         {c.unread}
+                        </span>
                         )}
                       </button>
                     </li>
@@ -605,10 +614,24 @@ function Messages() {
                     >
                       <ArrowLeft className="h-6 w-6" />
                     </button>
-                    <Avatar p={profiles[activePeer]} size="h-11 w-11 text-sm" />
+                    <div className="relative shrink-0">
+                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_12px_rgba(25,214,107,0.35)]">
+                 <div className="rounded-full bg-[#075E54] p-[1px]">
+                <Avatar p={profiles[activePeer]} size="h-10 w-10 text-sm" />
+              </div>
+              </div>
+
+             <span
+            className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-[#7CFF3B] border-2 border-[#075E54] shadow-[0_0_6px_rgba(124,255,59,0.7)]"
+            aria-label="Online"
+              />
+                 </div>
                     <div className="flex-1 min-w-0 leading-tight pr-3">
                       <p className="font-bold text-[18px] leading-5 truncate">{peerName(activePeer)}</p>
-                      <p className="text-[13px] leading-4 text-white/85">Online</p>
+                     <p className="text-[12px] leading-4 text-[#B8FFC9] flex items-center gap-1">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#7CFF3B] shadow-[0_0_5px_rgba(124,255,59,0.8)]" />
+                    Online
+                    </p>
                     </div>
                   </div>
                   <button
@@ -620,8 +643,11 @@ function Messages() {
                   </button>
                 </div>
               </header>
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-[#edf0e4]" style={{ WebkitOverflowScrolling: "touch" }}>
-                <div className="min-h-full flex flex-col p-4 space-y-2">
+              <div
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-[#edf0e4] relative"
+               style={{ WebkitOverflowScrolling: "touch" }}
+                >
+                <div className="min-h-full flex flex-col p-4 space-y-2 relative z-10">
                 {thread.length === 0 ? (
                   <div className="flex-1" />
                 ) : (
@@ -633,10 +659,10 @@ function Messages() {
                         className={`flex ${mine ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[75%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words ${
-                            mine
-                              ? "bg-indigo-600 text-white rounded-br-md"
-                              : "bg-white border border-slate-200 rounded-bl-md"
+                          className={`max-w-[78%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 ${
+                           mine
+                           ? "bg-gradient-to-br from-[#006B3F] via-[#005A35] to-[#003D25] text-white rounded-2xl rounded-br-md shadow-[0_3px_10px_rgba(0,90,53,0.24)] ring-1 ring-[#19D66B]/20"
+                          : "bg-gradient-to-br from-white via-white to-[#f4faf6] text-slate-800 border border-[#dce8e1] rounded-2xl rounded-bl-md shadow-[0_3px_10px_rgba(0,0,0,0.06)]"
                           }`}
                         >
                           {m.content.startsWith("mm://") ? (
@@ -649,15 +675,28 @@ function Messages() {
                             m.content
                           )}
                           <div
-                            className={`text-[11px] mt-0.5 ${
-                              mine ? "text-indigo-100" : "text-slate-400"
-                            }`}
-                          >
-                            {new Date(m.created_at).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </div>
+                        className={`mt-1 flex items-center justify-end gap-1 text-[10px] ${
+                       mine ? "text-white/70" : "text-slate-400"
+                    }`}
+                   >
+             <span>
+           {new Date(m.created_at).toLocaleTimeString([], {
+          hour: "2-digit",
+           minute: "2-digit",
+          })}
+           </span>
+
+          {mine && (
+           <span
+            className={`text-[13px] font-semibold leading-none ${
+           m.read_at ? "text-[#7CFF3B]" : "text-white/60"
+               }`}
+                 aria-label={m.read_at ? "Read" : "Sent"}
+                    >
+                     ✓✓
+                      </span>
+                        )}
+                       </div>
                         </div>
                       </div>
                     );
@@ -667,7 +706,7 @@ function Messages() {
                 </div>
               </div>
               {pending && (
-                <div className="border-t border-slate-200 bg-white p-3 flex items-center gap-3">
+                <div className="border-t border-[#19D66B]/15 bg-[#f7faf8] p-3 flex items-center gap-3 shadow-[0_-4px_14px_rgba(0,61,37,0.05)]">
                   <div className="shrink-0">
                     {pending.kind === "image" ? (
                       <img src={pending.url} alt="preview" className="h-20 w-20 object-cover rounded-lg border border-slate-200" />
@@ -697,7 +736,7 @@ function Messages() {
                     type="button"
                     onClick={confirmSendPending}
                     disabled={busy}
-                    className="h-10 px-4 rounded-full text-sm font-semibold bg-[#00a884] hover:bg-[#019574] text-white flex items-center gap-1.5 disabled:opacity-60"
+                    className="h-10 px-4 rounded-full text-sm font-semibold bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_14px_rgba(25,214,107,0.22)] text-white flex items-center gap-1.5 disabled:opacity-60"
                   >
                     {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     Send
@@ -772,19 +811,23 @@ function Messages() {
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-amber-500 hover:bg-amber-50 active:bg-amber-100 transition-colors"
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] transition-colors"
                           aria-label="Emoji"
                         >
                           <Smile className="h-8 w-8" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent align="start" side="top" className="w-64 p-2">
+                      <PopoverContent
+                      align="start"
+                      side="top"
+                      className="w-64 p-2 rounded-2xl border border-[#19D66B]/20 bg-white shadow-[0_8px_30px_rgba(0,61,37,0.14)]"
+                        >
                         <div className="grid grid-cols-8 gap-1 text-xl">
                           {["😀","😁","😂","🤣","😊","😍","😘","😎","🤩","🥳","😇","🙂","😉","😋","😜","🤔","😴","😢","😭","😡","👍","👎","🙏","👏","🙌","💪","👌","✌️","🤝","❤️","🧡","💛","💚","💙","💜","🖤","🤍","💔","💯","🔥","✨","🎉","🎊","🎁","🌹","🌸","☀️","🌙","⭐","⚡","☕","🍕","🍔","🍰","🍎","🍓","🍩","🍻"].map((e) => (
                             <button
                               key={e}
                               type="button"
-                              className="h-8 w-8 rounded hover:bg-slate-100 flex items-center justify-center"
+                              className="h-8 w-8 rounded-xl hover:bg-[#DFF7E8] active:bg-[#C8F0D8] flex items-center justify-center transition-colors"
                               onClick={() => setText((t) => t + e)}
                             >
                               {e}
@@ -813,7 +856,7 @@ function Messages() {
                         <button
                           type="button"
                           disabled={busy}
-                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:opacity-50 transition-colors"
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-colors"
                           aria-label="Attach"
                         >
                           <Paperclip className="h-7 w-7" />
@@ -823,11 +866,8 @@ function Messages() {
                         <DrawerTitle className="sr-only">Attach</DrawerTitle>
                         <div className="px-4 pt-4 pb-8 grid grid-cols-5 gap-2">
                           {[
-                            { label: "Gallery", icon: Images, bg: "bg-blue-50", fg: "text-blue-600", onClick: () => { setAttachOpen(false); galleryInputRef.current?.click(); } },
-                            { label: "Camera", icon: Camera, bg: "bg-rose-50", fg: "text-rose-500", onClick: () => { setAttachOpen(false); cameraInputRef.current?.click(); } },
-                            { label: "Location", icon: MapPin, bg: "bg-emerald-50", fg: "text-emerald-500", onClick: shareLocation },
-                            { label: "Document", icon: FileText, bg: "bg-violet-50", fg: "text-violet-500", onClick: () => { setAttachOpen(false); documentInputRef.current?.click(); } },
-                            { label: "Contact", icon: UserIcon, bg: "bg-sky-50", fg: "text-sky-500", onClick: shareContact },
+                            { label: "Gallery", icon: Images, bg: "bg-[#DFF7E8]", fg: "text-[#006B3F]", onClick: () => { setAttachOpen(false); galleryInputRef.current?.click(); } },
+                            { label: "Camera", icon: Camera, bg: "bg-[#DFF7E8]", fg: "text-[#006B3F]", onClick: () => { setAttachOpen(false); cameraInputRef.current?.click(); } },
                           ].map(({ label, icon: Icon, bg, fg, onClick }) => (
                             <button
                               key={label}
@@ -857,7 +897,7 @@ function Messages() {
                   }}
                   disabled={busy}
                   className={`h-[56px] w-[56px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
-                    recording ? "bg-red-500 hover:bg-red-600" : "bg-[#00a884] hover:bg-[#019574] active:bg-[#017d63]"
+                    recording ? "bg-red-500 hover:bg-red-600" : "bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_16px_rgba(25,214,107,0.25)]"
                   }`}
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
                 >
@@ -873,10 +913,29 @@ function Messages() {
 
             </>
           ) : (
-            <div className="hidden md:flex flex-1 items-center justify-center text-slate-400 flex-col gap-2">
-              <MessageCircle className="h-10 w-10" />
-              <p className="text-sm">Select a conversation</p>
-            </div>
+            ```tsx
+          <div className="hidden md:flex flex-1 items-center justify-center bg-[#edf0e4]">
+        <div className="flex flex-col items-center text-center px-6">
+        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#DFF7E8] via-[#EAFBF0] to-white border border-[#19D66B]/30 shadow-[0_8px_30px_rgba(25,214,107,0.12)] flex items-center justify-center mb-4">
+         <MessageCircle className="h-9 w-9 text-[#006B3F]" strokeWidth={1.8} />
+          </div>
+
+          <h3 className="text-lg font-bold text-[#003D25]">
+           Your Messages
+           </h3>
+
+            <p className="mt-1 text-sm text-slate-500 max-w-xs">
+            Select a conversation to start chatting with someone.
+           </p>
+
+           <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-[#006B3F]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#19D66B]" />
+         VIP Life Messages
+        </div>
+       </div>
+       </div>
+       ```
+         >
           )}
         </section>
       </div>
@@ -887,7 +946,7 @@ function Messages() {
 function Avatar({ p, size }: { p: Profile | undefined; size?: string }) {
   const name = p?.display_name ?? p?.username ?? "U";
   return (
-    <div className={`shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden ${size ?? "h-10 w-10 text-sm"}`}>
+    <div className={`shrink-0 rounded-full bg-gradient-to-br from-[#19D66B] via-[#006B3F] to-[#003D25] flex items-center justify-center text-white font-bold overflow-hidden ${size ?? "h-10 w-10 text-sm"}`}>
       {p?.avatar_url ? (
         <img
           src={p.avatar_url}
