@@ -912,30 +912,27 @@ function Messages() {
               </div>
 
             </>
-          ) : (
-            ```tsx
-          <div className="hidden md:flex flex-1 items-center justify-center bg-[#edf0e4]">
-        <div className="flex flex-col items-center text-center px-6">
-        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#DFF7E8] via-[#EAFBF0] to-white border border-[#19D66B]/30 shadow-[0_8px_30px_rgba(25,214,107,0.12)] flex items-center justify-center mb-4">
-         <MessageCircle className="h-9 w-9 text-[#006B3F]" strokeWidth={1.8} />
-          </div>
+            ) : (
+            <div className="hidden md:flex flex-1 items-center justify-center bg-[#edf0e4]">
+              <div className="flex flex-col items-center text-center px-6">
+                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#DFF7E8] via-[#EAFBF0] to-white border border-[#19D66B]/30 shadow-[0_8px_30px_rgba(25,214,107,0.12)] flex items-center justify-center mb-4">
+                  <MessageCircle className="h-9 w-9 text-[#006B3F]" strokeWidth={1.8} />
+                </div>
 
-          <h3 className="text-lg font-bold text-[#003D25]">
-           Your Messages
-           </h3>
+                <h3 className="text-lg font-bold text-[#003D25]">
+                  Your Messages
+                </h3>
 
-            <p className="mt-1 text-sm text-slate-500 max-w-xs">
-            Select a conversation to start chatting with someone.
-           </p>
+                <p className="mt-1 text-sm text-slate-500 max-w-xs">
+                  Select a conversation to start chatting with someone.
+                </p>
 
-           <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-[#006B3F]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#19D66B]" />
-         VIP Life Messages
-        </div>
-       </div>
-       </div>
-       ```
-         >
+                <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-[#006B3F]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#19D66B]" />
+                  VIP Life Messages
+                </div>
+              </div>
+            </div>
           )}
         </section>
       </div>
