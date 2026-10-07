@@ -9,8 +9,18 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { moderateMedia } from "@/lib/moderation-bridge";
+export const Route = createFileRoute("/u/$id")({
+  head: ({ params }) => ({
+    links: [
+      {
+        rel: "canonical",
+        href: `https://viplifes.com/u/${params.id}`,
+      },
+    ],
+  }),
 
-export const Route = createFileRoute("/u/$id")({ component: UserProfile });
+  component: ProfilePage,
+});
 
 type Post = {
   id: string;
