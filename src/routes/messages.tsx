@@ -515,7 +515,7 @@ function Messages() {
                 value={searchQ}
                 onChange={(e) => setSearchQ(e.target.value)}
                 placeholder="Search users…"
-                className="w-full h-9 px-3 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-[#19D66B]"
+               className="w-full h-9 px-3 rounded-full bg-white border border-[#19D66B]/15 shadow-[0_2px_8px_rgba(0,61,37,0.06)] text-sm focus:outline-none focus:ring-2 focus:ring-[#19D66B]/40 focus:border-[#19D66B]/30 transition-all duration-200"
               />
               {searchResults.length > 0 && (
                 <ul className="mt-2 max-h-60 overflow-y-auto space-y-1">
@@ -528,7 +528,7 @@ function Messages() {
                           setSearchOpen(false);
                           setSearchQ("");
                         }}
-                        className="w-full text-left px-2 py-2 rounded-lg hover:bg-[#F0FBF4] active:bg-[#DFF7E8] transition-all duration-200 flex items-center gap-2"
+                        className="w-full text-left px-2 py-2 rounded-xl hover:bg-[#F0FBF4] active:bg-[#DFF7E8] hover:shadow-[0_2px_8px_rgba(0,61,37,0.06)] transition-all duration-200 flex items-center gap-2"
                       >
                         <Avatar p={p} />
                         <span className="text-sm font-medium truncate">
@@ -565,7 +565,8 @@ function Messages() {
                         onClick={() => setActivePeer(c.peer)}
                         className={`w-full text-left px-3 py-3 flex items-center gap-3 border-b border-slate-100 hover:bg-slate-50 ${
                           activePeer === c.peer
-                          ? "bg-gradient-to-r from-[#DFF7E8] via-[#EAFBF0] to-white border-l-4 border-[#19D66B] shadow-[inset_0_0_18px_rgba(25,214,107,0.08)]"
+                         activePeer === c.peer
+                        ? "bg-gradient-to-r from-[#DFF7E8] via-[#EAFBF0] to-white border-l-4 border-[#19D66B] shadow-[inset_0_0_18px_rgba(25,214,107,0.08),_0_3px_10px_rgba(0,61,37,0.06)]"
                         : ""
                         }`}
                       >
@@ -586,7 +587,7 @@ function Messages() {
                         </div>
                         {c.unread > 0 && (
                         <span
-                        className="h-5 min-w-5 px-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-[10px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(25,214,107,0.35)]"
+                        className="h-5 min-w-5 px-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-[10px] font-bold flex items-center justify-center shadow-[0_0_10px_rgba(25,214,107,0.45)] ring-1 ring-[#7CFF3B]/30"
                           >
                          {c.unread}
                         </span>
@@ -609,13 +610,13 @@ function Messages() {
                   <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-black/5">
                     <button
                       onClick={() => setActivePeer(null)}
-                      className="md:hidden h-9 w-9 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0"
+                      className="md:hidden h-9 w-9 rounded-full hover:bg-white/20 active:bg-white/30 flex items-center justify-center text-white shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
                       aria-label="Back"
                     >
                       <ArrowLeft className="h-6 w-6" />
                     </button>
                     <div className="relative shrink-0">
-                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_12px_rgba(25,214,107,0.35)]">
+                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)]"
                  <div className="rounded-full bg-[#075E54] p-[1px]">
                 <Avatar p={profiles[activePeer]} size="h-10 w-10 text-sm" />
               </div>
@@ -628,7 +629,7 @@ function Messages() {
                  </div>
                     <div className="flex-1 min-w-0 leading-tight pr-3">
                       <p className="font-bold text-[18px] leading-5 truncate">{peerName(activePeer)}</p>
-                     <p className="text-[12px] leading-4 text-[#B8FFC9] flex items-center gap-1">
+                     <p className="text-[11px] leading-4 text-[#B8FFC9] flex items-center gap-1 font-medium tracking-wide">
                     <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#7CFF3B] shadow-[0_0_5px_rgba(124,255,59,0.8)]" />
                     Online
                     </p>
@@ -636,7 +637,7 @@ function Messages() {
                   </div>
                   <button
                     type="button"
-                    className="h-10 w-8 shrink-0 flex items-center justify-center text-slate-800 rounded-full hover:bg-slate-100"
+                    className="h-10 w-8 shrink-0 flex items-center justify-center text-slate-800 rounded-full hover:bg-white/20 active:bg-white/30 transition-all duration-200 hover:scale-105 active:scale-95"
                     aria-label="Conversation menu"
                   >
                     <MoreVertical className="h-7 w-7" />
@@ -659,7 +660,7 @@ function Messages() {
                         className={`flex ${mine ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[78%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 ${
+                          className={`max-w-[78%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 hover:-translate-y-[1px] ${
                            mine
                            ? "bg-gradient-to-br from-[#006B3F] via-[#005A35] to-[#003D25] text-white rounded-2xl rounded-br-md shadow-[0_3px_10px_rgba(0,90,53,0.24)] ring-1 ring-[#19D66B]/20"
                           : "bg-gradient-to-br from-white via-white to-[#f4faf6] text-slate-800 border border-[#dce8e1] rounded-2xl rounded-bl-md shadow-[0_3px_10px_rgba(0,0,0,0.06)]"
@@ -675,7 +676,7 @@ function Messages() {
                             m.content
                           )}
                           <div
-                        className={`mt-1 flex items-center justify-end gap-1 text-[10px] ${
+                        className={`mt-1 flex items-center justify-end gap-0.5 text-[10px] opacity-90 ${
                        mine ? "text-white/70" : "text-slate-400"
                     }`}
                    >
@@ -806,12 +807,12 @@ function Messages() {
                     <span className="flex-1 text-sm text-slate-500 truncate">Recording… tap send to share</span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-black/5 min-h-[56px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] transition-colors"
+                         className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] bg-[#F7FCF9] border border-[#19D66B]/15 hover:bg-[#DFF7E8] hover:border-[#19D66B]/30 active:bg-[#C8F0D8] transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
                           aria-label="Emoji"
                         >
                           <Smile className="h-8 w-8" />
@@ -856,15 +857,19 @@ function Messages() {
                         <button
                           type="button"
                           disabled={busy}
-                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-colors"
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
                           aria-label="Attach"
                         >
                           <Paperclip className="h-7 w-7" />
                         </button>
                       </DrawerTrigger>
-                      <DrawerContent className="rounded-t-3xl border-0 bg-white">
+                      <DrawerContent className="rounded-t-3xl border-0 bg-[#f7faf8] shadow-[0_-8px_30px_rgba(0,61,37,0.12)]">
                         <DrawerTitle className="sr-only">Attach</DrawerTitle>
-                        <div className="px-4 pt-4 pb-8 grid grid-cols-5 gap-2">
+                        <div className="px-6 pt-1 text-center">
+                        <p className="text-sm font-bold text-[#003D25] tracking-tight">Share with VIP Life</p>
+                        <p className="mt-0.5 text-[11px] text-slate-500 tracking-wide">Choose a photo or take a new one</p>
+                         </div>
+                        <div className="px-6 pt-5 pb-8 grid grid-cols-2 gap-6 max-w-xs mx-auto w-full">
                           {[
                             { label: "Gallery", icon: Images, bg: "bg-[#DFF7E8]", fg: "text-[#006B3F]", onClick: () => { setAttachOpen(false); galleryInputRef.current?.click(); } },
                             { label: "Camera", icon: Camera, bg: "bg-[#DFF7E8]", fg: "text-[#006B3F]", onClick: () => { setAttachOpen(false); cameraInputRef.current?.click(); } },
@@ -875,10 +880,10 @@ function Messages() {
                               onClick={onClick}
                               className="flex flex-col items-center gap-1.5"
                             >
-                              <span className={`h-14 w-14 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center ${bg}`}>
+                             <span className={`h-14 w-14 rounded-2xl border border-[#19D66B]/20 shadow-[0_4px_12px_rgba(0,61,37,0.08)] flex items-center justify-center ${bg} transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_6px_16px_rgba(25,214,107,0.18)]}>
                                 <Icon className={`h-7 w-7 ${fg}`} strokeWidth={2.2} />
                               </span>
-                              <span className="text-[11px] font-medium text-slate-700">{label}</span>
+                              <span className="text-[11px] font-semibold text-[#003D25] tracking-wide">{label}</span>
                             </button>
                           ))}
                         </div>
@@ -895,8 +900,8 @@ function Messages() {
                     if (text.trim()) return send();
                     return startRecording();
                   }}
-                  disabled={busy}
-                  className={`h-[56px] w-[56px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-colors ${
+                   disabled={busy}
+                    className={`h-[56px] w-[56px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_0_20px_rgba(25,214,107,0.32)] ${
                     recording ? "bg-red-500 hover:bg-red-600" : "bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_16px_rgba(25,214,107,0.25)]"
                   }`}
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
