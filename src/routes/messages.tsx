@@ -685,7 +685,7 @@ function Messages() {
                   }
                 />
 
-             <div className="absolute bottom-1 right-1 flex items-center gap-0.5 rounded-full bg-black/35 px-1.5 py-0.5 text-[10px] leading-none text-white">
+             <div className="absolute bottom-0 right-0 flex items-center gap-0.5 rounded-full bg-black/35 px-1.5 py-0.5 text-[10px] leading-none text-white">
          <span>
          {new Date(m.created_at).toLocaleTimeString([], {
           hour: "2-digit",
