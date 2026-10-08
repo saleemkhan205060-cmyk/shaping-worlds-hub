@@ -617,8 +617,8 @@ function Messages() {
           {activePeer ? (
             <>
                 <header className="shrink-0 bg-[#edf0e4] px-2 pt-1.5 pb-1.5 md:px-2">
-                  <div className="flex items-center gap-1.5">
-                  <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-black/5">
+                  <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-[#19D66B]/40">
                     <button
                       onClick={() => setActivePeer(null)}
                       className="md:hidden h-9 w-9 rounded-full hover:bg-white/20 active:bg-white/30 flex items-center justify-center text-white shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
@@ -627,7 +627,7 @@ function Messages() {
                       <ArrowLeft className="h-6 w-6" />
                     </button>
                    <div className="relative shrink-0">
-                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)]">
+                  <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)] w-fit h-fit">
                   <div className="rounded-full bg-[#075E54] p-[1px]">
                   <Avatar p={profiles[activePeer]} size="h-10 w-10 text-sm" />
                   </div>
@@ -651,13 +651,6 @@ function Messages() {
                     </p>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="h-10 w-8 shrink-0 flex items-center justify-center text-slate-800 rounded-full hover:bg-white/20 active:bg-white/30 transition-all duration-200 hover:scale-105 active:scale-95"
-                    aria-label="Conversation menu"
-                  >
-                    <MoreVertical className="h-7 w-7" />
-                  </button>
                 </div>
               </header>
               <div
