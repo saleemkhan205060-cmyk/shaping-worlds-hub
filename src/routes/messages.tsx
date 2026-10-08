@@ -669,7 +669,7 @@ function Messages() {
                         className={`flex ${mine ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[78%] px-3 py-2 rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 hover:-translate-y-[1px] ${
+                          className={`max-w-[78%] ${m.content.startsWith("mm://") ? "px-1 py-1" : "px-3 py-2"} rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 hover:-translate-y-[1px] ${
                            mine
                            ? "bg-gradient-to-br from-[#006B3F] via-[#005A35] to-[#003D25] text-white rounded-2xl rounded-br-md shadow-[0_3px_10px_rgba(0,90,53,0.24)] ring-1 ring-[#19D66B]/20"
                           : "bg-gradient-to-br from-white via-white to-[#f4faf6] text-slate-800 border border-[#dce8e1] rounded-2xl rounded-bl-md shadow-[0_3px_10px_rgba(0,0,0,0.06)]"
