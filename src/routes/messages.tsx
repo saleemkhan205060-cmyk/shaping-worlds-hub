@@ -78,6 +78,7 @@ function Messages() {
   const [activePeer, setActivePeer] = useState<string | null>(to ?? null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
+  const [replyTo, setReplyTo] = useState<Msg | null>(null);
   const [loadingMsgs, setLoadingMsgs] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQ, setSearchQ] = useState("");
@@ -678,12 +679,13 @@ function Messages() {
                     {m.content.startsWith("mm://") ? (
                      <div className="relative">
                       <MessageAttachment
-                       path={m.content.slice(5)}
-                       messageId={m.id}
-                     onDeleted={() =>
+                      path={m.content.slice(5)}
+                     messageId={m.id}
+                    onDeleted={() =>
                    setMsgs((prev) => prev.filter((msg) => msg.id !== m.id))
                   }
-                />
+                 onReply={() => setReplyTo(m)}
+                 />
 
              <div className="absolute bottom-0 right-0 flex items-center gap-0.5 rounded-full bg-black/35 px-1.5 py-0.5 text-[10px] leading-none text-white">
          <span>
@@ -1005,10 +1007,12 @@ function MessageAttachment({
   path,
   messageId,
   onDeleted,
+  onReply,
 }: {
   path: string;
   messageId: string;
   onDeleted: () => void;
+  onReply: () => void;
 }) {
   const [url, setUrl] = useState<string | null>(null);
   const [err, setErr] = useState(false);
@@ -1050,6 +1054,38 @@ function MessageAttachment({
       reader.onerror = () => reject(reader.error);
       reader.readAsDataURL(blob);
     });
+    const copyImage = async () => {
+    if (!url) {
+      toast.error("Image not ready yet");
+      return;
+    }
+
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("fetch failed");
+
+      const blob = await res.blob();
+
+      if (navigator.clipboard?.write && "ClipboardItem" in window) {
+        const type = blob.type || "image/png";
+        const imageBlob = blob.type === type ? blob : blob.slice(0, blob.size, type);
+
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [type]: imageBlob,
+          }),
+        ]);
+
+        toast.success("Image copied");
+        return;
+      }
+
+      await navigator.clipboard.writeText(url);
+      toast.success("Image link copied");
+    } catch {
+      toast.error("Couldn't copy image");
+    }
+  };
 
   const downloadFile = async () => {
     if (!url) {
@@ -1161,8 +1197,9 @@ function MessageAttachment({
   if (!url) return <span className="italic opacity-70">Loading attachment…</span>;
 
   if (isImage)
-    return (
-      <>
+  return (
+    <>
+      <div className="relative w-fit max-w-full">
         <button
           type="button"
           className="media-actions block max-w-full rounded-lg cursor-zoom-in select-none overflow-hidden touch-manipulation"
@@ -1190,6 +1227,17 @@ function MessageAttachment({
             draggable={false}
             className="block max-w-full max-h-64 rounded-md select-none"
           />
+        </button>
+        <button
+       type="button"
+      onClick={(e) => {
+    e.stopPropagation();
+    setMenuOpen(true);
+    }}
+    className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/45 hover:bg-black/60 text-white flex items-center justify-center shadow-sm"
+      aria-label="Message options"
+       >
+       <MoreVertical className="h-4 w-4" />
         </button>
         {open && (
           <div
