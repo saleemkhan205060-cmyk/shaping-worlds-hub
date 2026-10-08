@@ -1162,7 +1162,7 @@ function MessageAttachment({
             alt="attachment"
             loading="lazy"
             draggable={false}
-            className="block max-w-full max-h-64 rounded-lg select-none"
+            className="block max-w-full max-h-64 rounded-md select-none"
           />
         </button>
         {open && (
