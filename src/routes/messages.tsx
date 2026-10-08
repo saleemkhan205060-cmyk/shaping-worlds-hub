@@ -719,7 +719,7 @@ function Messages() {
                 <div className="border-t border-[#19D66B]/15 bg-[#f7faf8] p-3 flex items-center gap-3 shadow-[0_-4px_14px_rgba(0,61,37,0.05)]">
                   <div className="shrink-0">
                     {pending.kind === "image" ? (
-                      <img src={pending.url} alt="preview" className="h-20 w-20 object-cover rounded-md border border-slate-100" />
+                      <img src={pending.url} alt="preview" className="h-20 w-20 object-cover rounded-md border border-slate-200/40" />
                     ) : pending.kind === "video" ? (
                       <video src={pending.url} className="h-20 w-20 object-cover rounded-lg border border-slate-200" />
                     ) : pending.kind === "audio" ? (
