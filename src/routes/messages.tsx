@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Drawer, DrawerContent, DrawerTrigger, DrawerTitle } from "@/components/ui/drawer";
 import { toast } from "sonner";
 import { moderateMedia } from "@/lib/moderation-bridge";
+import { usePresenceState, type Status } from "@/lib/presence";
 
 // Capture a still frame from a video File as a JPEG Blob (for chat-video moderation).
 async function captureChatVideoFrame(file: File): Promise<Blob | null> {
@@ -73,6 +74,7 @@ function Messages() {
 
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const { profiles, cacheProfile, ensureProfiles } = useProfileDirectory();
+  const statuses = usePresenceState();
   const [activePeer, setActivePeer] = useState<string | null>(to ?? null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -634,8 +636,18 @@ function Messages() {
                     <div className="flex-1 min-w-0 leading-tight pr-3">
                       <p className="font-bold text-[18px] leading-5 truncate">{peerName(activePeer)}</p>
                      <p className="text-[11px] leading-4 text-[#B8FFC9] flex items-center gap-1 font-medium tracking-wide">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#7CFF3B] shadow-[0_0_5px_rgba(124,255,59,0.8)]" />
-                    Online
+                    <span
+                   className={`inline-block h-1.5 w-1.5 rounded-full ${
+                   statuses[activePeer] === "online"
+                  ? "bg-emerald-500"
+               : statuses[activePeer] === "busy"
+              ? "bg-amber-400"
+            : statuses[activePeer] === "dnd"
+            ? "bg-red-500"
+                : "bg-slate-400"
+                 }`}
+                   />
+                    {statuses[activePeer] === "online" ? "Online" : "Offline"}
                     </p>
                     </div>
                   </div>
