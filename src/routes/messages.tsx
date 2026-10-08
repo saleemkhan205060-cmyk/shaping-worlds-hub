@@ -675,20 +675,46 @@ function Messages() {
                           : "bg-gradient-to-br from-white via-white to-[#f4faf6] text-slate-800 border border-[#dce8e1] rounded-2xl rounded-bl-md shadow-[0_3px_10px_rgba(0,0,0,0.06)]"
                           }`}
                         >
-                          {m.content.startsWith("mm://") ? (
-                            <MessageAttachment
-                              path={m.content.slice(5)}
-                              messageId={m.id}
-                              onDeleted={() => setMsgs((prev) => prev.filter((msg) => msg.id !== m.id))}
-                            />
-                          ) : (
-                            m.content
-                          )}
-                          <div
-                        className={`mt-1 flex items-center justify-end gap-0.5 text-[10px] opacity-90 ${
-                       mine ? "text-white/70" : "text-slate-400"
-                    }`}
-                   >
+                    {m.content.startsWith("mm://") ? (
+                     <div className="relative">
+                      <MessageAttachment
+                       path={m.content.slice(5)}
+                       messageId={m.id}
+                     onDeleted={() =>
+                   setMsgs((prev) => prev.filter((msg) => msg.id !== m.id))
+                  }
+                />
+
+             <div className="absolute bottom-1 right-1 flex items-center gap-0.5 rounded-full bg-black/35 px-1.5 py-0.5 text-[10px] leading-none text-white">
+         <span>
+         {new Date(m.created_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </span>
+
+      {mine && (
+        <span
+          className={`text-[13px] font-semibold leading-none ${
+            m.read_at ? "text-[#7CFF3B]" : "text-white/75"
+          }`}
+          aria-label={m.read_at ? "Read" : "Sent"}
+        >
+          ✓
+        </span>
+      )}
+    </div>
+    </div>
+    ) : (
+     m.content
+       )}
+         <div
+          className={`${
+          m.content.startsWith("mm://") ? "hidden" : "mt-1 flex"
+           } items-center justify-end gap-0.5 text-[10px] opacity-90 ${
+           mine ? "text-white/70" : "text-slate-400"
+           }`}
+             >
              <span>
            {new Date(m.created_at).toLocaleTimeString([], {
           hour: "2-digit",
