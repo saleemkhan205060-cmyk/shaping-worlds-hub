@@ -495,7 +495,7 @@ function Messages() {
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
-          <div className="shrink-0 px-3 py-3 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2">
+          <div className="shrink-0 px-3 py-3.5 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
             <h2 className="font-bold text-[18px] text-white flex-1">
             Messages
             </h2>
@@ -569,7 +569,17 @@ function Messages() {
                         : ""
                         }`}
                       >
-                        <Avatar p={p} />
+                        <div className="relative shrink-0">
+                       <div className="rounded-full p-[1.5px] bg-gradient-to-br from-[#19D66B]/70 via-[#006B3F] to-[#003D25]">
+                       <div className="rounded-full bg-[#f7faf8] p-[1px]">
+                          <Avatar p={p} />
+                             </div>
+                              </div>
+                              <span
+                               className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#7CFF3B] border-2 border-[#f7faf8] shadow-[0_0_6px_rgba(124,255,59,0.65)]"
+                              aria-label="Online"
+                            />
+                          </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="font-semibold text-sm truncate flex-1">
@@ -604,7 +614,7 @@ function Messages() {
         <section className={`flex-1 min-h-0 min-w-0 flex-col ${activePeer ? "flex bg-[#edf0e4]" : "hidden md:flex"}`}>
           {activePeer ? (
             <>
-                <header className="shrink-0 bg-[#edf0e4] px-2 pt-1 pb-1 md:px-2">
+                <header className="shrink-0 bg-[#edf0e4] px-2 pt-1.5 pb-1.5 md:px-2">
                   <div className="flex items-center gap-1.5">
                   <div className="min-w-0 flex-1 rounded-full bg-[#075E54] text-white flex items-center gap-2 px-2.5 py-1 shadow-sm ring-1 ring-black/5">
                     <button
@@ -620,11 +630,6 @@ function Messages() {
                   <Avatar p={profiles[activePeer]} size="h-10 w-10 text-sm" />
                   </div>
                   </div>
-
-             <span
-            className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-[#7CFF3B] border-2 border-[#075E54] shadow-[0_0_6px_rgba(124,255,59,0.7)]"
-            aria-label="Online"
-              />
                  </div>
                     <div className="flex-1 min-w-0 leading-tight pr-3">
                       <p className="font-bold text-[18px] leading-5 truncate">{peerName(activePeer)}</p>
@@ -693,7 +698,7 @@ function Messages() {
                }`}
                  aria-label={m.read_at ? "Read" : "Sent"}
                     >
-                     ✓✓
+                     ✓
                       </span>
                         )}
                        </div>
@@ -744,7 +749,7 @@ function Messages() {
                 </div>
               )}
 
-              <div className="shrink-0 bg-[#edf0e4] px-1.5 py-0.5 pb-0.5 flex items-end gap-2">
+              <div className="shrink-0 bg-[#edf0e4] px-2 py-1.5 md:px-2.5 md:py-2 flex items-end gap-2">
                 <input
                   ref={galleryInputRef}
                   type="file"
@@ -900,7 +905,7 @@ function Messages() {
                     return startRecording();
                   }}
                    disabled={busy}
-                    className={`h-[56px] w-[56px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_0_20px_rgba(25,214,107,0.32)] ${
+                    className={`h-[54px] w-[54px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_0_20px_rgba(25,214,107,0.32)] ${
                     recording ? "bg-red-500 hover:bg-red-600" : "bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_16px_rgba(25,214,107,0.25)]"
                   }`}
                   aria-label={recording ? "Send voice message" : text.trim() ? "Send" : "Record voice"}
