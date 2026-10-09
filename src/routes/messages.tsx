@@ -150,6 +150,10 @@ function Messages() {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [replyTo, setReplyTo] = useState<Msg | null>(null);
+  const [editingMsg, setEditingMsg] = useState<Msg | null>(null);
+  const [messageMenu, setMessageMenu] = useState<Msg | null>(null);
+  const messagePressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const messageLongPressed = useRef(false);
 
   const [loadingMsgs, setLoadingMsgs] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -390,7 +394,57 @@ function Messages() {
     }, 250);
 
     return () => clearTimeout(t);
-  }, [searchQ, searchOpen, user]);
+    }, [searchQ, searchOpen, user]);
+    const editMessage = async () => {
+     if (!editingMsg || !user || !text.trim()) return;
+
+    const updatedContent = text.trim();
+
+      const { error } = await supabase
+    .from("messages")
+    .update({ content: updatedContent })
+    .eq("id", editingMsg.id)
+    .eq("sender_id", user.id);
+
+  if (error) {
+    toast.error("Couldn't edit message");
+    return;
+  }
+
+  setMsgs((prev) =>
+    prev.map((m) =>
+      m.id === editingMsg.id
+        ? { ...m, content: updatedContent }
+        : m
+    )
+  );
+
+  setEditingMsg(null);
+  setText("");
+  setMessageMenu(null);
+  toast.success("Message updated");
+};
+
+const deleteTextMessage = async (m: Msg) => {
+  if (!user || m.sender_id !== user.id) return;
+
+  if (!window.confirm("Delete this message?")) return;
+
+  const { error } = await supabase
+    .from("messages")
+    .delete()
+    .eq("id", m.id)
+    .eq("sender_id", user.id);
+
+  if (error) {
+    toast.error("Couldn't delete message");
+    return;
+  }
+
+  setMsgs((prev) => prev.filter((x) => x.id !== m.id));
+  setMessageMenu(null);
+  toast.success("Message deleted");
+};
 
   const sendContent = async (content: string) => {
     if (!user || !activePeer) return;
@@ -426,6 +480,10 @@ function Messages() {
   };
 
   const send = async () => {
+    if (editingMsg) {
+    await editMessage();
+    return;
+   }
     const rawText = text.trim();
 
     if (!rawText) return;
@@ -1125,12 +1183,10 @@ if (textarea) textarea.style.height = "40px";
                               ? "justify-end"
                               : "justify-start"
                           }`}
-                        >
+                        >      
                           <div
                             className={`max-w-[78%] ${
-                              m.content.startsWith(
-                                "mm://",
-                              )
+                              m.content.startsWith("mm://")
                                 ? "px-1 py-1"
                                 : "px-3 py-2"
                             } rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 hover:-translate-y-[1px] ${
@@ -1138,6 +1194,31 @@ if (textarea) textarea.style.height = "40px";
                                 ? "bg-gradient-to-br from-[#006B3F] via-[#005A35] to-[#003D25] text-white rounded-2xl rounded-br-md shadow-[0_3px_10px_rgba(0,90,53,0.24)] ring-1 ring-[#19D66B]/20"
                                 : "bg-gradient-to-br from-white via-white to-[#f4faf6] text-slate-800 border border-[#dce8e1] rounded-2xl rounded-bl-md shadow-[0_3px_10px_rgba(0,0,0,0.06)]"
                             }`}
+                            onTouchStart={() => {
+                              if (!mine || m.content.startsWith("mm://")) return;
+                              messageLongPressed.current = false;
+                              messagePressTimer.current = setTimeout(() => {
+                                messageLongPressed.current = true;
+                                setMessageMenu(m);
+                              }, 500);
+                            }}
+                            onTouchEnd={() => {
+                              if (messagePressTimer.current) {
+                                clearTimeout(messagePressTimer.current);
+                                messagePressTimer.current = null;
+                              }
+                            }}
+                            onTouchMove={() => {
+                              if (messagePressTimer.current) {
+                                clearTimeout(messagePressTimer.current);
+                                messagePressTimer.current = null;
+                              }
+                            }}
+                            onContextMenu={(e) => {
+                              if (!mine || m.content.startsWith("mm://")) return;
+                              e.preventDefault();
+                              setMessageMenu(m);
+                            }}
                           >
                             {m.content.startsWith(
                               "mm://",
@@ -1244,8 +1325,51 @@ if (textarea) textarea.style.height = "40px";
                       );
                     })
                   )}
-
                   <div ref={endRef} />
+                  {messageMenu && (
+                    <div
+                      className="fixed inset-0 z-[500] flex items-end justify-center bg-black/40 sm:items-center"
+                      onClick={() => setMessageMenu(null)}
+                    >
+                      <div
+                        className="w-full rounded-t-2xl bg-white p-2 shadow-xl sm:w-80 sm:rounded-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {messageMenu.sender_id === user.id &&
+                          !messageMenu.content.startsWith("mm://") && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingMsg(messageMenu);
+                                setText(messageMenu.content);
+                                setMessageMenu(null);
+                              }}
+                              className="w-full border-b border-slate-100 px-4 py-4 text-left font-semibold text-slate-800"
+                            >
+                              Edit message
+                            </button>
+                          )}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            void deleteTextMessage(messageMenu);
+                          }}
+                          className="w-full border-b border-slate-100 px-4 py-4 text-left font-semibold text-red-600"
+                        >
+                          Delete message
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setMessageMenu(null)}
+                          className="w-full px-4 py-3 text-center font-medium text-slate-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1526,8 +1650,22 @@ if (textarea) textarea.style.height = "40px";
                         </div>
                       </PopoverContent>
                     </Popover>
-
-                 <textarea value={text}
+                    {editingMsg && (
+               <div className="flex items-center justify-between rounded-t-xl bg-[#003D25] px-3 py-2 text-white">
+           <span className="text-sm font-semibold">Edit message</span>
+         <button
+        type="button"
+      onClick={() => {
+        setEditingMsg(null);
+        setText("");
+      }}
+      className="rounded-lg px-3 py-1 text-sm font-medium hover:bg-white/10"
+    >
+      Cancel
+       </button>
+        </div>
+          )}
+           <textarea value={text}
                    onChange={(e) => {
                      setText(e.target.value);
                      e.currentTarget.style.height = "auto";
@@ -1640,13 +1778,15 @@ if (textarea) textarea.style.height = "40px";
                       ? "bg-red-500 hover:bg-red-600"
                       : "bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_16px_rgba(25,214,107,0.25)]"
                   }`}
-                  aria-label={
-                    recording
-                      ? "Send voice message"
-                      : text.trim()
-                        ? "Send"
-                        : "Record voice"
-                  }
+                 aria-label={
+                 recording
+                 ? "Send voice message"
+                : editingMsg
+                ? "Update message"
+                : text.trim()
+                 ? "Send"
+                : "Record voice"
+                }
                 >
                   {busy ? (
                     <Loader2 className="h-7 w-7 animate-spin" />
