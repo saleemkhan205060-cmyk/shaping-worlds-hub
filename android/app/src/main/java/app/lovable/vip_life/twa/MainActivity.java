@@ -70,6 +70,7 @@ public class MainActivity extends BridgeActivity
 
 if (webView != null) {
     webView.setBackgroundColor(Color.WHITE);
+    KeyboardInsets.install(this, webView);
 
     }
   }         private void startAnalytics() {

@@ -19,6 +19,11 @@ const config: CapacitorConfig = {
   },
 
   plugins: {
+    // Native KeyboardInsets owns geometry. This disables SystemBars' separate
+    // CSS injection; its parent listener is still replaced in MainActivity.
+    SystemBars: {
+      insetsHandling: "disable",
+    },
     SplashScreen: {
       launchShowDuration: 500,
       backgroundColor: "#FFFFFF",
