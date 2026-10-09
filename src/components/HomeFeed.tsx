@@ -905,7 +905,7 @@ export function HomeFeed() {
         </div>
       )}
       {/* Category tabs */}
-      <div className="flex justify-center gap-4 pt-2 pb-3">
+        <div className="flex justify-center gap-4">
         {TABS.map((t) => {
           const active = tab === t.id;
           const color =
