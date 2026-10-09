@@ -512,7 +512,7 @@ function Messages() {
       content = `↪ Replying to: ${replyText}\n${rawText}`;
     }
 
-    ```tsx
+    tsx
     setText("");
     setReplyTo(null);
 
@@ -531,7 +531,6 @@ function Messages() {
   };
 
   const shareLocation = () => {
-```
     setAttachOpen(false);
 
     if (!navigator.geolocation) {
