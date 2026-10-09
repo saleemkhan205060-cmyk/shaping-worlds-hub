@@ -418,7 +418,7 @@ function Messages() {
     setBusy(false);
 
     if (error || !data) {
-      toast.error("Couldn't send message");
+      toast.error(`Send failed: ${error?.message ?? "No message data returned"}`);
       return;
     }
 
