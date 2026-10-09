@@ -1427,7 +1427,7 @@ function Messages() {
                     </span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
+                 <div className="flex-1 min-w-0 flex items-end gap-1 bg-white rounded-[28px] pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
@@ -1522,13 +1522,13 @@ function Messages() {
                       </PopoverContent>
                     </Popover>
 
-                  <textarea 
-                    value={text} 
-                    onChange={(e) => { 
-                      setText(e.target.value); 
-                      e.currentTarget.style.height = "auto"; 
-                      e.currentTarget.style.height = `${Math.min( e.currentTarget.scrollHeight, 160, )}px`; }} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder="Message" disabled={busy} maxLength={2000} rows={1} className="flex-1 min-w-0 resize-none overflow-y-auto bg-transparent text-[17px] leading-6 py-2 px-1 min-h-[40px] max-h-[160px] focus:outline-none placeholder:text-slate-400 text-slate-800" />
-
+                 <textarea value={text}
+                   onChange={(e) => {
+                     setText(e.target.value);
+                     e.currentTarget.style.height = "auto";
+                     e.currentTarget.style.height = `${Math.min( 
+                       e.currentTarget.scrollHeight, 160, )}px`; }} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder="Message" disabled={busy} maxLength={2000} rows={1} className="flex-1 min-w-0 w-0 resize-none overflow-y-auto self-end bg-transparent text-[17px] leading-6 py-2 px-1 min-h-[40px] max-h-[160px] focus:outline-none placeholder:text-slate-400 text-slate-800" />
+                    
                     <Drawer
                       open={attachOpen}
                       onOpenChange={setAttachOpen}
