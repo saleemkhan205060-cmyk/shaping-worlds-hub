@@ -58,10 +58,12 @@ export function Layout({
   children,
   hideMobileNav = false,
   fullScreenMobile = false,
+  viewportBoundMobile = false,
 }: {
   children: React.ReactNode;
   hideMobileNav?: boolean;
   fullScreenMobile?: boolean;
+  viewportBoundMobile?: boolean;
 }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
@@ -220,7 +222,7 @@ export function Layout({
   return (
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
     <FullscreenContext.Provider value={{ mediaFullscreen, setMediaFullscreen }}>
-    <div className={`min-h-screen bg-[#003D25] text-slate-900 ${hideMobileNav ? "" : "pb-24 md:pb-0"}`}>
+    <div className={`${viewportBoundMobile && !fullScreenMobile ? "h-[100dvh] flex flex-col overflow-hidden md:h-auto md:min-h-screen md:overflow-visible" : "min-h-screen"} bg-[#003D25] text-slate-900 ${hideMobileNav || viewportBoundMobile ? "" : "pb-24 md:pb-0"}`}>
 
       <header className={`sticky top-0 z-30 bg-[#003D25] backdrop-blur border-b border-slate-200 ${mediaFullscreen ? "hidden" : fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
@@ -362,6 +364,8 @@ export function Layout({
      className={
       fullScreenMobile
       ? "fixed inset-0 z-40 overflow-hidden bg-[#003D25] md:static md:z-auto md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6"
+      : viewportBoundMobile
+      ? "flex-1 min-h-0 overflow-hidden w-full max-w-6xl mx-auto px-3 sm:px-4 py-0 md:flex-none md:overflow-visible md:py-6"
       : "max-w-6xl mx-auto px-3 sm:px-4 py-0 md:py-6"
      }
     >
