@@ -644,8 +644,8 @@ function ProfileCard({
 
         <p className="mt-1.5 flex min-w-0 items-center gap-1 text-[10px] text-white/80">
           <MapPin className="h-3 w-3 shrink-0 fill-white text-white" />
-          <span className="truncate">
-            (card.nationality ?? "—"} &nbsp;•&nbsp; {card.profession ?? "—"}
+          <span className="truncate"   
+          {card.nationality ?? "—"} &nbsp;•&nbsp; {card.profession ?? "—"}
           </span>
         </p>
 
