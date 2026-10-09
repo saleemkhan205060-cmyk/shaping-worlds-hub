@@ -512,13 +512,26 @@ function Messages() {
       content = `↪ Replying to: ${replyText}\n${rawText}`;
     }
 
+    ```tsx
     setText("");
     setReplyTo(null);
+
+    requestAnimationFrame(() => {
+      const textarea = document.querySelector<HTMLTextAreaElement>(
+        'textarea[placeholder="Message"]',
+      );
+
+      if (textarea) {
+        textarea.style.height = "auto";
+        textarea.focus();
+      }
+    });
 
     await sendContent(content);
   };
 
   const shareLocation = () => {
+```
     setAttachOpen(false);
 
     if (!navigator.geolocation) {
@@ -1651,15 +1664,15 @@ function Messages() {
                       </PopoverContent>
                     </Popover>       
                   <textarea
-                  value={text}
-                 onChange={(e) => {
-                  setText(e.target.value);
-                  e.currentTarget.style.height = "auto";
-                   e.currentTarget.style.height = `${Math.min(
-                    e.currentTarget.scrollHeight,
-                       128,
-                   )}px`;
-                      }}
+                    value={text} 
+                    ref={(el) => { 
+                      if (el && text === "") { 
+                      el.style.height = "auto"; } }}
+                    onChange={(e) => { 
+                    setText(e.target.value); 
+                    e.currentTarget.style.height = "auto"; 
+                    e.currentTarget.style.height = `${Math.min( 
+                    e.currentTarget.scrollHeight, 128, )}px`; }}
                    onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
