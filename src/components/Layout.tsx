@@ -222,8 +222,8 @@ export function Layout({
   return (
     <SearchContext.Provider value={{ query: searchQuery, setQuery: setSearchQuery }}>
     <FullscreenContext.Provider value={{ mediaFullscreen, setMediaFullscreen }}>
-    <div className={`${fullScreenMobile ? "h-[100dvh] overflow-hidden" : viewportBoundMobile ? "h-[100dvh] flex flex-col overflow-hidden md:h-auto md:min-h-screen md:overflow-visible" : "min-h-screen"} bg-[#003D25] text-slate-900 ${hideMobileNav || viewportBoundMobile ? "" : "pb-24 md:pb-0"}`}>
 
+     <div className={`${fullScreenMobile ? "h-[100dvh] overflow-hidden" : viewportBoundMobile ? "h-[100dvh] flex flex-col overflow-hidden md:h-auto md:min-h-screen md:overflow-visible" : "min-h-screen"} bg-[#003D25] text-slate-900 ${hideMobileNav || viewportBoundMobile ? "" : "pb-24 md:pb-0"}`}>
       <header className={`sticky top-0 z-30 bg-[#003D25] backdrop-blur border-b border-slate-200 ${mediaFullscreen ? "hidden" : fullScreenMobile ? "hidden md:block" : ""}`}>
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[68px] flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
