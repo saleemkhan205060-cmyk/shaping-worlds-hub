@@ -905,7 +905,7 @@ export function HomeFeed() {
         </div>
       )}
       {/* Category tabs */}
-      <div className="flex justify-center gap-2 pb-1">
+      <div className="flex justify-center gap-4 pt-2 pb-3">
         {TABS.map((t) => {
           const active = tab === t.id;
           const color =
@@ -922,7 +922,7 @@ export function HomeFeed() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`shrink-0 px-3 py-1 rounded-xl text-xs font-semibold border min-w-[68px] transition ${
+                className={`shrink-0 px-3 py-1 rounded-xl text-xs font-bold border min-w-[68px] transition ${
                 active ? color.active + " shadow-sm" : color.inactive
               }`}
             >
