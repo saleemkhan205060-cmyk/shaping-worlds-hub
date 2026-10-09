@@ -905,7 +905,7 @@ export function HomeFeed() {
         </div>
       )}
       {/* Category tabs */}
-        <div className="flex justify-center gap-4">
+        <div className="grid w-full grid-cols-3 items-center gap-3">
         {TABS.map((t) => {
           const active = tab === t.id;
           const color =
