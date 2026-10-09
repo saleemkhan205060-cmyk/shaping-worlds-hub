@@ -444,10 +444,10 @@ function Messages() {
     setBusy(false);
 
     if (error) {
-      toast.error("Couldn't edit message");
-      return;
-    }
-
+    console.error("Edit message error:", error);
+    toast.error(`Edit failed: ${error.message}`);
+    return;
+   }
     setMsgs((prev) =>
       prev.map((m) =>
         m.id === editingMsg.id
