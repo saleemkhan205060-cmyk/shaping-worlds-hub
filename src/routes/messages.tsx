@@ -442,6 +442,10 @@ function Messages() {
 
     setText("");
     setReplyTo(null);
+    const textarea = document.querySelector<HTMLTextAreaElement>(
+  'textarea[placeholder="Message"]'
+);
+if (textarea) textarea.style.height = "40px";
 
     await sendContent(content);
   };
