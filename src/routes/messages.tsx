@@ -1647,29 +1647,29 @@ function Messages() {
                           ))}
                         </div>
                       </PopoverContent>
-                    </Popover>
-
-                    <textarea
-                      value={text}
-                      onChange={(e) =>
-                        setText(e.target.value)
-                      }
-                      onKeyDown={(e) => {
-                        if (
-                          e.key === "Enter" &&
-                          !e.shiftKey
-                        ) {
-                          e.preventDefault();
-                          send();
-                        }
+                    </Popover>       
+                  <textarea
+                  value={text}
+                 onChange={(e) => {
+                  setText(e.target.value);
+                  e.currentTarget.style.height = "auto";
+                   e.currentTarget.style.height = `${Math.min(
+                    e.currentTarget.scrollHeight,
+                       128,
+                   )}px`;
                       }}
-                      placeholder="Message"
-                      disabled={busy}
-                      maxLength={2000}
-                      rows={1}
-                      className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-2 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
-                    />
-
+                   onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                 send();
+                 }
+                 }}
+                placeholder="Message"
+                disabled={busy}
+                maxLength={2000}
+                rows={1}
+                className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-2 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
+                 />
                     <Drawer
                       open={attachOpen}
                       onOpenChange={setAttachOpen}
