@@ -1471,22 +1471,6 @@ function Messages() {
                 </div>
               )}
 
-              {editingMsg && (
-                <div className="shrink-0 flex items-center justify-between bg-[#003D25] px-4 py-2 text-white">
-                  <span className="text-sm font-semibold">Editing message</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditingMsg(null);
-                      setText("");
-                    }}
-                    className="rounded-lg px-3 py-1 text-sm hover:bg-white/10"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
-
               <div className="shrink-0 bg-[#edf0e4] px-2 py-1.5 md:px-2.5 md:py-2 flex items-end gap-2">
                 <input
                   ref={galleryInputRef}
