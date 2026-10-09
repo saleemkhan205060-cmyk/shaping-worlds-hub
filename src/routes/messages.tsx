@@ -394,57 +394,7 @@ function Messages() {
     }, 250);
 
     return () => clearTimeout(t);
-    }, [searchQ, searchOpen, user]);
-    const editMessage = async () => {
-     if (!editingMsg || !user || !text.trim()) return;
-
-    const updatedContent = text.trim();
-
-      const { error } = await supabase
-    .from("messages")
-    .update({ content: updatedContent })
-    .eq("id", editingMsg.id)
-    .eq("sender_id", user.id);
-
-  if (error) {
-    toast.error("Couldn't edit message");
-    return;
-  }
-
-  setMsgs((prev) =>
-    prev.map((m) =>
-      m.id === editingMsg.id
-        ? { ...m, content: updatedContent }
-        : m
-    )
-  );
-
-  setEditingMsg(null);
-  setText("");
-  setMessageMenu(null);
-  toast.success("Message updated");
-};
-
-const deleteTextMessage = async (m: Msg) => {
-  if (!user || m.sender_id !== user.id) return;
-
-  if (!window.confirm("Delete this message?")) return;
-
-  const { error } = await supabase
-    .from("messages")
-    .delete()
-    .eq("id", m.id)
-    .eq("sender_id", user.id);
-
-  if (error) {
-    toast.error("Couldn't delete message");
-    return;
-  }
-
-  setMsgs((prev) => prev.filter((x) => x.id !== m.id));
-  setMessageMenu(null);
-  toast.success("Message deleted");
-};
+  }, [searchQ, searchOpen, user]);
 
   const sendContent = async (content: string) => {
     if (!user || !activePeer) return;
@@ -479,11 +429,75 @@ const deleteTextMessage = async (m: Msg) => {
     );
   };
 
+  const editMessage = async () => {
+    if (!editingMsg || !user || !text.trim()) return;
+
+    const updatedContent = text.trim();
+    setBusy(true);
+
+    const { error } = await supabase
+      .from("messages")
+      .update({ content: updatedContent })
+      .eq("id", editingMsg.id)
+      .eq("sender_id", user.id);
+
+    setBusy(false);
+
+    if (error) {
+      toast.error("Couldn't edit message");
+      return;
+    }
+
+    setMsgs((prev) =>
+      prev.map((m) =>
+        m.id === editingMsg.id
+          ? { ...m, content: updatedContent }
+          : m,
+      ),
+    );
+    setEditingMsg(null);
+    setText("");
+    setMessageMenu(null);
+    toast.success("Message updated");
+  };
+
+  const deleteTextMessage = async (m: Msg) => {
+    if (!user || m.sender_id !== user.id) return;
+    if (!window.confirm("Delete this message?")) return;
+
+    const { error } = await supabase
+      .from("messages")
+      .delete()
+      .eq("id", m.id)
+      .eq("sender_id", user.id);
+
+    if (error) {
+      toast.error("Couldn't delete message");
+      return;
+    }
+
+    setMsgs((prev) => prev.filter((x) => x.id !== m.id));
+    setMessageMenu(null);
+    if (editingMsg?.id === m.id) {
+      setEditingMsg(null);
+      setText("");
+    }
+    toast.success("Message deleted");
+  };
+
+  const startEditingMessage = (m: Msg) => {
+    setEditingMsg(m);
+    setText(m.content);
+    setReplyTo(null);
+    setMessageMenu(null);
+  };
+
   const send = async () => {
     if (editingMsg) {
-    await editMessage();
-    return;
-   }
+      await editMessage();
+      return;
+    }
+
     const rawText = text.trim();
 
     if (!rawText) return;
@@ -500,10 +514,6 @@ const deleteTextMessage = async (m: Msg) => {
 
     setText("");
     setReplyTo(null);
-    const textarea = document.querySelector<HTMLTextAreaElement>(
-  'textarea[placeholder="Message"]'
-);
-if (textarea) textarea.style.height = "40px";
 
     await sendContent(content);
   };
@@ -937,13 +947,12 @@ if (textarea) textarea.style.height = "40px";
     <Layout
       hideMobileNav={!!activePeer}
       fullScreenMobile={!!activePeer}
-      viewportBoundMobile={!activePeer}
     >
       <div
-        className={`bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl ${
+        className={`touch-none bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl ${
           activePeer
             ? "h-[100dvh] min-h-0"
-            : "h-full min-h-0 rounded-2xl"
+            : "h-[calc(100dvh-68px-56px)] rounded-2xl"
         } md:h-[calc(100vh-4rem)] md:min-h-[600px]`}
       >
         <aside
@@ -1183,10 +1192,38 @@ if (textarea) textarea.style.height = "40px";
                               ? "justify-end"
                               : "justify-start"
                           }`}
-                        >      
+                        >
                           <div
-                            className={`max-w-[78%] ${
-                              m.content.startsWith("mm://")
+                            onContextMenu={(e) => {
+                              if (!mine || m.content.startsWith("mm://")) return;
+                              e.preventDefault();
+                              setMessageMenu(m);
+                            }}
+                            onPointerDown={() => {
+                              if (!mine || m.content.startsWith("mm://")) return;
+                              messageLongPressed.current = false;
+                              if (messagePressTimer.current) clearTimeout(messagePressTimer.current);
+                              messagePressTimer.current = setTimeout(() => {
+                                messageLongPressed.current = true;
+                                setMessageMenu(m);
+                              }, 500);
+                            }}
+                            onPointerUp={() => {
+                              if (messagePressTimer.current) {
+                                clearTimeout(messagePressTimer.current);
+                                messagePressTimer.current = null;
+                              }
+                            }}
+                            onPointerLeave={() => {
+                              if (messagePressTimer.current) {
+                                clearTimeout(messagePressTimer.current);
+                                messagePressTimer.current = null;
+                              }
+                            }}
+                            className={`relative max-w-[78%] ${
+                              m.content.startsWith(
+                                "mm://",
+                              )
                                 ? "px-1 py-1"
                                 : "px-3 py-2"
                             } rounded-2xl text-[15px] whitespace-pre-wrap break-words transition-all duration-200 hover:-translate-y-[1px] ${
@@ -1194,31 +1231,6 @@ if (textarea) textarea.style.height = "40px";
                                 ? "bg-gradient-to-br from-[#006B3F] via-[#005A35] to-[#003D25] text-white rounded-2xl rounded-br-md shadow-[0_3px_10px_rgba(0,90,53,0.24)] ring-1 ring-[#19D66B]/20"
                                 : "bg-gradient-to-br from-white via-white to-[#f4faf6] text-slate-800 border border-[#dce8e1] rounded-2xl rounded-bl-md shadow-[0_3px_10px_rgba(0,0,0,0.06)]"
                             }`}
-                            onTouchStart={() => {
-                              if (!mine || m.content.startsWith("mm://")) return;
-                              messageLongPressed.current = false;
-                              messagePressTimer.current = setTimeout(() => {
-                                messageLongPressed.current = true;
-                                setMessageMenu(m);
-                              }, 500);
-                            }}
-                            onTouchEnd={() => {
-                              if (messagePressTimer.current) {
-                                clearTimeout(messagePressTimer.current);
-                                messagePressTimer.current = null;
-                              }
-                            }}
-                            onTouchMove={() => {
-                              if (messagePressTimer.current) {
-                                clearTimeout(messagePressTimer.current);
-                                messagePressTimer.current = null;
-                              }
-                            }}
-                            onContextMenu={(e) => {
-                              if (!mine || m.content.startsWith("mm://")) return;
-                              e.preventDefault();
-                              setMessageMenu(m);
-                            }}
                           >
                             {m.content.startsWith(
                               "mm://",
@@ -1320,56 +1332,42 @@ if (textarea) textarea.style.height = "40px";
                                 </span>
                               )}
                             </div>
+
+                            {mine && !m.content.startsWith("mm://") && messageMenu?.id === m.id && (
+                              <div className="absolute bottom-full right-0 z-30 mb-2 min-w-[150px] overflow-hidden rounded-xl border border-[#19D66B]/40 bg-[#003D25] p-1.5 shadow-xl">
+                                <button
+                                  type="button"
+                                  onPointerDown={(e) => e.stopPropagation()}
+                                  onClick={() => startEditingMessage(m)}
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white hover:bg-white/10"
+                                >
+                                  Edit message
+                                </button>
+                                <button
+                                  type="button"
+                                  onPointerDown={(e) => e.stopPropagation()}
+                                  onClick={() => void deleteTextMessage(m)}
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-300 hover:bg-white/10"
+                                >
+                                  Delete message
+                                </button>
+                                <button
+                                  type="button"
+                                  onPointerDown={(e) => e.stopPropagation()}
+                                  onClick={() => setMessageMenu(null)}
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/10"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
                     })
                   )}
+
                   <div ref={endRef} />
-                  {messageMenu && (
-                    <div
-                      className="fixed inset-0 z-[500] flex items-end justify-center bg-black/40 sm:items-center"
-                      onClick={() => setMessageMenu(null)}
-                    >
-                      <div
-                        className="w-full rounded-t-2xl bg-white p-2 shadow-xl sm:w-80 sm:rounded-2xl"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {messageMenu.sender_id === user.id &&
-                          !messageMenu.content.startsWith("mm://") && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingMsg(messageMenu);
-                                setText(messageMenu.content);
-                                setMessageMenu(null);
-                              }}
-                              className="w-full border-b border-slate-100 px-4 py-4 text-left font-semibold text-slate-800"
-                            >
-                              Edit message
-                            </button>
-                          )}
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            void deleteTextMessage(messageMenu);
-                          }}
-                          className="w-full border-b border-slate-100 px-4 py-4 text-left font-semibold text-red-600"
-                        >
-                          Delete message
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setMessageMenu(null)}
-                          className="w-full px-4 py-3 text-center font-medium text-slate-500"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -1473,6 +1471,22 @@ if (textarea) textarea.style.height = "40px";
                 </div>
               )}
 
+              {editingMsg && (
+                <div className="shrink-0 flex items-center justify-between bg-[#003D25] px-4 py-2 text-white">
+                  <span className="text-sm font-semibold">Editing message</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingMsg(null);
+                      setText("");
+                    }}
+                    className="rounded-lg px-3 py-1 text-sm hover:bg-white/10"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+
               <div className="shrink-0 bg-[#edf0e4] px-2 py-1.5 md:px-2.5 md:py-2 flex items-end gap-2">
                 <input
                   ref={galleryInputRef}
@@ -1535,7 +1549,7 @@ if (textarea) textarea.style.height = "40px";
                 />
 
                 {recording ? (
-                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[44px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-3 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] min-h-[56px]">
                     <button
                       type="button"
                       onClick={cancelRecording}
@@ -1556,12 +1570,12 @@ if (textarea) textarea.style.height = "40px";
                     </span>
                   </div>
                 ) : (
-                 <div className="flex-1 min-w-0 flex items-end gap-1 bg-white rounded-[28px] pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
+                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] transition-colors"
+                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] bg-[#F7FCF9] border border-[#19D66B]/15 hover:bg-[#DFF7E8] hover:border-[#19D66B]/30 active:bg-[#C8F0D8] transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
                           aria-label="Emoji"
                         >
                           <Smile className="h-8 w-8" />
@@ -1650,28 +1664,28 @@ if (textarea) textarea.style.height = "40px";
                         </div>
                       </PopoverContent>
                     </Popover>
-                    {editingMsg && (
-               <div className="flex items-center justify-between rounded-t-xl bg-[#003D25] px-3 py-2 text-white">
-           <span className="text-sm font-semibold">Edit message</span>
-         <button
-        type="button"
-      onClick={() => {
-        setEditingMsg(null);
-        setText("");
-      }}
-      className="rounded-lg px-3 py-1 text-sm font-medium hover:bg-white/10"
-    >
-      Cancel
-       </button>
-        </div>
-          )}
-           <textarea value={text}
-                   onChange={(e) => {
-                     setText(e.target.value);
-                     e.currentTarget.style.height = "auto";
-                     e.currentTarget.style.height = `${Math.min( 
-                       e.currentTarget.scrollHeight, 160, )}px`; }} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder="Message" disabled={busy} maxLength={2000} rows={1} className="flex-1 min-w-0 w-0 resize-none overflow-y-auto self-end bg-transparent text-[17px] leading-6 py-2 px-1 min-h-[40px] max-h-[160px] focus:outline-none placeholder:text-slate-400 text-slate-800" />
-                    
+
+                    <textarea
+                      value={text}
+                      onChange={(e) =>
+                        setText(e.target.value)
+                      }
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          !e.shiftKey
+                        ) {
+                          e.preventDefault();
+                          send();
+                        }
+                      }}
+                      placeholder="Message"
+                      disabled={busy}
+                      maxLength={2000}
+                      rows={1}
+                      className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-2 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
+                    />
+
                     <Drawer
                       open={attachOpen}
                       onOpenChange={setAttachOpen}
@@ -1778,15 +1792,13 @@ if (textarea) textarea.style.height = "40px";
                       ? "bg-red-500 hover:bg-red-600"
                       : "bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_16px_rgba(25,214,107,0.25)]"
                   }`}
-                 aria-label={
-                 recording
-                 ? "Send voice message"
-                : editingMsg
-                ? "Update message"
-                : text.trim()
-                 ? "Send"
-                : "Record voice"
-                }
+                  aria-label={
+                    recording
+                      ? "Send voice message"
+                      : text.trim()
+                        ? "Send"
+                        : "Record voice"
+                  }
                 >
                   {busy ? (
                     <Loader2 className="h-7 w-7 animate-spin" />
