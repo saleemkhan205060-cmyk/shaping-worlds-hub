@@ -1554,7 +1554,8 @@ function Messages() {
                     </span>
                   </div>
                 ) : (
-                  <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-full pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
+                 
+                   <div className="flex-1 min-w-0 flex items-end gap-1 bg-white rounded-[28px] pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[56px]">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
