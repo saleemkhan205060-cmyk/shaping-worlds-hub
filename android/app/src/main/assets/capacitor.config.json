@@ -9,6 +9,9 @@
 	},
 	"android": {},
 	"plugins": {
+		"SystemBars": {
+			"insetsHandling": "disable"
+		},
 		"SplashScreen": {
 			"launchShowDuration": 500,
 			"backgroundColor": "#FFFFFF",
