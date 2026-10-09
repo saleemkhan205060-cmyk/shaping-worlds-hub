@@ -947,6 +947,7 @@ function Messages() {
     <Layout
       hideMobileNav={!!activePeer}
       fullScreenMobile={!!activePeer}
+      viewportBoundMobile={!activePeer}
     >
       <div
         className={`touch-none bg-[#f7faf8] border border-[#19D66B]/30 shadow-lg overflow-hidden flex flex-col md:flex-row md:rounded-2xl ${
