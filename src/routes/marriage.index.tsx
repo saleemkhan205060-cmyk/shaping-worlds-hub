@@ -775,15 +775,19 @@ function DetailCard({ card, isSelf, onMessage }: { card: Card; isSelf: boolean; 
   <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap text-xs text-white/80">
     <Heart className="h-3.5 w-3.5 shrink-0" />
     <span>{card.religion}</span>
-  </p>
-)}
+    </p>
+   )}
   </div>
 </div>
-      <div className="flex items-center gap-2 px-5 pb-3 text-xs">
-  {card.looking_for && (
+  <div className="flex items-center justify-between gap-2 px-5 pb-3 text-xs">
+    {card.looking_for && (
     <Tag>Looking for {card.looking_for}</Tag>
-  )}
-</div>
+     )}
+
+     {!isSelf && (
+      <InterestedButton targetId={card.user_id} />
+      )}
+     </div>
       <div className="mt-auto flex gap-2 border-t border-[#19D66B] p-3">
         <Button asChild variant="outline" className="h-10 flex-1 rounded-full border-[#19D66B] bg-transparent text-white hover:bg-[#00C853] hover:text-white">
           <Link to="/u/$id" params={{ id: card.user_id }}>View Profile</Link>
