@@ -383,24 +383,12 @@ pref_marital_status: prefMaritalStatus.trim() || null,
   <option value="6'6">6'6"</option>
 </FieldSelect>
           
-   <FieldSelect
+   <FieldInput
   icon={Users}
   label="Mother Tongue"
   value={motherTongue}
   onChange={setMotherTongue}
->
-  <option value="">Select language</option>
-  <option value="Urdu">Urdu</option>
-  <option value="Arabic">Arabic</option>
-  <option value="English">English</option>
-  <option value="Punjabi">Punjabi</option>
-  <option value="Hindi">Hindi</option>
-  <option value="Bengali">Bengali</option>
-  <option value="Tamil">Tamil</option>
-  <option value="Telugu">Telugu</option>
-  <option value="Malayalam">Malayalam</option>
-  <option value="Other">Other</option>
-</FieldSelect>
+/>
           
    <FieldSelect
   icon={Heart}
