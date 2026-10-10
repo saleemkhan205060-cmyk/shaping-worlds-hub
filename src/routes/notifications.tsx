@@ -261,7 +261,7 @@ const thumbOf = (id: string) => {
           No notifications yet.
         </div>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-2 flex flex-col items-start">
           {items.map((n) => {
             const Icon = IconFor(n.kind);
             return (
