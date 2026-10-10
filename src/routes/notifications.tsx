@@ -285,7 +285,7 @@ const thumbOf = (id: string) => {
        });
         }
          }}
-          className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
+          className={`w-fit max-w-full bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
            (n.kind === "like" ||
            n.kind === "comment" ||
             n.kind === "follow" ||
