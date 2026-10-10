@@ -512,10 +512,6 @@ function Messages() {
       content = `↪ Replying to: ${replyText}\n${rawText}`;
     }
 
-    tsx
-    setText("");
-    setReplyTo(null);
-
     requestAnimationFrame(() => {
       const textarea = document.querySelector<HTMLTextAreaElement>(
         'textarea[placeholder="Message"]',
