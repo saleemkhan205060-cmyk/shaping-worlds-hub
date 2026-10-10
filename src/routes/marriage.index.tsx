@@ -551,27 +551,24 @@ useEffect(() => {
 
   {menuOpen && (
     <div className="absolute right-0 top-[50px] z-50 w-[170px] overflow-hidden rounded-2xl border border-[#19D66B] bg-[#005A35] shadow-xl">
-      <button
-        type="button"
-        onClick={() => {
-          setMenuOpen(false);
-          navigate({ to: "/marriage/edit" });
-        }}
-        className="w-full px-4 py-3 text-left text-sm font-semibold text-white hover:bg-[#00643C]"
-      >
-        Create Profile
-      </button>
     </div>
         )}
         </div>
         </div>
 
               <div className="mb-2 flex items-center justify-between px-0.5">
-                <h2 className="text-[18px] font-bold leading-none">Featured Profiles</h2>
-                <Button type="button" variant="ghost" className="h-7 gap-0.5 px-0 text-sm font-semibold text-[#7CFF3B] hover:bg-transparent hover:text-[#7CFF3B]">
-                  View All <ChevronRight className="h-4 w-4" strokeWidth={3} />
-                </Button>
-              </div>
+             <h2 className="text-[18px] font-bold leading-none">Featured Profiles</h2>
+
+            <Button
+           type="button"
+          variant="ghost"
+        onClick={() => navigate({ to: "/marriage/edit" })}
+      className="h-8 gap-1 rounded-full px-2 text-sm font-semibold text-[#7CFF3B] hover:bg-[#005A35] hover:text-[#7CFF3B]"
+     >
+      <Pencil className="h-4 w-4" />
+        Create Profile
+        </Button>
+         </div>
 
               {loading ? (
                 <div className="flex justify-center py-16 text-[#7CFF3B]">
