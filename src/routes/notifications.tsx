@@ -261,7 +261,7 @@ const thumbOf = (id: string) => {
           No notifications yet.
         </div>
       ) : (
-        <ul className="space-y-2 flex flex-col items-start">
+        <ul className="space-y-2">
           {items.map((n) => {
             const Icon = IconFor(n.kind);
             return (
@@ -285,7 +285,7 @@ const thumbOf = (id: string) => {
        });
         }
          }}
-          className={`w-fit max-w-full bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
+          className={`bg-[#005A35] rounded-2xl border border-[#19D66B] px-3 py-1.5 flex items-center gap-3 ${
            (n.kind === "like" ||
            n.kind === "comment" ||
             n.kind === "follow" ||
