@@ -824,7 +824,6 @@ function FieldRow({
       </span>
       <span className="font-semibold text-sm text-white whitespace-nowrap shrink-0">
         {label}
-        {optional && <span className="text-slate-400 font-normal"> (Optional)</span>}
       </span>
       <div className="flex-1 min-w-0 flex justify-end overflow-hidden">
      {children}
