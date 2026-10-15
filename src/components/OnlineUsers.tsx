@@ -79,7 +79,7 @@ export function OnlineUsers() {
 
   return (
     <section className="px-3 pt-1 pb-1">
-      <div className="flex items-center justify-between mb-3 px-1">
+      <div className="flex items-center justify-between mb-1 px-1">
         <div className="flex items-center gap-2">
           <span className={`h-2.5 w-2.5 rounded-full ${STATUS_META[myStatus].dot} shadow-[0_0_0_3px_rgba(16,185,129,0.18)]`} />
           <h2 className="font-bold text-white text-sm sm:text-base">
@@ -101,7 +101,7 @@ export function OnlineUsers() {
 
           const avatar = (
             <div className="relative">
-              <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-white shadow-md bg-slate-200 group-active:scale-95 transition">
+             <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white shadow-md bg-slate-200 group-active:scale-95 transition">
                 {u?.avatar_url ? (
                   <img src={u.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
                 ) : (
@@ -174,7 +174,7 @@ export function OnlineUsers() {
           );
 
           const label = (
-            <span className="mt-1.5 text-[11px] sm:text-xs font-semibold text-white truncate max-w-full">
+            <span className="mt-1 text-[11px] sm:text-xs font-semibold text-white truncate max-w-full">
               {isMe ? "You" : first}
             </span>
           );
