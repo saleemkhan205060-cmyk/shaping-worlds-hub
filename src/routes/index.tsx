@@ -59,6 +59,22 @@ function Index() {
   return (
     <Layout>
       <HomeFeed />
+      
+      <section className="mt-10">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5">
+          <h3 className="font-bold mb-2">Marriage</h3>
+          <p className="text-sm text-slate-600">
+            Create a profile and connect with verified members looking for a life partner.
+          </p>
+          <Link
+            to="/marriage"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-semibold"
+          >
+            Open Marriage <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
     </Layout>
   );
 }
