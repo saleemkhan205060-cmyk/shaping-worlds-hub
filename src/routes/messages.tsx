@@ -970,12 +970,8 @@ function Messages() {
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
-          <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
-            {!activePeer && (
-              <div className="px-3 pt-3">
-                <OnlineUsers />
-              </div>
-            )}
+          <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">  
+            {!activePeer && <OnlineUsers />}
 
           <div className="px-3 py-3.5 flex items-center gap-2">
               <h2 className="font-bold text-[18px] text-white flex-1">
