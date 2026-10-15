@@ -58,7 +58,6 @@ function Index() {
   // a spinner and made every tap feel frozen before sign-in.
   return (
     <Layout>
-      <OnlineUsers />
       <HomeFeed />
     </Layout>
   );
