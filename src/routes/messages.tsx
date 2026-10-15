@@ -973,19 +973,15 @@ function Messages() {
           <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">  
             {!activePeer && <OnlineUsers />}
 
-          <div className="px-3 py-3.5 flex items-center gap-2">
-              <h2 className="font-bold text-[18px] text-white flex-1">
-                Messages
-              </h2>
-
-              <button
-                onClick={() => setSearchOpen((o) => !o)}
-                className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-                aria-label="New chat"
-              >
-                <Search className="h-4 w-4" />
-              </button>
-            </div>
+          <div className="flex justify-end px-3 py-2">
+         <button
+         onClick={() => setSearchOpen((o) => !o)}
+        className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+      aria-label="New chat"
+      >
+     <Search className="h-4 w-4" />
+       </button>
+         </div>
           </div>
 
           {searchOpen && (
