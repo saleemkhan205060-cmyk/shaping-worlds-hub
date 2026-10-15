@@ -86,9 +86,9 @@ export function OnlineUsers() {
           Online Users {onlineIds.length}
           </h2>
         </div>
-        <Link to="/search" search={{ q: "", tab: "people" }} className="text-xs sm:text-sm font-semibold text-white hover:text-slate-700 flex items-center gap-0.5">
-          See All <span aria-hidden>›</span>
-        </Link>
+        <h2 className="font-bold text-white text-sm sm:text-base">
+         Messages
+        </h2>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
         {orderedIds.map((id) => {
