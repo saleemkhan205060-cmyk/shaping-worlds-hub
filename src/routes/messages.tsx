@@ -972,8 +972,8 @@ function Messages() {
               : "flex"
           } flex-1 md:flex-none`}
         >
-          {!activePeer && <OnlineUsers />}
           <div className="shrink-0 px-3 py-3.5 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
+            {!activePeer && <OnlineUsers />}
             <h2 className="font-bold text-[18px] text-white flex-1">
               Messages
             </h2>
