@@ -78,7 +78,7 @@ export function OnlineUsers() {
   if (orderedIds.length === 0 || (!me && onlineIds.length === 0)) return null;
 
   return (
-    <section className="px-3 pt-3 pb-2">
+    <section className="px-3 pt-1 pb-1">
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           <span className={`h-2.5 w-2.5 rounded-full ${STATUS_META[myStatus].dot} shadow-[0_0_0_3px_rgba(16,185,129,0.18)]`} />
