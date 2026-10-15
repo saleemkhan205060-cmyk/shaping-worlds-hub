@@ -972,11 +972,18 @@ function Messages() {
               : "flex"
           } flex-1 md:flex-none`}
         >
-          <div className="shrink-0 px-3 py-3.5 bg-[#003D25] border-b border-[#19D66B]/30 flex items-center gap-2 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
-            {!activePeer && <OnlineUsers />}
-            <h2 className="font-bold text-[18px] text-white flex-1">
-              Messages
-            </h2>
+         <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
+       {!activePeer && (
+       <div className="px-3 pt-3">
+      <OnlineUsers />
+    </div>
+  )}
+  <div className="px-3 py-3.5">
+    <h2 className="font-bold text-[18px] text-white">
+      Messages
+        </h2>
+         </div>
+          </div>
 
             <button
               onClick={() =>
