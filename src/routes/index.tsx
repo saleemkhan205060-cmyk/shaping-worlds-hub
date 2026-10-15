@@ -221,42 +221,7 @@ function LandingUnused() {
           </ul>
         </div>
       </section>
-
-      {/* Explore CTA */}
-      <section className="mt-10 grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold">Videos</h3>
-            <Link to="/videos" className="text-sm text-indigo-600 font-medium">
-              Browse
-            </Link>
-          </div>
-          <p className="text-sm text-slate-600">
-            Watch short videos shared by the community. Sign in to upload your own.
-          </p>
-          <Link
-            to="/videos"
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold"
-          >
-            Open Videos <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-5">
-          <h3 className="font-bold mb-2">Marriage</h3>
-          <p className="text-sm text-slate-600">
-            Create a profile and connect with verified members looking for a life partner.
-          </p>
-          <Link
-            to="/marriage"
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-semibold"
-          >
-            Open Marriage <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
-
-
+      
       {/* Footer */}
       <footer className="mt-8 rounded-2xl bg-slate-950 text-white p-5 flex flex-col sm:flex-row gap-3 items-center justify-between">
         <p className="text-sm flex items-center gap-2">
