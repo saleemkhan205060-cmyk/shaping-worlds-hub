@@ -965,35 +965,31 @@ function Messages() {
             : "h-[calc(100dvh-68px-56px)] rounded-2xl"
         } md:h-[calc(100vh-4rem)] md:min-h-[600px]`}
       >
-        <aside
+          <aside
           className={`md:w-80 md:border-r border-slate-200 min-h-0 flex-col ${
-            activePeer
-              ? "hidden md:flex"
-              : "flex"
+            activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
-         <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
-       {!activePeer && (
-       <div className="px-3 pt-3">
-      <OnlineUsers />
-    </div>
-  )}
-  <div className="px-3 py-3.5">
-    <h2 className="font-bold text-[18px] text-white">
-      Messages
-        </h2>
-         </div>
-          </div>
+          <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)]">
+            {!activePeer && (
+              <div className="px-3 pt-3">
+                <OnlineUsers />
+              </div>
+            )}
 
-            <button
-              onClick={() =>
-                setSearchOpen((o) => !o)
-              }
-              className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-              aria-label="New chat"
-            >
-              <Search className="h-4 w-4" />
-            </button>
+          <div className="px-3 py-3.5 flex items-center gap-2">
+              <h2 className="font-bold text-[18px] text-white flex-1">
+                Messages
+              </h2>
+
+              <button
+                onClick={() => setSearchOpen((o) => !o)}
+                className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+                aria-label="New chat"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           {searchOpen && (
