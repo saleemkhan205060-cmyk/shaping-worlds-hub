@@ -976,7 +976,7 @@ function Messages() {
           <div className="flex justify-end px-3 -mt-2 py-0">
          <button
          onClick={() => setSearchOpen((o) => !o)}
-        className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+        className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
       aria-label="New chat"
       >
      <Search className="h-4 w-4" />
