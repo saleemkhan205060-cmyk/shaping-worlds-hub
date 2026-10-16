@@ -366,7 +366,9 @@ export function Layout({
       ? "fixed inset-0 z-40 overflow-hidden bg-[#003D25] md:static md:z-auto md:h-auto md:overflow-visible md:max-w-6xl md:mx-auto md:px-4 md:py-6"
       : viewportBoundMobile
       ? "flex-1 min-h-0 overflow-hidden w-full max-w-6xl mx-auto px-3 sm:px-4 py-0 md:flex-none md:overflow-visible md:py-6"
-      : "max-w-6xl mx-auto px-3 sm:px-4 py-0 md:py-6"
+      : path.startsWith("/u/")
+     ? "max-w-6xl mx-auto px-1 sm:px-2 py-0 md:py-6"
+     : "max-w-6xl mx-auto px-3 sm:px-4 py-0 md:py-6"
      }
     >
   {children}
