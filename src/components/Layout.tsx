@@ -46,7 +46,203 @@ export const FullscreenContext = createContext<FullscreenContextType>({
 const FeedIcon = ({ className }: { className?: string }) => (
   <img src={feedIconUrl} alt="Feed" className={`${className ?? ""} object-contain`} />
 );
-
+const COUNTRY_LANGUAGES: { country: string; lang: LangCode }[] = [
+  { country: "Afghanistan", lang: "ur" },
+  { country: "Albania", lang: "en" },
+  { country: "Algeria", lang: "ar" },
+  { country: "Andorra", lang: "es" },
+  { country: "Angola", lang: "pt" },
+  { country: "Antigua and Barbuda", lang: "en" },
+  { country: "Argentina", lang: "es" },
+  { country: "Armenia", lang: "ru" },
+  { country: "Australia", lang: "en" },
+  { country: "Austria", lang: "de" },
+  { country: "Azerbaijan", lang: "tr" },
+  { country: "Bahamas", lang: "en" },
+  { country: "Bahrain", lang: "ar" },
+  { country: "Bangladesh", lang: "bn" },
+  { country: "Barbados", lang: "en" },
+  { country: "Belarus", lang: "ru" },
+  { country: "Belgium", lang: "fr" },
+  { country: "Belize", lang: "en" },
+  { country: "Benin", lang: "fr" },
+  { country: "Bhutan", lang: "hi" },
+  { country: "Bolivia", lang: "es" },
+  { country: "Bosnia and Herzegovina", lang: "ru" },
+  { country: "Botswana", lang: "en" },
+  { country: "Brazil", lang: "pt" },
+  { country: "Brunei", lang: "id" },
+  { country: "Bulgaria", lang: "ru" },
+  { country: "Burkina Faso", lang: "fr" },
+  { country: "Burundi", lang: "fr" },
+  { country: "Cabo Verde", lang: "pt" },
+  { country: "Cambodia", lang: "en" },
+  { country: "Cameroon", lang: "fr" },
+  { country: "Canada", lang: "en" },
+  { country: "Central African Republic", lang: "fr" },
+  { country: "Chad", lang: "fr" },
+  { country: "Chile", lang: "es" },
+  { country: "China", lang: "zh" },
+  { country: "Colombia", lang: "es" },
+  { country: "Comoros", lang: "ar" },
+  { country: "Congo", lang: "fr" },
+  { country: "Costa Rica", lang: "es" },
+  { country: "Côte d’Ivoire", lang: "fr" },
+  { country: "Croatia", lang: "ru" },
+  { country: "Cuba", lang: "es" },
+  { country: "Cyprus", lang: "en" },
+  { country: "Czechia", lang: "en" },
+  { country: "Democratic Republic of the Congo", lang: "fr" },
+  { country: "Denmark", lang: "en" },
+  { country: "Djibouti", lang: "ar" },
+  { country: "Dominica", lang: "en" },
+  { country: "Dominican Republic", lang: "es" },
+  { country: "Ecuador", lang: "es" },
+  { country: "Egypt", lang: "ar" },
+  { country: "El Salvador", lang: "es" },
+  { country: "Equatorial Guinea", lang: "es" },
+  { country: "Eritrea", lang: "ar" },
+  { country: "Estonia", lang: "en" },
+  { country: "Eswatini", lang: "en" },
+  { country: "Ethiopia", lang: "en" },
+  { country: "Fiji", lang: "en" },
+  { country: "Finland", lang: "en" },
+  { country: "France", lang: "fr" },
+  { country: "Gabon", lang: "fr" },
+  { country: "Gambia", lang: "en" },
+  { country: "Georgia", lang: "ru" },
+  { country: "Germany", lang: "de" },
+  { country: "Ghana", lang: "en" },
+  { country: "Greece", lang: "en" },
+  { country: "Grenada", lang: "en" },
+  { country: "Guatemala", lang: "es" },
+  { country: "Guinea", lang: "fr" },
+  { country: "Guinea-Bissau", lang: "pt" },
+  { country: "Guyana", lang: "en" },
+  { country: "Haiti", lang: "fr" },
+  { country: "Honduras", lang: "es" },
+  { country: "Hungary", lang: "en" },
+  { country: "Iceland", lang: "en" },
+  { country: "India", lang: "hi" },
+  { country: "Indonesia", lang: "id" },
+  { country: "Iran", lang: "ur" },
+  { country: "Iraq", lang: "ar" },
+  { country: "Ireland", lang: "en" },
+  { country: "Israel", lang: "ar" },
+  { country: "Italy", lang: "it" },
+  { country: "Jamaica", lang: "en" },
+  { country: "Japan", lang: "ja" },
+  { country: "Jordan", lang: "ar" },
+  { country: "Kazakhstan", lang: "ru" },
+  { country: "Kenya", lang: "sw" },
+  { country: "Kiribati", lang: "en" },
+  { country: "Kuwait", lang: "ar" },
+  { country: "Kyrgyzstan", lang: "ru" },
+  { country: "Laos", lang: "en" },
+  { country: "Latvia", lang: "en" },
+  { country: "Lebanon", lang: "ar" },
+  { country: "Lesotho", lang: "en" },
+  { country: "Liberia", lang: "en" },
+  { country: "Libya", lang: "ar" },
+  { country: "Liechtenstein", lang: "de" },
+  { country: "Lithuania", lang: "en" },
+  { country: "Luxembourg", lang: "fr" },
+  { country: "Madagascar", lang: "fr" },
+  { country: "Malawi", lang: "en" },
+  { country: "Malaysia", lang: "id" },
+  { country: "Maldives", lang: "en" },
+  { country: "Mali", lang: "fr" },
+  { country: "Malta", lang: "en" },
+  { country: "Marshall Islands", lang: "en" },
+  { country: "Mauritania", lang: "ar" },
+  { country: "Mauritius", lang: "fr" },
+  { country: "Mexico", lang: "es" },
+  { country: "Micronesia", lang: "en" },
+  { country: "Moldova", lang: "ru" },
+  { country: "Monaco", lang: "fr" },
+  { country: "Mongolia", lang: "en" },
+  { country: "Montenegro", lang: "ru" },
+  { country: "Morocco", lang: "ar" },
+  { country: "Mozambique", lang: "pt" },
+  { country: "Myanmar", lang: "en" },
+  { country: "Namibia", lang: "en" },
+  { country: "Nauru", lang: "en" },
+  { country: "Nepal", lang: "hi" },
+  { country: "Netherlands", lang: "en" },
+  { country: "New Zealand", lang: "en" },
+  { country: "Nicaragua", lang: "es" },
+  { country: "Niger", lang: "fr" },
+  { country: "Nigeria", lang: "en" },
+  { country: "North Korea", lang: "ko" },
+  { country: "North Macedonia", lang: "en" },
+  { country: "Norway", lang: "en" },
+  { country: "Oman", lang: "ar" },
+  { country: "Pakistan", lang: "ur" },
+  { country: "Palau", lang: "en" },
+  { country: "Palestine", lang: "ar" },
+  { country: "Panama", lang: "es" },
+  { country: "Papua New Guinea", lang: "en" },
+  { country: "Paraguay", lang: "es" },
+  { country: "Peru", lang: "es" },
+  { country: "Philippines", lang: "en" },
+  { country: "Poland", lang: "en" },
+  { country: "Portugal", lang: "pt" },
+  { country: "Qatar", lang: "ar" },
+  { country: "Romania", lang: "en" },
+  { country: "Russia", lang: "ru" },
+  { country: "Rwanda", lang: "fr" },
+  { country: "Saint Kitts and Nevis", lang: "en" },
+  { country: "Saint Lucia", lang: "en" },
+  { country: "Saint Vincent and the Grenadines", lang: "en" },
+  { country: "Samoa", lang: "en" },
+  { country: "San Marino", lang: "it" },
+  { country: "Sao Tome and Principe", lang: "pt" },
+  { country: "Saudi Arabia", lang: "ar" },
+  { country: "Senegal", lang: "fr" },
+  { country: "Serbia", lang: "ru" },
+  { country: "Seychelles", lang: "fr" },
+  { country: "Sierra Leone", lang: "en" },
+  { country: "Singapore", lang: "en" },
+  { country: "Slovakia", lang: "en" },
+  { country: "Slovenia", lang: "en" },
+  { country: "Solomon Islands", lang: "en" },
+  { country: "Somalia", lang: "ar" },
+  { country: "South Africa", lang: "en" },
+  { country: "South Korea", lang: "ko" },
+  { country: "South Sudan", lang: "en" },
+  { country: "Spain", lang: "es" },
+  { country: "Sri Lanka", lang: "hi" },
+  { country: "Sudan", lang: "ar" },
+  { country: "Suriname", lang: "en" },
+  { country: "Sweden", lang: "en" },
+  { country: "Switzerland", lang: "de" },
+  { country: "Syria", lang: "ar" },
+  { country: "Tajikistan", lang: "ru" },
+  { country: "Tanzania", lang: "sw" },
+  { country: "Thailand", lang: "en" },
+  { country: "Timor-Leste", lang: "id" },
+  { country: "Togo", lang: "fr" },
+  { country: "Tonga", lang: "en" },
+  { country: "Trinidad and Tobago", lang: "en" },
+  { country: "Tunisia", lang: "ar" },
+  { country: "Türkiye", lang: "tr" },
+  { country: "Turkmenistan", lang: "ru" },
+  { country: "Tuvalu", lang: "en" },
+  { country: "Uganda", lang: "en" },
+  { country: "Ukraine", lang: "ru" },
+  { country: "United Arab Emirates", lang: "ar" },
+  { country: "United Kingdom", lang: "en" },
+  { country: "United States", lang: "en" },
+  { country: "Uruguay", lang: "es" },
+  { country: "Uzbekistan", lang: "ru" },
+  { country: "Vanuatu", lang: "en" },
+  { country: "Vatican City", lang: "it" },
+  { country: "Venezuela", lang: "es" },
+  { country: "Vietnam", lang: "en" },
+  { country: "Yemen", lang: "ar" },
+  { country: "Zambia", lang: "en" },
+  { country: "Zimbabwe", lang: "en" },
+];
 const navItems = [
   { to: "/", labelKey: "nav.home", icon: Home },
   { to: "/u/$id", labelKey: "nav.profile", icon: User },] as const;
@@ -202,9 +398,10 @@ export function Layout({
   };
 
   const { t, lang, setLang } = useI18n();
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [langOpen, setLangOpen] = useState(false);
-  const sortedLangs = useMemo(
-    () => [...LANGUAGES].sort((a, b) => a.name.localeCompare(b.name)),
+  const sortedCountries = useMemo(
+    () => [...COUNTRY_LANGUAGES].sort((a, b) => a.country.localeCompare(b.country)),
     [],
   );
 
@@ -339,22 +536,22 @@ export function Layout({
             <CommandList className="max-h-[60vh]">
               <CommandEmpty>—</CommandEmpty>
               {sortedLangs.map((l) => (
-                <CommandItem
-                  key={l.code}
-                  value={`${l.name} ${l.native}`}
-                  onSelect={() => {
-                    setLang(l.code as LangCode);
-                    setLangOpen(false);
-                  }}
-                  className="flex items-center justify-between gap-3 py-3"
-                >
-                  <span className="flex flex-col">
-                    <span className="font-medium">{l.native}</span>
-                    <span className="text-xs text-slate-500">{l.name}</span>
-                  </span>
-                  {lang === l.code && <Check className="h-4 w-4 text-indigo-600" />}
-                </CommandItem>
-              ))}
+             <CommandItem
+             key={l.code}
+            value={`${l.name} ${l.native}`}
+             onSelect={() => {
+           setLang(l.code as LangCode);
+         setLangOpen(false);
+       }}
+      className="flex items-center justify-between gap-3 py-3"
+     >
+      <span className="flex flex-col">
+      <span className="font-medium">{l.native}</span>
+      <span className="text-xs text-slate-500">{l.name}</span>
+       </span>
+         {lang === l.code && <Check className="h-4 w-4 text-indigo-600" />}
+           </CommandItem>
+            ))}
             </CommandList>
           </Command>
         </DialogContent>
