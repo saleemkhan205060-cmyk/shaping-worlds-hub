@@ -404,6 +404,10 @@ export function Layout({
     () => [...COUNTRY_LANGUAGES].sort((a, b) => a.country.localeCompare(b.country)),
     [],
   );
+  const sortedLangs = useMemo(
+    () => [...LANGUAGES].sort((a, b) => a.name.localeCompare(b.name)),
+    [],
+  );
 
   const Badge = ({ n }: { n: number }) =>
     n > 0 ? (
