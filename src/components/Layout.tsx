@@ -539,21 +539,21 @@ export function Layout({
             <CommandInput placeholder={t("language.searchPlaceholder")} />
             <CommandList className="max-h-[60vh]">
               <CommandEmpty>—</CommandEmpty>
-              {sortedLangs.map((l) => (
-             <CommandItem
-             key={l.code}
-            value={`${l.name} ${l.native}`}
-             onSelect={() => {
-           setLang(l.code as LangCode);
-         setLangOpen(false);
-       }}
-      className="flex items-center justify-between gap-3 py-3"
+             {sortedCountries.map((c) => (
+            <CommandItem
+           key={c.country}
+         value={c.country}
+       onSelect={() => {
+      setLang(c.lang);
+      setSelectedCountry(c.country);
+      setLangOpen(false);
+    }}
+    className="flex items-center justify-between gap-3 py-3"
      >
-      <span className="flex flex-col">
-      <span className="font-medium">{l.native}</span>
-      <span className="text-xs text-slate-500">{l.name}</span>
-       </span>
-         {lang === l.code && <Check className="h-4 w-4 text-indigo-600" />}
+      <span className="font-medium">{c.country}</span>
+       {selectedCountry === c.country && (
+        <Check className="h-4 w-4 text-indigo-600" />
+          )}
            </CommandItem>
             ))}
             </CommandList>
