@@ -4,7 +4,6 @@ import { Layout } from "../components/Layout";
 import { HomeFeed } from "../components/HomeFeed";
 import { OnlineUsers } from "../components/OnlineUsers";
 
-
 import {
   Play,
   TrendingUp,
@@ -21,7 +20,6 @@ import {
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
-
 
 const OG_TITLE = "VIP Life";
 const OG_DESCRIPTION = "VIP Life — one platform for relationships. Watch, share, connect, and grow.";
@@ -59,8 +57,7 @@ function Index() {
   return (
     <Layout>
   <section className="mt-3 mb-4">
-  <Link
-    to="/marriage"
+  <div
     className="relative block w-full overflow-hidden rounded-2xl border border-[#19D66B]/60"
   >
     <img
@@ -68,11 +65,11 @@ function Index() {
       alt="Find Your Life Partner"
       className="block aspect-[3.26/1] w-full object-cover"
     />
-    <span className="absolute bottom-1 left-2 inline-flex items-center gap-1 rounded-full border border-[#19D66B]/60 bg-[#003D25] px-2 py-1 text-[11px] font-semibold text-white shadow-md sm:bottom-2 sm:left-3">
+    <Link to="/marriage" className="absolute bottom-1 left-2 inline-flex items-center gap-1 rounded-full border border-[#19D66B]/60 bg-[#003D25] px-2 py-1 text-[11px] font-semibold text-white shadow-md sm:bottom-2 sm:left-3">
      Open Marriage
      <ArrowRight className="h-3 w-3" />
-     </span>
      </Link>
+     </div>
      </section>
      <HomeFeed />
     </Layout>
