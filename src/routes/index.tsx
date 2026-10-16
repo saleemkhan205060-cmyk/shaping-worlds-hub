@@ -66,7 +66,7 @@ function Index() {
       className="block aspect-[3.26/1] w-full object-cover"
     />
     <Link to="/marriage" className="absolute bottom-1 left-2 inline-flex items-center gap-1 rounded-full border border-[#19D66B]/60 bg-[#003D25] px-2 py-1 text-[11px] font-semibold text-white shadow-md sm:bottom-2 sm:left-3">
-     Open Marriage
+     Find Your Partner
      <ArrowRight className="h-3 w-3" />
      </Link>
      </div>
