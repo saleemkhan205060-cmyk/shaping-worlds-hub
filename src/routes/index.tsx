@@ -68,10 +68,10 @@ function Index() {
       alt="Find Your Life Partner"
       className="block aspect-[3.26/1] w-full object-cover"
     />
-    <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-[#003D25] px-1.5 py-1 text-[10px] font-semibold text-white shadow-md sm:bottom-3 sm:left-3"
-      Open Marriage
-      <ArrowRight className="h-4 w-4" />
-    </span>
+    <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-[#003D25] px-1.5 py-1 text-[10px] font-semibold text-white shadow-md sm:bottom-3 sm:left-3">
+     Open Marriage
+     <ArrowRight className="h-3 w-3" />
+     </span>
      </Link>
      </section>
      <HomeFeed />
