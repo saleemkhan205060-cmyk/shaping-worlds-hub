@@ -101,8 +101,8 @@ export function OnlineUsers() {
 
           const avatar = (
             <div className="relative">
-             <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white shadow-md bg-slate-200 group-active:scale-95 transition">
-                {u?.avatar_url ? (
+             <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden ring-2 ring-white shadow-md bg-slate-200 group-active:scale-95 transition">
+              {u?.avatar_url ? (
                   <img src={u.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center text-white font-bold">
