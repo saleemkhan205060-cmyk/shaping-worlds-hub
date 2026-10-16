@@ -535,8 +535,8 @@ useEffect(() => {
     type="button"
     variant="ghost"
     onClick={() => navigate({ to: "/marriage/edit" })}
-   className="absolute bottom-0 left-2 h-6 gap-1 rounded-full bg-[#003D25]/90 px-2 text-xs font-semibold text-[#7CFF3B] hover:bg-[#005A35] hover:text-[#7CFF3B]"
-  >
+     className="absolute bottom-0 left-4 h-5 gap-1 rounded-full border border-[#19D66B]/60 bg-[#003D25]/90 px-2 text-[10px] font-semibold text-[#7CFF3B] hover:bg-[#005A35] hover:text-[#7CFF3B]"
+      >
       <Pencil className="h-3 w-3" />
         Create Profile
          </Button>
