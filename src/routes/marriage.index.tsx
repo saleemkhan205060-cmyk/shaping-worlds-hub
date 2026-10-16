@@ -524,9 +524,23 @@ useEffect(() => {
          </>
           ) : (
             <>
-              <div className="relative mb-3 aspect-[3.26/1] w-full overflow-hidden rounded-[16px] border border-[#19D66B]">
-                <img src="/kkk23.jpg" alt="Marriage Banner" className="h-full w-full object-cover" />
-              </div>
+         <div className="relative mb-3 aspect-[3.26/1] w-full overflow-hidden rounded-[16px] border border-[#19D66B]">
+          <img
+         src="/vip%20life%20a.jpeg"
+        alt="Marriage Banner"
+      className="h-full w-full object-cover"
+    />
+
+    <Button
+    type="button"
+    variant="ghost"
+    onClick={() => navigate({ to: "/marriage/edit" })}
+    className="absolute bottom-3 right-3 h-8 gap-1 rounded-full bg-[#003D25]/90 px-3 text-sm font-semibold text-[#7CFF3B] hover:bg-[#005A35] hover:text-[#7CFF3B]"
+  >
+      <Pencil className="h-4 w-4" />
+        Create Profile
+         </Button>
+           </div>
 
               <div className="relative mb-3 h-[46px]">
                 <Search className="pointer-events-none absolute left-4 top-1/2 z-10 h-6 w-6 -translate-y-1/2 text-white" strokeWidth={2} />
@@ -538,10 +552,10 @@ useEffect(() => {
                   className="h-full w-full rounded-full border border-[#19D66B] bg-[#005A35] pl-12 pr-14 text-sm text-white outline-none placeholder:text-white/90 focus:ring-0"
                 />
                 <div className="absolute right-0 top-0">
-  <Button
-    type="button"
-    variant="ghost"
-    size="icon"
+             <Button
+           type="button"
+        variant="ghost"
+       size="icon"
     aria-label="Marriage menu"
     onClick={() => setMenuOpen((open) => !open)}
     className="h-[46px] w-[50px] rounded-full bg-[#00643C] text-white hover:bg-[#00643C] hover:text-white"
@@ -558,16 +572,6 @@ useEffect(() => {
 
               <div className="mb-2 flex items-center justify-between px-0.5">
              <h2 className="text-[18px] font-bold leading-none">Featured Profiles</h2>
-
-            <Button
-           type="button"
-          variant="ghost"
-        onClick={() => navigate({ to: "/marriage/edit" })}
-      className="h-8 gap-1 rounded-full px-2 text-sm font-semibold text-[#7CFF3B] hover:bg-[#005A35] hover:text-[#7CFF3B]"
-     >
-      <Pencil className="h-4 w-4" />
-        Create Profile
-        </Button>
          </div>
 
               {loading ? (
