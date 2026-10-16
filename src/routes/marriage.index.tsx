@@ -524,7 +524,7 @@ useEffect(() => {
          </>
           ) : (
             <>
-         <div className="relative mb-3 aspect-[3.26/1] w-full overflow-hidden rounded-[16px] border border-[#19D66B]">
+         <div className="relative mx-0 mb-3 aspect-[3.26/1] w-full box-border overflow-hidden rounded-[16px] border border-[#19D66B]">
           <img
          src="/vip%20life%20a.jpeg"
         alt="Marriage Banner"
