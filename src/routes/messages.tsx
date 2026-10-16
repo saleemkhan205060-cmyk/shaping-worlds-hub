@@ -1132,8 +1132,12 @@ function Messages() {
                     >
                       <ArrowLeft className="h-6 w-6" />
                     </button>
-
-                    <div className="relative shrink-0">
+                     <Link
+                      to="/u/$id"
+                      params={{ id: activePeer }}
+                      className="relative shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7CFF3B]"
+                      aria-label={`Open ${peerName(activePeer)} profile`}
+                    >
                       <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)] w-fit h-fit">
                         <div className="rounded-full bg-[#075E54] p-[1px]">
                           <Avatar
@@ -1142,7 +1146,7 @@ function Messages() {
                           />
                         </div>
                       </div>
-                    </div>
+                    </Link>
 
                     <div className="flex-1 min-w-0 leading-tight pr-3">
                       <p className="font-bold text-[18px] leading-5 truncate">
