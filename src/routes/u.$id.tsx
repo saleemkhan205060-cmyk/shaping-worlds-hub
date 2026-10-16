@@ -624,7 +624,7 @@ function UserProfile() {
 
         <button
           onClick={() => navigate({ to: "/messages", search: { to: id } })}
-          className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#003D25] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#005A35]"
+          className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#19D66B]/50 bg-[#003D25] px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-[#005A35]"
           aria-label="Send message"
         >
           <MessageCircle className="h-4 w-4" />
