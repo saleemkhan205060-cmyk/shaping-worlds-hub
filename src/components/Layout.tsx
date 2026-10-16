@@ -572,9 +572,11 @@ export function Layout({
     className="flex items-center justify-between rounded-xl px-3 py-3 text-sm cursor-pointer aria-selected:bg-[#003D25]/10 aria-selected:text-[#003D25]"
      >
       <span className="flex items-center gap-3">
-     <span className="text-xl">
-    {countryFlag(c.iso)}
-    </span>
+     <img
+     src={`https://flagcdn.com/w40/${c.iso.toLowerCase()}.png`}
+    alt={`${c.country} flag`}
+    className="h-5 w-7 rounded-sm object-cover"
+    />
     <span className="font-medium">
       {c.country}
        </span>
