@@ -58,22 +58,23 @@ function Index() {
   // a spinner and made every tap feel frozen before sign-in.
   return (
     <Layout>
-  <section className="mt-4 mb-4">
-    <div className="bg-white rounded-2xl border border-slate-200 p-5">
-      <h3 className="font-bold mb-2">Marriage</h3>
-      <p className="text-sm text-slate-600">
-        Create a profile and connect with verified members looking for a life partner.
-      </p>
-      <Link
-        to="/marriage"
-        className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-semibold"
-      >
-        Open Marriage <ArrowRight className="h-4 w-4" />
-      </Link>
-    </div>
-  </section>
- <HomeFeed />
-
+  <section className="mt-3 mb-4">
+  <Link
+    to="/marriage"
+    className="relative block w-full overflow-hidden rounded-2xl border border-[#19D66B]/60"
+  >
+    <img
+      src="/kkk23.jpg"
+      alt="Find Your Life Partner"
+      className="block aspect-[3.26/1] w-full object-cover"
+    />
+    <span className="absolute bottom-3 right-3 inline-flex items-center gap-2 rounded-full bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-md">
+      Open Marriage
+      <ArrowRight className="h-4 w-4" />
+    </span>
+     </Link>
+     </section>
+     <HomeFeed />
     </Layout>
   );
 }
