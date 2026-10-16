@@ -533,11 +533,14 @@ export function Layout({
       </header>
 
       <Dialog open={langOpen} onOpenChange={setLangOpen}>
-        <DialogContent className="p-0 overflow-hidden max-w-md">
+        <DialogContent className="w-[calc(100%-24px)] max-w-md rounded-2xl border border-[#19D66B]/40 bg-white p-0 shadow-2xl overflow-hidden gap-0">
           <DialogTitle className="sr-only">{t("language.title")}</DialogTitle>
-          <Command>
-            <CommandInput placeholder={t("language.searchPlaceholder")} />
-            <CommandList className="max-h-[60vh]">
+          <Command className="bg-white">
+            <CommandInput
+             placeholder="Search country..."
+             className="h-12 text-sm"
+             />
+             <CommandList className="max-h-[65vh] min-h-[200px] overflow-y-auto p-2">
               <CommandEmpty>—</CommandEmpty>
              {sortedCountries.map((c) => (
             <CommandItem
@@ -548,7 +551,7 @@ export function Layout({
       setSelectedCountry(c.country);
       setLangOpen(false);
     }}
-    className="flex items-center justify-between gap-3 py-3"
+    className="flex items-center justify-between rounded-xl px-3 py-3 text-sm cursor-pointer aria-selected:bg-[#003D25]/10 aria-selected:text-[#003D25]"
      >
       <span className="font-medium">{c.country}</span>
        {selectedCountry === c.country && (
