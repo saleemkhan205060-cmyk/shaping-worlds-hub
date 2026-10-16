@@ -592,7 +592,7 @@ function UserProfile() {
             </span>
           </div>
           {profile && (
-  <div className="mt-4 flex items-center gap-2">
+      <div className="mt-4 flex items-center gap-1.5">
     <button
       type="button"
       onClick={() => setAboutOpen(true)}
