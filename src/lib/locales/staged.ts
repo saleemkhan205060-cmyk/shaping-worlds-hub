@@ -21,12 +21,21 @@ import { captureSwedish } from "./capture-sv";
 import { searchEnglish } from "./search-en";
 import { searchUrdu } from "./search-ur";
 import { searchSwedish } from "./search-sv";
+import { notifEnglish } from "./notif-en";
+import { notifUrdu } from "./notif-ur";
+import { notifSwedish } from "./notif-sv";
+import { profileEnglish } from "./profile-en";
+import { profileUrdu } from "./profile-ur";
+import { profileSwedish } from "./profile-sv";
+import { msgEnglish } from "./msg-en";
+import { msgUrdu } from "./msg-ur";
+import { msgSwedish } from "./msg-sv";
 
 // An absent dictionary stays absent: never seed other languages with English.
 export const STAGED_DICTIONARIES: Readonly<Record<string, Dictionary>> = {
   ...LEGACY_TRANSLATIONS,
-  en: { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish, ...captureEnglish, ...searchEnglish },
-  ur: { ...LEGACY_TRANSLATIONS.ur, ...appUrdu, ...mediaUrdu, ...accountUrdu, ...uploadUrdu, ...feedUrdu, ...captureUrdu, ...searchUrdu },
-  sv: { ...sv, ...mediaSwedish, ...accountSwedish, ...uploadSwedish, ...feedSwedish, ...captureSwedish, ...searchSwedish },
+  en: { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish, ...captureEnglish, ...searchEnglish, ...notifEnglish, ...profileEnglish, ...msgEnglish },
+  ur: { ...LEGACY_TRANSLATIONS.ur, ...appUrdu, ...mediaUrdu, ...accountUrdu, ...uploadUrdu, ...feedUrdu, ...captureUrdu, ...searchUrdu, ...notifUrdu, ...profileUrdu, ...msgUrdu },
+  sv: { ...sv, ...mediaSwedish, ...accountSwedish, ...uploadSwedish, ...feedSwedish, ...captureSwedish, ...searchSwedish, ...notifSwedish, ...profileSwedish, ...msgSwedish },
 };
 export const SOURCE_DICTIONARY = STAGED_DICTIONARIES.en;

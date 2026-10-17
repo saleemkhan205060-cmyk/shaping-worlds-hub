@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { moderateMedia } from "@/lib/moderation-bridge";
+import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/u/$id")({
   head: ({ params }) => ({
     links: [
@@ -61,6 +62,7 @@ const TABS = ["Posts", "Videos", "Photos"] as const;
 type Tab = (typeof TABS)[number];
 
 function UserProfile() {
+  const { t } = useI18n();
   const [aboutOpen, setAboutOpen] = useState(false);
   const { id } = Route.useParams();
   const { user } = useAuth();
@@ -98,7 +100,7 @@ function UserProfile() {
     if (!file || !user || !isSelf) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image.");
+      toast.error(t("profile.selectImage"));
       return;
     }
 
@@ -110,11 +112,11 @@ function UserProfile() {
 
       // Safety scan BEFORE the photo is linked to the profile. Rejected files
       // are deleted server-side, so other users never see them.
-      toast.message("Checking photo…");
+      toast.message(t("profile.checkingPhoto"));
       const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "cover" });
       if (!verdict.safe) {
         toast.error(
-          `Cover photo rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Nude or sexually suggestive images are not allowed.`,
+          t("profile.coverRejected", { reason: verdict.reason ?? t("media.inappropriate") }),
           { duration: 6000 },
         );
         return;
@@ -132,10 +134,10 @@ function UserProfile() {
 
       setProfile((prev) => (prev ? { ...prev, cover_url: coverUrl } : prev));
 
-      toast.success("Cover photo updated!");
+      toast.success(t("profile.coverUpdated"));
     } catch (error) {
       console.error("Cover upload error:", error);
-      toast.error("Cover photo upload failed.");
+      toast.error(t("profile.coverFailed"));
     }
   };
 
@@ -143,7 +145,7 @@ function UserProfile() {
     if (!file || !user || !isSelf) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image.");
+      toast.error(t("profile.selectImage"));
       return;
     }
 
@@ -153,11 +155,11 @@ function UserProfile() {
     try {
       await uploadToStorage({ bucket: "media", path, file });
 
-      toast.message("Checking photo…");
+      toast.message(t("profile.checkingPhoto"));
       const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "avatar" });
       if (!verdict.safe) {
         toast.error(
-          `Profile photo rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Nude or sexually suggestive images are not allowed.`,
+          t("profile.avatarRejected", { reason: verdict.reason ?? t("media.inappropriate") }),
           { duration: 6000 },
         );
         return;
@@ -175,10 +177,10 @@ function UserProfile() {
 
       setProfile((prev) => (prev ? { ...prev, avatar_url: avatarUrl } : prev));
 
-      toast.success("Profile photo updated!");
+      toast.success(t("profile.avatarUpdated"));
     } catch (error) {
       console.error("Avatar upload error:", error);
-      toast.error("Profile photo upload failed.");
+      toast.error(t("profile.avatarFailed"));
     }
   };
 
@@ -270,7 +272,7 @@ function UserProfile() {
     setFollowers((profilesData ?? []) as ProfileRow[]);
   } catch (error) {
     console.error("Followers load error:", error);
-    toast.error("Couldn't load followers.");
+    toast.error(t("profile.loadFollowersFailed"));
   } finally {
     setFollowersLoading(false);
   }
@@ -304,7 +306,7 @@ function UserProfile() {
       setFollowing((profilesData ?? []) as ProfileRow[]);
     } catch (error) {
       console.error("Following load error:", error);
-      toast.error("Couldn't load following.");
+      toast.error(t("profile.loadFollowingFailed"));
       } finally {
      setFollowingLoading(false);
   }
@@ -377,7 +379,7 @@ function UserProfile() {
       const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id);
       if (error) {
         console.error("Unfollow error:", error);
-        toast.error("Couldn't unfollow. Please try again.");
+        toast.error(t("profile.unfollowFailed"));
       } else {
         setIsFollowing(false);
         setFollowersCount((c) => Math.max(0, c - 1));
@@ -386,7 +388,7 @@ function UserProfile() {
       const { error } = await supabase.from("follows").insert({ follower_id: user.id, following_id: id });
       if (error) {
         console.error("Follow error:", error);
-        toast.error("Couldn't follow. Please try again.");
+        toast.error(t("profile.followFailed"));
       }
       else {
         setIsFollowing(true);
@@ -400,7 +402,7 @@ function UserProfile() {
     return (
       <Layout>
         <div className="flex items-center justify-center py-20 text-slate-500">
-          <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading...
+          <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t("common.loading")}
         </div>
       </Layout>
     );
@@ -410,18 +412,20 @@ function UserProfile() {
     return (
       <Layout>
         <div className="text-center py-20 text-slate-500">
-          <p>User not found.</p>
-          <Link to="/" className="text-indigo-600 font-semibold mt-3 inline-block">Back home</Link>
+          <p>{t("profile.notFound")}</p>
+          <Link to="/" className="text-indigo-600 font-semibold mt-3 inline-block">{t("profile.backHome")}</Link>
         </div>
       </Layout>
     );
   }
 
-  const displayName = profile.display_name ?? profile.username ?? "User";
+  const displayName = profile.display_name ?? profile.username ?? t("profile.userFallback");
   const handle = profile.username ?? displayName;
   const joined = profile.created_at
     ? new Date(profile.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" })
-    : "Recently";
+    : t("profile.joinedRecently");
+  const tabKey = (tabName: Tab) =>
+    tabName === "Posts" ? "profile.tab.posts" : tabName === "Videos" ? "profile.tab.videos" : "profile.tab.photos";
 
   const videos = posts.filter((p) => p.media_type === "video");
   const photos = posts.filter((p) => p.media_type === "image");
@@ -458,13 +462,13 @@ function UserProfile() {
       { nameEditorOpen && (
   <div className="fixed inset-0 z-[600] bg-black/50 flex items-center justify-center p-4">
     <div className="w-full max-w-sm bg-white rounded-2xl p-5">
-      <h2 className="text-lg font-bold mb-4">Change name</h2>
+      <h2 className="text-lg font-bold mb-4">{t("profile.changeName")}</h2>
 
       <input
         value={newName}
         onChange={(e) => setNewName(e.target.value)}
         className="w-full border rounded-xl px-3 py-2"
-        placeholder="Enter your name"
+        placeholder={t("profile.enterName")}
       />
 
       <div className="flex justify-end gap-2 mt-4">
@@ -473,7 +477,7 @@ function UserProfile() {
           onClick={() => setNameEditorOpen(false)}
           className="px-4 py-2 rounded-xl bg-slate-100"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
 
         <button
@@ -497,7 +501,7 @@ function UserProfile() {
   setNameEditorOpen(false);
 }}
         >
-          Save
+          {t("common.save")}
         </button>
       </div>
     </div>
@@ -505,7 +509,7 @@ function UserProfile() {
 )}
       <div className="mb-3">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-indigo-600">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> {t("profile.back")}
         </Link>
       </div>
 
@@ -525,7 +529,7 @@ function UserProfile() {
     type="button"
     onClick={() => coverInputRef.current?.click()}
       className="absolute bottom-3 right-3 h-9 w-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white transition"
-      aria-label="Edit cover photo"
+      aria-label={t("profile.editCover")}
     >
       <Pencil className="h-4 w-4 text-slate-700" />
     </button>
@@ -562,7 +566,7 @@ function UserProfile() {
     type="button"
     onClick={() => avatarInputRef.current?.click()}
     className="absolute bottom-1 right-1 z-30 h-7 w-7 rounded-full bg-[#057640] shadow-md flex items-center justify-center"
-    aria-label="Change profile photo"
+    aria-label={t("profile.changeAvatar")}
   >
     <span className="text-lg font-bold text-white">+</span>
   </button>
@@ -588,7 +592,7 @@ function UserProfile() {
           </div>
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
             <span className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" /> Joined {joined}
+              <Calendar className="h-4 w-4" /> {t("profile.joined", { date: joined })}
             </span>
           </div>
           {profile && (
@@ -598,7 +602,7 @@ function UserProfile() {
       onClick={() => setAboutOpen(true)}
       className="inline-flex w-fit items-center rounded-full border border-[#19D66B] bg-[#005A35] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#003D25]"
     >
-      About
+      {t("profile.about")}
     </button>
 
     {!isSelf && (
@@ -619,16 +623,16 @@ function UserProfile() {
           ) : (
             <UserPlus className="h-4 w-4" />
           )}
-          {isFollowing ? "Following" : "Follow"}
+          {isFollowing ? t("profile.following") : t("profile.follow")}
         </button>
 
         <button
           onClick={() => navigate({ to: "/messages", search: { to: id } })}
           className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#19D66B]/50 bg-[#003D25] px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-[#005A35]"
-          aria-label="Send message"
+          aria-label={t("profile.sendMessage")}
         >
           <MessageCircle className="h-4 w-4" />
-          Message
+          {t("profile.message")}
         </button>
       </>
     )}
@@ -640,21 +644,21 @@ function UserProfile() {
             onClick={openFollowers}
             className="text-left"
             >
-           <Stat label="Followers" value={String(followersCount)} community />
+           <Stat label={t("profile.followers")} value={String(followersCount)} community />
             </button>
             <button
             type="button"
            onClick={openFollowing}
           className="text-left"
          >
-         <Stat
-  label="Following"
+          <Stat
+  label={t("profile.followingTitle")}
   value={String(followingCount)}
   community
   locked={hideFollowing}
 />
         </button>
-            <Stat label="Likes" value={String(likesCount)} likes />
+            <Stat label={t("profile.likes")} value={String(likesCount)} likes />
           </div>
         </div>
       </div>
@@ -668,13 +672,13 @@ function UserProfile() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-              <h2 className="font-bold text-lg">Followers</h2>
+              <h2 className="font-bold text-lg">{t("profile.followers")}</h2>
 
               <button
                 type="button"
                 onClick={() => setFollowersOpen(false)}
                 className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl"
-                aria-label="Close"
+                aria-label={t("capture.close")}
               >
                 ×
               </button>
@@ -687,13 +691,13 @@ function UserProfile() {
                 </div>
               ) : followers.length === 0 ? (
                 <div className="py-10 text-center text-slate-500">
-                  No followers yet.
+                  {t("profile.noFollowers")}
                 </div>
               ) : (
                 <div className="divide-y divide-slate-100">
                   {followers.map((follower) => {
                     const name =
-                      follower.display_name ?? follower.username ?? "User";
+                      follower.display_name ?? follower.username ?? t("profile.userFallback");
 
                     return (
                   <div
@@ -751,7 +755,7 @@ function UserProfile() {
       });
 
     if (error) {
-      toast.error("Couldn't follow back. Please try again.");
+      toast.error(t("profile.followBackFailed"));
     } else {
       setFollowingUsers((prev) => {
         const next = new Set(prev);
@@ -769,7 +773,7 @@ function UserProfile() {
       : "bg-indigo-600 text-white"
   }`}
 >
-   {followingUsers.has(follower.id) ? "Following" : "Follow back"}
+   {followingUsers.has(follower.id) ? t("profile.following") : t("profile.followBack")}
 </button>
                     </div>
                   );
@@ -792,7 +796,7 @@ function UserProfile() {
   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-1">
-  <h2 className="font-bold text-lg">Following</h2>
+  <h2 className="font-bold text-lg">{t("profile.followingTitle")}</h2>
   {hideFollowing && <Lock className="h-4 w-4 text-slate-500" />}
 </div>
 
@@ -808,7 +812,7 @@ function UserProfile() {
         .eq("id", id);
       if (error) {
         setHideFollowing(!next);
-        toast.error("Couldn't save this setting. Please try again.");
+        toast.error(t("profile.hideFollowingFailed"));
       } else {
         setProfile((prev) => (prev ? { ...prev, hide_following: next } : prev));
       }
@@ -816,7 +820,7 @@ function UserProfile() {
     className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
       hideFollowing ? "bg-[#057643]" : "bg-slate-300"
     }`}
-    aria-label="Hide following"
+    aria-label={t("profile.hideFollowing")}
   >
     <span
       className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
@@ -830,7 +834,7 @@ function UserProfile() {
           type="button"
           onClick={() => setFollowingOpen(false)}
           className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl"
-          aria-label="Close"
+          aria-label={t("capture.close")}
         >
           ×
         </button>
@@ -839,7 +843,7 @@ function UserProfile() {
       <div className="max-h-[65vh] overflow-y-auto">
     {hideFollowing && !isSelf ? (
     <div className="py-10 text-center text-slate-500">
-      Following list is hidden.
+      {t("profile.followingHidden")}
     </div>
   ) : followingLoading ? (
     <div className="py-10 flex justify-center">
@@ -847,13 +851,13 @@ function UserProfile() {
     </div>
   ) : following.length === 0 ? (
     <div className="py-10 text-center text-slate-500">
-      Not following anyone yet.
+      {t("profile.notFollowing")}
     </div>
   ) : (
     <div className="divide-y divide-slate-100">
       {following.map((person) => {
         const name =
-          person.display_name ?? person.username ?? "User";
+          person.display_name ?? person.username ?? t("profile.userFallback");
 
               return (
                 <div
@@ -909,7 +913,7 @@ function UserProfile() {
 
     if (error) {
       console.error("Unfollow error:", error);
-      toast.error("Couldn't unfollow. Please try again.");
+      toast.error(t("profile.unfollowFailed"));
     } else {
       setFollowingStatus((prev) => {
         const next = new Set(prev);
@@ -917,7 +921,7 @@ function UserProfile() {
         return next;
       });
 
-      toast.success("Unfollowed");
+      toast.success(t("profile.unfollowed"));
     }
   } else {
     const { error } = await supabase
@@ -929,7 +933,7 @@ function UserProfile() {
 
     if (error) {
       console.error("Follow error:", error);
-      toast.error("Couldn't follow. Please try again.");
+      toast.error(t("profile.followFailed"));
     } else {
       setFollowingStatus((prev) => {
         const next = new Set(prev);
@@ -937,7 +941,7 @@ function UserProfile() {
         return next;
       });
 
-      toast.success("Following");
+      toast.success(t("profile.followingToast"));
     }
   }
 
@@ -948,9 +952,9 @@ function UserProfile() {
   {followingActionBusy === person.id ? (
     <Loader2 className="h-3.5 w-3.5 animate-spin" />
   ) : followingStatus.has(person.id) ? (
-    "Following"
+    t("profile.following")
   ) : (
-    "Follow"
+    t("profile.follow")
   )}
 </button>
                 </div>
@@ -963,23 +967,23 @@ function UserProfile() {
   </div>
 )}
       <div className="mt-6 flex justify-center gap-1 border-b border-slate-200 overflow-hidden">
-        {TABS.map((t) => (
+        {TABS.map((tabName) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabName}
+            onClick={() => setTab(tabName)}
             className={`px-2 py-2 text-sm font-semibold border-b-2 -mb-px whitespace-nowrap transition ${
-              tab === t
+              tab === tabName
                 ? "border-indigo-600 text-indigo-600"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
-          {t}
+          {t(tabKey(tabName))}
           <span
             className={`ml-1 text-[11px] font-medium ${
-              tab === t ? "text-indigo-500" : "text-slate-400"
+              tab === tabName ? "text-indigo-500" : "text-slate-400"
             }`}
           >
-            {tabCounts[t]}
+            {tabCounts[tabName]}
           </span>
           </button>
         ))}
@@ -988,7 +992,7 @@ function UserProfile() {
       <div className="mt-5">
         {items.length === 0 ? (
           <div className="text-center py-12 text-slate-500 text-sm">
-            No {tab.toLowerCase()} yet.
+            {t("profile.emptyTab", { tab: t(tabKey(tab)).toLowerCase() })}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -1010,7 +1014,7 @@ function UserProfile() {
                       {p.thumbnail_url ? (
                         <img
                           src={p.thumbnail_url}
-                          alt={p.caption ?? "Video thumbnail"}
+                          alt={p.caption ?? t("profile.videoThumbAlt")}
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
@@ -1026,7 +1030,7 @@ function UserProfile() {
                   ) : (
                     <img
                       src={p.media_url}
-                      alt={p.caption ?? "Post"}
+                      alt={p.caption ?? t("profile.postAlt")}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -1056,11 +1060,12 @@ function UserProfile() {
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex shrink-0 items-center justify-between border-b border-[#19D66B] px-5 py-4">
-        <h2 className="text-lg font-bold text-white">About</h2>
+        <h2 className="text-lg font-bold text-white">{t("profile.about")}</h2>
 
         <button
           type="button"
           onClick={() => setAboutOpen(false)}
+          aria-label={t("capture.close")}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-[#19D66B] text-white hover:bg-[#003D25]"
         >
           ✕
@@ -1069,25 +1074,25 @@ function UserProfile() {
 
       <div className="overflow-y-auto p-5">
         <div className="space-y-3">
-          {[
-            ["Name", profile.display_name],
-            ["About", profile.bio],
-            ["Country", profile.country],
-            ["City", profile.city],
-            ["Website", profile.website],
-            ["Gender", profile.gender],
-            ["Age", profile.age != null ? String(profile.age) : null],
-            ["Language", profile.languages],
-            ["Marital Status", profile.marital_status],
-            ["Education", profile.education],
-            ["Profession", profile.profession],
-            ["Living In", profile.living_in],
-            ["Religion", profile.religion],
-            ["Date of Birth", profile.dob],
+          {([
+            ["accountEdit.name", profile.display_name],
+            ["accountEdit.about", profile.bio],
+            ["accountEdit.country", profile.country],
+            ["accountEdit.city", profile.city],
+            ["accountEdit.website", profile.website],
+            ["accountEdit.gender", profile.gender],
+            ["accountEdit.age", profile.age != null ? String(profile.age) : null],
+            ["accountEdit.language", profile.languages],
+            ["accountEdit.maritalStatus", profile.marital_status],
+            ["accountEdit.education", profile.education],
+            ["accountEdit.profession", profile.profession],
+            ["accountEdit.livingIn", profile.living_in],
+            ["accountEdit.religion", profile.religion],
+            ["accountEdit.dob", profile.dob],
             ...(profile.email && !profile.email_private
-              ? [["Email", profile.email]]
+              ? [["accountEdit.email", profile.email]]
               : []),
-          ]
+          ] as [string, string | null][])
             .filter(([, value]) => value != null && String(value).trim() !== "")
             .map(([label, value]) => (
               <div
@@ -1095,7 +1100,7 @@ function UserProfile() {
                 className="rounded-xl border border-[#19D66B]/50 bg-[#003D25] px-3 py-2.5"
               >
                 <div className="text-xs font-semibold text-[#7CFF3B]">
-                  {label}
+                  {t(label as string)}
                 </div>
 
                 <div className="mt-0.5 break-words whitespace-pre-wrap text-sm leading-6 text-white">

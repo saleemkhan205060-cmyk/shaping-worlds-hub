@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "sonner";
 import { moderateMedia } from "@/lib/moderation-bridge";
+import { useI18n } from "@/lib/i18n";
 import { usePresenceState, type Status } from "@/lib/presence";
 
 // Capture a still frame from a video File as a JPEG Blob
@@ -140,6 +141,7 @@ type Profile = {
 
 function Messages() {
   const { user, loading } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { to } = Route.useSearch();
 
@@ -419,7 +421,7 @@ function Messages() {
     setBusy(false);
 
     if (error || !data) {
-      toast.error(`Send failed: ${error?.message ?? "No message data returned"}`);
+      toast.error(t("msg.sendFailed", { reason: error?.message ?? t("msg.noData") }));
       return;
     }
 
@@ -446,7 +448,7 @@ function Messages() {
 
     if (error) {
     console.error("Edit message error:", error);
-    toast.error(`Edit failed: ${error.message}`);
+    toast.error(t("msg.editFailed", { reason: error.message }));
     return;
    }
     setMsgs((prev) =>
@@ -459,12 +461,12 @@ function Messages() {
     setEditingMsg(null);
     setText("");
     setMessageMenu(null);
-    toast.success("Message updated");
+    toast.success(t("msg.updated"));
   };
 
   const deleteTextMessage = async (m: Msg) => {
     if (!user || m.sender_id !== user.id) return;
-    if (!window.confirm("Delete this message?")) return;
+    if (!window.confirm(t("msg.deleteConfirm"))) return;
 
     const { error } = await supabase
       .from("messages")
@@ -473,7 +475,7 @@ function Messages() {
       .eq("sender_id", user.id);
 
     if (error) {
-      toast.error("Couldn't delete message");
+      toast.error(t("msg.deleteFailed"));
       return;
     }
 
@@ -483,7 +485,7 @@ function Messages() {
       setEditingMsg(null);
       setText("");
     }
-    toast.success("Message deleted");
+    toast.success(t("msg.deleted"));
   };
 
   const startEditingMessage = (m: Msg) => {
@@ -507,14 +509,14 @@ function Messages() {
 
     if (replyTo) {
       const replyText = replyTo.content.startsWith("mm://")
-        ? "📷 Photo"
+        ? t("msg.photo")
         : replyTo.content.slice(0, 120);
 
       content = `↪ Replying to: ${replyText}\n${rawText}`;
     }
 
    const textarea = document.querySelector<HTMLTextAreaElement>(
-  'textarea[placeholder="Message"]',
+  "textarea[data-message-input]",
    );
 
    setText("");
@@ -533,11 +535,11 @@ function Messages() {
     setAttachOpen(false);
 
     if (!navigator.geolocation) {
-      toast.error("Location not supported on this device");
+      toast.error(t("msg.locationUnsupported"));
       return;
     }
 
-    toast.message("Getting your location…");
+    toast.message(t("msg.gettingLocation"));
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -547,7 +549,7 @@ function Messages() {
 
         await sendContent(`📍 My location: ${url}`);
       },
-      () => toast.error("Couldn't get your location"),
+      () => toast.error(t("msg.locationFailed")),
       {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -558,11 +560,11 @@ function Messages() {
   const shareContact = async () => {
     setAttachOpen(false);
 
-    const name = window.prompt("Contact name");
+    const name = window.prompt(t("msg.contactName"));
 
     if (!name) return;
 
-    const phone = window.prompt("Phone number");
+    const phone = window.prompt(t("msg.phoneNumber"));
 
     if (!phone) return;
 
@@ -636,7 +638,7 @@ function Messages() {
         let framePath: string | null = null;
 
         if (kind === "video") {
-          toast.message("Checking video…");
+          toast.message(t("msg.checkingVideo"));
 
           const frame =
             await captureChatVideoFrame(file);
@@ -685,7 +687,7 @@ function Messages() {
 
         if (!verdict.safe) {
           toast.error(
-            `This ${kind} was blocked by our safety filter (${verdict.reason}). It was not sent.`,
+            t("msg.blocked", { kind: t(kind === "image" ? "msg.kind.image" : "msg.kind.video"), reason: verdict.reason ?? t("media.inappropriate") }),
             { duration: 6000 },
           );
 
@@ -698,7 +700,7 @@ function Messages() {
 
       cancelPending();
     } catch {
-      toast.error("Upload failed");
+      toast.error(t("msg.uploadFailed"));
     } finally {
       setBusy(false);
     }
@@ -810,7 +812,7 @@ function Messages() {
 
       await sendContent(`mm://${path}`);
     } catch {
-      toast.error("Couldn't send voice message");
+      toast.error(t("msg.voiceFailed"));
     } finally {
       setBusy(false);
     }
@@ -824,7 +826,7 @@ function Messages() {
       !navigator.mediaDevices?.getUserMedia
     ) {
       toast.error(
-        "Voice recording isn't supported on this device",
+        t("msg.voiceUnsupported"),
       );
       return;
     }
@@ -892,7 +894,7 @@ function Messages() {
         1000,
       );
     } catch {
-      toast.error("Mic permission denied");
+      toast.error(t("msg.micDenied"));
       cleanupRecorder();
     }
   };
@@ -937,10 +939,10 @@ function Messages() {
   const peerName = (id: string) => {
     const p = profiles[id];
 
-    return (
+     return (
       p?.display_name ??
       p?.username ??
-      "User"
+      t("msg.userFallback")
     );
   };
 
@@ -979,7 +981,7 @@ function Messages() {
          <button
          onClick={() => setSearchOpen((o) => !o)}
         className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-      aria-label="New chat"
+      aria-label={t("msg.newChat")}
       >
      <Search className="h-4 w-4" />
        </button>
@@ -994,7 +996,7 @@ function Messages() {
                 onChange={(e) =>
                   setSearchQ(e.target.value)
                 }
-                placeholder="Search users…"
+                placeholder={t("msg.searchUsers")}
                 className="w-full h-9 px-3 rounded-full bg-white border border-[#19D66B]/15 shadow-[0_2px_8px_rgba(0,61,37,0.06)] text-sm focus:outline-none focus:ring-2 focus:ring-[#19D66B]/40 focus:border-[#19D66B]/30 transition-all duration-200"
               />
 
@@ -1016,7 +1018,7 @@ function Messages() {
                         <span className="text-sm font-medium truncate">
                           {p.display_name ??
                             p.username ??
-                            "User"}
+                            t("msg.userFallback")}
                         </span>
                       </button>
                     </li>
@@ -1045,7 +1047,7 @@ function Messages() {
               </div>
             ) : conversations.length === 0 ? (
               <p className="text-center text-sm text-slate-500 py-8 px-4">
-                No conversations yet. Tap the search icon to start one.
+                {t("msg.noConversations")}
               </p>
             ) : (
               <ul>
@@ -1073,7 +1075,7 @@ function Messages() {
 
                           <span
                             className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#7CFF3B] border-2 border-[#f7faf8] shadow-[0_0_6px_rgba(124,255,59,0.65)]"
-                            aria-label="Online"
+                            aria-label={t("msg.online")}
                           />
                         </div>
 
@@ -1093,7 +1095,7 @@ function Messages() {
                           <p className="text-xs text-slate-500 truncate">
                             {c.last.sender_id ===
                             user.id
-                              ? "You: "
+                              ? t("msg.you")
                               : ""}
                             {c.last.content}
                           </p>
@@ -1130,7 +1132,7 @@ function Messages() {
                         setActivePeer(null)
                       }
                       className="md:hidden h-9 w-9 rounded-full hover:bg-white/20 active:bg-white/30 flex items-center justify-center text-white shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
-                      aria-label="Back"
+                      aria-label={t("msg.back")}
                     >
                       <ArrowLeft className="h-6 w-6" />
                     </button>
@@ -1138,7 +1140,7 @@ function Messages() {
                       to="/u/$id"
                       params={{ id: activePeer }}
                       className="relative shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7CFF3B]"
-                      aria-label={`Open ${peerName(activePeer)} profile`}
+                      aria-label={t("msg.openProfile", { name: peerName(activePeer) })}
                     >
                       <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)] w-fit h-fit">
                         <div className="rounded-full bg-[#075E54] p-[1px]">
@@ -1287,10 +1289,10 @@ function Messages() {
                                           ? "text-[#7CFF3B]"
                                           : "text-white/75"
                                       }`}
-                                      aria-label={
+                                       aria-label={
                                         m.read_at
-                                          ? "Read"
-                                          : "Sent"
+                                          ? t("msg.read")
+                                          : t("msg.sent")
                                       }
                                     >
                                       ✓
@@ -1336,8 +1338,8 @@ function Messages() {
                                   }`}
                                   aria-label={
                                     m.read_at
-                                      ? "Read"
-                                      : "Sent"
+                                      ? t("msg.read")
+                                       : t("msg.sent")
                                   }
                                 >
                                   ✓
@@ -1353,7 +1355,7 @@ function Messages() {
                                   onClick={() => startEditingMessage(m)}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white hover:bg-white/10"
                                 >
-                                  Edit message
+                                  {t("msg.editMessage")}
                                 </button>
                                 <button
                                   type="button"
@@ -1361,15 +1363,15 @@ function Messages() {
                                   onClick={() => void deleteTextMessage(m)}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-300 hover:bg-white/10"
                                 >
-                                  Delete message
+                                  {t("msg.deleteMessage")}
                                 </button>
                                 <button
                                   type="button"
                                   onPointerDown={(e) => e.stopPropagation()}
                                   onClick={() => setMessageMenu(null)}
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/10"
+                                   className="w-full rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/10"
                                 >
-                                  Cancel
+                                  {t("common.cancel")}
                                 </button>
                               </div>
                             )}
@@ -1419,11 +1421,7 @@ function Messages() {
                     </p>
 
                     <p className="text-xs text-slate-500">
-                      {(
-                        pending.file.size /
-                        1024
-                      ).toFixed(1)}{" "}
-                      KB · Preview before sending
+                      {t("msg.previewBefore", { size: (pending.file.size / 1024).toFixed(1) })}
                     </p>
                   </div>
 
@@ -1433,7 +1431,7 @@ function Messages() {
                     disabled={busy}
                     className="h-10 px-3 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
 
                   <button
@@ -1447,7 +1445,7 @@ function Messages() {
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    Send
+                     {t("msg.send")}
                   </button>
                 </div>
               )}
@@ -1457,14 +1455,14 @@ function Messages() {
                   <div className="flex items-center gap-2 rounded-xl bg-white border-l-4 border-[#19D66B] px-3 py-2 shadow-sm">
                     <div className="flex-1 min-w-0">
                       <p className="text-[11px] font-bold text-[#006B3F]">
-                        Replying to
+                         {t("msg.replyingTo")}
                       </p>
 
                       <p className="text-xs text-slate-500 truncate">
                         {replyTo.content.startsWith(
                           "mm://",
                         )
-                          ? "📷 Photo"
+                          ? t("msg.photo")
                           : replyTo.content}
                       </p>
                     </div>
@@ -1475,7 +1473,7 @@ function Messages() {
                         setReplyTo(null)
                       }
                       className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"
-                      aria-label="Cancel reply"
+                      aria-label={t("msg.cancelReply")}
                     >
                       ×
                     </button>
@@ -1550,7 +1548,7 @@ function Messages() {
                       type="button"
                       onClick={cancelRecording}
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
-                      aria-label="Cancel recording"
+                      aria-label={t("msg.cancelRecording")}
                     >
                       <Trash2 className="h-7 w-7" />
                     </button>
@@ -1562,7 +1560,7 @@ function Messages() {
                     </span>
 
                     <span className="flex-1 text-sm text-slate-500 truncate">
-                      Recording… tap send to share
+                      {t("msg.recording")}
                     </span>
                   </div>
                 ) : (
@@ -1573,7 +1571,7 @@ function Messages() {
                         <button
                           type="button"
                           className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] bg-[#F7FCF9] border border-[#19D66B]/15 hover:bg-[#DFF7E8] hover:border-[#19D66B]/30 active:bg-[#C8F0D8] transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
-                          aria-label="Emoji"
+                          aria-label={t("msg.emoji")}
                         >
                           <Smile className="h-8 w-8" />
                         </button>
@@ -1677,7 +1675,8 @@ function Messages() {
                  send();
                  }
                  }}
-                placeholder="Message"
+                 placeholder={t("msg.placeholder")}
+                data-message-input
                 disabled={busy}
                 maxLength={2000}
                 rows={1}
@@ -1692,7 +1691,7 @@ function Messages() {
                           type="button"
                           disabled={busy}
                           className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
-                          aria-label="Attach"
+                          aria-label={t("msg.attach")}
                         >
                           <Paperclip className="h-7 w-7" />
                         </button>
@@ -1700,23 +1699,23 @@ function Messages() {
 
                       <DrawerContent className="rounded-t-3xl border-0 bg-[#f7faf8] shadow-[0_-8px_30px_rgba(0,61,37,0.12)]">
                         <DrawerTitle className="sr-only">
-                          Attach
+                          {t("msg.attach")}
                         </DrawerTitle>
 
                         <div className="px-6 pt-1 text-center">
                           <p className="text-sm font-bold text-[#003D25] tracking-tight">
-                            Share with VIP Life
+                            {t("msg.attachTitle")}
                           </p>
 
                           <p className="mt-0.5 text-[11px] text-slate-500 tracking-wide">
-                            Choose a photo or take a new one
+                            {t("msg.attachHint")}
                           </p>
                         </div>
 
                         <div className="px-6 pt-5 pb-8 grid grid-cols-2 gap-6 max-w-xs mx-auto w-full">
                           {[
                             {
-                              label: "Gallery",
+                              label: t("msg.gallery"),
                               icon: Images,
                               bg: "bg-[#DFF7E8]",
                               fg: "text-[#006B3F]",
@@ -1726,7 +1725,7 @@ function Messages() {
                               },
                             },
                             {
-                              label: "Camera",
+                              label: t("msg.camera"),
                               icon: Camera,
                               bg: "bg-[#DFF7E8]",
                               fg: "text-[#006B3F]",
@@ -1791,10 +1790,10 @@ function Messages() {
                   }`}
                   aria-label={
                     recording
-                      ? "Send voice message"
+                      ? t("msg.sendVoice")
                       : text.trim()
-                        ? "Send"
-                        : "Record voice"
+                        ? t("msg.send")
+                        : t("msg.recordVoice")
                   }
                 >
                   {busy ? (
@@ -1819,16 +1818,16 @@ function Messages() {
                 </div>
 
                 <h3 className="text-lg font-bold text-[#003D25]">
-                  Your Messages
+                  {t("msg.yourMessages")}
                 </h3>
 
                 <p className="mt-1 text-sm text-slate-500 max-w-xs">
-                  Select a conversation to start chatting with someone.
+                  {t("msg.selectConversation")}
                 </p>
 
                 <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-[#006B3F]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#19D66B]" />
-                  VIP Life Messages
+                  {t("msg.tagline")}
                 </div>
               </div>
             </div>
@@ -1887,6 +1886,8 @@ function MessageAttachment({
   onDeleted: () => void;
   onReply: () => void;
 }) {
+  const { t } = useI18n();
+
   const [url, setUrl] =
     useState<string | null>(null);
 
@@ -2000,7 +2001,7 @@ function MessageAttachment({
   const copyImage = async () => {
     if (!url) {
       toast.error(
-        "Image not ready yet",
+        t("msg.imageNotReady"),
       );
       return;
     }
@@ -2041,7 +2042,7 @@ function MessageAttachment({
         ]);
 
         toast.success(
-          "Image copied",
+          t("msg.imageCopied"),
         );
 
         return;
@@ -2052,11 +2053,11 @@ function MessageAttachment({
       );
 
       toast.success(
-        "Image link copied",
+        t("msg.linkCopied"),
       );
     } catch {
       toast.error(
-        "Couldn't copy image",
+        t("msg.copyFailed"),
       );
     }
   };
@@ -2064,7 +2065,7 @@ function MessageAttachment({
   const downloadFile = async () => {
     if (!url) {
       toast.error(
-        "Image not ready yet",
+        t("msg.imageNotReady"),
       );
       return;
     }
@@ -2158,11 +2159,11 @@ function MessageAttachment({
 
         await Share.share({
           title: filename,
-          text: "Save image",
+          text: t("msg.saveImage"),
           files: [uri],
           url: uri,
           dialogTitle:
-            "Save image",
+            t("msg.saveImage"),
         });
 
         return;
@@ -2186,7 +2187,7 @@ function MessageAttachment({
       const sharePayload = {
         files: [file],
         title: filename,
-        text: "Save image",
+        text: t("msg.saveImage"),
       } as ShareData;
 
       if (
@@ -2228,7 +2229,7 @@ function MessageAttachment({
       );
 
       toast.success(
-        "Download started",
+        t("msg.downloadStarted"),
       );
     } catch {
       try {
@@ -2252,7 +2253,7 @@ function MessageAttachment({
         );
       } catch {
         toast.error(
-          "Download failed",
+          t("msg.downloadFailed"),
         );
       }
     }
@@ -2261,7 +2262,7 @@ function MessageAttachment({
   const deleteMessage = async () => {
     if (
       !confirm(
-        "Delete this message? This cannot be undone.",
+        t("msg.deleteAttachmentConfirm"),
       )
     ) {
       return;
@@ -2275,13 +2276,13 @@ function MessageAttachment({
 
     if (error) {
       toast.error(
-        "Couldn't delete",
+        t("msg.deleteFailedShort"),
       );
     } else {
       onDeleted();
 
       toast.success(
-        "Deleted",
+        t("msg.deletedShort"),
       );
     }
   };
@@ -2322,7 +2323,7 @@ function MessageAttachment({
   if (err) {
     return (
       <span className="italic opacity-70">
-        Attachment unavailable
+        {t("msg.attachmentUnavailable")}
       </span>
     );
   }
@@ -2330,7 +2331,7 @@ function MessageAttachment({
   if (!url) {
     return (
       <span className="italic opacity-70">
-        Loading attachment…
+        {t("msg.loadingAttachment")}
       </span>
     );
   }
@@ -2358,7 +2359,7 @@ function MessageAttachment({
             onTouchEnd={clearPress}
             onTouchMove={clearPress}
             onTouchCancel={clearPress}
-            aria-label="Open image"
+            aria-label={t("msg.openImage")}
           >
             <img
               src={url}
@@ -2376,7 +2377,7 @@ function MessageAttachment({
               setMenuOpen(true);
             }}
             className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/45 hover:bg-black/60 text-white flex items-center justify-center shadow-sm"
-            aria-label="Message options"
+            aria-label={t("msg.options")}
           >
             <MoreVertical className="h-4 w-4" />
           </button>
@@ -2430,7 +2431,7 @@ function MessageAttachment({
                   setOpen(false);
                 }}
                 className="absolute top-4 right-4 text-white text-2xl leading-none w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center"
-                aria-label="Close"
+                aria-label={t("capture.close")}
               >
                 ×
               </button>
@@ -2443,7 +2444,7 @@ function MessageAttachment({
                 }}
                 className="absolute bottom-4 right-4 text-white text-sm px-4 py-2 rounded-full bg-black/50 hover:bg-black/70"
               >
-                Download
+                {t("msg.download")}
               </button>
             </div>
           )}
@@ -2467,9 +2468,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void copyImage();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
-                  Copy
+                  {t("msg.copy")}
                 </button>
 
                 <button
@@ -2478,9 +2479,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     onReply();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
-                  Reply
+                  {t("msg.reply")}
                 </button>
 
                 <button
@@ -2489,9 +2490,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void downloadFile();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
-                  Download
+                  {t("msg.download")}
                 </button>
 
                 <button
@@ -2500,9 +2501,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void deleteMessage();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
                 >
-                  Delete
+                  {t("msg.delete")}
                 </button>
 
                 <button
@@ -2510,9 +2511,9 @@ function MessageAttachment({
                   onClick={() =>
                     setMenuOpen(false)
                   }
-                  className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+                   className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
               </div>
             </div>
@@ -2549,7 +2550,7 @@ function MessageAttachment({
       rel="noopener noreferrer"
       className="underline"
     >
-      Open attachment
+      {t("msg.openAttachment")}
     </a>
   );
 }

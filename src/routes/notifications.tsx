@@ -7,6 +7,8 @@ import { AvatarImg } from "../components/AvatarImg";
 import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/lib/i18n";
+import { feedElapsedMessage } from "@/lib/feed-localization";
 import {
  isNotificationChimeEnabled,
   setNotificationChimeEnabled,
@@ -44,16 +46,9 @@ type Profile = {
   avatar_url: string | null;
 };
 
-function timeAgo(iso: string) {
-  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (s < 60) return `${s}s`;
-  if (s < 3600) return `${Math.floor(s / 60)}m`;
-  if (s < 86400) return `${Math.floor(s / 3600)}h`;
-  return `${Math.floor(s / 86400)}d`;
-}
-
 function NotificationsPage() {
   const { user, loading } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(true);
@@ -157,7 +152,7 @@ const thumbOf = (id: string) => {
         (profs ?? []).forEach((p) => { profileMap[p.id] = p as Profile; });
       }
       const name = (id: string) =>
-        profileMap[id]?.display_name || profileMap[id]?.username || "Someone";
+        profileMap[id]?.display_name || profileMap[id]?.username || t("notif.someone");
 
       const merged: Item[] = [
        ...(likesRes.data ?? []).map((r: any) => ({
@@ -165,7 +160,7 @@ const thumbOf = (id: string) => {
         kind: "like" as const,
         who: name(r.user_id),
         avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-        text: "liked your post",
+        text: t("notif.liked"),
        created_at: r.created_at,
         user_id: r.user_id,
        post_id: r.post_id,
@@ -177,7 +172,7 @@ const thumbOf = (id: string) => {
        kind: "comment" as const,
        who: name(r.user_id),
          avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-       text: `commented: ${r.content.slice(0, 80)}`,
+       text: `${t("notif.commented")}: ${r.content.slice(0, 80)}`,
        created_at: r.created_at,
         user_id: r.user_id,
          post_id: r.post_id,
@@ -187,7 +182,7 @@ const thumbOf = (id: string) => {
         ...(followsRes.data ?? []).map((r: any) => ({
           id: `f-${r.id}`, kind: "follow" as const, who: name(r.follower_id),
           avatar_url: profileMap[r.follower_id]?.avatar_url ?? null,
-          text: "started following you", created_at: r.created_at,
+          text: t("notif.followed"), created_at: r.created_at,
           user_id: r.follower_id,
         })),
 
@@ -196,7 +191,7 @@ const thumbOf = (id: string) => {
         kind: "interested" as const,
         who: name(r.user_id),
        avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-       text: "is interested in your marriage profile",
+       text: t("notif.interested"),
        created_at: r.created_at,
        user_id: r.user_id,
     })),
@@ -205,7 +200,7 @@ const thumbOf = (id: string) => {
       setItems(merged);
       setBusy(false);
     })();
-  }, [user, loading]);
+  }, [user, loading, t]);
 
   const tintFor = (k: Item["kind"]) =>
     k === "like" ? "from-rose-500 to-pink-500"
@@ -232,7 +227,7 @@ const thumbOf = (id: string) => {
           <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#19D66B] flex items-center justify-center text-white shadow">
             <Bell className="h-5 w-5" />
           </span>
-         <h1 className="text-xl font-extrabold text-white">Notifications</h1>
+         <h1 className="text-xl font-extrabold text-white">{t("notif.title")}</h1>
         </div>
       </div>
 
@@ -241,6 +236,7 @@ const thumbOf = (id: string) => {
         onClick={toggleChime}
         className="flex items-center gap-2"
         aria-pressed={chimeOn}
+        aria-label={t("notif.soundToggle")}
       >
         <span className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${chimeOn ? "bg-indigo-600" : "bg-slate-300"}`}>
           <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${chimeOn ? "translate-x-5" : "translate-x-1"}`} />
@@ -251,14 +247,14 @@ const thumbOf = (id: string) => {
 
       {!user && !loading ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center">
-          <p className="text-slate-600 mb-3">Sign in to see your notifications.</p>
-          <Link to="/auth" className="inline-flex px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold">Sign in</Link>
+          <p className="text-slate-600 mb-3">{t("notif.signInPrompt")}</p>
+          <Link to="/auth" className="inline-flex px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold">{t("notif.signIn")}</Link>
         </div>
       ) : busy ? (
-        <p className="text-slate-500 text-sm">Loading…</p>
+        <p className="text-slate-500 text-sm">{t("common.loading")}</p>
       ) : items.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-500">
-          No notifications yet.
+          {t("notif.empty")}
         </div>
       ) : (
         <ul className="space-y-2">
@@ -309,7 +305,7 @@ const thumbOf = (id: string) => {
      <span className="font-bold">{n.who}</span> {n.text}
    </p>
       <p className="text-xs text-white/70">
-       {timeAgo(n.created_at)} ago
+       {t("notif.ago", { time: (() => { const m = feedElapsedMessage(n.created_at, Date.now()); return t(m.key, { count: m.count }); })() })}
        </p>
         </div>
 
@@ -318,7 +314,7 @@ const thumbOf = (id: string) => {
         {n.thumb ? (
          <img
         src={n.thumb}
-        alt="Post"
+        alt={t("notif.postAlt")}
         className="h-full w-full object-cover"
       />
     ) : n.post_type === "video" ? (
