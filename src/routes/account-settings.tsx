@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useI18n } from "@/lib/i18n";
 import {
   ArrowLeft,
   FileText,
@@ -12,6 +13,10 @@ export const Route = createFileRoute("/account-settings")({
   head: () => ({
     meta: [
       { title: "Account Settings — VIP Life" },
+      { property: "og:title", content: "Account Settings — VIP Life" },
+      { property: "og:description", content: "Manage your VIP Life account settings." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         name: "description",
         content: "Manage your VIP Life account settings.",
@@ -21,6 +26,7 @@ export const Route = createFileRoute("/account-settings")({
 });
 
 function AccountSettingsPage() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-[#003D25] px-4 py-6">
       <div className="mx-auto max-w-2xl">
@@ -33,7 +39,7 @@ function AccountSettingsPage() {
           </Link>
 
           <h1 className="text-2xl font-extrabold text-white">
-            Account Settings
+            {t("account.title")}
           </h1>
         </div>
 
@@ -45,9 +51,9 @@ function AccountSettingsPage() {
   <UserRound className="h-5 w-5 text-[#7CFF3B]" />
 
   <span className="flex-1">
-    <span className="block font-semibold">Edit Account</span>
+    <span className="block font-semibold">{t("account.edit")}</span>
     <span className="block text-sm text-white/70">
-      Edit your profile and account information
+      {t("account.editHelp")}
     </span>
   </span>
 
@@ -62,9 +68,9 @@ function AccountSettingsPage() {
             <FileText className="h-5 w-5 text-[#7CFF3B]" />
 
             <span className="flex-1">
-              <span className="block font-semibold">Privacy Policy</span>
+              <span className="block font-semibold">{t("account.privacy")}</span>
               <span className="block text-sm text-white/70">
-                Read VIP Life privacy policy
+                {t("account.privacyHelp")}
               </span>
             </span>
 
@@ -80,9 +86,9 @@ function AccountSettingsPage() {
             <Info className="h-5 w-5 text-[#7CFF3B]" />
 
             <span className="flex-1">
-              <span className="block font-semibold">About VIP Life</span>
+              <span className="block font-semibold">{t("account.about")}</span>
               <span className="block text-sm text-white/70">
-                Learn more about VIP Life
+                {t("account.aboutHelp")}
               </span>
             </span>
 

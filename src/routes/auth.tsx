@@ -14,9 +14,21 @@ import {
 import { toast } from "sonner";
 import { ChevronDown, Globe, Loader2 } from "lucide-react";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
+import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/auth")({ component: AuthPage });
+export const Route = createFileRoute("/auth")({
+  head: () => ({ meta: [
+    { title: "Sign in or create an account | VIP Life" },
+    { name: "description", content: "Sign in to VIP Life or create your account." },
+    { property: "og:title", content: "Sign in or create an account | VIP Life" },
+    { property: "og:description", content: "Sign in to VIP Life or create your account." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
+  component: AuthPage,
+});
 function AuthPage() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -41,26 +53,26 @@ function AuthPage() {
     const code = String(authError?.code ?? "");
 
     if (code === "weak_password" || /weak|easy to guess|pwned/i.test(message)) {
-      return "Password must be at least 6 characters.";
+      return t("auth.shortPassword");
     }
     if (code === "email_not_confirmed" || /email not confirmed/i.test(message)) {
-      return "Please confirm your email, then sign in.";
+      return t("auth.confirmEmail");
     }
     if (code === "user_already_exists" || /already registered|already exists/i.test(message)) {
-      return "An account with this email already exists. Please sign in.";
+      return t("auth.existingAccount");
     }
     if (authError?.status === 429 || /rate limit|too many requests/i.test(message)) {
-      return "Too many attempts. Please wait a moment and try again.";
+      return t("auth.tooMany");
     }
     if (/timed out/i.test(message)) {
-      return "Authentication timed out. Check your connection and try again.";
+      return t("auth.timeout");
     }
-    if (action === "signin") return "Invalid email or password";
+    if (action === "signin") return t("auth.invalidCredentials");
     if (action === "google") {
       const detail = describeGoogleAuthError(error);
-      return detail ? `Google sign-in failed: ${detail}` : "Google sign-in failed. Please try again.";
+      return detail ? t("auth.googleDetail", { detail }) : t("auth.googleFailed");
     }
-    return "Couldn't create your account. Please try again.";
+    return t("auth.createFailed");
   };
 
   useEffect(() => {
@@ -77,7 +89,7 @@ function AuthPage() {
       width: Math.max(240, Math.floor(container.getBoundingClientRect().width)),
       onSignedIn: () => {
         if (!active) return;
-        toast.success("Welcome back!");
+        toast.success(t("auth.welcomeToast"));
         leaveAuth();
       },
       onError: (error) => {
@@ -98,7 +110,7 @@ function AuthPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === "signup" && !agreedTerms) {
-      toast.error("Please accept the Terms & Conditions to continue.");
+      toast.error(t("auth.acceptTerms"));
       return;
     }
     setBusy(true);
@@ -118,10 +130,10 @@ function AuthPage() {
           // The shared auth listener persists it; a second getUser request here
           // can time out in Android WebView and incorrectly report failure.
           publishAuthenticatedSession(data.session);
-          toast.success("Account created!");
+          toast.success(t("auth.created"));
           leaveAuth();
         } else {
-          toast.success("Account created! Check your email to confirm.");
+          toast.success(t("auth.confirmCreated"));
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -132,7 +144,7 @@ function AuthPage() {
         // The successful password response is the session source of truth and
         // onAuthStateChange publishes it to the rest of the app.
         publishAuthenticatedSession(data.session);
-        toast.success("Welcome back!");
+        toast.success(t("auth.welcomeToast"));
         leaveAuth();
       }
     } catch (err: unknown) {
@@ -153,7 +165,7 @@ function AuthPage() {
 
   const onGoogle = async () => {
     if (mode === "signup" && !agreedTerms) {
-      toast.error("Please accept the Terms & Conditions to continue.");
+      toast.error(t("auth.acceptTerms"));
       return;
     }
     setBusy(true);
@@ -164,7 +176,7 @@ function AuthPage() {
       if (isInstalledNativeRuntime()) {
         const nativeResult = await signInWithNativeGoogle();
         if (nativeResult.error) throw nativeResult.error;
-        toast.success("Welcome back!");
+        toast.success(t("auth.welcomeToast"));
         leaveAuth();
         return;
       }
@@ -173,7 +185,7 @@ function AuthPage() {
       // directly. Programmatically clicking a hidden Google button is blocked
       // by browser popup protection and was why no account list appeared.
       if (!googleButtonReady) {
-        toast.error("Google sign-in is still loading. Please try again.");
+        toast.error(t("auth.googleLoading"));
       }
     } catch (error) {
       console.error("Google sign-in error:", describeGoogleAuthError(error), error);
@@ -204,10 +216,10 @@ function AuthPage() {
          </Link>
 
         <h1 className="text-2xl font-extrabold text-center">
-          {mode === "signin" ? "Welcome back" : "Create your account"}
+          {mode === "signin" ? t("auth.welcome") : t("auth.createTitle")}
         </h1>
         <p className="text-sm text-slate-500 text-center mt-1">
-          {mode === "signin" ? "Sign in to VIP Life" : "Join the VIP Life community"}
+          {mode === "signin" ? t("auth.signInHelp") : t("auth.signupHelp")}
         </p>
 
         {mode === "signup" && (
@@ -220,9 +232,9 @@ function AuthPage() {
                 className="mt-0.5 h-5 w-5 rounded border-slate-400 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0"
               />
               <span className="leading-snug">
-                I have read and agree to the{" "}
+                {t("auth.consentBefore")}{" "}
                 <Link to="/terms" target="_blank" className="text-indigo-600 font-bold underline">
-                  Terms &amp; Conditions
+                  {t("auth.terms")}
                 </Link>
               </span>
             </label>
@@ -242,7 +254,7 @@ function AuthPage() {
       disabled={busy}
       className="w-full flex items-center justify-center gap-2 py-2.5 pl-2 pr-12 text-sm font-semibold whitespace-nowrap border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50"
     >
-      <GoogleIcon /> Continue with Google
+      <GoogleIcon /> {t("auth.google")}
     </button>
 
     {!isInstalledNativeRuntime() && (
@@ -257,7 +269,7 @@ function AuthPage() {
 
     <button
       type="button"
-      aria-label="Choose a Google account"
+      aria-label={t("auth.chooseGoogle")}
       onClick={() => void onGoogle()}
       disabled={busy}
       className="absolute right-1 top-1/2 z-20 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-slate-50 disabled:opacity-50"
@@ -274,7 +286,7 @@ function AuthPage() {
 
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
-          <div className="flex-1 h-px bg-slate-200" /> OR{" "}
+          <div className="flex-1 h-px bg-slate-200" /> {t("auth.or")}{" "}
           <div className="flex-1 h-px bg-slate-200" />
         </div>
 
@@ -283,7 +295,7 @@ function AuthPage() {
             <input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Display name"
+              placeholder={t("auth.displayName")}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
             />
           )}
@@ -292,7 +304,7 @@ function AuthPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder={t("common.email")}
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
           />
           <input
@@ -301,7 +313,7 @@ function AuthPage() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password (min 6 chars)"
+            placeholder={t("auth.password")}
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-500"
           />
           {mode === "signin" && (
@@ -312,7 +324,7 @@ function AuthPage() {
                 disabled={busy}
                 className="text-sm font-semibold text-[#117d43] hover:underline disabled:opacity-50"
               >
-                Forgot password?
+                {t("auth.forgot")}
               </button>
             </div>
           )}
@@ -322,18 +334,18 @@ function AuthPage() {
             className="w-full py-2.5 rounded-full bg-[#117d43] text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "signin" ? "Sign in" : "Create account"}
+            {mode === "signin" ? t("common.signIn") : t("auth.create")}
           </button>
         </form>
 
         <p className="mt-5 text-center text-sm text-slate-500">
-          {mode === "signin" ? "New here? " : "Already have an account? "}
+          {mode === "signin" ? t("auth.newHere") + " " : t("auth.already") + " "}
           <button
             type="button"
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             className="text-[#117d43] font-semibold hover:underline"
           >
-            {mode === "signin" ? "Create an account" : "Sign in"}
+            {mode === "signin" ? t("auth.createLink") : t("common.signIn")}
           </button>
         </p>
       </div>

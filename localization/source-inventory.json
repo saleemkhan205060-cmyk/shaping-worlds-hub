@@ -3,9 +3,9 @@
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
     "sourceFilesWithCandidates": 118,
-    "candidates": 3311,
+    "candidates": 3282,
     "contentRouteMetadata": 35,
-    "translatedUses": 111
+    "translatedUses": 154
   },
   "metadata": [
     {
@@ -105,7 +105,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "hasHead": false,
+      "hasHead": true,
       "review": "pending"
     },
     {
@@ -185,6 +185,221 @@
     }
   ],
   "translatedUses": [
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 42,
+      "key": "account.title"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 54,
+      "key": "account.edit"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 56,
+      "key": "account.editHelp"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 71,
+      "key": "account.privacy"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 73,
+      "key": "account.privacyHelp"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 89,
+      "key": "account.about"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 91,
+      "key": "account.aboutHelp"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 56,
+      "key": "auth.shortPassword"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 59,
+      "key": "auth.confirmEmail"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 62,
+      "key": "auth.existingAccount"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 65,
+      "key": "auth.tooMany"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 68,
+      "key": "auth.timeout"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 70,
+      "key": "auth.invalidCredentials"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 73,
+      "key": "auth.googleDetail"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 73,
+      "key": "auth.googleFailed"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 75,
+      "key": "auth.createFailed"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 92,
+      "key": "auth.welcomeToast"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 113,
+      "key": "auth.acceptTerms"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 133,
+      "key": "auth.created"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 136,
+      "key": "auth.confirmCreated"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 147,
+      "key": "auth.welcomeToast"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 168,
+      "key": "auth.acceptTerms"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 179,
+      "key": "auth.welcomeToast"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 188,
+      "key": "auth.googleLoading"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 219,
+      "key": "auth.welcome"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 219,
+      "key": "auth.createTitle"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 222,
+      "key": "auth.signInHelp"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 222,
+      "key": "auth.signupHelp"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 235,
+      "key": "auth.consentBefore"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 237,
+      "key": "auth.terms"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 257,
+      "key": "auth.google"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 272,
+      "key": "auth.chooseGoogle"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 289,
+      "key": "auth.or"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 298,
+      "key": "auth.displayName"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 307,
+      "key": "common.email"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 316,
+      "key": "auth.password"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 327,
+      "key": "auth.forgot"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 337,
+      "key": "common.signIn"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 337,
+      "key": "auth.create"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 342,
+      "key": "auth.newHere"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 342,
+      "key": "auth.already"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 348,
+      "key": "auth.createLink"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 348,
+      "key": "common.signIn"
+    },
     {
       "file": "src/routes/reset-password.tsx",
       "line": 66,
@@ -13477,9 +13692,30 @@
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 14,
+      "line": 15,
       "kind": "literal-candidate",
       "text": "Account Settings — VIP Life",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 16,
+      "kind": "literal-candidate",
+      "text": "og:title",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 16,
+      "kind": "literal-candidate",
+      "text": "Account Settings — VIP Life",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 17,
+      "kind": "literal-candidate",
+      "text": "og:description",
       "review": "pending"
     },
     {
@@ -13491,51 +13727,23 @@
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 36,
-      "kind": "jsx-text",
-      "text": "Account Settings",
+      "line": 18,
+      "kind": "literal-candidate",
+      "text": "og:type",
       "review": "pending"
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 48,
-      "kind": "jsx-text",
-      "text": "Edit Account",
+      "line": 19,
+      "kind": "literal-candidate",
+      "text": "twitter:card",
       "review": "pending"
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 50,
-      "kind": "jsx-text",
-      "text": "Edit your profile and account information",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 65,
-      "kind": "jsx-text",
-      "text": "Privacy Policy",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 67,
-      "kind": "jsx-text",
-      "text": "Read VIP Life privacy policy",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 83,
-      "kind": "jsx-text",
-      "text": "About VIP Life",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 85,
-      "kind": "jsx-text",
-      "text": "Learn more about VIP Life",
+      "line": 22,
+      "kind": "literal-candidate",
+      "text": "Manage your VIP Life account settings.",
       "review": "pending"
     },
     {
@@ -15549,303 +15757,107 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 44,
+      "line": 21,
       "kind": "literal-candidate",
-      "text": "Password must be at least 6 characters.",
+      "text": "Sign in or create an account | VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 47,
+      "line": 22,
       "kind": "literal-candidate",
-      "text": "Please confirm your email, then sign in.",
+      "text": "Sign in to VIP Life or create your account.",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 50,
+      "line": 23,
       "kind": "literal-candidate",
-      "text": "An account with this email already exists. Please sign in.",
+      "text": "og:title",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 53,
+      "line": 23,
       "kind": "literal-candidate",
-      "text": "Too many attempts. Please wait a moment and try again.",
+      "text": "Sign in or create an account | VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 56,
+      "line": 24,
       "kind": "literal-candidate",
-      "text": "Authentication timed out. Check your connection and try again.",
+      "text": "og:description",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 58,
+      "line": 24,
       "kind": "literal-candidate",
-      "text": "Invalid email or password",
+      "text": "Sign in to VIP Life or create your account.",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 61,
+      "line": 25,
       "kind": "literal-candidate",
-      "text": "Google sign-in failed: {value1}",
+      "text": "og:type",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 61,
+      "line": 26,
       "kind": "literal-candidate",
-      "text": "Google sign-in failed. Please try again.",
+      "text": "twitter:card",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 63,
-      "kind": "literal-candidate",
-      "text": "Couldn't create your account. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 80,
-      "kind": "feedback-candidate",
-      "text": "Welcome back!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 101,
-      "kind": "feedback-candidate",
-      "text": "Please accept the Terms & Conditions to continue.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 111,
+      "line": 123,
       "kind": "literal-candidate",
       "text": "{value1}/",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 121,
-      "kind": "feedback-candidate",
-      "text": "Account created!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 124,
-      "kind": "feedback-candidate",
-      "text": "Account created! Check your email to confirm.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 130,
+      "line": 142,
       "kind": "literal-candidate",
       "text": "Sign-in completed without a valid session",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 135,
-      "kind": "feedback-candidate",
-      "text": "Welcome back!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 156,
-      "kind": "feedback-candidate",
-      "text": "Please accept the Terms & Conditions to continue.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 167,
-      "kind": "feedback-candidate",
-      "text": "Welcome back!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 176,
-      "kind": "feedback-candidate",
-      "text": "Google sign-in is still loading. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 194,
+      "line": 206,
       "kind": "ui-attribute",
       "text": "VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 201,
+      "line": 213,
       "kind": "jsx-text",
       "text": "VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 207,
-      "kind": "literal-candidate",
-      "text": "Welcome back",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 207,
-      "kind": "literal-candidate",
-      "text": "Create your account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 210,
-      "kind": "literal-candidate",
-      "text": "Sign in to VIP Life",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 210,
-      "kind": "literal-candidate",
-      "text": "Join the VIP Life community",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 223,
-      "kind": "jsx-text",
-      "text": "I have read and agree to the",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 225,
-      "kind": "jsx-text",
-      "text": "Terms &amp; Conditions",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 234,
+      "line": 246,
       "kind": "literal-candidate",
       "text": "flex items-center {value1}",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 235,
+      "line": 247,
       "kind": "literal-candidate",
       "text": "pointer-events-none opacity-50",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 245,
-      "kind": "jsx-text",
-      "text": "Continue with Google",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 252,
+      "line": 264,
       "kind": "literal-candidate",
       "text": "absolute inset-0 z-30 overflow-hidden rounded-full opacity-[0.01] {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 260,
-      "kind": "ui-attribute",
-      "text": "Choose a Google account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 277,
-      "kind": "jsx-text",
-      "text": "OR",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 286,
-      "kind": "ui-attribute",
-      "text": "Display name",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 295,
-      "kind": "ui-attribute",
-      "text": "Email",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 304,
-      "kind": "ui-attribute",
-      "text": "Password (min 6 chars)",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 315,
-      "kind": "jsx-text",
-      "text": "Forgot password?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 325,
-      "kind": "literal-candidate",
-      "text": "Sign in",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 325,
-      "kind": "literal-candidate",
-      "text": "Create account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 330,
-      "kind": "literal-candidate",
-      "text": "New here?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 330,
-      "kind": "literal-candidate",
-      "text": "Already have an account?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 336,
-      "kind": "literal-candidate",
-      "text": "Create an account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 336,
-      "kind": "literal-candidate",
-      "text": "Sign in",
       "review": "pending"
     },
     {
