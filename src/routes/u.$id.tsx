@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { moderateMedia } from "@/lib/moderation-bridge";
+import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/u/$id")({
   head: ({ params }) => ({
     links: [
@@ -61,6 +62,7 @@ const TABS = ["Posts", "Videos", "Photos"] as const;
 type Tab = (typeof TABS)[number];
 
 function UserProfile() {
+  const { t } = useI18n();
   const [aboutOpen, setAboutOpen] = useState(false);
   const { id } = Route.useParams();
   const { user } = useAuth();
@@ -98,7 +100,7 @@ function UserProfile() {
     if (!file || !user || !isSelf) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image.");
+      toast.error(t("profile.selectImage"));
       return;
     }
 
@@ -110,11 +112,11 @@ function UserProfile() {
 
       // Safety scan BEFORE the photo is linked to the profile. Rejected files
       // are deleted server-side, so other users never see them.
-      toast.message("Checking photo…");
+      toast.message(t("profile.checkingPhoto"));
       const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "cover" });
       if (!verdict.safe) {
         toast.error(
-          `Cover photo rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Nude or sexually suggestive images are not allowed.`,
+          t("profile.coverRejected", { reason: verdict.reason ?? t("media.inappropriate") }),
           { duration: 6000 },
         );
         return;
@@ -132,10 +134,10 @@ function UserProfile() {
 
       setProfile((prev) => (prev ? { ...prev, cover_url: coverUrl } : prev));
 
-      toast.success("Cover photo updated!");
+      toast.success(t("profile.coverUpdated"));
     } catch (error) {
       console.error("Cover upload error:", error);
-      toast.error("Cover photo upload failed.");
+      toast.error(t("profile.coverFailed"));
     }
   };
 
@@ -143,7 +145,7 @@ function UserProfile() {
     if (!file || !user || !isSelf) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image.");
+      toast.error(t("profile.selectImage"));
       return;
     }
 
@@ -153,11 +155,11 @@ function UserProfile() {
     try {
       await uploadToStorage({ bucket: "media", path, file });
 
-      toast.message("Checking photo…");
+      toast.message(t("profile.checkingPhoto"));
       const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "avatar" });
       if (!verdict.safe) {
         toast.error(
-          `Profile photo rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Nude or sexually suggestive images are not allowed.`,
+          t("profile.avatarRejected", { reason: verdict.reason ?? t("media.inappropriate") }),
           { duration: 6000 },
         );
         return;
@@ -175,10 +177,10 @@ function UserProfile() {
 
       setProfile((prev) => (prev ? { ...prev, avatar_url: avatarUrl } : prev));
 
-      toast.success("Profile photo updated!");
+      toast.success(t("profile.avatarUpdated"));
     } catch (error) {
       console.error("Avatar upload error:", error);
-      toast.error("Profile photo upload failed.");
+      toast.error(t("profile.avatarFailed"));
     }
   };
 
@@ -270,7 +272,7 @@ function UserProfile() {
     setFollowers((profilesData ?? []) as ProfileRow[]);
   } catch (error) {
     console.error("Followers load error:", error);
-    toast.error("Couldn't load followers.");
+    toast.error(t("profile.loadFollowersFailed"));
   } finally {
     setFollowersLoading(false);
   }
@@ -304,7 +306,7 @@ function UserProfile() {
       setFollowing((profilesData ?? []) as ProfileRow[]);
     } catch (error) {
       console.error("Following load error:", error);
-      toast.error("Couldn't load following.");
+      toast.error(t("profile.loadFollowingFailed"));
       } finally {
      setFollowingLoading(false);
   }
@@ -377,7 +379,7 @@ function UserProfile() {
       const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id);
       if (error) {
         console.error("Unfollow error:", error);
-        toast.error("Couldn't unfollow. Please try again.");
+        toast.error(t("profile.unfollowFailed"));
       } else {
         setIsFollowing(false);
         setFollowersCount((c) => Math.max(0, c - 1));
@@ -386,7 +388,7 @@ function UserProfile() {
       const { error } = await supabase.from("follows").insert({ follower_id: user.id, following_id: id });
       if (error) {
         console.error("Follow error:", error);
-        toast.error("Couldn't follow. Please try again.");
+        toast.error(t("profile.followFailed"));
       }
       else {
         setIsFollowing(true);
