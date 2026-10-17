@@ -3,7 +3,7 @@ import type { Dictionary } from "../i18n-core";
 export const accountEnglish = {
   "auth.welcome": "Welcome back", "auth.createTitle": "Create your account",
   "auth.signInHelp": "Sign in to VIP Life", "auth.signupHelp": "Join the VIP Life community",
-  "auth.consentBefore": "I have read and agree to the", "auth.consentAfter": "",
+  "auth.consentBefore": "I have read and agree to the",
   "auth.terms": "Terms & Conditions", "auth.google": "Continue with Google",
   "auth.chooseGoogle": "Choose a Google account", "auth.or": "OR",
   "auth.displayName": "Display name", "auth.password": "Password (min 6 chars)",

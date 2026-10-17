@@ -1,0 +1,30 @@
+import type { Dictionary } from "../i18n-core";
+
+// Unreviewed draft; not activated in the live provider.
+export const accountUrdu = {
+  "auth.welcome": "دوبارہ خوش آمدید", "auth.createTitle": "اپنا اکاؤنٹ بنائیں",
+  "auth.signInHelp": "VIP Life میں سائن ان کریں", "auth.signupHelp": "VIP Life کمیونٹی میں شامل ہوں",
+  "auth.consentBefore": "میں نے درج ذیل پڑھ لیا ہے اور اس سے اتفاق کرتا ہوں:",
+  "auth.terms": "شرائط و ضوابط", "auth.google": "Google کے ساتھ جاری رکھیں",
+  "auth.chooseGoogle": "Google اکاؤنٹ منتخب کریں", "auth.or": "یا",
+  "auth.displayName": "ظاہری نام", "auth.password": "پاس ورڈ (کم از کم 6 حروف)",
+  "auth.forgot": "پاس ورڈ بھول گئے؟", "auth.create": "اکاؤنٹ بنائیں",
+  "auth.newHere": "یہاں نئے ہیں؟", "auth.already": "پہلے سے اکاؤنٹ موجود ہے؟", "auth.createLink": "اکاؤنٹ بنائیں",
+  "auth.welcomeToast": "دوبارہ خوش آمدید!", "auth.created": "اکاؤنٹ بن گیا!",
+  "auth.confirmCreated": "اکاؤنٹ بن گیا! تصدیق کے لیے اپنی ای میل دیکھیں۔",
+  "auth.acceptTerms": "جاری رکھنے کے لیے شرائط و ضوابط قبول کریں۔",
+  "auth.googleLoading": "Google سائن ان ابھی لوڈ ہو رہا ہے۔ دوبارہ کوشش کریں۔",
+  "auth.shortPassword": "پاس ورڈ کم از کم 6 حروف پر مشتمل ہونا چاہیے۔",
+  "auth.confirmEmail": "اپنی ای میل کی تصدیق کریں، پھر سائن ان کریں۔",
+  "auth.existingAccount": "اس ای میل سے اکاؤنٹ پہلے ہی موجود ہے۔ سائن ان کریں۔",
+  "auth.tooMany": "بہت زیادہ کوششیں ہو چکی ہیں۔ کچھ دیر انتظار کر کے دوبارہ کوشش کریں۔",
+  "auth.timeout": "سائن ان کا وقت ختم ہو گیا۔ اپنا کنکشن دیکھیں اور دوبارہ کوشش کریں۔",
+  "auth.invalidCredentials": "ای میل یا پاس ورڈ غلط ہے",
+  "auth.googleDetail": "Google سائن ان ناکام ہو گیا: {detail}",
+  "auth.googleFailed": "Google سائن ان ناکام ہو گیا۔ دوبارہ کوشش کریں۔",
+  "auth.createFailed": "آپ کا اکاؤنٹ نہیں بن سکا۔ دوبارہ کوشش کریں۔",
+  "account.title": "اکاؤنٹ کی ترتیبات", "account.edit": "اکاؤنٹ میں ترمیم کریں",
+  "account.editHelp": "اپنے پروفائل اور اکاؤنٹ کی معلومات میں ترمیم کریں",
+  "account.privacy": "رازداری کی پالیسی", "account.privacyHelp": "VIP Life کی رازداری کی پالیسی پڑھیں",
+  "account.about": "VIP Life کے بارے میں", "account.aboutHelp": "VIP Life کے بارے میں مزید جانیں",
+} satisfies Dictionary;

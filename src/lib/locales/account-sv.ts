@@ -1,0 +1,30 @@
+import type { Dictionary } from "../i18n-core";
+
+// Unreviewed draft; not activated in the live provider.
+export const accountSwedish = {
+  "auth.welcome": "Välkommen tillbaka", "auth.createTitle": "Skapa ditt konto",
+  "auth.signInHelp": "Logga in på VIP Life", "auth.signupHelp": "Gå med i VIP Life-gemenskapen",
+  "auth.consentBefore": "Jag har läst och godkänner",
+  "auth.terms": "Villkor", "auth.google": "Fortsätt med Google",
+  "auth.chooseGoogle": "Välj ett Google-konto", "auth.or": "ELLER",
+  "auth.displayName": "Visningsnamn", "auth.password": "Lösenord (minst 6 tecken)",
+  "auth.forgot": "Glömt lösenord?", "auth.create": "Skapa konto",
+  "auth.newHere": "Ny här?", "auth.already": "Har du redan ett konto?", "auth.createLink": "Skapa ett konto",
+  "auth.welcomeToast": "Välkommen tillbaka!", "auth.created": "Kontot har skapats!",
+  "auth.confirmCreated": "Kontot har skapats! Kontrollera din e-post för att bekräfta.",
+  "auth.acceptTerms": "Godkänn villkoren för att fortsätta.",
+  "auth.googleLoading": "Google-inloggningen laddas fortfarande. Försök igen.",
+  "auth.shortPassword": "Lösenordet måste innehålla minst 6 tecken.",
+  "auth.confirmEmail": "Bekräfta din e-postadress och logga sedan in.",
+  "auth.existingAccount": "Det finns redan ett konto med den här e-postadressen. Logga in.",
+  "auth.tooMany": "För många försök. Vänta en stund och försök igen.",
+  "auth.timeout": "Inloggningen tog för lång tid. Kontrollera din anslutning och försök igen.",
+  "auth.invalidCredentials": "Ogiltig e-postadress eller lösenord",
+  "auth.googleDetail": "Google-inloggningen misslyckades: {detail}",
+  "auth.googleFailed": "Google-inloggningen misslyckades. Försök igen.",
+  "auth.createFailed": "Kunde inte skapa ditt konto. Försök igen.",
+  "account.title": "Kontoinställningar", "account.edit": "Redigera konto",
+  "account.editHelp": "Redigera din profil och kontoinformation",
+  "account.privacy": "Integritetspolicy", "account.privacyHelp": "Läs VIP Lifes integritetspolicy",
+  "account.about": "Om VIP Life", "account.aboutHelp": "Läs mer om VIP Life",
+} satisfies Dictionary;
