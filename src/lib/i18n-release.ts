@@ -1,4 +1,5 @@
 import { APPROVED_LANGUAGE_TARGETS, APPROVED_COUNTRY_LANGUAGES } from "./country-languages";
+import { dictionaryIssues, type Dictionary } from "./i18n-core";
 
 export type LocaleReadiness = {
   code: string;
@@ -34,5 +35,30 @@ export function globalTranslationBlockers(locales: readonly LocaleReadiness[], e
     if (!targets.has(country.lang)) blockers.push(`${country.iso}:unsupported-default`);
   }
   for (const [check, passed] of Object.entries(evidence)) if (!passed) blockers.push(`release:${check}`);
+  return blockers;
+}
+
+/** Status flags cannot certify missing files, copied English, or broken parameters. */
+export function dictionaryReleaseBlockers(
+  english: Dictionary,
+  dictionaries: Readonly<Record<string, Dictionary>>,
+  identicalTextApprovals: Readonly<Record<string, readonly string[]>> = {},
+): string[] {
+  const blockers: string[] = [];
+  if (!Object.keys(english).length) blockers.push("source:empty-dictionary");
+  for (const { code } of APPROVED_LANGUAGE_TARGETS) {
+    const dictionary = dictionaries[code];
+    if (!dictionary) { blockers.push(`${code}:missing-bundled-dictionary`); continue; }
+    for (const issue of dictionaryIssues(english, dictionary)) blockers.push(`${code}:${issue}`);
+    if (code === "en") continue;
+    const approved = new Set(identicalTextApprovals[code] ?? []);
+    for (const [key, original] of Object.entries(english)) {
+      if (dictionary[key] !== undefined && JSON.stringify(dictionary[key]) === JSON.stringify(original) && !approved.has(key)) {
+        blockers.push(`${code}:unreviewed-identical:${key}`);
+      }
+    }
+  }
+  const targets = new Set<string>(APPROVED_LANGUAGE_TARGETS.map(({ code }) => code));
+  for (const code of Object.keys(dictionaries)) if (!targets.has(code)) blockers.push(`${code}:unapproved-bundled-dictionary`);
   return blockers;
 }

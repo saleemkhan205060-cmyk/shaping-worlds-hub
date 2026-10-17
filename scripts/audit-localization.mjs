@@ -7,6 +7,7 @@ const output = join(root, "localization/source-inventory.json");
 const uiAttributes = new Set(["placeholder", "title", "alt", "aria-label", "label", "description"]);
 const records = [];
 const metadata = [];
+const translatedUses = [];
 
 function files(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -32,6 +33,13 @@ for (const directory of ["src/routes", "src/components", "src/lib", "src/hooks"]
       records.push({ file, line: position.line + 1, kind, text: normalized, review: "pending" });
     }
     function visit(node) {
+      if (ts.isCallExpression(node) && node.expression.getText(source) === "t" && node.arguments[0] && ts.isStringLiteral(node.arguments[0])) {
+        const position = source.getLineAndCharacterOfPosition(node.getStart(source));
+        translatedUses.push({ file, line: position.line + 1, key: node.arguments[0].text });
+        // Translation keys are not new English literals; still inspect parameters.
+        for (const argument of node.arguments.slice(1)) visit(argument);
+        return;
+      }
       if (ts.isJsxText(node)) record(node, "jsx-text", node.text);
       else if (ts.isJsxAttribute(node) && uiAttributes.has(node.name.getText(source))) {
         if (node.initializer && ts.isStringLiteral(node.initializer)) record(node, "ui-attribute", node.initializer.text);
@@ -59,8 +67,9 @@ records.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
 const inventory = {
   status: "unreviewed-candidate-inventory",
   policy: "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
-  summary: { sourceFilesWithCandidates: new Set(records.map((record) => record.file)).size, candidates: records.length, contentRouteMetadata: metadata.length },
+  summary: { sourceFilesWithCandidates: new Set(records.map((record) => record.file)).size, candidates: records.length, contentRouteMetadata: metadata.length, translatedUses: translatedUses.length },
   metadata,
+  translatedUses,
   records,
 };
 const serialized = JSON.stringify(inventory, null, 2) + "\n";
