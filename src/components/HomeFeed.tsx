@@ -994,7 +994,7 @@ export function HomeFeed() {
 
       {/* Feed */}
       {tab !== "users" && tab !== "marriage" && (
-      <div className="space-y-4">
+      <div className="space-y-2">
 
         {loading ? (
           <div className="flex items-center justify-center py-10 text-slate-500">
