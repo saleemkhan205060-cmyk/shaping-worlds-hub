@@ -200,7 +200,7 @@ const thumbOf = (id: string) => {
       setItems(merged);
       setBusy(false);
     })();
-  }, [user, loading]);
+  }, [user, loading, t]);
 
   const tintFor = (k: Item["kind"]) =>
     k === "like" ? "from-rose-500 to-pink-500"
@@ -227,7 +227,7 @@ const thumbOf = (id: string) => {
           <span className="h-9 w-9 rounded-full bg-[#005A35] border border-[#19D66B] flex items-center justify-center text-white shadow">
             <Bell className="h-5 w-5" />
           </span>
-         <h1 className="text-xl font-extrabold text-white">Notifications</h1>
+         <h1 className="text-xl font-extrabold text-white">{t("notif.title")}</h1>
         </div>
       </div>
 
@@ -236,6 +236,7 @@ const thumbOf = (id: string) => {
         onClick={toggleChime}
         className="flex items-center gap-2"
         aria-pressed={chimeOn}
+        aria-label={t("notif.soundToggle")}
       >
         <span className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${chimeOn ? "bg-indigo-600" : "bg-slate-300"}`}>
           <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${chimeOn ? "translate-x-5" : "translate-x-1"}`} />
@@ -246,14 +247,14 @@ const thumbOf = (id: string) => {
 
       {!user && !loading ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center">
-          <p className="text-slate-600 mb-3">Sign in to see your notifications.</p>
-          <Link to="/auth" className="inline-flex px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold">Sign in</Link>
+          <p className="text-slate-600 mb-3">{t("notif.signInPrompt")}</p>
+          <Link to="/auth" className="inline-flex px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold">{t("notif.signIn")}</Link>
         </div>
       ) : busy ? (
-        <p className="text-slate-500 text-sm">Loading…</p>
+        <p className="text-slate-500 text-sm">{t("common.loading")}</p>
       ) : items.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-500">
-          No notifications yet.
+          {t("notif.empty")}
         </div>
       ) : (
         <ul className="space-y-2">
@@ -304,7 +305,7 @@ const thumbOf = (id: string) => {
      <span className="font-bold">{n.who}</span> {n.text}
    </p>
       <p className="text-xs text-white/70">
-       {timeAgo(n.created_at)} ago
+       {t("notif.ago", { time: (() => { const m = feedElapsedMessage(n.created_at, Date.now()); return t(m.key, { count: m.count }); })() })}
        </p>
         </div>
 
@@ -313,7 +314,7 @@ const thumbOf = (id: string) => {
         {n.thumb ? (
          <img
         src={n.thumb}
-        alt="Post"
+        alt={t("notif.postAlt")}
         className="h-full w-full object-cover"
       />
     ) : n.post_type === "video" ? (
