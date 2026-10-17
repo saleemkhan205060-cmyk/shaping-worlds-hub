@@ -7,10 +7,14 @@
 - [ ] Classify the candidate inventory and integrate every app-owned UI string with a complete English source dictionary (incomplete; implementation must continue).
   - [x] Connect password recovery, sharing, comments and post-privacy wording to 55 additional English templates; stage Urdu and Swedish drafts without activating partial languages.
   - [x] Verify release readiness against actual bundled dictionaries, missing keys, parameters and unreviewed English-identical text, not status flags alone.
-  - [x] Generate an all-92-target review pack with source-key locations; current 80-key source remains incomplete.
+  - [x] Generate an all-92-target review pack with source-key locations, including dynamic preset keys; current 186-key source remains incomplete.
   - [ ] Continue source classification and translation wiring across remaining screens, dialogs, options, errors and formatting; unfinished implementation, not awaiting another scope approval.
+  - [x] Connect text-post composer/editor and video-cover picker, including preset labels and known surfaced errors; preserve saved style IDs and original text.
+  - [x] Connect sign-in/signup and account-settings wording without changing consent, authentication or stored values; stage draft translations only.
+  - [x] Verify signed-in local video-cover capture and readback, account-settings links, public signup consent, all 37 preset source locations and 20 localization tests; preview build OK.
+  - [ ] Next batch: upload, media actions and remaining Home feed wording; preserve permissions, moderation and user content.
 - [ ] Complete all 92 dictionaries and reviewed plural/formatting data, including rare-language targets (incomplete; implementation and qualified translation review required); do not release a partial set.
-  - [ ] Extend beyond the current 80-key English/Urdu/Swedish staged drafts and 15 legacy navigation-only dictionaries; 74 targets have no bundled draft yet. No language has completed full-app coverage or review.
+  - [ ] Extend beyond the current 186-key English/Urdu/Swedish staged source and 15 legacy navigation-only dictionaries; 74 targets have no bundled draft yet. No language has completed full-app coverage or review; readiness reports 2,966 unmet checks.
 - [ ] Obtain native-speaker review for all targets and approved localized legal copy/artwork (requires qualified reviewers and approved content).
 - [ ] Run complete coverage and signed-in web regression checks; verify physical Android behavior (requires device access).
 - [ ] Activate all approved country defaults together only after every release gate passes (blocked by full dictionaries, content review and regression/device evidence).

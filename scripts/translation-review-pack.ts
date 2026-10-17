@@ -9,7 +9,13 @@ const pack = {
   scope: "All 92 approved targets; current source keys are not the complete app inventory.",
   sourceKeys: Object.entries(SOURCE_DICTIONARY).map(([key, source]) => ({
     key, source,
-    locations: inventory.translatedUses.filter((use: { key: string }) => use.key === key),
+    locations: [
+      ...inventory.translatedUses.filter((use: { key: string }) => use.key === key),
+      ...(inventory.dynamicTranslatedUses ?? []).filter((use: { pattern: string }) => {
+        const escaped = use.pattern.split("*").map((part: string) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+        return new RegExp(`^${escaped.join("[^.]+")}$`).test(key);
+      }),
+    ],
   })),
   targets: APPROVED_LANGUAGE_TARGETS.map(({ code, name, direction }) => ({
     code, name, direction,

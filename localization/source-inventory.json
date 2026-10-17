@@ -2,10 +2,11 @@
   "status": "unreviewed-candidate-inventory",
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
-    "sourceFilesWithCandidates": 117,
-    "candidates": 3336,
+    "sourceFilesWithCandidates": 118,
+    "candidates": 3269,
     "contentRouteMetadata": 35,
-    "translatedUses": 65
+    "translatedUses": 154,
+    "dynamicTranslatedUses": 13
   },
   "metadata": [
     {
@@ -105,7 +106,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "hasHead": false,
+      "hasHead": true,
       "review": "pending"
     },
     {
@@ -185,6 +186,221 @@
     }
   ],
   "translatedUses": [
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 42,
+      "key": "account.title"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 54,
+      "key": "account.edit"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 56,
+      "key": "account.editHelp"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 71,
+      "key": "account.privacy"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 73,
+      "key": "account.privacyHelp"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 89,
+      "key": "account.about"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 91,
+      "key": "account.aboutHelp"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 56,
+      "key": "auth.shortPassword"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 59,
+      "key": "auth.confirmEmail"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 62,
+      "key": "auth.existingAccount"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 65,
+      "key": "auth.tooMany"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 68,
+      "key": "auth.timeout"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 70,
+      "key": "auth.invalidCredentials"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 73,
+      "key": "auth.googleDetail"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 73,
+      "key": "auth.googleFailed"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 75,
+      "key": "auth.createFailed"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 92,
+      "key": "auth.welcomeToast"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 113,
+      "key": "auth.acceptTerms"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 133,
+      "key": "auth.created"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 136,
+      "key": "auth.confirmCreated"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 147,
+      "key": "auth.welcomeToast"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 168,
+      "key": "auth.acceptTerms"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 179,
+      "key": "auth.welcomeToast"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 188,
+      "key": "auth.googleLoading"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 219,
+      "key": "auth.welcome"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 219,
+      "key": "auth.createTitle"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 222,
+      "key": "auth.signInHelp"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 222,
+      "key": "auth.signupHelp"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 235,
+      "key": "auth.consentBefore"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 237,
+      "key": "auth.terms"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 257,
+      "key": "auth.google"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 272,
+      "key": "auth.chooseGoogle"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 289,
+      "key": "auth.or"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 298,
+      "key": "auth.displayName"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 307,
+      "key": "common.email"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 316,
+      "key": "auth.password"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 327,
+      "key": "auth.forgot"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 337,
+      "key": "common.signIn"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 337,
+      "key": "auth.create"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 342,
+      "key": "auth.newHere"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 342,
+      "key": "auth.already"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 348,
+      "key": "auth.createLink"
+    },
+    {
+      "file": "src/routes/auth.tsx",
+      "line": 348,
+      "key": "common.signIn"
+    },
     {
       "file": "src/routes/reset-password.tsx",
       "line": 66,
@@ -366,6 +582,151 @@
       "key": "comments.signIn"
     },
     {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 72,
+      "key": "media.loadPostFailed"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 103,
+      "key": "media.uploadFailed"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 110,
+      "key": "media.thumbnailRejected"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 110,
+      "key": "media.inappropriate"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 126,
+      "key": "media.pickImage"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 148,
+      "key": "media.saveFailed"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 151,
+      "key": "media.postUpdated"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 164,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 171,
+      "key": "common.saving"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 171,
+      "key": "common.save"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 177,
+      "key": "common.loading"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 181,
+      "key": "media.editOwn"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 191,
+      "key": "textPost.preview"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 200,
+      "key": "textPost.placeholder"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 210,
+      "key": "textStyle.background"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 227,
+      "key": "textStyle.color"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 244,
+      "key": "textStyle.font"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 262,
+      "key": "textStyle.size"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 280,
+      "key": "textStyle.align"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 303,
+      "key": "media.title"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 309,
+      "key": "media.addTitle"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 315,
+      "key": "media.caption"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 321,
+      "key": "media.writeCaption"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 329,
+      "key": "media.thumbnail"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 340,
+      "key": "media.noImage"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 351,
+      "key": "media.pickVideoFrame"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 360,
+      "key": "common.uploading"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 360,
+      "key": "media.uploadImage"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 367,
+      "key": "common.remove"
+    },
+    {
       "file": "src/components/Layout.tsx",
       "line": 523,
       "key": "menu.language"
@@ -509,6 +870,171 @@
       "file": "src/components/ShareSheet.tsx",
       "line": 353,
       "key": "common.copy"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 56,
+      "key": "textPost.new"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 61,
+      "key": "common.close"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 70,
+      "key": "textPost.preview"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 78,
+      "key": "textPost.placeholder"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 82,
+      "key": "textPost.textOnly"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 91,
+      "key": "textStyle.background"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 108,
+      "key": "textStyle.font"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 127,
+      "key": "textStyle.color"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 144,
+      "key": "textStyle.align"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 171,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 171,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 179,
+      "key": "common.post"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 156,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 163,
+      "key": "common.saving"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 163,
+      "key": "common.save"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 190,
+      "key": "common.preview"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 214,
+      "key": "common.upload"
+    }
+  ],
+  "dynamicTranslatedUses": [
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 221,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 238,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 256,
+      "pattern": "textStyle.font.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 274,
+      "pattern": "textStyle.size.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 284,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 292,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 100,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 101,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 120,
+      "pattern": "textStyle.font.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 136,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 137,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 148,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 156,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
     }
   ],
   "records": [
@@ -1550,275 +2076,79 @@
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 64,
+      "line": 66,
       "kind": "literal-candidate",
       "text": "id,user_id,media_type,media_url,caption,title,thumbnail_url,text_style",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 70,
-      "kind": "feedback-candidate",
-      "text": "Couldn't load post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 96,
+      "line": 98,
       "kind": "literal-candidate",
       "text": "{value1}/thumbnails/{value2}-{value3}.{value4}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 101,
-      "kind": "feedback-candidate",
-      "text": "Upload failed",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 108,
-      "kind": "feedback-candidate",
-      "text": "Thumbnail rejected by our safety filter ({value1}). Please pick a different image.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 123,
+      "line": 125,
       "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 124,
-      "kind": "feedback-candidate",
-      "text": "Please pick an image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 146,
-      "kind": "feedback-candidate",
-      "text": "Couldn't save changes",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 149,
-      "kind": "feedback-candidate",
-      "text": "Post updated",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 162,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 169,
-      "kind": "literal-candidate",
-      "text": "Saving…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 169,
-      "kind": "literal-candidate",
-      "text": "Save",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 175,
-      "kind": "jsx-text",
-      "text": "Loading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 179,
-      "kind": "jsx-text",
-      "text": "You can only edit your own posts.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 189,
-      "kind": "literal-candidate",
-      "text": "Write something beautiful…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 198,
-      "kind": "ui-attribute",
-      "text": "What's on your mind?",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 208,
-      "kind": "ui-attribute",
-      "text": "Background",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 225,
-      "kind": "ui-attribute",
-      "text": "Text color",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 231,
+      "line": 233,
       "kind": "literal-candidate",
       "text": "shrink-0 h-10 w-10 rounded-full border-2 {value1} {value2}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 233,
+      "line": 235,
       "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 242,
-      "kind": "ui-attribute",
-      "text": "Font",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 260,
-      "kind": "ui-attribute",
-      "text": "Size",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 266,
+      "line": 268,
       "kind": "literal-candidate",
       "text": "h-10 w-10 rounded-full text-sm font-semibold border {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 268,
+      "line": 270,
       "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 269,
+      "line": 271,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 278,
-      "kind": "ui-attribute",
-      "text": "Align",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 284,
-      "kind": "literal-candidate",
-      "text": "flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
       "line": 286,
       "kind": "literal-candidate",
+      "text": "flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize {value1}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 288,
+      "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 287,
+      "line": 289,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 301,
-      "kind": "jsx-text",
-      "text": "Title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 307,
-      "kind": "ui-attribute",
-      "text": "Add a title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 313,
-      "kind": "jsx-text",
-      "text": "Caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 319,
-      "kind": "ui-attribute",
-      "text": "Write a caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 327,
-      "kind": "jsx-text",
-      "text": "Thumbnail",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 338,
-      "kind": "jsx-text",
-      "text": "No image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 349,
-      "kind": "jsx-text",
-      "text": "Pick from video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 358,
-      "kind": "literal-candidate",
-      "text": "Uploading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 358,
-      "kind": "literal-candidate",
-      "text": "Upload image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 365,
-      "kind": "jsx-text",
-      "text": "Remove",
       "review": "pending"
     },
     {
@@ -6478,121 +6808,37 @@
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "New text post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 59,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 68,
-      "kind": "literal-candidate",
-      "text": "Write something beautiful…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 76,
-      "kind": "ui-attribute",
-      "text": "What's on your mind?",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 80,
-      "kind": "jsx-text",
-      "text": "Text only · no media",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 89,
-      "kind": "jsx-text",
-      "text": "Background",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 106,
-      "kind": "jsx-text",
-      "text": "Font",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 125,
-      "kind": "jsx-text",
-      "text": "Text color",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 131,
+      "line": 133,
       "kind": "literal-candidate",
       "text": "shrink-0 h-8 w-8 rounded-full border-2 {value1} {value2}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 132,
+      "line": 134,
       "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 142,
-      "kind": "jsx-text",
-      "text": "Align",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 148,
+      "line": 150,
       "kind": "literal-candidate",
       "text": "flex-1 px-3 py-1.5 rounded-full text-xs font-medium border capitalize {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 150,
+      "line": 152,
       "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 151,
+      "line": 153,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 169,
-      "kind": "literal-candidate",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 169,
-      "kind": "literal-candidate",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 177,
-      "kind": "jsx-text",
-      "text": "Post",
       "review": "pending"
     },
     {
@@ -9271,142 +9517,107 @@
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 49,
+      "line": 52,
       "kind": "literal-candidate",
       "text": "Couldn't load video",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 57,
+      "line": 60,
       "kind": "literal-candidate",
       "text": "Canvas unsupported",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 71,
+      "line": 74,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 75,
+      "line": 78,
       "kind": "literal-candidate",
       "text": "Couldn't read video frames",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 112,
+      "line": 115,
       "kind": "literal-candidate",
       "text": "Video not ready",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 116,
+      "line": 119,
       "kind": "literal-candidate",
       "text": "Canvas unsupported",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 119,
+      "line": 122,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 121,
+      "line": 124,
       "kind": "literal-candidate",
       "text": "Couldn't capture frame",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 122,
+      "line": 125,
       "kind": "literal-candidate",
       "text": "thumbnail-{value1}.jpg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 122,
+      "line": 125,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 128,
+      "line": 131,
       "kind": "literal-candidate",
       "text": "This video can't be captured here due to security restrictions.",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 129,
+      "line": 132,
       "kind": "literal-candidate",
       "text": "Couldn't capture frame",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 140,
+      "line": 143,
       "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 141,
+      "line": 144,
       "kind": "feedback-candidate",
       "text": "Please pick an image",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 153,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 160,
-      "kind": "literal-candidate",
-      "text": "Saving…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 160,
-      "kind": "literal-candidate",
-      "text": "Save",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 187,
-      "kind": "jsx-text",
-      "text": "Preview",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 199,
+      "line": 202,
       "kind": "literal-candidate",
       "text": "relative shrink-0 h-24 w-16 rounded-lg overflow-hidden border-2 {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 211,
-      "kind": "jsx-text",
-      "text": "Upload",
       "review": "pending"
     },
     {
@@ -9694,6 +9905,55 @@
       "line": 9,
       "kind": "literal-candidate",
       "text": "vip-life/vip-life",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 3,
+      "kind": "literal-candidate",
+      "text": "Couldn't load video",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 4,
+      "kind": "literal-candidate",
+      "text": "Canvas unsupported",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 5,
+      "kind": "literal-candidate",
+      "text": "Couldn't read video frames",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 6,
+      "kind": "literal-candidate",
+      "text": "Video not ready",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 7,
+      "kind": "literal-candidate",
+      "text": "Couldn't capture frame",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 8,
+      "kind": "literal-candidate",
+      "text": "This video can't be captured here due to security restrictions.",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 9,
+      "kind": "literal-candidate",
+      "text": "Please pick an image",
       "review": "pending"
     },
     {
@@ -13422,9 +13682,30 @@
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 14,
+      "line": 15,
       "kind": "literal-candidate",
       "text": "Account Settings — VIP Life",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 16,
+      "kind": "literal-candidate",
+      "text": "og:title",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 16,
+      "kind": "literal-candidate",
+      "text": "Account Settings — VIP Life",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-settings.tsx",
+      "line": 17,
+      "kind": "literal-candidate",
+      "text": "og:description",
       "review": "pending"
     },
     {
@@ -13436,51 +13717,23 @@
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 36,
-      "kind": "jsx-text",
-      "text": "Account Settings",
+      "line": 18,
+      "kind": "literal-candidate",
+      "text": "og:type",
       "review": "pending"
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 48,
-      "kind": "jsx-text",
-      "text": "Edit Account",
+      "line": 19,
+      "kind": "literal-candidate",
+      "text": "twitter:card",
       "review": "pending"
     },
     {
       "file": "src/routes/account-settings.tsx",
-      "line": 50,
-      "kind": "jsx-text",
-      "text": "Edit your profile and account information",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 65,
-      "kind": "jsx-text",
-      "text": "Privacy Policy",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 67,
-      "kind": "jsx-text",
-      "text": "Read VIP Life privacy policy",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 83,
-      "kind": "jsx-text",
-      "text": "About VIP Life",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-settings.tsx",
-      "line": 85,
-      "kind": "jsx-text",
-      "text": "Learn more about VIP Life",
+      "line": 22,
+      "kind": "literal-candidate",
+      "text": "Manage your VIP Life account settings.",
       "review": "pending"
     },
     {
@@ -15494,303 +15747,107 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 44,
+      "line": 21,
       "kind": "literal-candidate",
-      "text": "Password must be at least 6 characters.",
+      "text": "Sign in or create an account | VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 47,
+      "line": 22,
       "kind": "literal-candidate",
-      "text": "Please confirm your email, then sign in.",
+      "text": "Sign in to VIP Life or create your account.",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 50,
+      "line": 23,
       "kind": "literal-candidate",
-      "text": "An account with this email already exists. Please sign in.",
+      "text": "og:title",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 53,
+      "line": 23,
       "kind": "literal-candidate",
-      "text": "Too many attempts. Please wait a moment and try again.",
+      "text": "Sign in or create an account | VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 56,
+      "line": 24,
       "kind": "literal-candidate",
-      "text": "Authentication timed out. Check your connection and try again.",
+      "text": "og:description",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 58,
+      "line": 24,
       "kind": "literal-candidate",
-      "text": "Invalid email or password",
+      "text": "Sign in to VIP Life or create your account.",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 61,
+      "line": 25,
       "kind": "literal-candidate",
-      "text": "Google sign-in failed: {value1}",
+      "text": "og:type",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 61,
+      "line": 26,
       "kind": "literal-candidate",
-      "text": "Google sign-in failed. Please try again.",
+      "text": "twitter:card",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 63,
-      "kind": "literal-candidate",
-      "text": "Couldn't create your account. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 80,
-      "kind": "feedback-candidate",
-      "text": "Welcome back!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 101,
-      "kind": "feedback-candidate",
-      "text": "Please accept the Terms & Conditions to continue.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 111,
+      "line": 123,
       "kind": "literal-candidate",
       "text": "{value1}/",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 121,
-      "kind": "feedback-candidate",
-      "text": "Account created!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 124,
-      "kind": "feedback-candidate",
-      "text": "Account created! Check your email to confirm.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 130,
+      "line": 142,
       "kind": "literal-candidate",
       "text": "Sign-in completed without a valid session",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 135,
-      "kind": "feedback-candidate",
-      "text": "Welcome back!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 156,
-      "kind": "feedback-candidate",
-      "text": "Please accept the Terms & Conditions to continue.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 167,
-      "kind": "feedback-candidate",
-      "text": "Welcome back!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 176,
-      "kind": "feedback-candidate",
-      "text": "Google sign-in is still loading. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 194,
+      "line": 206,
       "kind": "ui-attribute",
       "text": "VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 201,
+      "line": 213,
       "kind": "jsx-text",
       "text": "VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 207,
-      "kind": "literal-candidate",
-      "text": "Welcome back",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 207,
-      "kind": "literal-candidate",
-      "text": "Create your account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 210,
-      "kind": "literal-candidate",
-      "text": "Sign in to VIP Life",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 210,
-      "kind": "literal-candidate",
-      "text": "Join the VIP Life community",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 223,
-      "kind": "jsx-text",
-      "text": "I have read and agree to the",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 225,
-      "kind": "jsx-text",
-      "text": "Terms &amp; Conditions",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 234,
+      "line": 246,
       "kind": "literal-candidate",
       "text": "flex items-center {value1}",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 235,
+      "line": 247,
       "kind": "literal-candidate",
       "text": "pointer-events-none opacity-50",
       "review": "pending"
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 245,
-      "kind": "jsx-text",
-      "text": "Continue with Google",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 252,
+      "line": 264,
       "kind": "literal-candidate",
       "text": "absolute inset-0 z-30 overflow-hidden rounded-full opacity-[0.01] {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 260,
-      "kind": "ui-attribute",
-      "text": "Choose a Google account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 277,
-      "kind": "jsx-text",
-      "text": "OR",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 286,
-      "kind": "ui-attribute",
-      "text": "Display name",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 295,
-      "kind": "ui-attribute",
-      "text": "Email",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 304,
-      "kind": "ui-attribute",
-      "text": "Password (min 6 chars)",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 315,
-      "kind": "jsx-text",
-      "text": "Forgot password?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 325,
-      "kind": "literal-candidate",
-      "text": "Sign in",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 325,
-      "kind": "literal-candidate",
-      "text": "Create account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 330,
-      "kind": "literal-candidate",
-      "text": "New here?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 330,
-      "kind": "literal-candidate",
-      "text": "Already have an account?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 336,
-      "kind": "literal-candidate",
-      "text": "Create an account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/auth.tsx",
-      "line": 336,
-      "kind": "literal-candidate",
-      "text": "Sign in",
       "review": "pending"
     },
     {

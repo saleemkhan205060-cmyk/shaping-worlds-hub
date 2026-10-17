@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import { videoPickerErrorKey } from "@/lib/media-localization";
 
 type Props = {
   /** Video source URL (remote URL or blob/object URL). */
@@ -17,6 +19,7 @@ const FRAME_COUNT = 8;
  * frames at the bottom to tap-select, plus an Upload tile.
  */
 export function VideoThumbnailPicker({ videoSrc, open, onClose, onPick }: Props) {
+  const { t } = useI18n();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -150,14 +153,14 @@ export function VideoThumbnailPicker({ videoSrc, open, onClose, onPick }: Props)
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <button onClick={onClose} className="text-xl font-semibold text-slate-900 active:opacity-60">
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           onClick={save}
           disabled={busy}
           className="text-xl font-semibold text-slate-900 active:opacity-60 disabled:opacity-40"
         >
-          {busy ? "Saving…" : "Save"}
+          {busy ? t("common.saving") : t("common.save")}
         </button>
       </div>
 
@@ -175,7 +178,7 @@ export function VideoThumbnailPicker({ videoSrc, open, onClose, onPick }: Props)
         <canvas ref={canvasRef} className="hidden" />
       </div>
 
-      {error && <div className="px-4 py-1 text-xs text-rose-500 text-center">{error}</div>}
+      {error && <div className="px-4 py-1 text-xs text-rose-500 text-center">{videoPickerErrorKey(error) ? t(videoPickerErrorKey(error) ?? "media.captureFailed") : error}</div>}
 
       {/* Filmstrip + Upload */}
       <div className="px-4 pt-3 pb-6">
@@ -184,7 +187,7 @@ export function VideoThumbnailPicker({ videoSrc, open, onClose, onPick }: Props)
             <circle cx="12" cy="12" r="3" />
             <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
           </svg>
-          <span className="text-sm font-bold">Preview</span>
+          <span className="text-sm font-bold">{t("common.preview")}</span>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {extracting && frames.length === 0 && (
@@ -208,7 +211,7 @@ export function VideoThumbnailPicker({ videoSrc, open, onClose, onPick }: Props)
             className="shrink-0 h-24 w-20 rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center gap-1 text-slate-900 active:scale-95"
           >
             <span className="text-2xl leading-none font-light">+</span>
-            <span className="text-sm font-medium">Upload</span>
+            <span className="text-sm font-medium">{t("common.upload")}</span>
           </button>
         </div>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onUpload} />

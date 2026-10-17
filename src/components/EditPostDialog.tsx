@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { VideoThumbnailPicker } from "@/components/VideoThumbnailPicker";
 import { TextPostCard } from "@/components/TextPostCard";
+import { useI18n } from "@/lib/i18n";
 import {
   BG_PRESETS,
   FONT_PRESETS,
@@ -44,6 +45,7 @@ const MAX_TEXT_LEN = 280;
 
 export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -67,7 +69,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
       .then(({ data, error }) => {
         if (cancelled) return;
         if (error || !data) {
-          toast.error("Couldn't load post");
+          toast.error(t("media.loadPostFailed"));
           onClose();
           return;
         }
@@ -98,14 +100,14 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
       .from("media")
       .upload(path, file, { upsert: true, contentType: file.type });
     if (error) {
-      toast.error("Upload failed");
+      toast.error(t("media.uploadFailed"));
       setUploading(false);
       return;
     }
     const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "thumbnail" });
     if (!verdict.safe) {
       toast.error(
-        `Thumbnail rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Please pick a different image.`,
+        t("media.thumbnailRejected", { reason: verdict.reason ?? t("media.inappropriate") }),
         { duration: 6000 },
       );
       setUploading(false);
@@ -121,7 +123,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     e.target.value = "";
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      toast.error("Please pick an image");
+      toast.error(t("media.pickImage"));
       return;
     }
     await uploadThumbFile(file);
@@ -143,10 +145,10 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
     const { error } = await supabase.from("posts").update(updates).eq("id", postId);
     setSaving(false);
     if (error) {
-      toast.error("Couldn't save changes");
+      toast.error(t("media.saveFailed"));
       return;
     }
-    toast.success("Post updated");
+    toast.success(t("media.postUpdated"));
     onSaved?.({ ...updates, text_style: isText ? style : undefined });
     onClose();
   };
@@ -159,24 +161,24 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
           onClick={onClose}
           className="text-xl font-semibold text-slate-900 active:opacity-60"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           onClick={handleSave}
           disabled={saving || uploading || !isOwner || loading}
           className="text-xl font-semibold text-slate-900 active:opacity-60 disabled:opacity-40"
         >
-          {saving ? "Saving…" : "Save"}
+          {saving ? t("common.saving") : t("common.save")}
         </button>
       </div>
 
       {loading ? (
         <div className="flex-1 flex items-center justify-center text-sm text-slate-500">
-          Loading…
+          {t("common.loading")}
         </div>
       ) : !isOwner ? (
         <div className="flex-1 flex items-center justify-center text-sm text-rose-600">
-          You can only edit your own posts.
+          {t("media.editOwn")}
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto">
@@ -186,7 +188,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
               <div className="px-4 pt-2">
                 <div className="rounded-2xl overflow-hidden">
                   <TextPostCard
-                    text={caption || "Write something beautiful…"}
+                    text={caption || t("textPost.preview")}
                     style={style}
                   />
                 </div>
@@ -195,7 +197,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                   onChange={(e) => setCaption(e.target.value.slice(0, MAX_TEXT_LEN))}
                   rows={2}
                   maxLength={MAX_TEXT_LEN}
-                  placeholder="What's on your mind?"
+                  placeholder={t("textPost.placeholder")}
                   className="mt-3 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
                 <div className="text-right text-[11px] text-slate-500 mt-1">
@@ -205,7 +207,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
 
               {/* Controls */}
               <div className="px-5 pb-8 space-y-5">
-                <Section label="Background">
+                <Section label={t("textStyle.background")}>
                   <div className="flex gap-3 overflow-x-auto pb-1">
                     {BG_PRESETS.map((b) => (
                       <button
@@ -216,13 +218,13 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                             ? "border-indigo-600 ring-2 ring-indigo-200"
                             : "border-white shadow"
                         }`}
-                        aria-label={b.label}
+                        aria-label={t(`textStyle.background.${b.id}`)}
                       />
                     ))}
                   </div>
                 </Section>
 
-                <Section label="Text color">
+                <Section label={t("textStyle.color")}>
                   <div className="flex gap-3 overflow-x-auto pb-1">
                     {COLOR_PRESETS.map((c) => (
                       <button
@@ -233,13 +235,13 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                             ? "border-indigo-600 ring-2 ring-indigo-200"
                             : "border-slate-200"
                         }`}
-                        aria-label={c.label}
+                        aria-label={t(`textStyle.color.${c.id}`)}
                       />
                     ))}
                   </div>
                 </Section>
 
-                <Section label="Font">
+                <Section label={t("textStyle.font")}>
                   <div className="flex gap-2 overflow-x-auto pb-1">
                     {FONT_PRESETS.map((f) => (
                       <button
@@ -251,13 +253,13 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                             : "bg-white text-slate-700 border-slate-200"
                         }`}
                       >
-                        {f.label}
+                        {t(`textStyle.font.${f.id}`)}
                       </button>
                     ))}
                   </div>
                 </Section>
 
-                <Section label="Size">
+                <Section label={t("textStyle.size")}>
                   <div className="flex gap-2">
                     {SIZE_PRESETS.map((z) => (
                       <button
@@ -269,17 +271,17 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                             : "bg-white text-slate-700 border-slate-200"
                         }`}
                       >
-                        {z.label}
+                        {t(`textStyle.size.${z.id}`)}
                       </button>
                     ))}
                   </div>
                 </Section>
 
-                <Section label="Align">
+                <Section label={t("textStyle.align")}>
                   <div className="flex gap-2">
                     {(["left", "center", "right"] as const).map((a) => (
                       <button
-                        key={a}
+                        key={t(`textStyle.align.${a}`)}
                         onClick={() => setStyle((s) => ({ ...s, align: a }))}
                         className={`flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize ${
                           style.align === a
@@ -287,7 +289,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                             : "bg-white text-slate-700 border-slate-200"
                         }`}
                       >
-                        {a}
+                        {t(`textStyle.align.${a}`)}
                       </button>
                     ))}
                   </div>
@@ -298,25 +300,25 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
             <div className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Title
+                  {t("media.title")}
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Add a title"
+                  placeholder={t("media.addTitle")}
                   className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Caption
+                  {t("media.caption")}
                 </label>
                 <textarea
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
                   rows={4}
-                  placeholder="Write a caption"
+                  placeholder={t("media.writeCaption")}
                   className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
                 />
               </div>
@@ -324,7 +326,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
               {post?.media_type === "video" && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">
-                    Thumbnail
+                    {t("media.thumbnail")}
                   </label>
                   <div className="flex items-center gap-3">
                     <div className="h-20 w-20 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center border border-slate-200">
@@ -335,7 +337,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <span className="text-[10px] text-slate-400">No image</span>
+                        <span className="text-[10px] text-slate-400">{t("media.noImage")}</span>
                       )}
                     </div>
                     <div className="flex flex-col gap-2">
@@ -346,7 +348,7 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                           className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-emerald-600 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
                         >
                           <Film className="h-4 w-4" />
-                          Pick from video
+                          {t("media.pickVideoFrame")}
                         </button>
                       )}
                       <button
@@ -355,14 +357,14 @@ export function EditPostDialog({ postId, open, onClose, onSaved }: Props) {
                         className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
                       >
                         <Upload className="h-4 w-4" />
-                        {uploading ? "Uploading…" : "Upload image"}
+                        {uploading ? t("common.uploading") : t("media.uploadImage")}
                       </button>
                       {thumbnailUrl && (
                         <button
                           onClick={() => setThumbnailUrl(null)}
                           className="text-xs text-rose-600 font-semibold text-left"
                         >
-                          Remove
+                          {t("common.remove")}
                         </button>
                       )}
                     </div>
