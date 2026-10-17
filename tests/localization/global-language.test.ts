@@ -2,6 +2,8 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import baseline from "./country-baseline.json";
 import approvedMapping from "./approved-mapping.json";
+import legacyTranslations from "./legacy-translations.json";
+import { LEGACY_TRANSLATIONS } from "../../src/lib/locales/legacy";
 import { APPROVED_COUNTRY_LANGUAGES, APPROVED_LANGUAGE_TARGETS } from "../../src/lib/country-languages";
 import { dictionaryIssues, interpolate, resolveMessage } from "../../src/lib/i18n-core";
 import { globalTranslationBlockers, type LocaleReadiness } from "../../src/lib/i18n-release";
@@ -41,6 +43,11 @@ describe("approved country policy", () => {
 });
 
 describe("translation safety and quality gates", () => {
+  test("preserves every existing language dictionary exactly during extraction", () => {
+    expect(LEGACY_TRANSLATIONS).toEqual(legacyTranslations);
+    expect(Object.keys(LEGACY_TRANSLATIONS)).toHaveLength(17);
+    for (const dictionary of Object.values(LEGACY_TRANSLATIONS)) expect(Object.keys(dictionary)).toHaveLength(25);
+  });
   test("preserves interpolated user content verbatim with bidi isolation", () => {
     const name = "Saleem خان";
     expect(interpolate("{actor}", { actor: name })).toBe(`\u2068${name}\u2069`);
