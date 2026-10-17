@@ -6,16 +6,14 @@ export type FormattingSupport = { supported: boolean; requested: string; resolve
 /** Never mistake an implicit English fallback for target-language support. */
 export function formattingSupport(locale: string, capability: FormatterCapability): FormattingSupport {
   try {
-    const constructors = {
-      date: Intl.DateTimeFormat,
-      number: Intl.NumberFormat,
-      relativeTime: Intl.RelativeTimeFormat,
-      plural: Intl.PluralRules,
+    const probes = {
+      date: () => ({ supported: Intl.DateTimeFormat.supportedLocalesOf([locale]).length === 1, resolved: new Intl.DateTimeFormat(locale).resolvedOptions().locale }),
+      number: () => ({ supported: Intl.NumberFormat.supportedLocalesOf([locale]).length === 1, resolved: new Intl.NumberFormat(locale).resolvedOptions().locale }),
+      relativeTime: () => ({ supported: Intl.RelativeTimeFormat.supportedLocalesOf([locale]).length === 1, resolved: new Intl.RelativeTimeFormat(locale).resolvedOptions().locale }),
+      plural: () => ({ supported: Intl.PluralRules.supportedLocalesOf([locale]).length === 1, resolved: new Intl.PluralRules(locale).resolvedOptions().locale }),
     };
-    const constructor = constructors[capability];
-    const supported = constructor.supportedLocalesOf([locale]).length === 1;
-    const resolved = supported ? new constructor(locale).resolvedOptions().locale : null;
-    return { supported, requested: locale, resolved };
+    const { supported, resolved } = probes[capability]();
+    return { supported, requested: locale, resolved: supported ? resolved : null };
   } catch {
     return { supported: false, requested: locale, resolved: null };
   }
