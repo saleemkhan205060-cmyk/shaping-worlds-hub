@@ -46,6 +46,9 @@ import likeSoundAsset from "@/assets/like.mp3.asset.json";
 import { Navigation2 } from "lucide-react";
 import { resolveAssetUrl } from "@/lib/asset-url";
 import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
+import { useI18n } from "@/lib/i18n";
+import { feedElapsedMessage } from "@/lib/feed-localization";
+import { UPLOAD_CATEGORY_KEYS } from "@/lib/upload-localization";
 
 let likeAudio: HTMLAudioElement | null = null;
 const playLikeSound = () => {
@@ -100,9 +103,9 @@ const isImageFile = (f: File) => f.type.startsWith("image/") || /\.(jpg|jpeg|png
 
 type SearchTab = "all" | "videos" | "photos" | "users" | "marriage";
 const TABS: { id: SearchTab; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "videos", label: "Videos" },
-  { id: "photos", label: "Photos" },
+  { id: "all", label: "feed.all" },
+  { id: "videos", label: "feed.videos" },
+  { id: "photos", label: "feed.photos" },
 ];
 
 type MarriageProfile = {
@@ -118,6 +121,7 @@ type MarriageProfile = {
 };
 
 export function HomeFeed() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const { query, setQuery } = useContext(SearchContext);
   const { setMediaFullscreen } = useContext(FullscreenContext);
@@ -413,11 +417,11 @@ export function HomeFeed() {
   const pickFile = (f: File | null) => {
     if (!f) return;
     if (!isImageFile(f) && !isVideoFile(f)) {
-      toast.error("Only images and videos are allowed");
+      toast.error(t("upload.allowedTypes"));
       return;
     }
     if (f.size > MAX_BYTES) {
-      toast.error("File must be under 500MB");
+      toast.error(t("upload.fileTooLarge"));
       return;
     }
     setFile(f);
@@ -426,13 +430,13 @@ export function HomeFeed() {
 
   const submit = async (privacyOverride?: boolean) => {
     if (!user) {
-      toast.error("Please sign in to post");
+      toast.error(t("feed.signInPost"));
       return;
     }
     const shouldBePrivate = privacyOverride ?? isPrivate;
     const text = caption.trim();
     if (!file && !text) {
-      toast.error("Write something or attach media");
+      toast.error(t("feed.contentRequired"));
       return;
     }
     setPosting(true);
@@ -490,14 +494,14 @@ export function HomeFeed() {
       setIsPrivate(false);
       setTextStyle(DEFAULT_TEXT_STYLE);
 
-      toast.success("Posted!");
+      toast.success(t("feed.posted"));
     } catch (e: any) {
       console.error("[HomeFeed.submit] post failed:", e);
       const msg =
         (e && typeof e === "object" && (e.message || e.error_description || e.hint || e.details)) ||
         (e instanceof Error ? e.message : null) ||
         (typeof e === "string" ? e : JSON.stringify(e));
-      toast.error(`Couldn't post: ${msg}`);
+      toast.error(t("feed.postFailed", { reason: String(msg) }));
 
     } finally {
       setPosting(false);
@@ -588,7 +592,7 @@ export function HomeFeed() {
 
   const toggleLike = async (postId: string) => {
     if (!user) {
-      toast.error("Sign in to like");
+      toast.error(t("feed.signInLike"));
       return;
     }
     const isLiked = !!likedByMe[postId];
@@ -605,7 +609,7 @@ export function HomeFeed() {
       if (error) {
         setLikedByMe((m) => ({ ...m, [postId]: true }));
         setLikeCounts((c) => ({ ...c, [postId]: (c[postId] ?? 0) + 1 }));
-        toast.error("Couldn't unlike");
+        toast.error(t("feed.unlikeFailed"));
       }
     } else {
       const { error } = await supabase
@@ -614,7 +618,7 @@ export function HomeFeed() {
       if (error) {
         setLikedByMe((m) => ({ ...m, [postId]: false }));
         setLikeCounts((c) => ({ ...c, [postId]: Math.max(0, (c[postId] ?? 1) - 1) }));
-        toast.error("Couldn't like");
+        toast.error(t("feed.likeFailed"));
       }
     }
   };
@@ -627,17 +631,8 @@ export function HomeFeed() {
   };
 
   const timeAgo = (dateStr: string) => {
-    const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-    if (seconds < 60) return `${seconds}s`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h`;
-    const days = Math.floor(hours / 24);
-    if (days < 30) return `${days}d`;
-    const months = Math.floor(days / 30);
-    if (months < 12) return `${months}mo`;
-    return `${Math.floor(months / 12)}y`;
+    const { key, count } = feedElapsedMessage(dateStr, Date.now());
+    return t(key, { count });
   };
 
   const startCaptionPress = (post: Post) => {
@@ -664,13 +659,13 @@ export function HomeFeed() {
       .eq("id", editingCaptionId)
       .eq("user_id", user.id);
     if (error) {
-      toast.error("Couldn't update title");
+      toast.error(t("feed.titleFailed"));
       return;
     }
     setPosts((prev) => prev.map((p) => (p.id === editingCaptionId ? { ...p, caption: newCaption || null } : p)));
     setEditingCaptionId(null);
     setEditCaptionValue("");
-    toast.success("Title updated");
+    toast.success(t("feed.titleUpdated"));
   };
 
   return (
@@ -683,7 +678,7 @@ export function HomeFeed() {
             onChange={(e) => setCaption(e.target.value)}
             rows={2}
             maxLength={500}
-            placeholder="Share something with the world…"
+            placeholder={t("feed.placeholder")}
             className="w-full resize-none rounded-xl border border-[#19D66B]/60 bg-[#004A2D] px-3 py-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-[#19D66B] focus:ring-1 focus:ring-[#19D66B]/40"
           />
           {preview && file && (
@@ -698,12 +693,12 @@ export function HomeFeed() {
                   className="w-full max-h-72 object-contain bg-black"
                 />
               ) : (
-                <img src={preview} alt="preview" className="w-full max-h-72 object-contain" />
+                <img src={preview} alt={t("common.preview")} className="w-full max-h-72 object-contain" />
               )}
               <button
                 onClick={() => { setFile(null); setFullscreenPreviewOpen(false); }}
                 className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center"
-                aria-label="Remove"
+                aria-label={t("common.remove")}
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -711,15 +706,15 @@ export function HomeFeed() {
                 <button
                   onClick={() => setVideoMenuOpen(true)}
                   className="absolute top-2 right-11 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
-                  aria-label="More options"
+                  aria-label={t("common.moreOptions")}
                 >
                   <MoreVertical className="h-3.5 w-3.5" />
                 </button>
               )}
               {thumbPreview && isVideoFile(file) && (
                 <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/60 text-white text-[11px] px-2 py-1 rounded">
-                  <img src={thumbPreview} alt="thumb" className="h-5 w-5 rounded object-cover" />
-                  <span>Thumbnail set</span>
+                  <img src={thumbPreview} alt={t("media.thumbnail")} className="h-5 w-5 rounded object-cover" />
+                  <span>{t("upload.thumbnailSet")}</span>
                 </div>
               )}
               <input
@@ -736,7 +731,7 @@ export function HomeFeed() {
               {posting && file && (
                 <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 space-y-1">
                   <div className="flex items-center justify-between text-[11px] text-white">
-                    <span>Uploading…</span>
+                    <span>{t("common.uploading")}</span>
                     <span className="font-semibold tabular-nums">{uploadPct}%</span>
                   </div>
                   <Progress value={uploadPct} className="h-1.5 bg-white/20" />
@@ -750,7 +745,7 @@ export function HomeFeed() {
                 <TextPostCard text={caption} style={textStyle} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Background</p>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">{t("textStyle.background")}</p>
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {BG_PRESETS.map((b) => (
                     <button
@@ -760,14 +755,14 @@ export function HomeFeed() {
                       className={`shrink-0 h-8 w-8 rounded-full border-2 ${b.className} ${
                         textStyle.bgId === b.id ? "border-indigo-600 ring-2 ring-indigo-200" : "border-white"
                       }`}
-                      aria-label={b.label}
-                      title={b.label}
+                      aria-label={t(`textStyle.background.${b.id}`)}
+                      title={t(`textStyle.background.${b.id}`)}
                     />
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Text color</p>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">{t("textStyle.color")}</p>
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {COLOR_PRESETS.map((c) => (
                     <button
@@ -777,14 +772,14 @@ export function HomeFeed() {
                       className={`shrink-0 h-7 w-7 rounded-full border-2 ${c.swatch} ${
                         textStyle.colorId === c.id ? "border-indigo-600 ring-2 ring-indigo-200" : "border-slate-200"
                       }`}
-                      aria-label={c.label}
-                      title={c.label}
+                      aria-label={t(`textStyle.color.${c.id}`)}
+                      title={t(`textStyle.color.${c.id}`)}
                     />
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Font</p>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">{t("textStyle.font")}</p>
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {FONT_PRESETS.map((f) => (
                     <button
@@ -797,14 +792,14 @@ export function HomeFeed() {
                           : "bg-white text-slate-700 border-slate-200"
                       }`}
                     >
-                      {f.label}
+                      {t(`textStyle.font.${f.id}`)}
                     </button>
                   ))}
                 </div>
               </div>
               <div className="flex items-center gap-3 flex-wrap">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Size</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">{t("textStyle.size")}</p>
                   <div className="flex gap-1.5">
                     {SIZE_PRESETS.map((z) => (
                       <button
@@ -817,17 +812,17 @@ export function HomeFeed() {
                             : "bg-white text-slate-700 border-slate-200"
                         }`}
                       >
-                        {z.label}
+                        {t(`textStyle.size.${z.id}`)}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Align</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">{t("textStyle.align")}</p>
                   <div className="flex gap-1.5">
                     {(["left", "center", "right"] as const).map((a) => (
                       <button
-                        key={a}
+                        key={t(`textStyle.align.${a}`)}
                         type="button"
                         onClick={() => setTextStyle((s) => ({ ...s, align: a }))}
                         className={`px-2.5 h-7 rounded-full text-[11px] font-medium border capitalize ${
@@ -836,7 +831,7 @@ export function HomeFeed() {
                             : "bg-white text-slate-700 border-slate-200"
                         }`}
                       >
-                        {a}
+                        {t(`textStyle.align.${a}`)}
                       </button>
                     ))}
                   </div>
@@ -858,7 +853,7 @@ export function HomeFeed() {
                 aria-expanded={privacyOpen}
               >
                 {isPrivate ? <Lock className="h-3.5 w-3.5" /> : <Globe2 className="h-3.5 w-3.5" />}
-                {isPrivate ? "Private" : "Public"}
+                {isPrivate ? t("privacy.private") : t("privacy.public")}
               </button>
               {privacyOpen && (
                 <div
@@ -866,21 +861,21 @@ export function HomeFeed() {
                   className="absolute bottom-full right-0 mb-2 w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-lg z-40"
                 >
                   <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
-                    Post
+                    {t("media.post")}
                   </div>
                   <button
                     type="button"
                     onClick={() => { setIsPrivate(false); }}
                     className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${!isPrivate ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"}`}
                   >
-                    <Globe2 className="h-4 w-4" /> Public
+                    <Globe2 className="h-4 w-4" /> {t("privacy.public")}
                   </button>
                   <button
                     type="button"
                     onClick={() => { setIsPrivate(true); }}
                     className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium ${isPrivate ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"}`}
                   >
-                    <Lock className="h-4 w-4" /> Private
+                    <Lock className="h-4 w-4" /> {t("privacy.private")}
                   </button>
                   <div className="my-1 h-px bg-slate-100" />
                   <button
@@ -901,32 +896,32 @@ export function HomeFeed() {
       )}
       {!user && (
         <div className="bg-white rounded-2xl border border-slate-200 p-4 text-center text-sm text-slate-600">
-          <Link to="/auth" className="text-indigo-600 font-semibold">Sign in</Link> to post and join the feed.
+          <Link to="/auth" className="text-indigo-600 font-semibold">{t("common.signIn")}</Link> {t("feed.signInJoin")}
         </div>
       )}
       {/* Category tabs */}
         <div className="grid w-full grid-cols-3 items-center gap-3">
-        {TABS.map((t) => {
-          const active = tab === t.id;
+        {TABS.map((item) => {
+          const active = tab === item.id;
           const color =
-               t.id === "videos"
+               item.id === "videos"
                ? { active: "bg-[#19D66B] text-[#003D25] border-[#19D66B]", inactive: "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]" }
-               : t.id === "photos"
+               : item.id === "photos"
                ? { active: "bg-[#19D66B] text-[#003D25] border-[#19D66B]", inactive: "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]" }
-              : t.id === "users"
+              : item.id === "users"
               ? { active: "bg-sky-500 text-white border-sky-500", inactive: "bg-white text-sky-600 border-sky-200 hover:bg-sky-50" }
-              : t.id === "marriage"
+              : item.id === "marriage"
               ? { active: "bg-pink-500 text-white border-pink-500", inactive: "bg-white text-pink-600 border-pink-200 hover:bg-pink-50" }
               : { active: "bg-[#19D66B] text-[#003D25] border-[#19D66B]", inactive: "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]" };
           return (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
+              key={item.id}
+              onClick={() => setTab(item.id)}
                 className={`shrink-0 px-3 py-1 rounded-xl text-xs font-bold border min-w-[68px] transition ${
                 active ? color.active + " shadow-sm" : color.inactive
               }`}
             >
-              {t.label}
+              {t(item.label)}
             </button>
           );
         })}
@@ -935,7 +930,7 @@ export function HomeFeed() {
       {/* Users tab / People matches */}
       {tab === "users" && matchedProfiles.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 p-3">
-          <p className="text-xs font-semibold text-slate-500 px-2 mb-2">People</p>
+          <p className="text-xs font-semibold text-slate-500 px-2 mb-2">{t("feed.people")}</p>
           <div className="flex gap-3 overflow-x-auto">
             {matchedProfiles.slice(0, 20).map((p) => (
               <Link
@@ -963,13 +958,13 @@ export function HomeFeed() {
       {/* Marriage tab */}
       {tab === "marriage" && (
         <div className="bg-white rounded-2xl border border-slate-200 p-3 space-y-2">
-          <p className="text-xs font-semibold text-slate-500 px-2">Marriage Profiles</p>
+          <p className="text-xs font-semibold text-slate-500 px-2">{t("feed.marriageProfiles")}</p>
           {matchedMarriage.length === 0 ? (
-            <p className="text-sm text-slate-500 px-2 py-4 text-center">No marriage profiles found.</p>
+            <p className="text-sm text-slate-500 px-2 py-4 text-center">{t("feed.noMarriageProfiles")}</p>
           ) : (
             matchedMarriage.slice(0, 30).map((m) => {
               const prof = profiles[m.user_id];
-              const name = prof?.display_name ?? prof?.username ?? "Member";
+              const name = prof?.display_name ?? prof?.username ?? t("feed.member");
               return (
                 <Link
                   key={m.id}
@@ -982,7 +977,7 @@ export function HomeFeed() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white truncate">{name}</p>
                     <p className="text-xs text-white truncate">
-                    {[m.age && `${m.age}y`, m.country, m.profession].filter(Boolean).join(" · ") || "Tap to view"}
+                    {[m.age && t("feed.age", { age: m.age }), m.country, m.profession].filter(Boolean).join(" · ") || t("feed.tapView")}
                     </p>
                   </div>
                 </Link>
@@ -998,31 +993,31 @@ export function HomeFeed() {
 
         {loading ? (
           <div className="flex items-center justify-center py-10 text-slate-500">
-            <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading…
+            <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t("common.loading")}
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500 text-sm">
             {query.trim() ? (
-              "No posts match your search."
+              t("feed.noSearchMatches")
             ) : loadFailed ? (
               <>
-                <p className="mb-3">Couldn’t load the feed. Check your connection.</p>
+                <p className="mb-3">{t("feed.loadFailed")}</p>
                 <button
                   onClick={() => loadPosts()}
                   className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
                 >
-                  Retry
+                  {t("feed.retry")}
                 </button>
               </>
             ) : (
-              "No posts yet. Be the first to share!"
+              t("feed.noPosts")
             )}
           </div>
 
         ) : (
           filtered.map((p) => {
             const prof = profiles[p.user_id];
-            const name = prof?.display_name ?? prof?.username ?? "User";
+            const name = prof?.display_name ?? prof?.username ?? t("common.user");
             const isLiked = !!likedByMe[p.id];
             const likes = likeCounts[p.id] ?? 0;
             const comments = commentCounts[p.id] ?? 0;
@@ -1052,17 +1047,17 @@ export function HomeFeed() {
                                   setPrivacyMenuFor((cur) => cur === p.id ? null : p.id);
                                 }}
                                 className={`inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}
-                                aria-label="Change privacy"
+                                aria-label={t("feed.changePrivacy")}
                               >
-                                {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
+                                {p.is_private ? <><Lock className="h-2.5 w-2.5" /> {t("privacy.private")}</> : <><Globe2 className="h-2.5 w-2.5" /> {t("privacy.public")}</>}
                               </button>
                               {privacyMenuFor === p.id && (
                                 <>
                                   <div className="fixed inset-0 z-40" onClick={() => setPrivacyMenuFor(null)} />
                                   <div className="absolute left-0 top-full mt-1 z-50 w-32 rounded-lg border border-slate-200 bg-white shadow-lg overflow-hidden">
                                     {([
-                                      { val: false, label: "Public", Icon: Globe2, color: "text-emerald-600" },
-                                      { val: true, label: "Private", Icon: Lock, color: "text-rose-600" },
+                                      { val: false, label: t("privacy.public"), Icon: Globe2, color: "text-emerald-600" },
+                                      { val: true, label: t("privacy.private"), Icon: Lock, color: "text-rose-600" },
                                     ] as const).map(({ val, label, Icon, color }) => {
                                       const active = !!p.is_private === val;
                                       return (
@@ -1079,9 +1074,9 @@ export function HomeFeed() {
                                             const { error } = await supabase.from("posts").update({ is_private: val } as any).eq("id", p.id);
                                             if (error) {
                                               setPosts((arr) => arr.map((x) => x.id === p.id ? { ...x, is_private: prev } : x));
-                                              toast.error("Couldn't update privacy");
+                                              toast.error(t("feed.privacyFailed"));
                                             } else {
-                                              toast.success(val ? "Set to Private" : "Set to Public");
+                                              toast.success(val ? t("feed.setPrivate") : t("feed.setPublic"));
                                             }
                                           }}
                                           className={`flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-slate-50 ${active ? "bg-slate-50" : ""} ${color}`}
@@ -1102,11 +1097,11 @@ export function HomeFeed() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                toast.info(p.is_private ? "Yeh post Private hai" : "Yeh post Public hai");
+                                toast.info(p.is_private ? t("feed.isPrivate") : t("feed.isPublic"));
                               }}
                               className={`inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${p.is_private ? "text-rose-500" : "text-emerald-500"}`}
                             >
-                              {p.is_private ? <><Lock className="h-2.5 w-2.5" /> Private</> : <><Globe2 className="h-2.5 w-2.5" /> Public</>}
+                              {p.is_private ? <><Lock className="h-2.5 w-2.5" /> {t("privacy.private")}</> : <><Globe2 className="h-2.5 w-2.5" /> {t("privacy.public")}</>}
                             </button>
 
                           )
@@ -1114,7 +1109,7 @@ export function HomeFeed() {
                         <span className="text-[10px] text-slate-400">{timeAgo(p.created_at)}</span>
                       </div>
                       <p className="text-xs text-white truncate">
-                        {p.title || "No title"}
+                        {p.title || t("feed.noTitle")}
                       </p>
                     </div>
                   </Link>
@@ -1141,7 +1136,7 @@ export function HomeFeed() {
                         onClick={() => openCaptionEditor(p)}
                         className="absolute right-4 top-0 rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white shadow-lg"
                       >
-                        Edit
+                        {t("common.edit")}
                       </button>
                     )}
                   </div>
@@ -1161,11 +1156,11 @@ export function HomeFeed() {
                       type="button"
                       onClick={() => openFullscreen(p.id)}
                       className="relative w-full block group"
-                      aria-label="Open image fullscreen"
+                      aria-label={t("feed.openImage")}
                     >
                       <img
                         src={p.media_url}
-                        alt={p.caption ?? "Post"}
+                        alt={p.caption ?? t("media.post")}
                         className="w-full aspect-[4/5] lg:aspect-[9/16] max-w-[420px] mx-auto object-cover bg-slate-100"
                         loading="lazy"
                       />
@@ -1210,12 +1205,12 @@ export function HomeFeed() {
                         type="button"
                         onClick={() => openFullscreen(p.id)}
                         className="w-full h-full block"
-                        aria-label="Play video"
+                        aria-label={t("feed.playVideo")}
                       >
                         {p.thumbnail_url ? (
                           <img
                             src={p.thumbnail_url}
-                            alt={p.caption ?? "Video"}
+                            alt={p.caption ?? t("feed.video")}
                             loading="lazy"
                             decoding="async"
                             className="w-full h-full object-cover"
@@ -1235,7 +1230,7 @@ export function HomeFeed() {
                         setVideoMenuFor(p.id);
                       }}
                       className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center active:scale-95"
-                      aria-label="More options"
+                      aria-label={t("common.moreOptions")}
                     >
                       <MoreVertical className="h-4 w-4" />
                     </button>
@@ -1246,7 +1241,7 @@ export function HomeFeed() {
                   <button
                     onClick={() => toggleLike(p.id)}
                     className={`flex flex-col items-center gap-0.5 transition ${isLiked ? "text-rose-500" : "text-white hover:text-[#19D66B]"}`}
-                    aria-label={isLiked ? "Unlike" : "Like"}
+                    aria-label={isLiked ? t("feed.unlike") : t("feed.like")}
                   >
                     <Heart className={`h-6 w-6 ${isLiked ? "fill-rose-500" : ""}`} />
                     <span className="text-[11px] font-semibold tabular-nums">{likeCounts[p.id] ?? 0}</span>
@@ -1254,7 +1249,7 @@ export function HomeFeed() {
                   <button
                     onClick={() => setCommentsOpenFor(p.id)}
                     className="flex flex-col items-center gap-0.5 text-white hover:text-[#19D66B]"
-                    aria-label="Open comments"
+                    aria-label={t("feed.openComments")}
                   >
                     <MessageCircle className="h-6 w-6" />
                     <span className="text-[11px] font-semibold tabular-nums">{commentCounts[p.id] ?? 0}</span>
@@ -1266,10 +1261,10 @@ export function HomeFeed() {
                       // Share button look broken.
                       const shareUrl = buildShareUrl(`/u/${p.user_id}`);
                       const data = {
-                        title: p.caption ?? "VIP Life post",
-                        text: p.caption ?? "Check out this post on VIP Life",
+                        title: p.caption ?? t("feed.shareTitle"),
+                        text: p.caption ?? t("feed.shareText"),
                         url: shareUrl,
-                        dialogTitle: "Share post",
+                        dialogTitle: t("share.post"),
                       };
 
                       const nativeShare = shareWithSystemShare(data);
@@ -1293,7 +1288,7 @@ export function HomeFeed() {
                       });
                     }}
                     className="flex flex-col items-center gap-0.5 text-white hover:text-[#19D66B]"
-                    aria-label="Share"
+                    aria-label={t("common.share")}
                   >
                     <Share2 className="h-6 w-6" />
                     <span className="text-[11px] font-semibold tabular-nums">{shareCounts[p.id] ?? 0}</span>
@@ -1302,7 +1297,7 @@ export function HomeFeed() {
                     <button
                       onClick={() => openFullscreen(p.id)}
                       className="ml-auto flex items-center hover:text-indigo-600 lg:hidden"
-                      aria-label="Open fullscreen"
+                      aria-label={t("feed.openFullscreen")}
                     >
                       <Maximize2 className="h-4 w-4" />
                     </button>
@@ -1347,7 +1342,7 @@ export function HomeFeed() {
       {editingCaptionId && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4" onClick={() => setEditingCaptionId(null)}>
           <div className="w-full max-w-sm rounded-2xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="mb-3 text-base font-bold">Edit title</h3>
+            <h3 className="mb-3 text-base font-bold">{t("feed.editTitle")}</h3>
             <textarea
               value={editCaptionValue}
               onChange={(e) => setEditCaptionValue(e.target.value)}
@@ -1362,14 +1357,14 @@ export function HomeFeed() {
                 onClick={() => setEditingCaptionId(null)}
                 className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
               >
-                Cancel
+                {t("common.cancel")}
               </button>
               <button
                 type="button"
                 onClick={saveCaptionEdit}
                 className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
               >
-                Save
+                {t("common.save")}
               </button>
             </div>
           </div>
@@ -1414,14 +1409,14 @@ export function HomeFeed() {
           <button
             onClick={closeFullscreenPreview}
             className="absolute top-4 left-4 h-10 w-10 rounded-full bg-black/60 text-white flex items-center justify-center active:scale-95"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <X className="h-5 w-5" />
           </button>
           <button
             onClick={() => setVideoMenuOpen(true)}
             className="absolute top-4 right-4 h-10 w-10 rounded-full text-white flex items-center justify-center active:scale-95 drop-shadow-lg"
-            aria-label="More options"
+            aria-label={t("common.moreOptions")}
           >
             <MoreVertical className="h-5 w-5" />
           </button>
@@ -1430,7 +1425,7 @@ export function HomeFeed() {
               onClick={() => setUploadPrivacyOpen((v) => !v)}
               disabled={posting}
               className="h-10 w-10 rounded-full text-white flex items-center justify-center active:scale-95 disabled:opacity-60 drop-shadow-lg"
-              aria-label="Upload video"
+              aria-label={t("feed.uploadVideo")}
             >
               {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
             </button>
@@ -1442,7 +1437,7 @@ export function HomeFeed() {
                   disabled={posting}
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 active:bg-slate-100 disabled:opacity-50"
                 >
-                  <Globe2 className="h-4 w-4" /> Public
+                  <Globe2 className="h-4 w-4" /> {t("privacy.public")}
                 </button>
                 <button
                   type="button"
@@ -1450,7 +1445,7 @@ export function HomeFeed() {
                   disabled={posting}
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 active:bg-slate-100 disabled:opacity-50"
                 >
-                  <Lock className="h-4 w-4" /> Private
+                  <Lock className="h-4 w-4" /> {t("privacy.private")}
                 </button>
               </div>
             )}
@@ -1481,21 +1476,21 @@ export function HomeFeed() {
               className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
             >
               <Film className="h-5 w-5" />
-              Edit
+              {t("common.edit")}
             </button>
             <button
               onClick={() => { setVideoMenuOpen(false); setFramePickerOpen(true); }}
               className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
             >
               <Film className="h-5 w-5" />
-              Choose thumbnail from video
+              {t("upload.chooseThumbnail")}
             </button>
             <button
               onClick={() => { setVideoMenuOpen(false); thumbRef.current?.click(); }}
               className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-b border-slate-100 active:bg-slate-100"
             >
               <Upload className="h-5 w-5" />
-              Upload thumbnail image
+              {t("upload.uploadThumbnail")}
             </button>
             {thumbFile && (
               <button
@@ -1503,14 +1498,14 @@ export function HomeFeed() {
                 className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-rose-600 border-b border-slate-100 active:bg-slate-100"
               >
                 <X className="h-5 w-5" />
-                Remove thumbnail
+                {t("feed.removeThumbnail")}
               </button>
             )}
             <button
               onClick={() => setVideoMenuOpen(false)}
               className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -1526,18 +1521,23 @@ export function HomeFeed() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-5 pt-5 pb-2">
-              <h3 className="text-sm font-bold text-slate-900 mb-3">Video details</h3>
+              <h3 className="text-sm font-bold text-slate-900 mb-3">{t("feed.videoDetails")}</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Category</p>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">{t("upload.category")}</p>
                   <p className="mt-1 text-sm font-semibold text-slate-800">
-                    {posts.find((p) => p.id === videoMenuFor)?.category || "For You"}
+                    {(() => {
+                      const category = posts.find((p) => p.id === videoMenuFor)?.category || "For You";
+                      const key = Object.prototype.hasOwnProperty.call(UPLOAD_CATEGORY_KEYS, category)
+                        ? UPLOAD_CATEGORY_KEYS[category as keyof typeof UPLOAD_CATEGORY_KEYS] : undefined;
+                      return key ? t(key) : category;
+                    })()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Caption</p>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">{t("media.caption")}</p>
                   <p className="mt-1 text-sm text-slate-700 whitespace-pre-wrap">
-                    {posts.find((p) => p.id === videoMenuFor)?.caption || "No caption"}
+                    {posts.find((p) => p.id === videoMenuFor)?.caption || t("feed.noCaption")}
                   </p>
                 </div>
               </div>
@@ -1551,13 +1551,13 @@ export function HomeFeed() {
               className="w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-slate-800 border-t border-slate-100 active:bg-slate-100"
             >
               <Maximize2 className="h-5 w-5" />
-              Open fullscreen
+              {t("feed.openFullscreen")}
             </button>
             <button
               onClick={() => setVideoMenuFor(null)}
               className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50 border-t border-slate-100"
             >
-              Close
+              {t("common.close")}
             </button>
           </div>
         </div>
@@ -1567,8 +1567,8 @@ export function HomeFeed() {
         <ShareSheet
           open={shareOpen}
           onClose={() => { setShareOpen(false); setSharePost(null); }}
-          title={sharePost.caption ?? "Post"}
-          text={sharePost.caption ?? "Check this out"}
+          title={sharePost.caption ?? t("media.post")}
+          text={sharePost.caption ?? t("media.checkThisOut")}
           url={buildShareUrl(`/u/${sharePost.user_id}`)}
         />
       )}
