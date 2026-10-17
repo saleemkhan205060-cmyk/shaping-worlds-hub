@@ -58,7 +58,7 @@ function Index() {
     <Layout>
   <section className="mt-3 mb-4">
   <div
-    className="relative block w-full overflow-hidden rounded-2xl border border-[#19D66B]/60"
+    className="relative block mx-[-8px] w-[calc(100%+16px)] overflow-hidden rounded-2xl border border-[#19D66B]/60"
   >
     <img
       src="/kkk23.jpg"
