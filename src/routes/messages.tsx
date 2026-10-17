@@ -981,7 +981,7 @@ function Messages() {
          <button
          onClick={() => setSearchOpen((o) => !o)}
         className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-      aria-label="New chat"
+      aria-label={t("msg.newChat")}
       >
      <Search className="h-4 w-4" />
        </button>
@@ -996,7 +996,7 @@ function Messages() {
                 onChange={(e) =>
                   setSearchQ(e.target.value)
                 }
-                placeholder="Search users…"
+                placeholder={t("msg.searchUsers")}
                 className="w-full h-9 px-3 rounded-full bg-white border border-[#19D66B]/15 shadow-[0_2px_8px_rgba(0,61,37,0.06)] text-sm focus:outline-none focus:ring-2 focus:ring-[#19D66B]/40 focus:border-[#19D66B]/30 transition-all duration-200"
               />
 
@@ -1018,7 +1018,7 @@ function Messages() {
                         <span className="text-sm font-medium truncate">
                           {p.display_name ??
                             p.username ??
-                            "User"}
+                            t("msg.userFallback")}
                         </span>
                       </button>
                     </li>
@@ -1047,7 +1047,7 @@ function Messages() {
               </div>
             ) : conversations.length === 0 ? (
               <p className="text-center text-sm text-slate-500 py-8 px-4">
-                No conversations yet. Tap the search icon to start one.
+                {t("msg.noConversations")}
               </p>
             ) : (
               <ul>
@@ -1075,7 +1075,7 @@ function Messages() {
 
                           <span
                             className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#7CFF3B] border-2 border-[#f7faf8] shadow-[0_0_6px_rgba(124,255,59,0.65)]"
-                            aria-label="Online"
+                            aria-label={t("msg.online")}
                           />
                         </div>
 
@@ -1095,7 +1095,7 @@ function Messages() {
                           <p className="text-xs text-slate-500 truncate">
                             {c.last.sender_id ===
                             user.id
-                              ? "You: "
+                              ? t("msg.you")
                               : ""}
                             {c.last.content}
                           </p>
@@ -1132,7 +1132,7 @@ function Messages() {
                         setActivePeer(null)
                       }
                       className="md:hidden h-9 w-9 rounded-full hover:bg-white/20 active:bg-white/30 flex items-center justify-center text-white shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
-                      aria-label="Back"
+                      aria-label={t("msg.back")}
                     >
                       <ArrowLeft className="h-6 w-6" />
                     </button>
@@ -1140,7 +1140,7 @@ function Messages() {
                       to="/u/$id"
                       params={{ id: activePeer }}
                       className="relative shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7CFF3B]"
-                      aria-label={`Open ${peerName(activePeer)} profile`}
+                      aria-label={t("msg.openProfile", { name: peerName(activePeer) })}
                     >
                       <div className="rounded-full p-[2px] bg-gradient-to-br from-[#7CFF3B] via-[#19D66B] to-[#003D25] shadow-[0_0_16px_rgba(25,214,107,0.42)] w-fit h-fit">
                         <div className="rounded-full bg-[#075E54] p-[1px]">
