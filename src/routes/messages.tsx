@@ -1886,6 +1886,8 @@ function MessageAttachment({
   onDeleted: () => void;
   onReply: () => void;
 }) {
+  const { t } = useI18n();
+
   const [url, setUrl] =
     useState<string | null>(null);
 
@@ -1999,7 +2001,7 @@ function MessageAttachment({
   const copyImage = async () => {
     if (!url) {
       toast.error(
-        "Image not ready yet",
+        t("msg.imageNotReady"),
       );
       return;
     }
@@ -2040,7 +2042,7 @@ function MessageAttachment({
         ]);
 
         toast.success(
-          "Image copied",
+          t("msg.imageCopied"),
         );
 
         return;
@@ -2051,11 +2053,11 @@ function MessageAttachment({
       );
 
       toast.success(
-        "Image link copied",
+        t("msg.linkCopied"),
       );
     } catch {
       toast.error(
-        "Couldn't copy image",
+        t("msg.copyFailed"),
       );
     }
   };
@@ -2063,7 +2065,7 @@ function MessageAttachment({
   const downloadFile = async () => {
     if (!url) {
       toast.error(
-        "Image not ready yet",
+        t("msg.imageNotReady"),
       );
       return;
     }
@@ -2157,11 +2159,11 @@ function MessageAttachment({
 
         await Share.share({
           title: filename,
-          text: "Save image",
+          text: t("msg.saveImage"),
           files: [uri],
           url: uri,
           dialogTitle:
-            "Save image",
+            t("msg.saveImage"),
         });
 
         return;
@@ -2185,7 +2187,7 @@ function MessageAttachment({
       const sharePayload = {
         files: [file],
         title: filename,
-        text: "Save image",
+        text: t("msg.saveImage"),
       } as ShareData;
 
       if (
@@ -2227,7 +2229,7 @@ function MessageAttachment({
       );
 
       toast.success(
-        "Download started",
+        t("msg.downloadStarted"),
       );
     } catch {
       try {
@@ -2251,7 +2253,7 @@ function MessageAttachment({
         );
       } catch {
         toast.error(
-          "Download failed",
+          t("msg.downloadFailed"),
         );
       }
     }
@@ -2260,7 +2262,7 @@ function MessageAttachment({
   const deleteMessage = async () => {
     if (
       !confirm(
-        "Delete this message? This cannot be undone.",
+        t("msg.deleteAttachmentConfirm"),
       )
     ) {
       return;
@@ -2274,13 +2276,13 @@ function MessageAttachment({
 
     if (error) {
       toast.error(
-        "Couldn't delete",
+        t("msg.deleteFailedShort"),
       );
     } else {
       onDeleted();
 
       toast.success(
-        "Deleted",
+        t("msg.deletedShort"),
       );
     }
   };
