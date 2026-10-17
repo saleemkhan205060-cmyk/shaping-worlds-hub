@@ -1,4 +1,13 @@
-# Android keyboard spacing
+# VIP Life implementation roadmap
+
+## Approved global translation implementation
+- [ ] Capture and verify the unchanged 195-country baseline and all 92 approved targets.
+- [ ] Inventory app-owned text across every route, component, and shared utility, including dynamic messages and hidden states.
+- [ ] Build bundled translation, interpolation, plural, formatting, direction, and completeness safeguards without activating incomplete targets.
+- [ ] Integrate every app-owned UI string and complete all 92 dictionaries; do not release a partial set.
+- [ ] Obtain native-speaker review for all targets and approved localized legal copy/artwork (requires qualified reviewers and approved content).
+- [ ] Run complete coverage and signed-in web regression checks; verify physical Android behavior (requires device access).
+- [ ] Activate all approved country defaults together only after every release gate passes.
 
 ## Country-language investigation (no app changes)
 - [x] Finalize and cross-check all 195 mappings against the complete 92-target registry (17 retained + 75 additional); identify confirmation choices and require full-target translation/testing before rollout. Await user review before any implementation.
