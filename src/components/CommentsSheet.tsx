@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { AvatarImg } from "@/components/AvatarImg";
+import { useI18n } from "@/lib/i18n";
 
 type Comment = {
   id: string;
@@ -33,6 +34,7 @@ export function CommentsSheet({
 }) {
   const handleClose = useHistoryBackClose(onClose);
   const { user } = useAuth();
+  const { t } = useI18n();
   const [items, setItems] = useState<Comment[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [text, setText] = useState("");
@@ -112,7 +114,7 @@ export function CommentsSheet({
 
   const submit = async () => {
     if (!user) {
-      toast.error("Sign in to comment");
+      toast.error(t("comments.signIn"));
       return;
     }
     const content = text.trim();
@@ -125,7 +127,7 @@ export function CommentsSheet({
       .single();
     setBusy(false);
     if (error || !data) {
-      toast.error("Couldn't send");
+      toast.error(t("common.sendFailed"));
       return;
     }
     const next = [...items, data as Comment];
@@ -141,8 +143,8 @@ export function CommentsSheet({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h3 className="font-bold">Comments</h3>
-          <button onClick={handleClose} aria-label="Close" className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
+          <h3 className="font-bold">{t("comments.title")}</h3>
+          <button onClick={handleClose} aria-label={t("common.close")} className="h-8 w-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -152,11 +154,11 @@ export function CommentsSheet({
               <Loader2 className="h-5 w-5 animate-spin" />
             </div>
           ) : items.length === 0 ? (
-            <p className="text-center text-sm text-slate-500 py-6">Be the first to comment.</p>
+            <p className="text-center text-sm text-slate-500 py-6">{t("comments.first")}</p>
           ) : (
             items.map((c) => {
               const prof = profiles[c.user_id];
-              const name = prof?.display_name ?? prof?.username ?? "User";
+              const name = prof?.display_name ?? prof?.username ?? t("common.user");
               return (
                 <div key={c.id} className="flex gap-2">
                   <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
@@ -184,7 +186,7 @@ export function CommentsSheet({
         submit();
            }
            }}
-            placeholder={user ? "Write a comment…" : "Sign in to comment"}
+            placeholder={user ? t("comments.placeholder") : t("comments.signIn")}
             disabled={!user || busy}
             className="flex-1 h-10 px-4 rounded-full bg-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-60 relative z-[10000]"
           />

@@ -3,8 +3,9 @@
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
     "sourceFilesWithCandidates": 117,
-    "candidates": 3389,
-    "contentRouteMetadata": 35
+    "candidates": 3336,
+    "contentRouteMetadata": 35,
+    "translatedUses": 65
   },
   "metadata": [
     {
@@ -154,7 +155,7 @@
     },
     {
       "file": "src/routes/reset-password.tsx",
-      "hasHead": false,
+      "hasHead": true,
       "review": "pending"
     },
     {
@@ -181,6 +182,333 @@
       "file": "src/routes/videos.tsx",
       "hasHead": true,
       "review": "pending"
+    }
+  ],
+  "translatedUses": [
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 66,
+      "key": "recovery.invalidEmail"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 75,
+      "key": "recovery.codeSent"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 79,
+      "key": "recovery.sendFailed"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 89,
+      "key": "recovery.enterCode"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 100,
+      "key": "recovery.verifyFailed"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 101,
+      "key": "recovery.verified"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 104,
+      "key": "recovery.invalidCode"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 113,
+      "key": "recovery.shortPassword"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 117,
+      "key": "recovery.mismatch"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 125,
+      "key": "recovery.updated"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 128,
+      "key": "recovery.updateFailed"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 148,
+      "key": "recovery.forgot"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 148,
+      "key": "recovery.codeTitle"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 148,
+      "key": "recovery.passwordTitle"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 152,
+      "key": "recovery.emailHelp"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 154,
+      "key": "recovery.codeHelp"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 155,
+      "key": "recovery.passwordHelp"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 166,
+      "key": "recovery.email"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 171,
+      "key": "recovery.send"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 185,
+      "key": "recovery.code"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 190,
+      "key": "recovery.verify"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 198,
+      "key": "recovery.changeEmail"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 206,
+      "key": "recovery.resendIn"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 206,
+      "key": "recovery.resend"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 220,
+      "key": "recovery.newPassword"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 229,
+      "key": "recovery.confirm"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 234,
+      "key": "recovery.update"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 241,
+      "key": "recovery.back"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 117,
+      "key": "comments.signIn"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 130,
+      "key": "common.sendFailed"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 146,
+      "key": "comments.title"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 147,
+      "key": "common.close"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 157,
+      "key": "comments.first"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 161,
+      "key": "common.user"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 189,
+      "key": "comments.placeholder"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 189,
+      "key": "comments.signIn"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 523,
+      "key": "menu.language"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 528,
+      "key": "menu.signOut"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 539,
+      "key": "common.signIn"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 67,
+      "key": "privacy.settings"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 70,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 70,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 81,
+      "key": "privacy.settings"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 92,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 104,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 110,
+      "key": "share.copied"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 113,
+      "key": "share.copyFailed"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 118,
+      "key": "share.post"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 123,
+      "key": "share.openFailed"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 133,
+      "key": "share.signIn"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 143,
+      "key": "common.sendFailed"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 147,
+      "key": "share.sentTo"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 147,
+      "key": "share.friend"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 163,
+      "key": "common.share"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 168,
+      "key": "share.close"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 177,
+      "key": "share.sendTo"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 187,
+      "key": "share.search"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 207,
+      "key": "share.loading"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 211,
+      "key": "share.noFriends"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 211,
+      "key": "share.followPrompt"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 216,
+      "key": "common.user"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 248,
+      "key": "common.sent"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 262,
+      "key": "share.moreApps"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 319,
+      "key": "common.email"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 353,
+      "key": "common.copy"
     }
   ],
   "records": [
@@ -1194,86 +1522,30 @@
     },
     {
       "file": "src/components/CommentsSheet.tsx",
-      "line": 51,
+      "line": 53,
       "kind": "literal-candidate",
       "text": "id, post_id, user_id, content, created_at, is_hidden",
       "review": "pending"
     },
     {
       "file": "src/components/CommentsSheet.tsx",
-      "line": 73,
+      "line": 75,
       "kind": "literal-candidate",
       "text": "id, username, display_name, avatar_url",
       "review": "pending"
     },
     {
       "file": "src/components/CommentsSheet.tsx",
-      "line": 115,
-      "kind": "feedback-candidate",
-      "text": "Sign in to comment",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 124,
+      "line": 126,
       "kind": "literal-candidate",
       "text": "id, post_id, user_id, content, created_at, is_hidden",
       "review": "pending"
     },
     {
       "file": "src/components/CommentsSheet.tsx",
-      "line": 128,
-      "kind": "feedback-candidate",
-      "text": "Couldn't send",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 144,
-      "kind": "jsx-text",
-      "text": "Comments",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 145,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 155,
-      "kind": "jsx-text",
-      "text": "Be the first to comment.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 159,
-      "kind": "literal-candidate",
-      "text": "User",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 182,
+      "line": 184,
       "kind": "literal-candidate",
       "text": "Enter",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 187,
-      "kind": "literal-candidate",
-      "text": "Write a comment…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CommentsSheet.tsx",
-      "line": 187,
-      "kind": "literal-candidate",
-      "text": "Sign in to comment",
       "review": "pending"
     },
     {
@@ -5940,121 +6212,79 @@
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 14,
+      "line": 15,
       "kind": "literal-candidate",
       "text": "focus:border-indigo-400 focus:ring-indigo-100",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 15,
+      "line": 16,
       "kind": "literal-candidate",
       "text": "border-indigo-500 bg-indigo-50 text-indigo-700",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 18,
+      "line": 19,
       "kind": "literal-candidate",
       "text": "focus:border-violet-400 focus:ring-violet-100",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 19,
+      "line": 20,
       "kind": "literal-candidate",
       "text": "border-violet-500 bg-violet-50 text-violet-700",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 28,
-      "kind": "literal-candidate",
-      "text": "Post settings",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/PostPrivacySettings.tsx",
-      "line": 40,
+      "line": 42,
       "kind": "literal-candidate",
       "text": "Escape",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 60,
+      "line": 62,
       "kind": "literal-candidate",
       "text": "inline-flex h-10 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none focus:ring-4 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 68,
-      "kind": "literal-candidate",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/PostPrivacySettings.tsx",
-      "line": 68,
-      "kind": "literal-candidate",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/PostPrivacySettings.tsx",
-      "line": 75,
+      "line": 77,
       "kind": "literal-candidate",
       "text": "absolute bottom-full z-40 mb-2 w-60 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 79,
-      "kind": "jsx-text",
-      "text": "Post settings",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/PostPrivacySettings.tsx",
-      "line": 85,
+      "line": 87,
       "kind": "literal-candidate",
       "text": "flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm font-semibold transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 86,
+      "line": 88,
       "kind": "literal-candidate",
       "text": "border-transparent text-slate-700 hover:bg-slate-50",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 90,
-      "kind": "jsx-text",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/PostPrivacySettings.tsx",
-      "line": 97,
+      "line": 99,
       "kind": "literal-candidate",
       "text": "mt-1 flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm font-semibold transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
-      "line": 98,
+      "line": 100,
       "kind": "literal-candidate",
       "text": "border-transparent text-slate-700 hover:bg-slate-50",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/PostPrivacySettings.tsx",
-      "line": 102,
-      "kind": "jsx-text",
-      "text": "Private",
       "review": "pending"
     },
     {
@@ -6101,273 +6331,140 @@
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 82,
+      "line": 84,
       "kind": "literal-candidate",
       "text": "id, display_name, username, avatar_url",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 97,
+      "line": 99,
       "kind": "literal-candidate",
       "text": "{value1} {value2}",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 101,
+      "line": 103,
       "kind": "literal-candidate",
       "text": "noopener,noreferrer",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 108,
-      "kind": "feedback-candidate",
-      "text": "Link copied",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 111,
-      "kind": "feedback-candidate",
-      "text": "Couldn't copy link",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 116,
-      "kind": "literal-candidate",
-      "text": "Share post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 121,
-      "kind": "feedback-candidate",
-      "text": "Couldn't open share menu",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 131,
-      "kind": "feedback-candidate",
-      "text": "Please sign in to share",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 134,
+      "line": 136,
       "kind": "literal-candidate",
       "text": "{value1}{value2}",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 141,
-      "kind": "feedback-candidate",
-      "text": "Couldn't send",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 145,
-      "kind": "feedback-candidate",
-      "text": "Sent to {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 161,
-      "kind": "jsx-text",
-      "text": "Share",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 166,
-      "kind": "ui-attribute",
-      "text": "Close share menu",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 175,
-      "kind": "jsx-text",
-      "text": "Send to",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 185,
-      "kind": "ui-attribute",
-      "text": "Search friends...",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 205,
-      "kind": "jsx-text",
-      "text": "Loading friends…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 209,
-      "kind": "literal-candidate",
-      "text": "No friends found.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 209,
-      "kind": "literal-candidate",
-      "text": "Follow people to send them posts directly.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 214,
-      "kind": "literal-candidate",
-      "text": "User",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 246,
-      "kind": "literal-candidate",
-      "text": "Sent",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 260,
-      "kind": "ui-attribute",
-      "text": "More apps",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 267,
+      "line": 269,
       "kind": "ui-attribute",
       "text": "WhatsApp",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 273,
+      "line": 275,
       "kind": "ui-attribute",
       "text": "Facebook",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 281,
+      "line": 283,
       "kind": "ui-attribute",
       "text": "Messenger",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 287,
+      "line": 289,
       "kind": "ui-attribute",
       "text": "Telegram",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 297,
+      "line": 299,
       "kind": "ui-attribute",
       "text": "TikTok",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 303,
+      "line": 305,
       "kind": "ui-attribute",
       "text": "X",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 304,
+      "line": 306,
       "kind": "jsx-text",
       "text": "𝕏",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 309,
+      "line": 311,
       "kind": "ui-attribute",
       "text": "LinkedIn",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 317,
-      "kind": "ui-attribute",
-      "text": "Email",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 321,
+      "line": 323,
       "kind": "literal-candidate",
       "text": "mailto:?subject={value1}&body={value2}",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 325,
+      "line": 327,
       "kind": "ui-attribute",
       "text": "SMS",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 328,
+      "line": 330,
       "kind": "literal-candidate",
       "text": "sms:?&body={value1}",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 331,
+      "line": 333,
       "kind": "ui-attribute",
       "text": "Reddit",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 332,
+      "line": 334,
       "kind": "jsx-text",
       "text": "r",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 341,
+      "line": 343,
       "kind": "ui-attribute",
       "text": "Pinterest",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 342,
+      "line": 344,
       "kind": "jsx-text",
       "text": "P",
       "review": "pending"
     },
     {
       "file": "src/components/ShareSheet.tsx",
-      "line": 351,
-      "kind": "ui-attribute",
-      "text": "Copy",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/ShareSheet.tsx",
-      "line": 380,
+      "line": 382,
       "kind": "literal-candidate",
       "text": "h-12 w-12 rounded-full flex items-center justify-center shadow-sm active:scale-95 {value1}",
       "review": "pending"
@@ -21697,233 +21794,93 @@
     },
     {
       "file": "src/routes/reset-password.tsx",
-      "line": 36,
+      "line": 11,
+      "kind": "literal-candidate",
+      "text": "Reset password | VIP Life",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 12,
+      "kind": "literal-candidate",
+      "text": "Recover access to your VIP Life account.",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 13,
+      "kind": "literal-candidate",
+      "text": "og:title",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 13,
+      "kind": "literal-candidate",
+      "text": "Reset password | VIP Life",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 14,
+      "kind": "literal-candidate",
+      "text": "og:description",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 14,
+      "kind": "literal-candidate",
+      "text": "Recover access to your VIP Life account.",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 15,
+      "kind": "literal-candidate",
+      "text": "og:type",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 16,
+      "kind": "literal-candidate",
+      "text": "twitter:card",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 46,
       "kind": "literal-candidate",
       "text": "type=recovery",
       "review": "pending"
     },
     {
       "file": "src/routes/reset-password.tsx",
-      "line": 56,
-      "kind": "feedback-candidate",
-      "text": "Please enter a valid email address",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 62,
+      "line": 72,
       "kind": "literal-candidate",
       "text": "{value1}/reset-password",
       "review": "pending"
     },
     {
       "file": "src/routes/reset-password.tsx",
-      "line": 65,
-      "kind": "feedback-candidate",
-      "text": "We sent a verification code to your email.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 69,
-      "kind": "literal-candidate",
-      "text": "Couldn't send the code. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 79,
-      "kind": "feedback-candidate",
-      "text": "Please enter the 8-digit code from your email",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 90,
-      "kind": "literal-candidate",
-      "text": "Code verification failed. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 91,
-      "kind": "feedback-candidate",
-      "text": "Code verified. Set your new password.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 94,
-      "kind": "literal-candidate",
-      "text": "Invalid or expired code",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 103,
-      "kind": "feedback-candidate",
-      "text": "Password must be at least 6 characters",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 107,
-      "kind": "feedback-candidate",
-      "text": "Passwords do not match",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 115,
-      "kind": "feedback-candidate",
-      "text": "Password updated. You can sign in now.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 118,
-      "kind": "literal-candidate",
-      "text": "Failed to update password",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 125,
+      "line": 135,
       "kind": "literal-candidate",
       "text": "w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-[#117d43] focus:outline-none",
       "review": "pending"
     },
     {
       "file": "src/routes/reset-password.tsx",
-      "line": 127,
+      "line": 137,
       "kind": "literal-candidate",
       "text": "flex w-full items-center justify-center gap-2 rounded-full bg-[#117d43] py-2.5 font-semibold text-white disabled:opacity-50",
       "review": "pending"
     },
     {
       "file": "src/routes/reset-password.tsx",
-      "line": 138,
-      "kind": "literal-candidate",
-      "text": "Forgot password",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 138,
-      "kind": "literal-candidate",
-      "text": "Enter your code",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 138,
-      "kind": "literal-candidate",
-      "text": "Set new password",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 142,
-      "kind": "literal-candidate",
-      "text": "Enter your email and we'll send you a verification code.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 144,
-      "kind": "literal-candidate",
-      "text": "We sent an 8-digit code to {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 145,
-      "kind": "literal-candidate",
-      "text": "Choose a new password for your account.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 156,
-      "kind": "ui-attribute",
-      "text": "Email address",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 161,
-      "kind": "jsx-text",
-      "text": "Send code",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 175,
-      "kind": "ui-attribute",
-      "text": "8-digit code",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 176,
+      "line": 186,
       "kind": "literal-candidate",
       "text": "{value1} text-center text-lg tracking-[0.5em] font-semibold",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 180,
-      "kind": "jsx-text",
-      "text": "Verify code",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 188,
-      "kind": "jsx-text",
-      "text": "Change email",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 196,
-      "kind": "literal-candidate",
-      "text": "Resend in {value1}s",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 196,
-      "kind": "literal-candidate",
-      "text": "Resend code",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 210,
-      "kind": "ui-attribute",
-      "text": "New password (min 6 chars)",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 219,
-      "kind": "ui-attribute",
-      "text": "Confirm new password",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 224,
-      "kind": "jsx-text",
-      "text": "Update password",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/reset-password.tsx",
-      "line": 231,
-      "kind": "jsx-text",
-      "text": "← Back to sign in",
       "review": "pending"
     },
     {

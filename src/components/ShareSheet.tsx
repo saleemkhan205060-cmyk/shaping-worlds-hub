@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { canUseSystemShare, shareWithSystemShare } from "@/lib/native-share";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/lib/i18n";
 
 type ShareSheetProps = {
   open: boolean;
@@ -38,6 +39,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
   // Read the identity from the shared in-memory session instead of a network
   // getUser() call, which blocks on the Supabase auth lock and can hang.
   const { user } = useAuth();
+  const { t } = useI18n();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [sentTo, setSentTo] = useState<Record<string, boolean>>({});
@@ -105,20 +107,20 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(url);
-      toast.success("Link copied");
+      toast.success(t("share.copied"));
       onClose();
     } catch {
-      toast.error("Couldn't copy link");
+      toast.error(t("share.copyFailed"));
     }
   };
 
   const moreApps = async () => {
-    const data = { title, text, url, dialogTitle: "Share post" };
+    const data = { title, text, url, dialogTitle: t("share.post") };
     const result = await (shareWithSystemShare(data) ?? Promise.resolve("unavailable"));
 
     if (result === "shared") onClose();
     if (result === "failed" || result === "unavailable") {
-      toast.error("Couldn't open share menu");
+      toast.error(t("share.openFailed"));
     }
   };
 
@@ -128,7 +130,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
     try {
       const uid = user?.id;
       if (!uid) {
-        toast.error("Please sign in to share");
+        toast.error(t("share.signIn"));
         return;
       }
       const content = `${text ? text + "\n" : ""}${url}`.slice(0, 2000);
@@ -138,11 +140,11 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
         content,
       });
       if (error) {
-        toast.error("Couldn't send");
+        toast.error(t("common.sendFailed"));
         return;
       }
       setSentTo((s) => ({ ...s, [friend.id]: true }));
-      toast.success(`Sent to ${friend.display_name || friend.username || "friend"}`);
+      toast.success(t("share.sentTo", { actor: friend.display_name || friend.username || t("share.friend") }));
     } finally {
       setSendingTo((s) => ({ ...s, [friend.id]: false }));
     }
@@ -158,12 +160,12 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pb-3">
-          <h2 className="text-base font-bold text-slate-900">Share</h2>
+          <h2 className="text-base font-bold text-slate-900">{t("common.share")}</h2>
           <button
             type="button"
             onClick={onClose}
             className="h-8 w-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center active:bg-slate-200"
-            aria-label="Close share menu"
+            aria-label={t("share.close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -172,7 +174,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
         {/* Friends row (in-app sharing) */}
         <div className="pb-3">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 pb-2">
-            Send to
+            {t("share.sendTo")}
           </p>
 
           {/* Search bar */}
@@ -182,7 +184,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search friends..."
+              placeholder={t("share.search")}
               autoFocus
               autoComplete="off"
               autoCorrect="off"
@@ -202,16 +204,16 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
 
           {loadingFriends ? (
             <div className="flex items-center gap-2 text-xs text-slate-500 py-3">
-              <Loader2 className="h-4 w-4 animate-spin" /> Loading friends…
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("share.loading")}
             </div>
           ) : filteredFriends.length === 0 ? (
             <p className="text-xs text-slate-500 py-2">
-              {searchQuery ? "No friends found." : "Follow people to send them posts directly."}
+              {searchQuery ? t("share.noFriends") : t("share.followPrompt")}
             </p>
           ) : (
             <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
               {filteredFriends.map((friend) => {
-                const name = friend.display_name || friend.username || "User";
+                const name = friend.display_name || friend.username || t("common.user");
                 const initial = name.trim().charAt(0).toUpperCase();
                 const isSent = !!sentTo[friend.id];
                 const isSending = !!sendingTo[friend.id];
@@ -243,7 +245,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
                       )}
                     </span>
                     <span className="w-full truncate text-center text-[11px] font-medium leading-tight">
-                      {isSent ? "Sent" : name}
+                      {isSent ? t("common.sent") : name}
                     </span>
                   </button>
                 );
@@ -257,7 +259,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
         <div className="grid grid-cols-4 gap-x-3 gap-y-4 pt-3 pb-4">
           {canNativeShare && (
             <ShareChoice
-              label="More apps"
+              label={t("share.moreApps")}
               icon={<Share2 className="h-5 w-5" />}
               tone="bg-slate-900 text-white"
               onClick={moreApps}
@@ -314,7 +316,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             }
           />
           <ShareChoice
-            label="Email"
+            label={t("common.email")}
             icon={<Mail className="h-5 w-5" />}
             tone="bg-[#EA4335] text-white"
             onClick={() =>
@@ -348,7 +350,7 @@ export function ShareSheet({ open, onClose, title, text, url }: ShareSheetProps)
             }
           />
           <ShareChoice
-            label="Copy"
+            label={t("common.copy")}
             icon={<Copy className="h-5 w-5" />}
             tone="bg-slate-100 text-slate-800"
             onClick={copyLink}

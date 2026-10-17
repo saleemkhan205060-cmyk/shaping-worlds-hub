@@ -4,8 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Shield, Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { getOAuthRedirectOrigin } from "@/lib/oauth-origin";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/reset-password")({
+  head: () => ({ meta: [
+    { title: "Reset password | VIP Life" },
+    { name: "description", content: "Recover access to your VIP Life account." },
+    { property: "og:title", content: "Reset password | VIP Life" },
+    { property: "og:description", content: "Recover access to your VIP Life account." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ResetPasswordPage,
   validateSearch: (search: Record<string, unknown>) => ({
     email: typeof search.email === "string" ? search.email : undefined,
@@ -15,6 +24,7 @@ export const Route = createFileRoute("/reset-password")({
 type Step = "email" | "code" | "password";
 
 function ResetPasswordPage() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const search = useSearch({ from: "/reset-password" });
   const [step, setStep] = useState<Step>("email");
@@ -53,7 +63,7 @@ function ResetPasswordPage() {
     e?.preventDefault();
     const target = email.trim().toLowerCase();
     if (!target || !/^\S+@\S+\.\S+$/.test(target)) {
-      toast.error("Please enter a valid email address");
+      toast.error(t("recovery.invalidEmail"));
       return;
     }
     setBusy(true);
@@ -62,11 +72,11 @@ function ResetPasswordPage() {
         redirectTo: `${getOAuthRedirectOrigin()}/reset-password`,
       });
       if (error) throw error;
-      toast.success("We sent a verification code to your email.");
+      toast.success(t("recovery.codeSent"));
       setStep("code");
       setResendIn(45);
     } catch (err: any) {
-      toast.error(err?.message || "Couldn't send the code. Please try again.");
+      toast.error(err?.message || t("recovery.sendFailed"));
     } finally {
       setBusy(false);
     }
@@ -76,7 +86,7 @@ function ResetPasswordPage() {
     e.preventDefault();
     const token = code.replace(/\D/g, "");
     if (token.length < 8) {
-      toast.error("Please enter the 8-digit code from your email");
+      toast.error(t("recovery.enterCode"));
       return;
     }
     setBusy(true);
@@ -87,11 +97,11 @@ function ResetPasswordPage() {
         type: "recovery",
       });
       if (error) throw error;
-      if (!data.session) throw new Error("Code verification failed. Please try again.");
-      toast.success("Code verified. Set your new password.");
+      if (!data.session) throw new Error(t("recovery.verifyFailed"));
+      toast.success(t("recovery.verified"));
       setStep("password");
     } catch (err: any) {
-      toast.error(err?.message || "Invalid or expired code");
+      toast.error(err?.message || t("recovery.invalidCode"));
     } finally {
       setBusy(false);
     }
@@ -100,11 +110,11 @@ function ResetPasswordPage() {
   const savePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error(t("recovery.shortPassword"));
       return;
     }
     if (password !== confirm) {
-      toast.error("Passwords do not match");
+      toast.error(t("recovery.mismatch"));
       return;
     }
     setBusy(true);
@@ -112,10 +122,10 @@ function ResetPasswordPage() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       await supabase.auth.signOut();
-      toast.success("Password updated. You can sign in now.");
+      toast.success(t("recovery.updated"));
       navigate({ to: "/auth" });
     } catch (err: any) {
-      toast.error(err?.message || "Failed to update password");
+      toast.error(err?.message || t("recovery.updateFailed"));
     } finally {
       setBusy(false);
     }
@@ -135,14 +145,14 @@ function ResetPasswordPage() {
           </div>
         </div>
         <h1 className="mt-4 text-center text-2xl font-extrabold">
-          {step === "email" ? "Forgot password" : step === "code" ? "Enter your code" : "Set new password"}
+          {step === "email" ? t("recovery.forgot") : step === "code" ? t("recovery.codeTitle") : t("recovery.passwordTitle")}
         </h1>
         <p className="mt-1 text-center text-sm text-slate-500">
           {step === "email"
-            ? "Enter your email and we'll send you a verification code."
+            ? t("recovery.emailHelp")
             : step === "code"
-              ? `We sent an 8-digit code to ${email}`
-              : "Choose a new password for your account."}
+              ? t("recovery.codeHelp", { email })
+              : t("recovery.passwordHelp")}
         </p>
 
         {step === "email" && (
@@ -153,12 +163,12 @@ function ResetPasswordPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email address"
+              placeholder={t("recovery.email")}
               className={inputClass}
             />
             <button type="submit" disabled={busy} className={buttonClass}>
               {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-              Send code
+              {t("recovery.send")}
             </button>
           </form>
         )}
@@ -172,12 +182,12 @@ function ResetPasswordPage() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              placeholder="8-digit code"
+              placeholder={t("recovery.code")}
               className={`${inputClass} text-center text-lg tracking-[0.5em] font-semibold`}
             />
             <button type="submit" disabled={busy} className={buttonClass}>
               {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-              Verify code
+              {t("recovery.verify")}
             </button>
             <div className="flex items-center justify-between text-sm">
               <button
@@ -185,7 +195,7 @@ function ResetPasswordPage() {
                 onClick={() => setStep("email")}
                 className="flex items-center gap-1 text-slate-500 hover:underline"
               >
-                <ArrowLeft className="h-4 w-4" /> Change email
+                <ArrowLeft className="h-4 w-4" /> {t("recovery.changeEmail")}
               </button>
               <button
                 type="button"
@@ -193,7 +203,7 @@ function ResetPasswordPage() {
                 onClick={() => void sendCode()}
                 className="font-semibold text-[#117d43] hover:underline disabled:opacity-50"
               >
-                {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
+                {resendIn > 0 ? t("recovery.resendIn", { seconds: resendIn }) : t("recovery.resend")}
               </button>
             </div>
           </form>
@@ -207,7 +217,7 @@ function ResetPasswordPage() {
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="New password (min 6 chars)"
+              placeholder={t("recovery.newPassword")}
               className={inputClass}
             />
             <input
@@ -216,19 +226,19 @@ function ResetPasswordPage() {
               autoComplete="new-password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Confirm new password"
+              placeholder={t("recovery.confirm")}
               className={inputClass}
             />
             <button type="submit" disabled={busy} className={buttonClass}>
               {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-              Update password
+              {t("recovery.update")}
             </button>
           </form>
         )}
 
         <div className="mt-4 text-center text-xs text-slate-400">
           <Link to="/auth" className="hover:underline">
-            ← Back to sign in
+            {t("recovery.back")}
           </Link>
         </div>
       </div>

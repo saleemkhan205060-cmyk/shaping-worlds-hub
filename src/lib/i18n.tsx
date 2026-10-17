@@ -1,5 +1,7 @@
 import * as React from "react";
 import { LEGACY_TRANSLATIONS } from "./locales/legacy";
+import { appEnglish } from "./locales/app-en";
+import { resolveMessage, type Parameters } from "./i18n-core";
 
 export type LangCode =
   | "en" | "es" | "fr" | "pt" | "de" | "it"
@@ -30,13 +32,14 @@ type Dict = Record<string, string>;
 
 // Only existing languages are active until the global translation release gate passes.
 const TRANSLATIONS: Record<LangCode, Dict> = LEGACY_TRANSLATIONS;
+const SOURCE_ENGLISH = { ...LEGACY_TRANSLATIONS.en, ...appEnglish };
 
 const STORAGE_KEY = "viplife.lang";
 
 type Ctx = {
   lang: LangCode;
   setLang: (l: LangCode) => void;
-  t: (key: string) => string;
+  t: (key: string, values?: Parameters) => string;
   dir: "ltr" | "rtl";
 };
 
@@ -76,7 +79,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const t = React.useCallback(
-    (key: string) => TRANSLATIONS[lang]?.[key] ?? TRANSLATIONS.en[key] ?? key,
+    (key: string, values?: Parameters) => resolveMessage(TRANSLATIONS[lang], SOURCE_ENGLISH, key, values).text,
     [lang],
   );
 
@@ -91,7 +94,7 @@ export function useI18n(): Ctx {
   const ctx = React.useContext(I18nContext);
   if (!ctx) {
     // Safe fallback for any code rendered outside the provider.
-    return { lang: "en", setLang: () => {}, t: (k) => TRANSLATIONS.en[k] ?? k, dir: "ltr" };
+    return { lang: "en", setLang: () => {}, t: (k, values) => resolveMessage(SOURCE_ENGLISH, SOURCE_ENGLISH, k, values).text, dir: "ltr" };
   }
   return ctx;
 }
