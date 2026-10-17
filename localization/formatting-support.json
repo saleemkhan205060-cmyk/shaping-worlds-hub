@@ -1,0 +1,2397 @@
+{
+  "runtime": "Sandbox ICU; not physical Android evidence",
+  "targets": [
+    {
+      "code": "am",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "am",
+          "resolved": "am"
+        },
+        "number": {
+          "supported": true,
+          "requested": "am",
+          "resolved": "am"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "am",
+          "resolved": "am"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "am",
+          "resolved": "am"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ar",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ar",
+          "resolved": "ar"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ar",
+          "resolved": "ar"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ar",
+          "resolved": "ar"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ar",
+          "resolved": "ar"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "az",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "az",
+          "resolved": "az"
+        },
+        "number": {
+          "supported": true,
+          "requested": "az",
+          "resolved": "az"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "az",
+          "resolved": "az"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "az",
+          "resolved": "az"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "be",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "be",
+          "resolved": "be"
+        },
+        "number": {
+          "supported": true,
+          "requested": "be",
+          "resolved": "be"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "be",
+          "resolved": "be"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "be",
+          "resolved": "be"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "bg",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "bg",
+          "resolved": "bg"
+        },
+        "number": {
+          "supported": true,
+          "requested": "bg",
+          "resolved": "bg"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "bg",
+          "resolved": "bg"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "bg",
+          "resolved": "bg"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "bi",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "bi",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "bi",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "bi",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "bi",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "bm",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "bm",
+          "resolved": "bm"
+        },
+        "number": {
+          "supported": true,
+          "requested": "bm",
+          "resolved": "bm"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "bm",
+          "resolved": "bm"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "bm",
+          "resolved": "bm"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "bn",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "bn",
+          "resolved": "bn"
+        },
+        "number": {
+          "supported": true,
+          "requested": "bn",
+          "resolved": "bn"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "bn",
+          "resolved": "bn"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "bn",
+          "resolved": "bn"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "bs",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "bs",
+          "resolved": "bs"
+        },
+        "number": {
+          "supported": true,
+          "requested": "bs",
+          "resolved": "bs"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "bs",
+          "resolved": "bs"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "bs",
+          "resolved": "bs"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ca",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ca",
+          "resolved": "ca"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ca",
+          "resolved": "ca"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ca",
+          "resolved": "ca"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ca",
+          "resolved": "ca"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "cnr-Latn",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "cnr-Latn",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "cnr-Latn",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "cnr-Latn",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "cnr-Latn",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "crs",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "crs",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "crs",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "crs",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "crs",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "cs",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "cs",
+          "resolved": "cs"
+        },
+        "number": {
+          "supported": true,
+          "requested": "cs",
+          "resolved": "cs"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "cs",
+          "resolved": "cs"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "cs",
+          "resolved": "cs"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "da",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "da",
+          "resolved": "da"
+        },
+        "number": {
+          "supported": true,
+          "requested": "da",
+          "resolved": "da"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "da",
+          "resolved": "da"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "da",
+          "resolved": "da"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "de",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "de",
+          "resolved": "de"
+        },
+        "number": {
+          "supported": true,
+          "requested": "de",
+          "resolved": "de"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "de",
+          "resolved": "de"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "de",
+          "resolved": "de"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "dv",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "dv",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "dv",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "dv",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "dv",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "dz",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "dz",
+          "resolved": "dz"
+        },
+        "number": {
+          "supported": true,
+          "requested": "dz",
+          "resolved": "dz"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "dz",
+          "resolved": "dz"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "dz",
+          "resolved": "dz"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "el",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "el",
+          "resolved": "el"
+        },
+        "number": {
+          "supported": true,
+          "requested": "el",
+          "resolved": "el"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "el",
+          "resolved": "el"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "el",
+          "resolved": "el"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "en",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "en",
+          "resolved": "en"
+        },
+        "number": {
+          "supported": true,
+          "requested": "en",
+          "resolved": "en"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "en",
+          "resolved": "en"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "en",
+          "resolved": "en"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "es",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "es",
+          "resolved": "es"
+        },
+        "number": {
+          "supported": true,
+          "requested": "es",
+          "resolved": "es"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "es",
+          "resolved": "es"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "es",
+          "resolved": "es"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "et",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "et",
+          "resolved": "et"
+        },
+        "number": {
+          "supported": true,
+          "requested": "et",
+          "resolved": "et"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "et",
+          "resolved": "et"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "et",
+          "resolved": "et"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "fa",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "fa",
+          "resolved": "fa"
+        },
+        "number": {
+          "supported": true,
+          "requested": "fa",
+          "resolved": "fa"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "fa",
+          "resolved": "fa"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "fa",
+          "resolved": "fa"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "fa-AF",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "fa-AF",
+          "resolved": "fa-AF"
+        },
+        "number": {
+          "supported": true,
+          "requested": "fa-AF",
+          "resolved": "fa-AF"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "fa-AF",
+          "resolved": "fa-AF"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "fa-AF",
+          "resolved": "fa-AF"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "fi",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "fi",
+          "resolved": "fi"
+        },
+        "number": {
+          "supported": true,
+          "requested": "fi",
+          "resolved": "fi"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "fi",
+          "resolved": "fi"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "fi",
+          "resolved": "fi"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "fil",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "fil",
+          "resolved": "fil"
+        },
+        "number": {
+          "supported": true,
+          "requested": "fil",
+          "resolved": "fil"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "fil",
+          "resolved": "fil"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "fil",
+          "resolved": "fil"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "fr",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "fr",
+          "resolved": "fr"
+        },
+        "number": {
+          "supported": true,
+          "requested": "fr",
+          "resolved": "fr"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "fr",
+          "resolved": "fr"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "fr",
+          "resolved": "fr"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "gil",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "gil",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "gil",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "gil",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "gil",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ha",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ha",
+          "resolved": "ha"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ha",
+          "resolved": "ha"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ha",
+          "resolved": "ha"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ha",
+          "resolved": "ha"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "he",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "he",
+          "resolved": "he"
+        },
+        "number": {
+          "supported": true,
+          "requested": "he",
+          "resolved": "he"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "he",
+          "resolved": "he"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "he",
+          "resolved": "he"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "hi",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "hi",
+          "resolved": "hi"
+        },
+        "number": {
+          "supported": true,
+          "requested": "hi",
+          "resolved": "hi"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "hi",
+          "resolved": "hi"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "hi",
+          "resolved": "hi"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "hr",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "hr",
+          "resolved": "hr"
+        },
+        "number": {
+          "supported": true,
+          "requested": "hr",
+          "resolved": "hr"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "hr",
+          "resolved": "hr"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "hr",
+          "resolved": "hr"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ht",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "ht",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "ht",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "ht",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "ht",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "hu",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "hu",
+          "resolved": "hu"
+        },
+        "number": {
+          "supported": true,
+          "requested": "hu",
+          "resolved": "hu"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "hu",
+          "resolved": "hu"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "hu",
+          "resolved": "hu"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "hy",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "hy",
+          "resolved": "hy"
+        },
+        "number": {
+          "supported": true,
+          "requested": "hy",
+          "resolved": "hy"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "hy",
+          "resolved": "hy"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "hy",
+          "resolved": "hy"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "id",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "id",
+          "resolved": "id"
+        },
+        "number": {
+          "supported": true,
+          "requested": "id",
+          "resolved": "id"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "id",
+          "resolved": "id"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "id",
+          "resolved": "id"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "is",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "is",
+          "resolved": "is"
+        },
+        "number": {
+          "supported": true,
+          "requested": "is",
+          "resolved": "is"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "is",
+          "resolved": "is"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "is",
+          "resolved": "is"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "it",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "it",
+          "resolved": "it"
+        },
+        "number": {
+          "supported": true,
+          "requested": "it",
+          "resolved": "it"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "it",
+          "resolved": "it"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "it",
+          "resolved": "it"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ja",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ja",
+          "resolved": "ja"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ja",
+          "resolved": "ja"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ja",
+          "resolved": "ja"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ja",
+          "resolved": "ja"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ka",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ka",
+          "resolved": "ka"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ka",
+          "resolved": "ka"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ka",
+          "resolved": "ka"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ka",
+          "resolved": "ka"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "kk",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "kk",
+          "resolved": "kk"
+        },
+        "number": {
+          "supported": true,
+          "requested": "kk",
+          "resolved": "kk"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "kk",
+          "resolved": "kk"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "kk",
+          "resolved": "kk"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "km",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "km",
+          "resolved": "km"
+        },
+        "number": {
+          "supported": true,
+          "requested": "km",
+          "resolved": "km"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "km",
+          "resolved": "km"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "km",
+          "resolved": "km"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ko",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ko",
+          "resolved": "ko"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ko",
+          "resolved": "ko"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ko",
+          "resolved": "ko"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ko",
+          "resolved": "ko"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ky",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ky",
+          "resolved": "ky"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ky",
+          "resolved": "ky"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ky",
+          "resolved": "ky"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ky",
+          "resolved": "ky"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "lb",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "lb",
+          "resolved": "lb"
+        },
+        "number": {
+          "supported": true,
+          "requested": "lb",
+          "resolved": "lb"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "lb",
+          "resolved": "lb"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "lb",
+          "resolved": "lb"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "lo",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "lo",
+          "resolved": "lo"
+        },
+        "number": {
+          "supported": true,
+          "requested": "lo",
+          "resolved": "lo"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "lo",
+          "resolved": "lo"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "lo",
+          "resolved": "lo"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "lt",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "lt",
+          "resolved": "lt"
+        },
+        "number": {
+          "supported": true,
+          "requested": "lt",
+          "resolved": "lt"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "lt",
+          "resolved": "lt"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "lt",
+          "resolved": "lt"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "lv",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "lv",
+          "resolved": "lv"
+        },
+        "number": {
+          "supported": true,
+          "requested": "lv",
+          "resolved": "lv"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "lv",
+          "resolved": "lv"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "lv",
+          "resolved": "lv"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mfe",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "mfe",
+          "resolved": "mfe"
+        },
+        "number": {
+          "supported": true,
+          "requested": "mfe",
+          "resolved": "mfe"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "mfe",
+          "resolved": "mfe"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "mfe",
+          "resolved": "mfe"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mg",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "mg",
+          "resolved": "mg"
+        },
+        "number": {
+          "supported": true,
+          "requested": "mg",
+          "resolved": "mg"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "mg",
+          "resolved": "mg"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "mg",
+          "resolved": "mg"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mh",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "mh",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "mh",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "mh",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "mh",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mk",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "mk",
+          "resolved": "mk"
+        },
+        "number": {
+          "supported": true,
+          "requested": "mk",
+          "resolved": "mk"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "mk",
+          "resolved": "mk"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "mk",
+          "resolved": "mk"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mn",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "mn",
+          "resolved": "mn"
+        },
+        "number": {
+          "supported": true,
+          "requested": "mn",
+          "resolved": "mn"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "mn",
+          "resolved": "mn"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "mn",
+          "resolved": "mn"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mos",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "mos",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "mos",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "mos",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "mos",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ms",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ms",
+          "resolved": "ms"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ms",
+          "resolved": "ms"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ms",
+          "resolved": "ms"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ms",
+          "resolved": "ms"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "mt",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "mt",
+          "resolved": "mt"
+        },
+        "number": {
+          "supported": true,
+          "requested": "mt",
+          "resolved": "mt"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "mt",
+          "resolved": "mt"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "mt",
+          "resolved": "mt"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "my",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "my",
+          "resolved": "my"
+        },
+        "number": {
+          "supported": true,
+          "requested": "my",
+          "resolved": "my"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "my",
+          "resolved": "my"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "my",
+          "resolved": "my"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "na",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "na",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "na",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "na",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "na",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "nb",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "nb",
+          "resolved": "nb"
+        },
+        "number": {
+          "supported": true,
+          "requested": "nb",
+          "resolved": "nb"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "nb",
+          "resolved": "nb"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "nb",
+          "resolved": "nb"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ne",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ne",
+          "resolved": "ne"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ne",
+          "resolved": "ne"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ne",
+          "resolved": "ne"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ne",
+          "resolved": "ne"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "nl",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "nl",
+          "resolved": "nl"
+        },
+        "number": {
+          "supported": true,
+          "requested": "nl",
+          "resolved": "nl"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "nl",
+          "resolved": "nl"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "nl",
+          "resolved": "nl"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "pau",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "pau",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "pau",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "pau",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "pau",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "pl",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "pl",
+          "resolved": "pl"
+        },
+        "number": {
+          "supported": true,
+          "requested": "pl",
+          "resolved": "pl"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "pl",
+          "resolved": "pl"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "pl",
+          "resolved": "pl"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "pt",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "pt",
+          "resolved": "pt"
+        },
+        "number": {
+          "supported": true,
+          "requested": "pt",
+          "resolved": "pt"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "pt",
+          "resolved": "pt"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "pt",
+          "resolved": "pt"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "rn",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "rn",
+          "resolved": "rn"
+        },
+        "number": {
+          "supported": true,
+          "requested": "rn",
+          "resolved": "rn"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "rn",
+          "resolved": "rn"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "rn",
+          "resolved": "rn"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ro",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ro",
+          "resolved": "ro"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ro",
+          "resolved": "ro"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ro",
+          "resolved": "ro"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ro",
+          "resolved": "ro"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ru",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ru",
+          "resolved": "ru"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ru",
+          "resolved": "ru"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ru",
+          "resolved": "ru"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ru",
+          "resolved": "ru"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "rw",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "rw",
+          "resolved": "rw"
+        },
+        "number": {
+          "supported": true,
+          "requested": "rw",
+          "resolved": "rw"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "rw",
+          "resolved": "rw"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "rw",
+          "resolved": "rw"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sg",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sg",
+          "resolved": "sg"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sg",
+          "resolved": "sg"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sg",
+          "resolved": "sg"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sg",
+          "resolved": "sg"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "si",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "si",
+          "resolved": "si"
+        },
+        "number": {
+          "supported": true,
+          "requested": "si",
+          "resolved": "si"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "si",
+          "resolved": "si"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "si",
+          "resolved": "si"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sk",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sk",
+          "resolved": "sk"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sk",
+          "resolved": "sk"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sk",
+          "resolved": "sk"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sk",
+          "resolved": "sk"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sl",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sl",
+          "resolved": "sl"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sl",
+          "resolved": "sl"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sl",
+          "resolved": "sl"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sl",
+          "resolved": "sl"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sm",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "sm",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "sm",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "sm",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "sm",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "so",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "so",
+          "resolved": "so"
+        },
+        "number": {
+          "supported": true,
+          "requested": "so",
+          "resolved": "so"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "so",
+          "resolved": "so"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "so",
+          "resolved": "so"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sq",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sq",
+          "resolved": "sq"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sq",
+          "resolved": "sq"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sq",
+          "resolved": "sq"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sq",
+          "resolved": "sq"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sr-Cyrl",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sr-Cyrl",
+          "resolved": "sr-Cyrl"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sr-Cyrl",
+          "resolved": "sr-Cyrl"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sr-Cyrl",
+          "resolved": "sr-Cyrl"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sr-Cyrl",
+          "resolved": "sr-Cyrl"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "st",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "st",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "st",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "st",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "st",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sv",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sv",
+          "resolved": "sv"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sv",
+          "resolved": "sv"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sv",
+          "resolved": "sv"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sv",
+          "resolved": "sv"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "sw",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "sw",
+          "resolved": "sw"
+        },
+        "number": {
+          "supported": true,
+          "requested": "sw",
+          "resolved": "sw"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "sw",
+          "resolved": "sw"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "sw",
+          "resolved": "sw"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "tet",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "tet",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "tet",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "tet",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "tet",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "tg",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "tg",
+          "resolved": "tg"
+        },
+        "number": {
+          "supported": true,
+          "requested": "tg",
+          "resolved": "tg"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "tg",
+          "resolved": "tg"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "tg",
+          "resolved": "tg"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "th",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "th",
+          "resolved": "th"
+        },
+        "number": {
+          "supported": true,
+          "requested": "th",
+          "resolved": "th"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "th",
+          "resolved": "th"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "th",
+          "resolved": "th"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ti",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ti",
+          "resolved": "ti"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ti",
+          "resolved": "ti"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ti",
+          "resolved": "ti"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ti",
+          "resolved": "ti"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "tk",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "tk",
+          "resolved": "tk"
+        },
+        "number": {
+          "supported": true,
+          "requested": "tk",
+          "resolved": "tk"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "tk",
+          "resolved": "tk"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "tk",
+          "resolved": "tk"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "to",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "to",
+          "resolved": "to"
+        },
+        "number": {
+          "supported": true,
+          "requested": "to",
+          "resolved": "to"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "to",
+          "resolved": "to"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "to",
+          "resolved": "to"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "tpi",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "tpi",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "tpi",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "tpi",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "tpi",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "tr",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "tr",
+          "resolved": "tr"
+        },
+        "number": {
+          "supported": true,
+          "requested": "tr",
+          "resolved": "tr"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "tr",
+          "resolved": "tr"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "tr",
+          "resolved": "tr"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "tvl",
+      "capabilities": {
+        "date": {
+          "supported": false,
+          "requested": "tvl",
+          "resolved": null
+        },
+        "number": {
+          "supported": false,
+          "requested": "tvl",
+          "resolved": null
+        },
+        "relativeTime": {
+          "supported": false,
+          "requested": "tvl",
+          "resolved": null
+        },
+        "plural": {
+          "supported": false,
+          "requested": "tvl",
+          "resolved": null
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "uk",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "uk",
+          "resolved": "uk"
+        },
+        "number": {
+          "supported": true,
+          "requested": "uk",
+          "resolved": "uk"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "uk",
+          "resolved": "uk"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "uk",
+          "resolved": "uk"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "ur",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "ur",
+          "resolved": "ur"
+        },
+        "number": {
+          "supported": true,
+          "requested": "ur",
+          "resolved": "ur"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "ur",
+          "resolved": "ur"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "ur",
+          "resolved": "ur"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "uz",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "uz",
+          "resolved": "uz"
+        },
+        "number": {
+          "supported": true,
+          "requested": "uz",
+          "resolved": "uz"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "uz",
+          "resolved": "uz"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "uz",
+          "resolved": "uz"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "vi",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "vi",
+          "resolved": "vi"
+        },
+        "number": {
+          "supported": true,
+          "requested": "vi",
+          "resolved": "vi"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "vi",
+          "resolved": "vi"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "vi",
+          "resolved": "vi"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    },
+    {
+      "code": "zh",
+      "capabilities": {
+        "date": {
+          "supported": true,
+          "requested": "zh",
+          "resolved": "zh"
+        },
+        "number": {
+          "supported": true,
+          "requested": "zh",
+          "resolved": "zh"
+        },
+        "relativeTime": {
+          "supported": true,
+          "requested": "zh",
+          "resolved": "zh"
+        },
+        "plural": {
+          "supported": true,
+          "requested": "zh",
+          "resolved": "zh"
+        }
+      },
+      "review": "pending-browser-and-native-review"
+    }
+  ]
+}
