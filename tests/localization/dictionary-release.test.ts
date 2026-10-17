@@ -5,8 +5,8 @@ import { SOURCE_DICTIONARY, STAGED_DICTIONARIES } from "../../src/lib/locales/st
 
 test("all 92 targets require actual dictionaries, not just ready status flags", () => {
   const blockers = dictionaryReleaseBlockers(SOURCE_DICTIONARY, STAGED_DICTIONARIES);
-  expect(blockers.filter((item) => item.endsWith(":missing-bundled-dictionary"))).toHaveLength(75);
-  expect(blockers).toContain("ur:missing:share.sentTo");
+  expect(blockers.filter((item) => item.endsWith(":missing-bundled-dictionary"))).toHaveLength(74);
+  expect(blockers).toContain("ar:missing:share.sentTo");
 });
 
 test("copied English cannot count as completed translation without explicit review", () => {
