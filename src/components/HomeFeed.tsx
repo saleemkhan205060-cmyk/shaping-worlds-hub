@@ -677,7 +677,7 @@ export function HomeFeed() {
     <section className="mt-0 space-y-0">
       {/* Composer */}
       {user && (
-        <div className="bg-[#005A35] rounded-2xl border border-[#19D66B] px-4 py-2 shadow-sm mt-0">
+        <div className="bg-[#005A35] rounded-2xl border border-[#19D66B] px-4 py-2 shadow-sm mt-0 mx-[-8px]">
           <textarea
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
