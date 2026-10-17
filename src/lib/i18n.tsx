@@ -4,6 +4,7 @@ import { appEnglish } from "./locales/app-en";
 import { mediaEnglish } from "./locales/media-en";
 import { accountEnglish } from "./locales/account-en";
 import { uploadEnglish } from "./locales/upload-en";
+import { feedEnglish } from "./locales/feed-en";
 import { resolveMessage, type Parameters } from "./i18n-core";
 
 export type LangCode =
@@ -35,7 +36,7 @@ type Dict = Record<string, string>;
 
 // Only existing languages are active until the global translation release gate passes.
 const TRANSLATIONS: Record<LangCode, Dict> = LEGACY_TRANSLATIONS;
-const SOURCE_ENGLISH = { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish };
+const SOURCE_ENGLISH = { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish };
 
 const STORAGE_KEY = "viplife.lang";
 

@@ -3,10 +3,10 @@
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
     "sourceFilesWithCandidates": 119,
-    "candidates": 3207,
+    "candidates": 3107,
     "contentRouteMetadata": 35,
-    "translatedUses": 228,
-    "dynamicTranslatedUses": 13
+    "translatedUses": 319,
+    "dynamicTranslatedUses": 21
   },
   "metadata": [
     {
@@ -1022,6 +1022,461 @@
       "key": "common.remove"
     },
     {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 420,
+      "key": "upload.allowedTypes"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 424,
+      "key": "upload.fileTooLarge"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 433,
+      "key": "feed.signInPost"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 439,
+      "key": "feed.contentRequired"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 497,
+      "key": "feed.posted"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 504,
+      "key": "feed.postFailed"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 595,
+      "key": "feed.signInLike"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 612,
+      "key": "feed.unlikeFailed"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 621,
+      "key": "feed.likeFailed"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 662,
+      "key": "feed.titleFailed"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 668,
+      "key": "feed.titleUpdated"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 681,
+      "key": "feed.placeholder"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 696,
+      "key": "common.preview"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 701,
+      "key": "common.remove"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 709,
+      "key": "common.moreOptions"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 716,
+      "key": "media.thumbnail"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 717,
+      "key": "upload.thumbnailSet"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 734,
+      "key": "common.uploading"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 748,
+      "key": "textStyle.background"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 765,
+      "key": "textStyle.color"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 782,
+      "key": "textStyle.font"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 802,
+      "key": "textStyle.size"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 821,
+      "key": "textStyle.align"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 856,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 856,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 864,
+      "key": "media.post"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 871,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 878,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 888,
+      "key": "media.post"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 899,
+      "key": "common.signIn"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 899,
+      "key": "feed.signInJoin"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 933,
+      "key": "feed.people"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 961,
+      "key": "feed.marriageProfiles"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 963,
+      "key": "feed.noMarriageProfiles"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 967,
+      "key": "feed.member"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 980,
+      "key": "feed.age"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 980,
+      "key": "feed.tapView"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 996,
+      "key": "common.loading"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1001,
+      "key": "feed.noSearchMatches"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1004,
+      "key": "feed.loadFailed"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1009,
+      "key": "feed.retry"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1013,
+      "key": "feed.noPosts"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1020,
+      "key": "common.user"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1050,
+      "key": "feed.changePrivacy"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1052,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1052,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1059,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1060,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1077,
+      "key": "feed.privacyFailed"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1079,
+      "key": "feed.setPrivate"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1079,
+      "key": "feed.setPublic"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1100,
+      "key": "feed.isPrivate"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1100,
+      "key": "feed.isPublic"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1104,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1104,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1112,
+      "key": "feed.noTitle"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1139,
+      "key": "common.edit"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1159,
+      "key": "feed.openImage"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1163,
+      "key": "media.post"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1208,
+      "key": "feed.playVideo"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1213,
+      "key": "feed.video"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1233,
+      "key": "common.moreOptions"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1244,
+      "key": "feed.unlike"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1244,
+      "key": "feed.like"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1252,
+      "key": "feed.openComments"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1264,
+      "key": "feed.shareTitle"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1265,
+      "key": "feed.shareText"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1267,
+      "key": "share.post"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1291,
+      "key": "common.share"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1300,
+      "key": "feed.openFullscreen"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1345,
+      "key": "feed.editTitle"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1360,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1367,
+      "key": "common.save"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1412,
+      "key": "common.close"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1419,
+      "key": "common.moreOptions"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1428,
+      "key": "feed.uploadVideo"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1440,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1448,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1479,
+      "key": "common.edit"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1486,
+      "key": "upload.chooseThumbnail"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1493,
+      "key": "upload.uploadThumbnail"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1501,
+      "key": "feed.removeThumbnail"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1508,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1524,
+      "key": "feed.videoDetails"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1527,
+      "key": "upload.category"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1538,
+      "key": "media.caption"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1540,
+      "key": "feed.noCaption"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1554,
+      "key": "feed.openFullscreen"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1560,
+      "key": "common.close"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1570,
+      "key": "media.post"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 1571,
+      "key": "media.checkThisOut"
+    },
+    {
       "file": "src/components/Layout.tsx",
       "line": 523,
       "key": "menu.language"
@@ -1366,6 +1821,54 @@
     {
       "file": "src/components/EditPostDialog.tsx",
       "line": 292,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 758,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 759,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 775,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 776,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 795,
+      "pattern": "textStyle.font.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 815,
+      "pattern": "textStyle.size.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 825,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 834,
       "pattern": "textStyle.align.*",
       "review": "pending-explicit-key-domain-verification"
     },
@@ -3921,399 +4424,154 @@
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 98,
+      "line": 101,
       "kind": "literal-candidate",
       "text": "video/",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 99,
+      "line": 102,
       "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 103,
-      "kind": "literal-candidate",
-      "text": "All",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 104,
-      "kind": "literal-candidate",
-      "text": "Videos",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 105,
-      "kind": "literal-candidate",
-      "text": "Photos",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 193,
+      "line": 197,
       "kind": "literal-candidate",
       "text": "id, user_id, media_url, media_type, caption, category, created_at, updated_at, is_private, text_style, title, thumbnail_url, thumbnail_title, is_hidden, is_pinned",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 273,
+      "line": 277,
       "kind": "literal-candidate",
       "text": "400px 0px",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 287,
+      "line": 291,
       "kind": "literal-candidate",
       "text": "home:refresh",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 288,
+      "line": 292,
       "kind": "literal-candidate",
       "text": "home:refresh",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 303,
+      "line": 307,
       "kind": "literal-candidate",
       "text": "post_id,user_id",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 416,
-      "kind": "feedback-candidate",
-      "text": "Only images and videos are allowed",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 420,
-      "kind": "feedback-candidate",
-      "text": "File must be under 500MB",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 429,
-      "kind": "feedback-candidate",
-      "text": "Please sign in to post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 435,
-      "kind": "feedback-candidate",
-      "text": "Write something or attach media",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 446,
+      "line": 450,
       "kind": "literal-candidate",
       "text": "For You",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 454,
+      "line": 458,
       "kind": "literal-candidate",
       "text": "{value1}/{value2}.{value3}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 469,
+      "line": 473,
       "kind": "literal-candidate",
       "text": "{value1}/thumbs/{value2}.{value3}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 479,
+      "line": 483,
       "kind": "literal-candidate",
       "text": "For You",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 493,
-      "kind": "feedback-candidate",
-      "text": "Posted!",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 500,
-      "kind": "feedback-candidate",
-      "text": "Couldn't post: {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 591,
-      "kind": "feedback-candidate",
-      "text": "Sign in to like",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 608,
-      "kind": "feedback-candidate",
-      "text": "Couldn't unlike",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 617,
-      "kind": "feedback-candidate",
-      "text": "Couldn't like",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 631,
-      "kind": "literal-candidate",
-      "text": "{value1}s",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 633,
-      "kind": "literal-candidate",
-      "text": "{value1}m",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 635,
-      "kind": "literal-candidate",
-      "text": "{value1}h",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 637,
-      "kind": "literal-candidate",
-      "text": "{value1}d",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 639,
-      "kind": "literal-candidate",
-      "text": "{value1}mo",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 640,
-      "kind": "literal-candidate",
-      "text": "{value1}y",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 667,
-      "kind": "feedback-candidate",
-      "text": "Couldn't update title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 673,
-      "kind": "feedback-candidate",
-      "text": "Title updated",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 686,
-      "kind": "ui-attribute",
-      "text": "Share something with the world…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 701,
-      "kind": "ui-attribute",
-      "text": "preview",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 706,
-      "kind": "ui-attribute",
-      "text": "Remove",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 714,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 721,
-      "kind": "ui-attribute",
-      "text": "thumb",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 722,
-      "kind": "jsx-text",
-      "text": "Thumbnail set",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 739,
-      "kind": "jsx-text",
-      "text": "Uploading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 753,
-      "kind": "jsx-text",
-      "text": "Background",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 770,
-      "kind": "jsx-text",
-      "text": "Text color",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 777,
+      "line": 772,
       "kind": "literal-candidate",
       "text": "shrink-0 h-7 w-7 rounded-full border-2 {value1} {value2}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 778,
+      "line": 773,
       "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 787,
-      "kind": "jsx-text",
-      "text": "Font",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 807,
-      "kind": "jsx-text",
-      "text": "Size",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 814,
+      "line": 809,
       "kind": "literal-candidate",
       "text": "h-7 min-w-7 px-2 rounded-full text-[11px] font-bold border {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 816,
+      "line": 811,
       "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 817,
+      "line": 812,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 826,
-      "kind": "jsx-text",
-      "text": "Align",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 833,
+      "line": 828,
       "kind": "literal-candidate",
       "text": "px-2.5 h-7 rounded-full text-[11px] font-medium border capitalize {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 835,
+      "line": 830,
       "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 836,
+      "line": 831,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 861,
-      "kind": "literal-candidate",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 861,
-      "kind": "literal-candidate",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
       "line": 869,
-      "kind": "jsx-text",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 874,
       "kind": "literal-candidate",
       "text": "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 874,
+      "line": 869,
       "kind": "literal-candidate",
       "text": "bg-indigo-50 text-indigo-700",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 874,
+      "line": 869,
       "kind": "literal-candidate",
       "text": "text-slate-700 hover:bg-slate-50",
       "review": "pending"
@@ -4321,624 +4579,169 @@
     {
       "file": "src/components/HomeFeed.tsx",
       "line": 876,
-      "kind": "jsx-text",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 881,
       "kind": "literal-candidate",
       "text": "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 881,
+      "line": 876,
       "kind": "literal-candidate",
       "text": "bg-indigo-50 text-indigo-700",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 881,
+      "line": 876,
       "kind": "literal-candidate",
       "text": "text-slate-700 hover:bg-slate-50",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 883,
-      "kind": "jsx-text",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 893,
-      "kind": "jsx-text",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 904,
-      "kind": "jsx-text",
-      "text": "Sign in",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 904,
-      "kind": "jsx-text",
-      "text": "to post and join the feed.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 913,
+      "line": 908,
       "kind": "literal-candidate",
       "text": "bg-[#19D66B] text-[#003D25] border-[#19D66B]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 913,
+      "line": 908,
       "kind": "literal-candidate",
       "text": "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 915,
+      "line": 910,
       "kind": "literal-candidate",
       "text": "bg-[#19D66B] text-[#003D25] border-[#19D66B]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 915,
+      "line": 910,
       "kind": "literal-candidate",
       "text": "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 917,
+      "line": 912,
       "kind": "literal-candidate",
       "text": "bg-sky-500 text-white border-sky-500",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 917,
+      "line": 912,
       "kind": "literal-candidate",
       "text": "bg-white text-sky-600 border-sky-200 hover:bg-sky-50",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 919,
+      "line": 914,
       "kind": "literal-candidate",
       "text": "bg-pink-500 text-white border-pink-500",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 919,
+      "line": 914,
       "kind": "literal-candidate",
       "text": "bg-white text-pink-600 border-pink-200 hover:bg-pink-50",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 920,
+      "line": 915,
       "kind": "literal-candidate",
       "text": "bg-[#19D66B] text-[#003D25] border-[#19D66B]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 920,
+      "line": 915,
       "kind": "literal-candidate",
       "text": "bg-[#004A2D] text-white border-[#19D66B] hover:bg-[#005A35]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 925,
+      "line": 920,
       "kind": "literal-candidate",
       "text": "shrink-0 px-3 py-1 rounded-xl text-xs font-bold border min-w-[68px] transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 926,
+      "line": 921,
       "kind": "literal-candidate",
       "text": "shadow-sm",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 938,
-      "kind": "jsx-text",
-      "text": "People",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 966,
-      "kind": "jsx-text",
-      "text": "Marriage Profiles",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 968,
-      "kind": "jsx-text",
-      "text": "No marriage profiles found.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 972,
-      "kind": "literal-candidate",
-      "text": "Member",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 985,
-      "kind": "literal-candidate",
-      "text": "{value1}y",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 985,
-      "kind": "literal-candidate",
-      "text": "Tap to view",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1001,
-      "kind": "jsx-text",
-      "text": "Loading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1006,
-      "kind": "literal-candidate",
-      "text": "No posts match your search.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1009,
-      "kind": "jsx-text",
-      "text": "Couldn’t load the feed. Check your connection.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1014,
-      "kind": "jsx-text",
-      "text": "Retry",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1018,
-      "kind": "literal-candidate",
-      "text": "No posts yet. Be the first to share!",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1025,
-      "kind": "literal-candidate",
-      "text": "User",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1054,
+      "line": 1049,
       "kind": "literal-candidate",
       "text": "inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1055,
-      "kind": "ui-attribute",
-      "text": "Change privacy",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1057,
-      "kind": "jsx-text",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1057,
-      "kind": "jsx-text",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1064,
-      "kind": "literal-candidate",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1065,
-      "kind": "literal-candidate",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
       "line": 1082,
-      "kind": "feedback-candidate",
-      "text": "Couldn't update privacy",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1084,
-      "kind": "literal-candidate",
-      "text": "Set to Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1084,
-      "kind": "literal-candidate",
-      "text": "Set to Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1087,
       "kind": "literal-candidate",
       "text": "flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-slate-50 {value1} {value2}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1105,
-      "kind": "literal-candidate",
-      "text": "Yeh post Private hai",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1105,
-      "kind": "literal-candidate",
-      "text": "Yeh post Public hai",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1107,
+      "line": 1102,
       "kind": "literal-candidate",
       "text": "inline-flex items-center gap-0.5 text-[10px] font-medium transition active:scale-95 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1109,
-      "kind": "jsx-text",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1109,
-      "kind": "jsx-text",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1117,
-      "kind": "literal-candidate",
-      "text": "No title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1144,
-      "kind": "jsx-text",
-      "text": "Edit",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1164,
-      "kind": "ui-attribute",
-      "text": "Open image fullscreen",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1168,
-      "kind": "literal-candidate",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1213,
-      "kind": "ui-attribute",
-      "text": "Play video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1218,
-      "kind": "literal-candidate",
-      "text": "Video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1238,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1248,
+      "line": 1243,
       "kind": "literal-candidate",
       "text": "flex flex-col items-center gap-0.5 transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1248,
+      "line": 1243,
       "kind": "literal-candidate",
       "text": "text-white hover:text-[#19D66B]",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1249,
-      "kind": "literal-candidate",
-      "text": "Unlike",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1249,
-      "kind": "literal-candidate",
-      "text": "Like",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1251,
+      "line": 1246,
       "kind": "literal-candidate",
       "text": "h-6 w-6 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1257,
-      "kind": "ui-attribute",
-      "text": "Open comments",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1269,
-      "kind": "literal-candidate",
-      "text": "VIP Life post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1270,
-      "kind": "literal-candidate",
-      "text": "Check out this post on VIP Life",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1272,
-      "kind": "literal-candidate",
-      "text": "Share post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1296,
-      "kind": "ui-attribute",
-      "text": "Share",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1305,
-      "kind": "ui-attribute",
-      "text": "Open fullscreen",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1350,
-      "kind": "jsx-text",
-      "text": "Edit title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1365,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1372,
-      "kind": "jsx-text",
-      "text": "Save",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1384,
+      "line": 1379,
       "kind": "literal-candidate",
       "text": "video/*",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1401,
+      "line": 1396,
       "kind": "literal-candidate",
       "text": ".no-fs-video::-webkit-media-controls-fullscreen-button { display: none !important; } .no-fs-video::-webkit-media-controls-fullscreen-container { display: none !important; }",
       "review": "pending"
     },
     {
       "file": "src/components/HomeFeed.tsx",
-      "line": 1417,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1424,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1433,
-      "kind": "ui-attribute",
-      "text": "Upload video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1445,
-      "kind": "jsx-text",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1453,
-      "kind": "jsx-text",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1484,
-      "kind": "jsx-text",
-      "text": "Edit",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1491,
-      "kind": "jsx-text",
-      "text": "Choose thumbnail from video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1498,
-      "kind": "jsx-text",
-      "text": "Upload thumbnail image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1506,
-      "kind": "jsx-text",
-      "text": "Remove thumbnail",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1513,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1529,
-      "kind": "jsx-text",
-      "text": "Video details",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1532,
-      "kind": "jsx-text",
-      "text": "Category",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1534,
+      "line": 1530,
       "kind": "literal-candidate",
       "text": "For You",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1538,
-      "kind": "jsx-text",
-      "text": "Caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1540,
-      "kind": "literal-candidate",
-      "text": "No caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1554,
-      "kind": "jsx-text",
-      "text": "Open fullscreen",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1560,
-      "kind": "jsx-text",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1570,
-      "kind": "literal-candidate",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 1571,
-      "kind": "literal-candidate",
-      "text": "Check this out",
       "review": "pending"
     },
     {
