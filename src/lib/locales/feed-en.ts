@@ -1,0 +1,26 @@
+import type { Dictionary } from "../i18n-core";
+
+export const feedEnglish = {
+  "feed.all": "All", "feed.videos": "Videos", "feed.photos": "Photos",
+  "feed.placeholder": "Share something with the world…",
+  "feed.signInPost": "Please sign in to post", "feed.contentRequired": "Write something or attach media",
+  "feed.posted": "Posted!", "feed.postFailed": "Couldn't post: {reason}",
+  "feed.signInJoin": "to post and join the feed.", "feed.people": "People",
+  "feed.marriageProfiles": "Marriage Profiles", "feed.noMarriageProfiles": "No marriage profiles found.",
+  "feed.member": "Member", "feed.tapView": "Tap to view", "feed.age": "{age}y",
+  "feed.noSearchMatches": "No posts match your search.",
+  "feed.loadFailed": "Couldn’t load the feed. Check your connection.", "feed.retry": "Retry",
+  "feed.noPosts": "No posts yet. Be the first to share!", "feed.noTitle": "No title",
+  "feed.noCaption": "No caption", "feed.changePrivacy": "Change privacy",
+  "feed.privacyFailed": "Couldn't update privacy", "feed.setPrivate": "Set to Private",
+  "feed.setPublic": "Set to Public", "feed.isPrivate": "This post is Private", "feed.isPublic": "This post is Public",
+  "feed.signInLike": "Sign in to like", "feed.unlikeFailed": "Couldn't unlike", "feed.likeFailed": "Couldn't like",
+  "feed.like": "Like", "feed.unlike": "Unlike", "feed.openComments": "Open comments",
+  "feed.openImage": "Open image fullscreen", "feed.playVideo": "Play video", "feed.video": "Video",
+  "feed.openFullscreen": "Open fullscreen", "feed.uploadVideo": "Upload video",
+  "feed.shareTitle": "VIP Life post", "feed.shareText": "Check out this post on VIP Life",
+  "feed.editTitle": "Edit title", "feed.titleFailed": "Couldn't update title", "feed.titleUpdated": "Title updated",
+  "feed.removeThumbnail": "Remove thumbnail", "feed.videoDetails": "Video details",
+  "feed.time.seconds": "{count}s", "feed.time.minutes": "{count}m", "feed.time.hours": "{count}h",
+  "feed.time.days": "{count}d", "feed.time.months": "{count}mo", "feed.time.years": "{count}y",
+} satisfies Dictionary;
