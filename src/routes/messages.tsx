@@ -1548,7 +1548,7 @@ function Messages() {
                       type="button"
                       onClick={cancelRecording}
                       className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
-                      aria-label="Cancel recording"
+                      aria-label={t("msg.cancelRecording")}
                     >
                       <Trash2 className="h-7 w-7" />
                     </button>
@@ -1560,7 +1560,7 @@ function Messages() {
                     </span>
 
                     <span className="flex-1 text-sm text-slate-500 truncate">
-                      Recording… tap send to share
+                      {t("msg.recording")}
                     </span>
                   </div>
                 ) : (
@@ -1571,7 +1571,7 @@ function Messages() {
                         <button
                           type="button"
                           className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] bg-[#F7FCF9] border border-[#19D66B]/15 hover:bg-[#DFF7E8] hover:border-[#19D66B]/30 active:bg-[#C8F0D8] transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
-                          aria-label="Emoji"
+                          aria-label={t("msg.emoji")}
                         >
                           <Smile className="h-8 w-8" />
                         </button>
@@ -1675,7 +1675,8 @@ function Messages() {
                  send();
                  }
                  }}
-                placeholder="Message"
+                 placeholder={t("msg.placeholder")}
+                data-message-input
                 disabled={busy}
                 maxLength={2000}
                 rows={1}
@@ -1690,7 +1691,7 @@ function Messages() {
                           type="button"
                           disabled={busy}
                           className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
-                          aria-label="Attach"
+                          aria-label={t("msg.attach")}
                         >
                           <Paperclip className="h-7 w-7" />
                         </button>
@@ -1698,23 +1699,23 @@ function Messages() {
 
                       <DrawerContent className="rounded-t-3xl border-0 bg-[#f7faf8] shadow-[0_-8px_30px_rgba(0,61,37,0.12)]">
                         <DrawerTitle className="sr-only">
-                          Attach
+                          {t("msg.attach")}
                         </DrawerTitle>
 
                         <div className="px-6 pt-1 text-center">
                           <p className="text-sm font-bold text-[#003D25] tracking-tight">
-                            Share with VIP Life
+                            {t("msg.attachTitle")}
                           </p>
 
                           <p className="mt-0.5 text-[11px] text-slate-500 tracking-wide">
-                            Choose a photo or take a new one
+                            {t("msg.attachHint")}
                           </p>
                         </div>
 
                         <div className="px-6 pt-5 pb-8 grid grid-cols-2 gap-6 max-w-xs mx-auto w-full">
                           {[
                             {
-                              label: "Gallery",
+                              label: t("msg.gallery"),
                               icon: Images,
                               bg: "bg-[#DFF7E8]",
                               fg: "text-[#006B3F]",
@@ -1724,7 +1725,7 @@ function Messages() {
                               },
                             },
                             {
-                              label: "Camera",
+                              label: t("msg.camera"),
                               icon: Camera,
                               bg: "bg-[#DFF7E8]",
                               fg: "text-[#006B3F]",
@@ -1789,10 +1790,10 @@ function Messages() {
                   }`}
                   aria-label={
                     recording
-                      ? "Send voice message"
+                      ? t("msg.sendVoice")
                       : text.trim()
-                        ? "Send"
-                        : "Record voice"
+                        ? t("msg.send")
+                        : t("msg.recordVoice")
                   }
                 >
                   {busy ? (
@@ -1817,16 +1818,16 @@ function Messages() {
                 </div>
 
                 <h3 className="text-lg font-bold text-[#003D25]">
-                  Your Messages
+                  {t("msg.yourMessages")}
                 </h3>
 
                 <p className="mt-1 text-sm text-slate-500 max-w-xs">
-                  Select a conversation to start chatting with someone.
+                  {t("msg.selectConversation")}
                 </p>
 
                 <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-[#006B3F]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#19D66B]" />
-                  VIP Life Messages
+                  {t("msg.tagline")}
                 </div>
               </div>
             </div>
