@@ -535,11 +535,11 @@ function Messages() {
     setAttachOpen(false);
 
     if (!navigator.geolocation) {
-      toast.error("Location not supported on this device");
+      toast.error(t("msg.locationUnsupported"));
       return;
     }
 
-    toast.message("Getting your location…");
+    toast.message(t("msg.gettingLocation"));
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -549,7 +549,7 @@ function Messages() {
 
         await sendContent(`📍 My location: ${url}`);
       },
-      () => toast.error("Couldn't get your location"),
+      () => toast.error(t("msg.locationFailed")),
       {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -560,11 +560,11 @@ function Messages() {
   const shareContact = async () => {
     setAttachOpen(false);
 
-    const name = window.prompt("Contact name");
+    const name = window.prompt(t("msg.contactName"));
 
     if (!name) return;
 
-    const phone = window.prompt("Phone number");
+    const phone = window.prompt(t("msg.phoneNumber"));
 
     if (!phone) return;
 
@@ -638,7 +638,7 @@ function Messages() {
         let framePath: string | null = null;
 
         if (kind === "video") {
-          toast.message("Checking video…");
+          toast.message(t("msg.checkingVideo"));
 
           const frame =
             await captureChatVideoFrame(file);
@@ -687,7 +687,7 @@ function Messages() {
 
         if (!verdict.safe) {
           toast.error(
-            `This ${kind} was blocked by our safety filter (${verdict.reason}). It was not sent.`,
+            t("msg.blocked", { kind: t(kind === "image" ? "msg.kind.image" : "msg.kind.video"), reason: verdict.reason ?? t("media.inappropriate") }),
             { duration: 6000 },
           );
 
@@ -700,7 +700,7 @@ function Messages() {
 
       cancelPending();
     } catch {
-      toast.error("Upload failed");
+      toast.error(t("msg.uploadFailed"));
     } finally {
       setBusy(false);
     }
@@ -812,7 +812,7 @@ function Messages() {
 
       await sendContent(`mm://${path}`);
     } catch {
-      toast.error("Couldn't send voice message");
+      toast.error(t("msg.voiceFailed"));
     } finally {
       setBusy(false);
     }
@@ -826,7 +826,7 @@ function Messages() {
       !navigator.mediaDevices?.getUserMedia
     ) {
       toast.error(
-        "Voice recording isn't supported on this device",
+        t("msg.voiceUnsupported"),
       );
       return;
     }
@@ -894,7 +894,7 @@ function Messages() {
         1000,
       );
     } catch {
-      toast.error("Mic permission denied");
+      toast.error(t("msg.micDenied"));
       cleanupRecorder();
     }
   };
@@ -939,10 +939,10 @@ function Messages() {
   const peerName = (id: string) => {
     const p = profiles[id];
 
-    return (
+     return (
       p?.display_name ??
       p?.username ??
-      "User"
+      t("msg.userFallback")
     );
   };
 
