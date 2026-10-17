@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { ShareSheet } from "@/components/ShareSheet";
 import { EditPostDialog } from "@/components/EditPostDialog";
 import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
+import { useI18n } from "@/lib/i18n";
 
 type Props = {
   postId: string;
@@ -34,6 +35,7 @@ export function MediaActions({
   children,
 }: Props) {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -67,10 +69,10 @@ export function MediaActions({
   const handleShare = () => {
     const url = ownerId ? buildShareUrl(`/u/${ownerId}`) : buildShareUrl("/");
     const data = {
-      title: caption ?? "Post",
-      text: caption ?? "Check this out",
+      title: caption ?? t("media.post"),
+      text: caption ?? t("media.checkThisOut"),
       url,
-      dialogTitle: "Share post",
+      dialogTitle: t("share.post"),
     };
 
     const systemShare = shareWithSystemShare(data);
@@ -88,7 +90,7 @@ export function MediaActions({
   const handleReport = async () => {
     setOpen(false);
     if (!user) {
-      toast.error("Please sign in to report");
+      toast.error(t("media.reportSignIn"));
       return;
     }
     const { error } = await supabase
@@ -96,22 +98,22 @@ export function MediaActions({
       .insert({ post_id: postId, reporter_id: user.id });
     if (error && error.code !== "23505") {
       console.error("Report error:", error);
-      toast.error("Couldn't submit report. Please try again.");
+      toast.error(t("media.reportFailed"));
     } else {
-      toast.success("Thanks — we'll review this post");
+      toast.success(t("media.reportThanks"));
     }
   };
 
   const handleDelete = async () => {
     setOpen(false);
     if (!isOwner) return;
-    if (!confirm("Delete this post? This cannot be undone.")) return;
+    if (!confirm(t("media.deleteConfirm"))) return;
     const { error } = await supabase.from("posts").delete().eq("id", postId);
     if (error) {
       console.error("Delete error:", error);
-      toast.error("Couldn't delete. Please try again.");
+      toast.error(t("media.deleteFailed"));
     } else {
-      toast.success("Post deleted");
+      toast.success(t("media.deleted"));
       onDeleted?.(postId);
     }
   };
@@ -145,22 +147,22 @@ export function MediaActions({
             className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <Item icon={<Share2 className="h-5 w-5" />} label="Share" onClick={handleShare} />
+            <Item icon={<Share2 className="h-5 w-5" />} label={t("common.share")} onClick={handleShare} />
             {isOwner && (
               <Item
                 icon={<Pencil className="h-5 w-5" />}
-                label="Edit"
+                label={t("common.edit")}
                 onClick={() => {
                   setOpen(false);
                   setEditOpen(true);
                 }}
               />
             )}
-            <Item icon={<Flag className="h-5 w-5" />} label="Report" onClick={handleReport} />
+            <Item icon={<Flag className="h-5 w-5" />} label={t("common.report")} onClick={handleReport} />
             {isOwner && (
               <Item
                 icon={<Trash2 className="h-5 w-5" />}
-                label="Delete"
+                label={t("common.delete")}
                 danger
                 onClick={handleDelete}
               />
@@ -169,7 +171,7 @@ export function MediaActions({
               onClick={() => setOpen(false)}
               className="w-full py-3 text-sm font-semibold text-slate-600 border-t border-slate-100 active:bg-slate-50"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -177,8 +179,8 @@ export function MediaActions({
       <ShareSheet
         open={shareOpen}
         onClose={() => setShareOpen(false)}
-        title={caption ?? "Post"}
-        text={caption ?? "Check this out"}
+        title={caption ?? t("media.post")}
+        text={caption ?? t("media.checkThisOut")}
         url={ownerId ? buildShareUrl(`/u/${ownerId}`) : buildShareUrl("/")}
       />
       <EditPostDialog
