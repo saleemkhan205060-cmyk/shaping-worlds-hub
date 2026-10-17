@@ -611,7 +611,7 @@ function UploadPage() {
                 <div className="mt-2 flex flex-wrap gap-2">
                   {CATEGORIES.map((c) => (
                     <button
-                      key={t(UPLOAD_CATEGORY_KEYS[c])}
+                      key={c}
                       type="button"
                       onClick={() => setCategory(c)}
                       className={`px-3 py-1.5 rounded-full text-xs font-semibold transition ${

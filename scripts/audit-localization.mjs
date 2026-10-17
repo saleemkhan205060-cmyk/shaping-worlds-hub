@@ -9,6 +9,27 @@ const records = [];
 const metadata = [];
 const translatedUses = [];
 const dynamicTranslatedUses = [];
+const keyMapDomains = new Map();
+
+// Extract explicit domains without executing or importing application modules.
+for (const path of files(join(root, "src/lib"))) {
+  if (/\/locales\//.test(path)) continue;
+  const source = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true);
+  function findMap(node) {
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text.endsWith("_KEYS") && node.initializer) {
+      let value = node.initializer;
+      if (ts.isAsExpression(value)) value = value.expression;
+      if (ts.isObjectLiteralExpression(value)) {
+        const properties = value.properties.filter(ts.isPropertyAssignment);
+        if (properties.length === value.properties.length && properties.every((property) => ts.isStringLiteral(property.initializer))) {
+          keyMapDomains.set(node.name.text, properties.map((property) => property.initializer.text));
+        }
+      }
+    }
+    ts.forEachChild(node, findMap);
+  }
+  findMap(source);
+}
 
 function files(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -34,6 +55,23 @@ for (const directory of ["src/routes", "src/components", "src/lib", "src/hooks"]
       records.push({ file, line: position.line + 1, kind, text: normalized, review: "pending" });
     }
     function visit(node) {
+      if (ts.isCallExpression(node) && node.expression.getText(source) === "t" && node.arguments[0]) {
+        const argument = node.arguments[0];
+        const position = source.getLineAndCharacterOfPosition(node.getStart(source));
+        if (ts.isElementAccessExpression(argument) && ts.isIdentifier(argument.expression)) {
+          const keys = keyMapDomains.get(argument.expression.text);
+          if (keys) {
+            for (const key of keys) translatedUses.push({ file, line: position.line + 1, key, domain: argument.expression.text });
+            for (const parameter of node.arguments.slice(1)) visit(parameter);
+            return;
+          }
+        }
+        if (ts.isConditionalExpression(argument) && ts.isStringLiteral(argument.whenTrue) && ts.isStringLiteral(argument.whenFalse)) {
+          for (const key of [argument.whenTrue.text, argument.whenFalse.text]) translatedUses.push({ file, line: position.line + 1, key });
+          for (const parameter of node.arguments.slice(1)) visit(parameter);
+          return;
+        }
+      }
       if (ts.isCallExpression(node) && node.expression.getText(source) === "t" && node.arguments[0] && ts.isTemplateExpression(node.arguments[0])) {
         const argument = node.arguments[0];
         const position = source.getLineAndCharacterOfPosition(node.getStart(source));
