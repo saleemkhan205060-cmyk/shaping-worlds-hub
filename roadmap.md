@@ -1,6 +1,7 @@
 # Android keyboard spacing
 
 ## Country-language investigation (no app changes)
+- [ ] Finalize and cross-check all 195 mappings against the complete target registry; identify confirmation choices and require full-target translation/testing before rollout.
 - [x] Recommend a default UI language for each of the 195 existing countries, document multilingual alternatives, and list required translations/files; preserve selector and persistence. Mapping remains proposed for review, not applied.
 
 ## Android verification
