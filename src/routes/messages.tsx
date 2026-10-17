@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "sonner";
 import { moderateMedia } from "@/lib/moderation-bridge";
+import { useI18n } from "@/lib/i18n";
 import { usePresenceState, type Status } from "@/lib/presence";
 
 // Capture a still frame from a video File as a JPEG Blob
@@ -140,6 +141,7 @@ type Profile = {
 
 function Messages() {
   const { user, loading } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { to } = Route.useSearch();
 
@@ -419,7 +421,7 @@ function Messages() {
     setBusy(false);
 
     if (error || !data) {
-      toast.error(`Send failed: ${error?.message ?? "No message data returned"}`);
+      toast.error(t("msg.sendFailed", { reason: error?.message ?? t("msg.noData") }));
       return;
     }
 
@@ -446,7 +448,7 @@ function Messages() {
 
     if (error) {
     console.error("Edit message error:", error);
-    toast.error(`Edit failed: ${error.message}`);
+    toast.error(t("msg.editFailed", { reason: error.message }));
     return;
    }
     setMsgs((prev) =>
@@ -459,12 +461,12 @@ function Messages() {
     setEditingMsg(null);
     setText("");
     setMessageMenu(null);
-    toast.success("Message updated");
+    toast.success(t("msg.updated"));
   };
 
   const deleteTextMessage = async (m: Msg) => {
     if (!user || m.sender_id !== user.id) return;
-    if (!window.confirm("Delete this message?")) return;
+    if (!window.confirm(t("msg.deleteConfirm"))) return;
 
     const { error } = await supabase
       .from("messages")
@@ -473,7 +475,7 @@ function Messages() {
       .eq("sender_id", user.id);
 
     if (error) {
-      toast.error("Couldn't delete message");
+      toast.error(t("msg.deleteFailed"));
       return;
     }
 
@@ -483,7 +485,7 @@ function Messages() {
       setEditingMsg(null);
       setText("");
     }
-    toast.success("Message deleted");
+    toast.success(t("msg.deleted"));
   };
 
   const startEditingMessage = (m: Msg) => {
@@ -507,14 +509,14 @@ function Messages() {
 
     if (replyTo) {
       const replyText = replyTo.content.startsWith("mm://")
-        ? "📷 Photo"
+        ? t("msg.photo")
         : replyTo.content.slice(0, 120);
 
       content = `↪ Replying to: ${replyText}\n${rawText}`;
     }
 
    const textarea = document.querySelector<HTMLTextAreaElement>(
-  'textarea[placeholder="Message"]',
+  "textarea[data-message-input]",
    );
 
    setText("");
