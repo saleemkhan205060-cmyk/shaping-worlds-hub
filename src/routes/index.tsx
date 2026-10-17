@@ -56,7 +56,7 @@ function Index() {
   // a spinner and made every tap feel frozen before sign-in.
   return (
     <Layout>
-  <section className="mt-3 mb-4">
+  <section className="mt-1 mb-1">
   <div
     className="relative block mx-[-8px] w-[calc(100%+16px)] overflow-hidden rounded-2xl border border-[#19D66B]/60"
   >
