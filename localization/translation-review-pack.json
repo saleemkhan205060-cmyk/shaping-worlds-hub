@@ -3479,6 +3479,11 @@
         },
         {
           "file": "src/components/HomeFeed.tsx",
+          "line": 888,
+          "key": "media.post"
+        },
+        {
+          "file": "src/components/HomeFeed.tsx",
           "line": 1163,
           "key": "media.post"
         },

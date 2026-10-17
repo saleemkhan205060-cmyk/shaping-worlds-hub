@@ -3,9 +3,9 @@
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
     "sourceFilesWithCandidates": 119,
-    "candidates": 3108,
+    "candidates": 3107,
     "contentRouteMetadata": 35,
-    "translatedUses": 318,
+    "translatedUses": 319,
     "dynamicTranslatedUses": 21
   },
   "metadata": [
@@ -1160,6 +1160,11 @@
       "file": "src/components/HomeFeed.tsx",
       "line": 878,
       "key": "privacy.private"
+    },
+    {
+      "file": "src/components/HomeFeed.tsx",
+      "line": 888,
+      "key": "media.post"
     },
     {
       "file": "src/components/HomeFeed.tsx",
@@ -4590,13 +4595,6 @@
       "line": 876,
       "kind": "literal-candidate",
       "text": "text-slate-700 hover:bg-slate-50",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/HomeFeed.tsx",
-      "line": 888,
-      "kind": "jsx-text",
-      "text": "Post",
       "review": "pending"
     },
     {
