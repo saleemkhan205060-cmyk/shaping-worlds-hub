@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Lock, Save, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/account-edit")({
   component: AccountEditPage,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/account-edit")({
 
 function AccountEditPage() {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const deleteAccountFn = useServerFn(deleteOwnAccount);
 
@@ -128,7 +130,7 @@ function AccountEditPage() {
       parsedAge !== null &&
       (!Number.isInteger(parsedAge) || parsedAge < 1)
     ) {
-      setSaveMessage("Please enter a valid age.");
+      setSaveMessage(t("accountEdit.validAge"));
       setSaving(false);
       return;
     }
@@ -191,7 +193,7 @@ function AccountEditPage() {
       return;
     }
 
-    setSaveMessage("Account updated successfully.");
+    setSaveMessage(t("accountEdit.updated"));
     setSaving(false);
   };
 
@@ -206,7 +208,7 @@ function AccountEditPage() {
       await supabase.auth.signOut();
       navigate({ to: "/auth" });
     } catch (e) {
-      setSaveMessage(e instanceof Error ? e.message : "Could not delete account.");
+      setSaveMessage(e instanceof Error ? e.message : t("accountEdit.deleteFailed"));
       setDeleting(false);
       setDeleteOpen(false);
     }
@@ -215,7 +217,7 @@ function AccountEditPage() {
   if (authLoading || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#003D25]">
-        <div className="text-white">Loading...</div>
+        <div className="text-white">{t("accountEdit.loading")}</div>
       </div>
     );
   }
@@ -232,7 +234,7 @@ function AccountEditPage() {
           </Link>
 
           <h1 className="text-xl font-extrabold text-white sm:text-2xl">
-            Edit Account
+            {t("accountEdit.title")}
           </h1>
         </div>
 
@@ -240,21 +242,21 @@ function AccountEditPage() {
           {/* BASIC INFORMATION */}
           <div className="rounded-2xl border border-[#19D66B] bg-[#005A35] p-4">
             <h2 className="mb-3 text-base font-bold text-white">
-              Basic Information
+              {t("accountEdit.basicInfo")}
             </h2>
 
             <div className="space-y-2">
               {/* NAME */}
               <div>
                 <label className="mb-0.5 block text-xs font-medium text-white">
-                  Name
+                  {t("accountEdit.name")}
                 </label>
 
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  placeholder={t("accountEdit.enterName")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -262,7 +264,7 @@ function AccountEditPage() {
              {/* ABOUT */}
              <div>
              <label className="mb-1 block text-xs font-medium text-white">
-            About
+            {t("accountEdit.about")}
             </label>
 
              <textarea
@@ -270,19 +272,19 @@ function AccountEditPage() {
                 maxLength={120}
                  value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                   placeholder="Tell people about yourself..."
+                   placeholder={t("accountEdit.aboutPlaceholder")}
                    className="min-h-[40px] w-full resize-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 py-2 text-sm leading-5 text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                    />
 
                   <p className="mt-0.5 text-[10px] text-white/45">
-                  Maximum 120 characters
+                  {t("accountEdit.maxChars")}
                 </p>
                 </div>
 
               {/* COUNTRY */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Country
+                  {t("accountEdit.country")}
                 </label>
 
                 <div className="relative">
@@ -291,7 +293,7 @@ function AccountEditPage() {
                     onChange={(e) => setCountry(e.target.value)}
                     className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
-                    <option value="">Select Country</option>
+                    <option value="">{t("accountEdit.selectCountry")}</option>
                     <option value="Afghanistan">Afghanistan</option>
                     <option value="Albania">Albania</option>
                     <option value="Algeria">Algeria</option>
@@ -363,14 +365,14 @@ function AccountEditPage() {
               {/* CITY */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  City
+                  {t("accountEdit.city")}
                 </label>
 
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  placeholder="Enter your city"
+                  placeholder={t("accountEdit.enterCity")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -378,7 +380,7 @@ function AccountEditPage() {
               {/* WEBSITE */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Website
+                  {t("accountEdit.website")}
                 </label>
 
                 <input
@@ -394,13 +396,13 @@ function AccountEditPage() {
 
           {/* ABOUT YOU */}
           <div className="rounded-2xl border border-[#19D66B] bg-[#005A35] p-4">
-            <h2 className="mb-3 text-base font-bold text-white">About You</h2>
+            <h2 className="mb-3 text-base font-bold text-white">{t("accountEdit.aboutYou")}</h2>
 
             <div className="space-y-3">
               {/* GENDER */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Gender
+                  {t("accountEdit.gender")}
                 </label>
 
                 <div className="relative">
@@ -409,9 +411,9 @@ function AccountEditPage() {
                     onChange={(e) => setGender(e.target.value)}
                     className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="">{t("accountEdit.selectGender")}</option>
+                    <option value="Male">{t("accountEdit.gender.male")}</option>
+                    <option value="Female">{t("accountEdit.gender.female")}</option>
                   </select>
 
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
@@ -423,7 +425,7 @@ function AccountEditPage() {
               {/* AGE */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Age
+                  {t("accountEdit.age")}
                 </label>
 
                 <input
@@ -431,7 +433,7 @@ function AccountEditPage() {
                   min="1"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
-                  placeholder="Enter your age"
+                  placeholder={t("accountEdit.enterAge")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -439,14 +441,14 @@ function AccountEditPage() {
               {/* LANGUAGE */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Language
+                  {t("accountEdit.language")}
                 </label>
 
                 <input
                   type="text"
                   value={languages}
                   onChange={(e) => setLanguages(e.target.value)}
-                  placeholder="Enter your language"
+                  placeholder={t("accountEdit.enterLanguage")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -454,7 +456,7 @@ function AccountEditPage() {
               {/* MARITAL STATUS */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Marital Status
+                  {t("accountEdit.maritalStatus")}
                 </label>
 
                 <div className="relative">
@@ -463,11 +465,11 @@ function AccountEditPage() {
                     onChange={(e) => setMaritalStatus(e.target.value)}
                     className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
-                    <option value="">Select Marital Status</option>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
+                    <option value="">{t("accountEdit.selectMaritalStatus")}</option>
+                    <option value="Single">{t("accountEdit.marital.single")}</option>
+                    <option value="Married">{t("accountEdit.marital.married")}</option>
+                    <option value="Divorced">{t("accountEdit.marital.divorced")}</option>
+                    <option value="Widowed">{t("accountEdit.marital.widowed")}</option>
                   </select>
 
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
@@ -479,14 +481,14 @@ function AccountEditPage() {
               {/* EDUCATION */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Education
+                  {t("accountEdit.education")}
                 </label>
 
                 <input
                   type="text"
                   value={education}
                   onChange={(e) => setEducation(e.target.value)}
-                  placeholder="Enter your education"
+                  placeholder={t("accountEdit.enterEducation")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -494,14 +496,14 @@ function AccountEditPage() {
               {/* PROFESSION */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Profession
+                  {t("accountEdit.profession")}
                 </label>
 
                 <input
                   type="text"
                   value={profession}
                   onChange={(e) => setProfession(e.target.value)}
-                  placeholder="Enter your profession"
+                  placeholder={t("accountEdit.enterProfession")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -509,14 +511,14 @@ function AccountEditPage() {
               {/* LIVING IN */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Living In
+                  {t("accountEdit.livingIn")}
                 </label>
 
                 <input
                   type="text"
                   value={livingIn}
                   onChange={(e) => setLivingIn(e.target.value)}
-                  placeholder="e.g. Saudi Arabia"
+                  placeholder={t("accountEdit.livingInPlaceholder")}
                   className="h-10 w-full rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                 />
               </div>
@@ -524,7 +526,7 @@ function AccountEditPage() {
               {/* RELIGION */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Religion
+                  {t("accountEdit.religion")}
                 </label>
 
                 <div className="relative">
@@ -533,13 +535,13 @@ function AccountEditPage() {
                     onChange={(e) => setReligion(e.target.value)}
                     className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 pr-9 text-sm text-white outline-none focus:border-[#7CFF3B]"
                   >
-                    <option value="">Select Religion</option>
-                    <option value="Islam">Islam</option>
-                    <option value="Christianity">Christianity</option>
-                    <option value="Hinduism">Hinduism</option>
-                    <option value="Sikhism">Sikhism</option>
-                    <option value="Buddhism">Buddhism</option>
-                    <option value="Other">Other</option>
+                    <option value="">{t("accountEdit.selectReligion")}</option>
+                    <option value="Islam">{t("accountEdit.religion.islam")}</option>
+                    <option value="Christianity">{t("accountEdit.religion.christianity")}</option>
+                    <option value="Hinduism">{t("accountEdit.religion.hinduism")}</option>
+                    <option value="Sikhism">{t("accountEdit.religion.sikhism")}</option>
+                    <option value="Buddhism">{t("accountEdit.religion.buddhism")}</option>
+                    <option value="Other">{t("accountEdit.religion.other")}</option>
                   </select>
 
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white">
@@ -551,7 +553,7 @@ function AccountEditPage() {
               {/* DATE OF BIRTH */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Date of Birth
+                  {t("accountEdit.dob")}
                 </label>
 
                 <input
@@ -566,7 +568,7 @@ function AccountEditPage() {
               {/* EMAIL */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-white">
-                  Email
+                  {t("accountEdit.email")}
                 </label>
 
                 <div className="flex gap-2">
@@ -574,7 +576,7 @@ function AccountEditPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder={t("accountEdit.enterEmail")}
                     className="h-10 min-w-0 flex-1 rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-[#7CFF3B]"
                   />
 
@@ -584,8 +586,8 @@ function AccountEditPage() {
                onChange={(e) => setEmailVisibility(e.target.value)}
         className="h-10 w-full appearance-none rounded-lg border border-[#19D66B]/60 bg-[#003D25] px-2 pr-7 text-xs font-medium text-white outline-none focus:border-[#7CFF3B]"
        >
-      <option value="Public">Public</option>
-         <option value="Private">Private</option>
+      <option value="Public">{t("accountEdit.email.public")}</option>
+         <option value="Private">{t("accountEdit.email.private")}</option>
          </select>
 
            {emailVisibility === "Private" && (
@@ -599,7 +601,7 @@ function AccountEditPage() {
                 </div>
 
                 <p className="mt-1 text-[10px] text-white/45">
-                  Choose whether your email is public or private.
+                  {t("accountEdit.emailHint")}
                 </p>
               </div>
             </div>
@@ -621,7 +623,7 @@ function AccountEditPage() {
               className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-[#19D66B] bg-[#19D66B] px-3 text-sm font-bold text-[#003D25] transition hover:bg-[#7CFF3B] disabled:cursor-not-allowed disabled:opacity-60"
             >
              <Save className="h-4 w-4" />
-             {saving ? "Saving..." : "Save Changes"}
+             {saving ? t("accountEdit.saving") : t("accountEdit.saveChanges")}
             </button>
 
             <button
@@ -631,7 +633,7 @@ function AccountEditPage() {
              className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-[#19D66B] hover:bg-red-600/15 px-3 text-sm font-bold text-red-300 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
              >
              <Trash2 className="h-4 w-4" />
-            Delete
+            {t("accountEdit.delete")}
            </button>
           </div>
         </div>
@@ -643,7 +645,7 @@ function AccountEditPage() {
           <div className="w-full max-w-sm rounded-2xl border border-[#19D66B] bg-[#005A35] p-5 shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-lg font-bold text-white">
-                Delete Account?
+                {t("accountEdit.deleteTitle")}
               </h3>
 
               <button
@@ -656,8 +658,7 @@ function AccountEditPage() {
             </div>
 
             <p className="mb-5 text-sm leading-5 text-white/75">
-              Are you sure you want to delete your account? This action
-              cannot be undone.
+              {t("accountEdit.deleteBody")}
             </p>
 
             <div className="flex gap-2">
@@ -667,7 +668,7 @@ function AccountEditPage() {
                 disabled={deleting}
                 className="h-10 flex-1 rounded-lg border border-[#19D66B]/60 bg-[#003D25] text-sm font-semibold text-white transition hover:bg-[#004C30]"
               >
-                Cancel
+                {t("accountEdit.cancel")}
               </button>
 
               <button
@@ -676,7 +677,7 @@ function AccountEditPage() {
                 disabled={deleting}
                 className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-bold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {deleting ? "Deleting..." : "Confirm Delete"}
+                {deleting ? t("accountEdit.deleting") : t("accountEdit.confirmDelete")}
               </button>
             </div>
           </div>

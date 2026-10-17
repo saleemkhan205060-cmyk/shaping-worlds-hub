@@ -15,12 +15,18 @@ import { uploadSwedish } from "./upload-sv";
 import { feedEnglish } from "./feed-en";
 import { feedUrdu } from "./feed-ur";
 import { feedSwedish } from "./feed-sv";
+import { captureEnglish } from "./capture-en";
+import { captureUrdu } from "./capture-ur";
+import { captureSwedish } from "./capture-sv";
+import { searchEnglish } from "./search-en";
+import { searchUrdu } from "./search-ur";
+import { searchSwedish } from "./search-sv";
 
 // An absent dictionary stays absent: never seed other languages with English.
 export const STAGED_DICTIONARIES: Readonly<Record<string, Dictionary>> = {
   ...LEGACY_TRANSLATIONS,
-  en: { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish },
-  ur: { ...LEGACY_TRANSLATIONS.ur, ...appUrdu, ...mediaUrdu, ...accountUrdu, ...uploadUrdu, ...feedUrdu },
-  sv: { ...sv, ...mediaSwedish, ...accountSwedish, ...uploadSwedish, ...feedSwedish },
+  en: { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish, ...captureEnglish, ...searchEnglish },
+  ur: { ...LEGACY_TRANSLATIONS.ur, ...appUrdu, ...mediaUrdu, ...accountUrdu, ...uploadUrdu, ...feedUrdu, ...captureUrdu, ...searchUrdu },
+  sv: { ...sv, ...mediaSwedish, ...accountSwedish, ...uploadSwedish, ...feedSwedish, ...captureSwedish, ...searchSwedish },
 };
 export const SOURCE_DICTIONARY = STAGED_DICTIONARIES.en;

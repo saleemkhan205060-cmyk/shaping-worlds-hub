@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { MoreVertical, Upload, Play, Pause, X, Sparkles, Music, Scissors, Volume2, VolumeX, Crop, SlidersHorizontal, Gauge, Type, Pencil, Camera, Sun, Wand2, Moon, Contrast, Droplet, Thermometer, Palette, CircleDot, Sunrise, Sunset } from "lucide-react";
 import fixWebmDuration from "fix-webm-duration";
+import { useI18n } from "@/lib/i18n";
 
 type Props = {
   file: File;
@@ -10,21 +11,21 @@ type Props = {
 };
 
 const FILTERS: { id: string; label: string; css: string }[] = [
-  { id: "none", label: "Original", css: "none" },
-  { id: "warm", label: "Warm", css: "saturate(1.2) hue-rotate(-10deg) brightness(1.05)" },
-  { id: "cool", label: "Cool", css: "saturate(1.1) hue-rotate(15deg) brightness(1.02)" },
-  { id: "vivid", label: "Vivid", css: "saturate(1.6) contrast(1.1)" },
-  { id: "bw", label: "B&W", css: "grayscale(1) contrast(1.1)" },
-  { id: "vintage", label: "Vintage", css: "sepia(0.5) contrast(0.95) saturate(1.2)" },
-  { id: "fade", label: "Fade", css: "contrast(0.9) brightness(1.1) saturate(0.85)" },
+  { id: "none", label: "editor.filter.none", css: "none" },
+  { id: "warm", label: "editor.filter.warm", css: "saturate(1.2) hue-rotate(-10deg) brightness(1.05)" },
+  { id: "cool", label: "editor.filter.cool", css: "saturate(1.1) hue-rotate(15deg) brightness(1.02)" },
+  { id: "vivid", label: "editor.filter.vivid", css: "saturate(1.6) contrast(1.1)" },
+  { id: "bw", label: "editor.filter.bw", css: "grayscale(1) contrast(1.1)" },
+  { id: "vintage", label: "editor.filter.vintage", css: "sepia(0.5) contrast(0.95) saturate(1.2)" },
+  { id: "fade", label: "editor.filter.fade", css: "contrast(0.9) brightness(1.1) saturate(0.85)" },
 ];
 
 const ASPECTS: { id: string; label: string; ratio: string }[] = [
-  { id: "free", label: "Custom", ratio: "auto" },
+  { id: "free", label: "editor.aspect.free", ratio: "auto" },
   { id: "9:16", label: "9:16", ratio: "9 / 16" },
   { id: "2:3", label: "2:3", ratio: "2 / 3" },
   { id: "3:4", label: "3:4", ratio: "3 / 4" },
-  { id: "1:1", label: "Square", ratio: "1 / 1" },
+  { id: "1:1", label: "editor.aspect.1:1", ratio: "1 / 1" },
   { id: "16:9", label: "16:9", ratio: "16 / 9" },
 ];
 
@@ -62,6 +63,7 @@ const DEFAULT_VISUAL_ADJUSTMENTS: VisualAdjustments = {
 
 export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
   const handleClose = useHistoryBackClose(onClose);
+  const { t } = useI18n();
   const videoRef = useRef<HTMLVideoElement>(null);
   const editPreviewRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
@@ -277,7 +279,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       onConfirm(outFile);
     } catch (error) {
       console.error("Video export failed", error);
-      window.alert("Save failed. Please try again.");
+      window.alert(t("editor.saveFailed"));
     } finally {
       setSavingCrop(false);
     }
@@ -332,14 +334,14 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           <button
             onClick={handleClose}
             className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
-            aria-label="Close"
+            aria-label={t("editor.close")}
           >
             <X className="h-5 w-5" />
           </button>
           <button
             onClick={() => setMenuOpen(true)}
             className="h-11 w-11 rounded-full bg-black/50 backdrop-blur text-white flex items-center justify-center border border-white/15 active:scale-95 transition"
-            aria-label="More options"
+            aria-label={t("editor.moreOptions")}
           >
             <MoreVertical className="h-5 w-5" />
           </button>
@@ -350,7 +352,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
           <button
             onClick={(e) => { e.stopPropagation(); togglePlay(); }}
             className={`pointer-events-auto h-20 w-20 rounded-full border-2 border-white/90 bg-black/30 backdrop-blur flex items-center justify-center active:scale-95 transition ${playing ? "opacity-0" : "opacity-100"}`}
-            aria-label={playing ? "Pause" : "Play"}
+            aria-label={playing ? t("editor.pause") : t("editor.play")}
           >
             {playing ? <Pause className="h-9 w-9 text-white fill-white" /> : <Play className="h-9 w-9 text-white fill-white ml-1" />}
           </button>
@@ -362,7 +364,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             onClick={handleDone}
             disabled={savingCrop}
             className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-xl shadow-fuchsia-500/40 active:scale-95 transition"
-            aria-label="Upload"
+            aria-label={t("editor.upload")}
           >
             <Upload className="h-6 w-6" />
           </button>
@@ -393,11 +395,11 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
       {menuOpen && (
         <div className="fixed inset-0 z-[410] bg-black/60 flex items-end" onClick={() => setMenuOpen(false)}>
           <div className="w-full bg-white rounded-t-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <SheetItem icon={<Pencil className="h-5 w-5" />} label="Edit" onClick={() => { setMenuOpen(false); setSheet("edit"); setEditTab("crop"); }} />
-            <SheetItem icon={<Sparkles className="h-5 w-5" />} label="Filters" onClick={() => { setMenuOpen(false); setSheet("filter"); }} />
-            <SheetItem icon={<Music className="h-5 w-5" />} label="Sound settings" onClick={() => { setMenuOpen(false); setSheet("sound"); }} />
-            <SheetItem icon={<Scissors className="h-5 w-5" />} label="Trim video" onClick={() => { setMenuOpen(false); setSheet("trim"); }} />
-            <button onClick={() => setMenuOpen(false)} className="w-full py-3 text-sm font-semibold text-slate-600 border-t border-slate-100">Cancel</button>
+            <SheetItem icon={<Pencil className="h-5 w-5" />} label={t("editor.title")} onClick={() => { setMenuOpen(false); setSheet("edit"); setEditTab("crop"); }} />
+            <SheetItem icon={<Sparkles className="h-5 w-5" />} label={t("editor.filters")} onClick={() => { setMenuOpen(false); setSheet("filter"); }} />
+            <SheetItem icon={<Music className="h-5 w-5" />} label={t("editor.soundSettings")} onClick={() => { setMenuOpen(false); setSheet("sound"); }} />
+            <SheetItem icon={<Scissors className="h-5 w-5" />} label={t("editor.trimVideo")} onClick={() => { setMenuOpen(false); setSheet("trim"); }} />
+            <button onClick={() => setMenuOpen(false)} className="w-full py-3 text-sm font-semibold text-slate-600 border-t border-slate-100">{t("editor.cancel")}</button>
           </div>
         </div>
       )}
@@ -415,9 +417,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 <div className="flex items-center justify-between text-white text-xs font-semibold mb-2 tabular-nums">
                   <span className="inline-flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-rose-400 animate-pulse" />
-                    Preparing video…
+                    {t("editor.preparing")}
                   </span>
-                  <span>~{fmt(remaining)} left</span>
+                  <span>{t("editor.timeLeft", { time: fmt(remaining) })}</span>
                 </div>
                 <div className="h-1.5 w-full rounded-full bg-white/15 overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 transition-all" style={{ width: `${pct}%` }} />
@@ -431,11 +433,11 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             <button onClick={onClose} className="h-9 w-9 rounded-full bg-white/10 text-white flex items-center justify-center active:scale-95">
               <X className="h-5 w-5" />
             </button>
-            <span className="text-white text-sm font-semibold">Edit</span>
+            <span className="text-white text-sm font-semibold">{t("editor.title")}</span>
             {savingCrop ? (
               <div className="h-7 w-[72px]" aria-hidden />
             ) : (
-              <button onClick={handleDone} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">Done</button>
+              <button onClick={handleDone} className="text-black text-xs font-bold px-4 py-1.5 rounded-full bg-white active:scale-95 transition">{t("editor.done")}</button>
             )}
           </div>
 
@@ -475,7 +477,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Play + time pill (tight, directly below video) */}
           <div className="flex items-center justify-center gap-3 px-3 py-1.5 shrink-0">
-            <button onClick={togglePlay} className="text-white active:scale-95 transition" aria-label={playing ? "Pause" : "Play"}>
+            <button onClick={togglePlay} className="text-white active:scale-95 transition" aria-label={playing ? t("editor.pause") : t("editor.play")}>
               {playing ? <Pause className="h-6 w-6 fill-white" /> : <Play className="h-6 w-6 fill-white" />}
             </button>
             <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1 text-sm font-medium tabular-nums">
@@ -527,7 +529,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                     className={`shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border ${aspect === a.id ? "border-sky-300 bg-white/10" : "border-transparent bg-white/[0.06]"}`}
                   >
                     <span className={`h-5 w-5 rounded-[3px] ${aspect === a.id ? "bg-sky-200" : "bg-white/60"}`} />
-                    <span className="text-[11px] font-medium text-white">{a.label}</span>
+                    <span className="text-[11px] font-medium text-white">{t(a.label)}</span>
                   </button>
                 ))}
               </div>
@@ -539,7 +541,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white/[0.08] hover:bg-white/20 transition active:scale-95"
                 >
                   <Wand2 className="h-5 w-5" />
-                  <span className="text-sm font-medium">Auto Enhance</span>
+                  <span className="text-sm font-medium">{t("editor.autoEnhance")}</span>
                 </button>
               </div>
             )}
@@ -547,16 +549,16 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <div className="space-y-3 text-white">
                 <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                   {([
-                    { id: "brightness", label: "Brightness", icon: <Sun className="h-4 w-4" /> },
-                    { id: "contrast", label: "Contrast", icon: <Contrast className="h-4 w-4" /> },
-                    { id: "highlights", label: "Highlights", icon: <Sunrise className="h-4 w-4" /> },
-                    { id: "shadows", label: "Shadows", icon: <Moon className="h-4 w-4" /> },
-                    { id: "whitePoint", label: "White point", icon: <Sunset className="h-4 w-4" /> },
-                    { id: "blackPoint", label: "Black point", icon: <CircleDot className="h-4 w-4" /> },
-                    { id: "saturation", label: "Saturation", icon: <Droplet className="h-4 w-4" /> },
-                    { id: "warmth", label: "Warmth", icon: <Thermometer className="h-4 w-4" /> },
-                    { id: "tint", label: "Tint", icon: <Palette className="h-4 w-4" /> },
-                    { id: "vignette", label: "Vignette", icon: <SlidersHorizontal className="h-4 w-4" /> },
+                    { id: "brightness", label: "editor.adjust.brightness", icon: <Sun className="h-4 w-4" /> },
+                    { id: "contrast", label: "editor.adjust.contrast", icon: <Contrast className="h-4 w-4" /> },
+                    { id: "highlights", label: "editor.adjust.highlights", icon: <Sunrise className="h-4 w-4" /> },
+                    { id: "shadows", label: "editor.adjust.shadows", icon: <Moon className="h-4 w-4" /> },
+                    { id: "whitePoint", label: "editor.adjust.whitePoint", icon: <Sunset className="h-4 w-4" /> },
+                    { id: "blackPoint", label: "editor.adjust.blackPoint", icon: <CircleDot className="h-4 w-4" /> },
+                    { id: "saturation", label: "editor.adjust.saturation", icon: <Droplet className="h-4 w-4" /> },
+                    { id: "warmth", label: "editor.adjust.warmth", icon: <Thermometer className="h-4 w-4" /> },
+                    { id: "tint", label: "editor.adjust.tint", icon: <Palette className="h-4 w-4" /> },
+                    { id: "vignette", label: "editor.adjust.vignette", icon: <SlidersHorizontal className="h-4 w-4" /> },
                   ] as const).map((a) => (
                     <button
                       key={a.id}
@@ -564,39 +566,39 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                       className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition ${adjustSub === a.id ? "bg-white text-black" : "bg-white/[0.08] text-white"}`}
                     >
                       {a.icon}
-                      <span>{a.label}</span>
+                      <span>{t(a.label)}</span>
                     </button>
                   ))}
                 </div>
                 {adjustSub === "brightness" && (
-                  <AdjustRow label="Brightness" value={brightness} min={0.3} max={1.8} onChange={setBrightness} />
+                  <AdjustRow label={t("editor.adjust.brightness")} value={brightness} min={0.3} max={1.8} onChange={setBrightness} />
                 )}
                 {adjustSub === "contrast" && (
-                  <AdjustRow label="Contrast" value={contrast} min={0.5} max={1.5} onChange={setContrast} />
+                  <AdjustRow label={t("editor.adjust.contrast")} value={contrast} min={0.5} max={1.5} onChange={setContrast} />
                 )}
                 {adjustSub === "saturation" && (
-                  <AdjustRow label="Saturation" value={saturation} min={0} max={2} onChange={setSaturation} />
+                  <AdjustRow label={t("editor.adjust.saturation")} value={saturation} min={0} max={2} onChange={setSaturation} />
                 )}
                 {adjustSub === "highlights" && (
-                  <AdjustRow label="Highlights" value={highlights} min={-1} max={1} onChange={setHighlights} />
+                  <AdjustRow label={t("editor.adjust.highlights")} value={highlights} min={-1} max={1} onChange={setHighlights} />
                 )}
                 {adjustSub === "shadows" && (
-                  <AdjustRow label="Shadows" value={shadows} min={-1} max={1} onChange={setShadows} />
+                  <AdjustRow label={t("editor.adjust.shadows")} value={shadows} min={-1} max={1} onChange={setShadows} />
                 )}
                 {adjustSub === "whitePoint" && (
-                  <AdjustRow label="White point" value={whitePoint} min={-1} max={1} onChange={setWhitePoint} />
+                  <AdjustRow label={t("editor.adjust.whitePoint")} value={whitePoint} min={-1} max={1} onChange={setWhitePoint} />
                 )}
                 {adjustSub === "blackPoint" && (
-                  <AdjustRow label="Black point" value={blackPoint} min={-1} max={1} onChange={setBlackPoint} />
+                  <AdjustRow label={t("editor.adjust.blackPoint")} value={blackPoint} min={-1} max={1} onChange={setBlackPoint} />
                 )}
                 {adjustSub === "warmth" && (
-                  <AdjustRow label="Warmth" value={warmth} min={-1} max={1} onChange={setWarmth} />
+                  <AdjustRow label={t("editor.adjust.warmth")} value={warmth} min={-1} max={1} onChange={setWarmth} />
                 )}
                 {adjustSub === "tint" && (
-                  <AdjustRow label="Tint" value={tint} min={-1} max={1} onChange={setTint} />
+                  <AdjustRow label={t("editor.adjust.tint")} value={tint} min={-1} max={1} onChange={setTint} />
                 )}
                 {adjustSub === "vignette" && (
-                  <AdjustRow label="Vignette" value={vignette} min={0} max={1} onChange={setVignette} />
+                  <AdjustRow label={t("editor.adjust.vignette")} value={vignette} min={0} max={1} onChange={setVignette} />
                 )}
               </div>
             )}
@@ -610,7 +612,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                     >
                       {src && <video src={src} className="w-full h-full object-cover" muted />}
                     </div>
-                    <span className="text-[10px] text-white">{f.label}</span>
+                    <span className="text-[10px] text-white">{t(f.label)}</span>
                   </button>
                 ))}
               </div>
@@ -619,7 +621,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <div className="space-y-2 text-white text-xs">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span>Original sound</span>
+                    <span>{t("editor.originalSound")}</span>
                     <button onClick={() => setOrigMuted((m) => !m)}>
                       {origMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                     </button>
@@ -630,7 +632,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span>Music {musicName && <span className="opacity-70">· {musicName}</span>}</span>
+                    <span>{t("editor.music")} {musicName && <span className="opacity-70">· {musicName}</span>}</span>
                     <button onClick={() => setMusicMuted((m) => !m)} disabled={!musicSrc}>
                       {musicMuted || !musicSrc ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                     </button>
@@ -655,9 +657,9 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               <div className="text-white text-xs space-y-2">
                 <button onClick={() => musicInputRef.current?.click()}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-bold shadow-lg shadow-fuchsia-500/30 active:scale-95 transition">
-                  <Music className="h-4 w-4" /> {musicSrc ? "Change music" : "Pick from gallery"}
+                  <Music className="h-4 w-4" /> {musicSrc ? t("editor.changeMusic") : t("editor.pickMusic")}
                 </button>
-                {musicName && <p className="opacity-80 truncate">Selected: {musicName}</p>}
+                {musicName && <p className="opacity-80 truncate">{t("editor.selectedMusic", { name: musicName })}</p>}
                 <input ref={musicInputRef} type="file" accept="audio/*" className="hidden"
                   onChange={(e) => onPickMusic(e.target.files?.[0] ?? null)} />
               </div>
@@ -668,7 +670,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                   type="text"
                   value={overlayText}
                   onChange={(e) => setOverlayText(e.target.value)}
-                  placeholder="Add text…"
+                  placeholder={t("editor.addText")}
                   className="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder-white/50 text-sm outline-none"
                 />
                 <div className="flex items-center gap-3">
@@ -683,21 +685,21 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
           {/* Bottom tabs — Google Photos style */}
           <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-3 pt-1 bg-black shrink-0 scrollbar-none">
-            <EditTabBtn icon={<Wand2 className="h-6 w-6" />} label="Auto" active={editTab === "auto"} onClick={() => setEditTab("auto")} />
-            <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label="Adjust" active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
-            <EditTabBtn icon={<Crop className="h-6 w-6" />} label="Crop" active={editTab === "crop"} onClick={() => setEditTab("crop")} />
-            <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label="Filters" active={editTab === "filters"} onClick={() => setEditTab("filters")} />
-            <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label="Audio" active={editTab === "audio"} onClick={() => setEditTab("audio")} />
-            <EditTabBtn icon={<Gauge className="h-6 w-6" />} label="Speed" active={editTab === "speed"} onClick={() => setEditTab("speed")} />
-            <EditTabBtn icon={<Music className="h-6 w-6" />} label="Music" active={editTab === "music"} onClick={() => setEditTab("music")} />
-            <EditTabBtn icon={<Type className="h-6 w-6" />} label="Text" active={editTab === "text"} onClick={() => setEditTab("text")} />
+            <EditTabBtn icon={<Wand2 className="h-6 w-6" />} label={t("editor.tab.auto")} active={editTab === "auto"} onClick={() => setEditTab("auto")} />
+            <EditTabBtn icon={<SlidersHorizontal className="h-6 w-6" />} label={t("editor.tab.adjust")} active={editTab === "adjust"} onClick={() => setEditTab("adjust")} />
+            <EditTabBtn icon={<Crop className="h-6 w-6" />} label={t("editor.tab.crop")} active={editTab === "crop"} onClick={() => setEditTab("crop")} />
+            <EditTabBtn icon={<Sparkles className="h-6 w-6" />} label={t("editor.tab.filters")} active={editTab === "filters"} onClick={() => setEditTab("filters")} />
+            <EditTabBtn icon={<Volume2 className="h-6 w-6" />} label={t("editor.tab.audio")} active={editTab === "audio"} onClick={() => setEditTab("audio")} />
+            <EditTabBtn icon={<Gauge className="h-6 w-6" />} label={t("editor.tab.speed")} active={editTab === "speed"} onClick={() => setEditTab("speed")} />
+            <EditTabBtn icon={<Music className="h-6 w-6" />} label={t("editor.tab.music")} active={editTab === "music"} onClick={() => setEditTab("music")} />
+            <EditTabBtn icon={<Type className="h-6 w-6" />} label={t("editor.tab.text")} active={editTab === "text"} onClick={() => setEditTab("text")} />
           </div>
         </div>
       )}
 
       {/* Filter sheet */}
       {sheet === "filter" && (
-        <BottomSheet title="Filters" onClose={() => setSheet(null)}>
+        <BottomSheet title={t("editor.filters")} onClose={() => setSheet(null)}>
           <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
             {FILTERS.map((f) => (
               <button
@@ -711,7 +713,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 >
                   {src && <video src={src} className="w-full h-full object-cover" muted />}
                 </div>
-                <span className="text-[11px] font-medium text-slate-700">{f.label}</span>
+                <span className="text-[11px] font-medium text-slate-700">{t(f.label)}</span>
               </button>
             ))}
           </div>
@@ -720,11 +722,11 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
       {/* Sound sheet */}
       {sheet === "sound" && (
-        <BottomSheet title="Sound settings" onClose={() => setSheet(null)}>
+        <BottomSheet title={t("editor.soundSettings")} onClose={() => setSheet(null)}>
           <div className="space-y-5">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-slate-800">Original sound</span>
+                <span className="text-sm font-semibold text-slate-800">{t("editor.originalSound")}</span>
                 <button onClick={() => setOrigMuted((m) => !m)} className="text-slate-700">
                   {origMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                 </button>
@@ -739,7 +741,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-semibold text-slate-800">
-                  Added music {musicName && <span className="text-slate-500 font-normal">· {musicName}</span>}
+                  {t("editor.addedMusic")} {musicName && <span className="text-slate-500 font-normal">· {musicName}</span>}
                 </span>
                 <button onClick={() => setMusicMuted((m) => !m)} className="text-slate-700" disabled={!musicSrc}>
                   {musicMuted || !musicSrc ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
@@ -756,7 +758,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
                 onClick={() => musicInputRef.current?.click()}
                 className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold"
               >
-                <Music className="h-4 w-4" /> {musicSrc ? "Change music" : "Pick from gallery"}
+                <Music className="h-4 w-4" /> {musicSrc ? t("editor.changeMusic") : t("editor.pickMusic")}
               </button>
               <input
                 ref={musicInputRef} type="file" accept="audio/*" className="hidden"
@@ -769,11 +771,11 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
 
       {/* Trim sheet */}
       {sheet === "trim" && (
-        <BottomSheet title="Trim video" onClose={() => setSheet(null)}>
+        <BottomSheet title={t("editor.trimVideo")} onClose={() => setSheet(null)}>
           <div className="space-y-4">
             <div>
               <div className="flex justify-between text-xs text-slate-600 mb-1">
-                <span>Start</span><span className="tabular-nums">{fmt(trimStart)}</span>
+                <span>{t("editor.trimStart")}</span><span className="tabular-nums">{fmt(trimStart)}</span>
               </div>
               <input
                 type="range" min={0} max={duration} step={0.1} value={trimStart}
@@ -787,7 +789,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
             </div>
             <div>
               <div className="flex justify-between text-xs text-slate-600 mb-1">
-                <span>End</span><span className="tabular-nums">{fmt(trimEnd)}</span>
+                <span>{t("editor.trimEnd")}</span><span className="tabular-nums">{fmt(trimEnd)}</span>
               </div>
               <input
                 type="range" min={0} max={duration} step={0.1} value={trimEnd}
@@ -796,7 +798,7 @@ export function FullscreenVideoEditor({ file, onClose, onConfirm }: Props) {
               />
             </div>
             <p className="text-[11px] text-slate-500">
-              Trim is applied when you tap Done.
+              {t("editor.trimHint")}
             </p>
           </div>
         </BottomSheet>

@@ -29,6 +29,7 @@ import { MediaActions } from "@/components/MediaActions";
 import { AvatarImg } from "@/components/AvatarImg";
 import { ShareSheet } from "@/components/ShareSheet";
 import { buildShareUrl, shareWithSystemShare } from "@/lib/native-share";
+import { useI18n } from "@/lib/i18n";
 
 type UploaderProfile = {
   id: string;
@@ -65,6 +66,7 @@ export function FullscreenVideoPlayer({
 }: Props) {
   const handleClose = useHistoryBackClose(onClose, useHistoryBack);
   const { user } = useAuth();
+  const { t } = useI18n();
   const [followedUsers, setFollowedUsers] = useState<Record<string, boolean>>({});
   useEffect(() => {
   if (!user) return;
@@ -121,7 +123,7 @@ export function FullscreenVideoPlayer({
         const verdict = await moderateMedia({ bucket: "media", path, mediaType: "image", surface: "thumbnail" });
         if (!verdict.safe) {
           toast.error(
-            `Thumbnail rejected by our safety filter (${verdict.reason ?? "inappropriate"}). Please pick a different image.`,
+            t("media.thumbnailRejected", { reason: verdict.reason ?? t("media.inappropriate") }),
             { duration: 6000 },
           );
           return;
@@ -133,15 +135,15 @@ export function FullscreenVideoPlayer({
           .eq("id", item.id);
         if (updErr) throw updErr;
         item.thumbnail_url = url;
-        toast.success("Thumbnail updated!");
+        toast.success(t("player.thumbUpdated"));
       } catch (e) {
         console.error(e);
-        toast.error("Failed to save thumbnail");
+        toast.error(t("player.thumbFailed"));
       } finally {
         URL.revokeObjectURL(previewUrl);
       }
     },
-    [user],
+    [user, t],
   );
 
   // Social state
@@ -313,7 +315,7 @@ export function FullscreenVideoPlayer({
 
   const toggleLike = async (postId: string) => {
     if (!user) {
-      toast.error("Sign in to like");
+      toast.error(t("feed.signInLike"));
       return;
     }
     const isLiked = !!likedByMe[postId];
@@ -331,7 +333,7 @@ export function FullscreenVideoPlayer({
       if (error) {
         setLikedByMe((m) => ({ ...m, [postId]: true }));
         setLikeCounts((c) => ({ ...c, [postId]: (c[postId] ?? 0) + 1 }));
-        toast.error("Couldn't unlike");
+        toast.error(t("feed.unlikeFailed"));
       }
     } else {
       const { error } = await supabase
@@ -340,14 +342,14 @@ export function FullscreenVideoPlayer({
       if (error) {
         setLikedByMe((m) => ({ ...m, [postId]: false }));
         setLikeCounts((c) => ({ ...c, [postId]: Math.max(0, (c[postId] ?? 1) - 1) }));
-        toast.error("Couldn't like");
+        toast.error(t("feed.likeFailed"));
       }
     }
     };
 
   const followUser = async (followingId: string) => {
     if (!user) {
-      toast.error("Please sign in to follow");
+      toast.error(t("player.signInToFollow"));
       return;
     }
 
@@ -362,14 +364,14 @@ export function FullscreenVideoPlayer({
 
     if (error) {
       if (error.code === "23505") {
-        toast.info("Already following", { style: { width: "120px", minWidth: "0", height: "auto", padding: "6px 12px" } });
+        toast.info(t("player.alreadyFollowing"), { style: { width: "120px", minWidth: "0", height: "auto", padding: "6px 12px" } });
       } else {
-        toast.error("Couldn't follow");
+        toast.error(t("player.followFailed"));
       }
       return;
     }
 
-    toast.success("Following", { style: { width: "120px", minWidth: "0", height: "auto", padding: "6px 12px" } });
+    toast.success(t("player.following"), { style: { width: "120px", minWidth: "0", height: "auto", padding: "6px 12px" } });
 setFollowedUsers((prev) => ({ ...prev, [followingId]: true }));
 setShowFollowed((prev) => ({ ...prev, [followingId]: true }));
 
@@ -380,10 +382,10 @@ setTimeout(() => {
   const openShareSheet = (it: FsItem) => {
     const url = it.user_id ? buildShareUrl(`/u/${it.user_id}`) : buildShareUrl("/");
     const data = {
-      title: it.caption ?? "Post",
-      text: it.caption ?? "Check this out",
+      title: it.caption ?? t("player.shareTitle"),
+      text: it.caption ?? t("player.shareText"),
       url,
-      dialogTitle: "Share post",
+      dialogTitle: t("player.shareDialog"),
     };
 
     const systemShare = shareWithSystemShare(data);
@@ -401,7 +403,7 @@ setTimeout(() => {
   const reportItem = async (it: FsItem) => {
     setMoreOpenFor(null);
     if (!user) {
-      toast.error("Please sign in to report");
+      toast.error(t("player.signInToReport"));
       return;
     }
     const { error } = await supabase
@@ -409,22 +411,22 @@ setTimeout(() => {
       .insert({ post_id: it.id, reporter_id: user.id });
     if (error && error.code !== "23505") {
       console.error("Report error:", error);
-      toast.error("Couldn't submit report. Please try again.");
+      toast.error(t("player.reportFailed"));
     } else {
-      toast.success("Thanks — we'll review this post");
+      toast.success(t("player.reportThanks"));
     }
   };
 
   const deleteItem = async (it: FsItem) => {
     setMoreOpenFor(null);
     if (!user || user.id !== it.user_id) return;
-    if (!confirm("Delete this post? This cannot be undone.")) return;
+    if (!confirm(t("player.deleteConfirm"))) return;
     const { error } = await supabase.from("posts").delete().eq("id", it.id);
     if (error) {
       console.error("Delete error:", error);
-      toast.error("Couldn't delete. Please try again.");
+      toast.error(t("player.deleteFailed"));
     } else {
-      toast.success("Post deleted");
+      toast.success(t("player.deleted"));
       handleClose();
     }
   };
@@ -439,7 +441,7 @@ setTimeout(() => {
         <button
   onClick={handleClose}
   className="fixed top-4 left-3 z-30 h-10 w-10 rounded-full flex items-center justify-center text-white active:scale-95"
-  aria-label="Back"
+  aria-label={t("player.back")}
 >
   <span className="text-4xl">←</span>
 </button>
@@ -492,7 +494,7 @@ setTimeout(() => {
                 <button
                   onClick={() => togglePlay(it.id)}
                   className="absolute inset-0 flex items-center justify-center z-10"
-                  aria-label="Play"
+                  aria-label={t("player.play")}
                 >
                   <span className="h-20 w-20 rounded-full bg-black/50 flex items-center justify-center">
                     <Play className="h-10 w-10 text-white fill-white" />
@@ -519,20 +521,20 @@ setTimeout(() => {
                   icon={
                     <Heart className={`h-7 w-7 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`} />
                   }
-                  label={likes > 0 ? String(likes) : "Like"}
+                  label={likes > 0 ? String(likes) : t("player.like")}
                   onClick={() => toggleLike(it.id)}
                   active={isLiked}
                 />
                 <ActionBtn
                   icon={<MessageCircle className="h-7 w-7" />}
-                  label={comments > 0 ? String(comments) : "Chat"}
+                  label={comments > 0 ? String(comments) : t("player.chat")}
                   onClick={() => setCommentsOpenFor(it.id)}
                 />
                 <button
   type="button"
   onClick={() => openShareSheet(it)}
   className="h-12 w-12 flex flex-col items-center justify-center text-white active:scale-95 transition"
-  aria-label="Share"
+  aria-label={t("player.share")}
 >
 <svg
   viewBox="0 0 67 64"
@@ -556,8 +558,8 @@ setTimeout(() => {
     textShadow: "0 2px 4px rgba(0,0,0,0.9)"
   }}
 >
-   Share
-</span>
+   {t("player.share")}
+ </span>
              </button>
                 {it.user_id && (
                <div className="relative h-10 w-10">
@@ -566,7 +568,7 @@ setTimeout(() => {
                     params={{ id: it.user_id }}
                     onClick={(e) => e.stopPropagation()}
                     className="relative flex items-center justify-center z-20"
-                    aria-label="View profile"
+                    aria-label={t("player.viewProfile")}
                   >
                     <span className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-white bg-white/10 flex items-center justify-center">
                       <AvatarImg
@@ -588,7 +590,7 @@ setTimeout(() => {
                {showFollowed[it.user_id] ? (
             <span
        className="absolute right-0 -bottom-1 z-50 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white animate-in fade-in zoom-in duration-300"
-    aria-label="Followed"
+    aria-label={t("player.followed")}
   >
     ✓
   </span>
@@ -597,7 +599,7 @@ setTimeout(() => {
     type="button"
     onClick={() => followUser(it.user_id!)}
     className="absolute right-0 -bottom-1 z-50 h-5 w-5 rounded-full bg-[#117D43] text-white flex items-center justify-center shadow-md border border-white active:scale-90 transition-all duration-300"
-      aria-label="Follow"
+      aria-label={t("player.follow")}
       >
          <Plus className="h-3.5 w-3.5" strokeWidth={3} />
           </button>
@@ -611,7 +613,7 @@ setTimeout(() => {
                   <button
                     onClick={() => setMoreOpenFor(moreOpenFor === it.id ? null : it.id)}
                     className="h-10 w-10 rounded-full flex items-center justify-center text-white drop-shadow-lg active:scale-95"
-                    aria-label="More options"
+                    aria-label={t("player.moreOptions")}
                   >
                     <MoreVertical className="h-6 w-6" />
                   </button>
@@ -632,7 +634,7 @@ setTimeout(() => {
                             ) : (
                               <Volume2 className="h-5 w-5" />
                             )}
-                            {muted ? "Unmute" : "Mute"}
+                            {muted ? t("player.unmute") : t("player.mute")}
                           </button>
                         )}
                         {user?.id && user.id === it.user_id && (
@@ -643,21 +645,21 @@ setTimeout(() => {
                             }}
                             className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
                           >
-                            <Pencil className="h-5 w-5" /> Edit
+                            <Pencil className="h-5 w-5" /> {t("player.edit")}
                           </button>
                         )}
                         <button
                           onClick={() => reportItem(it)}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-white text-sm font-medium hover:bg-white/10 active:bg-white/15"
                         >
-                          <Flag className="h-5 w-5" /> Report
+                          <Flag className="h-5 w-5" /> {t("player.report")}
                         </button>
                         {user?.id && user.id === it.user_id && (
                           <button
                             onClick={() => deleteItem(it)}
                             className="w-full flex items-center gap-3 px-4 py-2.5 text-rose-400 text-sm font-medium hover:bg-white/10 active:bg-white/15"
                           >
-                            <Trash2 className="h-5 w-5" /> Delete
+                            <Trash2 className="h-5 w-5" /> {t("player.delete")}
                           </button>
                         )}
                       </div>
@@ -681,8 +683,8 @@ setTimeout(() => {
         <ShareSheet
           open={!!shareItem}
           onClose={() => setShareItem(null)}
-          title={shareItem.caption ?? "Post"}
-          text={shareItem.caption ?? "Check this out"}
+          title={shareItem.caption ?? t("player.shareTitle")}
+          text={shareItem.caption ?? t("player.shareText")}
           url={shareItem.user_id ? buildShareUrl(`/u/${shareItem.user_id}`) : buildShareUrl("/")}
         />
       )}

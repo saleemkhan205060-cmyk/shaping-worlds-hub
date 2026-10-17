@@ -3,9 +3,9 @@
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
     "sourceFilesWithCandidates": 119,
-    "candidates": 3107,
+    "candidates": 2888,
     "contentRouteMetadata": 35,
-    "translatedUses": 319,
+    "translatedUses": 501,
     "dynamicTranslatedUses": 21
   },
   "metadata": [
@@ -161,7 +161,7 @@
     },
     {
       "file": "src/routes/search.tsx",
-      "hasHead": false,
+      "hasHead": true,
       "review": "pending"
     },
     {
@@ -186,6 +186,301 @@
     }
   ],
   "translatedUses": [
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 133,
+      "key": "accountEdit.validAge"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 196,
+      "key": "accountEdit.updated"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 211,
+      "key": "accountEdit.deleteFailed"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 220,
+      "key": "accountEdit.loading"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 237,
+      "key": "accountEdit.title"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 245,
+      "key": "accountEdit.basicInfo"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 252,
+      "key": "accountEdit.name"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 259,
+      "key": "accountEdit.enterName"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 267,
+      "key": "accountEdit.about"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 275,
+      "key": "accountEdit.aboutPlaceholder"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 280,
+      "key": "accountEdit.maxChars"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 287,
+      "key": "accountEdit.country"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 296,
+      "key": "accountEdit.selectCountry"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 368,
+      "key": "accountEdit.city"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 375,
+      "key": "accountEdit.enterCity"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 383,
+      "key": "accountEdit.website"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 399,
+      "key": "accountEdit.aboutYou"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 405,
+      "key": "accountEdit.gender"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 414,
+      "key": "accountEdit.selectGender"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 415,
+      "key": "accountEdit.gender.male"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 416,
+      "key": "accountEdit.gender.female"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 428,
+      "key": "accountEdit.age"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 436,
+      "key": "accountEdit.enterAge"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 444,
+      "key": "accountEdit.language"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 451,
+      "key": "accountEdit.enterLanguage"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 459,
+      "key": "accountEdit.maritalStatus"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 468,
+      "key": "accountEdit.selectMaritalStatus"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 469,
+      "key": "accountEdit.marital.single"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 470,
+      "key": "accountEdit.marital.married"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 471,
+      "key": "accountEdit.marital.divorced"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 472,
+      "key": "accountEdit.marital.widowed"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 484,
+      "key": "accountEdit.education"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 491,
+      "key": "accountEdit.enterEducation"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 499,
+      "key": "accountEdit.profession"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 506,
+      "key": "accountEdit.enterProfession"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 514,
+      "key": "accountEdit.livingIn"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 521,
+      "key": "accountEdit.livingInPlaceholder"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 529,
+      "key": "accountEdit.religion"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 538,
+      "key": "accountEdit.selectReligion"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 539,
+      "key": "accountEdit.religion.islam"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 540,
+      "key": "accountEdit.religion.christianity"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 541,
+      "key": "accountEdit.religion.hinduism"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 542,
+      "key": "accountEdit.religion.sikhism"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 543,
+      "key": "accountEdit.religion.buddhism"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 544,
+      "key": "accountEdit.religion.other"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 556,
+      "key": "accountEdit.dob"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 571,
+      "key": "accountEdit.email"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 579,
+      "key": "accountEdit.enterEmail"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 589,
+      "key": "accountEdit.email.public"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 590,
+      "key": "accountEdit.email.private"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 604,
+      "key": "accountEdit.emailHint"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 626,
+      "key": "accountEdit.saving"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 626,
+      "key": "accountEdit.saveChanges"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 636,
+      "key": "accountEdit.delete"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 648,
+      "key": "accountEdit.deleteTitle"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 661,
+      "key": "accountEdit.deleteBody"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 671,
+      "key": "accountEdit.cancel"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 680,
+      "key": "accountEdit.deleting"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 680,
+      "key": "accountEdit.confirmDelete"
+    },
     {
       "file": "src/routes/account-settings.tsx",
       "line": 42,
@@ -542,6 +837,61 @@
       "key": "recovery.back"
     },
     {
+      "file": "src/routes/search.tsx",
+      "line": 139,
+      "key": "search.back"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 149,
+      "key": "search.placeholder"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 156,
+      "key": "search.clear"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 191,
+      "key": "search.emptyPrompt"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 194,
+      "key": "search.searching"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 209,
+      "key": "search.noResults"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 225,
+      "key": "search.people"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 245,
+      "key": "search.userFallback"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 249,
+      "key": "search.memberFallback"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 267,
+      "key": "search.reels"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 267,
+      "key": "search.photos"
+    },
+    {
       "file": "src/routes/upload.tsx",
       "line": 128,
       "key": "upload.allowedTypes"
@@ -837,6 +1187,121 @@
       "key": "upload.cropped"
     },
     {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 185,
+      "key": "capture.permissionDenied"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 187,
+      "key": "capture.noCamera"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 188,
+      "key": "capture.unavailable"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 188,
+      "key": "capture.unknownError"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 503,
+      "key": "capture.retake"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 505,
+      "key": "capture.retake"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 512,
+      "key": "capture.filters"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 528,
+      "key": "capture.cancel"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 535,
+      "key": "capture.useThis"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 557,
+      "key": "capture.close"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 563,
+      "key": "capture.addSound"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 573,
+      "key": "capture.beauty"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 588,
+      "key": "capture.filters"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 604,
+      "key": "capture.next"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 610,
+      "key": "capture.next"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 652,
+      "key": "capture.flipCamera"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 669,
+      "key": "capture.pauseRecording"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 669,
+      "key": "capture.resumeRecording"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 669,
+      "key": "capture.record"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 696,
+      "key": "capture.gallery"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 742,
+      "key": "capture.filters"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 752,
+      "key": "capture.reset"
+    },
+    {
+      "file": "src/components/CameraCapture.tsx",
+      "line": 755,
+      "key": "capture.closeFilters"
+    },
+    {
       "file": "src/components/CommentsSheet.tsx",
       "line": 117,
       "key": "comments.signIn"
@@ -1020,6 +1485,451 @@
       "file": "src/components/EditPostDialog.tsx",
       "line": 367,
       "key": "common.remove"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 282,
+      "key": "editor.saveFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 337,
+      "key": "editor.close"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 344,
+      "key": "editor.moreOptions"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 355,
+      "key": "editor.pause"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 355,
+      "key": "editor.play"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 367,
+      "key": "editor.upload"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 398,
+      "key": "editor.title"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 399,
+      "key": "editor.filters"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 400,
+      "key": "editor.soundSettings"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 401,
+      "key": "editor.trimVideo"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 402,
+      "key": "editor.cancel"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 420,
+      "key": "editor.preparing"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 422,
+      "key": "editor.timeLeft"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 436,
+      "key": "editor.title"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 440,
+      "key": "editor.done"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 480,
+      "key": "editor.pause"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 480,
+      "key": "editor.play"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 544,
+      "key": "editor.autoEnhance"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 574,
+      "key": "editor.adjust.brightness"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 577,
+      "key": "editor.adjust.contrast"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 580,
+      "key": "editor.adjust.saturation"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 583,
+      "key": "editor.adjust.highlights"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 586,
+      "key": "editor.adjust.shadows"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 589,
+      "key": "editor.adjust.whitePoint"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 592,
+      "key": "editor.adjust.blackPoint"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 595,
+      "key": "editor.adjust.warmth"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 598,
+      "key": "editor.adjust.tint"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 601,
+      "key": "editor.adjust.vignette"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 624,
+      "key": "editor.originalSound"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 635,
+      "key": "editor.music"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 660,
+      "key": "editor.changeMusic"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 660,
+      "key": "editor.pickMusic"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 662,
+      "key": "editor.selectedMusic"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 673,
+      "key": "editor.addText"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 688,
+      "key": "editor.tab.auto"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 689,
+      "key": "editor.tab.adjust"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 690,
+      "key": "editor.tab.crop"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 691,
+      "key": "editor.tab.filters"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 692,
+      "key": "editor.tab.audio"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 693,
+      "key": "editor.tab.speed"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 694,
+      "key": "editor.tab.music"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 695,
+      "key": "editor.tab.text"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 702,
+      "key": "editor.filters"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 725,
+      "key": "editor.soundSettings"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 729,
+      "key": "editor.originalSound"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 744,
+      "key": "editor.addedMusic"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 761,
+      "key": "editor.changeMusic"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 761,
+      "key": "editor.pickMusic"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 774,
+      "key": "editor.trimVideo"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 778,
+      "key": "editor.trimStart"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 792,
+      "key": "editor.trimEnd"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 801,
+      "key": "editor.trimHint"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 126,
+      "key": "media.thumbnailRejected"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 126,
+      "key": "media.inappropriate"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 138,
+      "key": "player.thumbUpdated"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 141,
+      "key": "player.thumbFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 318,
+      "key": "feed.signInLike"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 336,
+      "key": "feed.unlikeFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 345,
+      "key": "feed.likeFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 352,
+      "key": "player.signInToFollow"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 367,
+      "key": "player.alreadyFollowing"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 369,
+      "key": "player.followFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 374,
+      "key": "player.following"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 385,
+      "key": "player.shareTitle"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 386,
+      "key": "player.shareText"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 388,
+      "key": "player.shareDialog"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 406,
+      "key": "player.signInToReport"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 414,
+      "key": "player.reportFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 416,
+      "key": "player.reportThanks"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 423,
+      "key": "player.deleteConfirm"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 427,
+      "key": "player.deleteFailed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 429,
+      "key": "player.deleted"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 444,
+      "key": "player.back"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 497,
+      "key": "player.play"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 524,
+      "key": "player.like"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 530,
+      "key": "player.chat"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 537,
+      "key": "player.share"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 561,
+      "key": "player.share"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 571,
+      "key": "player.viewProfile"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 593,
+      "key": "player.followed"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 602,
+      "key": "player.follow"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 616,
+      "key": "player.moreOptions"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 637,
+      "key": "player.unmute"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 637,
+      "key": "player.mute"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 648,
+      "key": "player.edit"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 655,
+      "key": "player.report"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 662,
+      "key": "player.delete"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 686,
+      "key": "player.shareTitle"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 687,
+      "key": "player.shareText"
     },
     {
       "file": "src/components/HomeFeed.tsx",
@@ -2128,798 +3038,497 @@
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 16,
+      "line": 17,
       "kind": "literal-candidate",
       "text": "brightness(1.06) contrast(0.98) saturate(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 17,
+      "line": 18,
       "kind": "literal-candidate",
       "text": "brightness(1.12) contrast(0.96) saturate(1.1)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 18,
+      "line": 19,
       "kind": "literal-candidate",
       "text": "brightness(1.18) contrast(0.94) saturate(1.18)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 29,
-      "kind": "literal-candidate",
-      "text": "Normal",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 29,
+      "line": 30,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#9ca3af,#e5e7eb)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 30,
-      "kind": "literal-candidate",
-      "text": "Vivid",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 30,
+      "line": 31,
       "kind": "literal-candidate",
       "text": "saturate(1.5) contrast(1.1)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 30,
+      "line": 31,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#ff5e62,#ff9966)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 31,
-      "kind": "literal-candidate",
-      "text": "Warm",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 31,
+      "line": 32,
       "kind": "literal-candidate",
       "text": "sepia(0.25) saturate(1.3) hue-rotate(-10deg) brightness(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 31,
+      "line": 32,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#f6d365,#fda085)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 32,
-      "kind": "literal-candidate",
-      "text": "Cool",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 32,
+      "line": 33,
       "kind": "literal-candidate",
       "text": "saturate(1.1) hue-rotate(15deg) brightness(1.02)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 32,
+      "line": 33,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#74ebd5,#9face6)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 33,
-      "kind": "literal-candidate",
-      "text": "B&W",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 33,
+      "line": 34,
       "kind": "literal-candidate",
       "text": "grayscale(1) contrast(1.15)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 33,
+      "line": 34,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#232526,#a8a8a8)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 34,
-      "kind": "literal-candidate",
-      "text": "Vintage",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 34,
+      "line": 35,
       "kind": "literal-candidate",
       "text": "sepia(0.5) contrast(0.95) brightness(1.05) saturate(0.9)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 34,
+      "line": 35,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#c79081,#dfa579)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 35,
-      "kind": "literal-candidate",
-      "text": "Drama",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 35,
+      "line": 36,
       "kind": "literal-candidate",
       "text": "contrast(1.35) saturate(0.85) brightness(0.95)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 35,
+      "line": 36,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#1f1c2c,#928dab)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 36,
-      "kind": "literal-candidate",
-      "text": "Fade",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 36,
+      "line": 37,
       "kind": "literal-candidate",
       "text": "contrast(0.85) brightness(1.1) saturate(0.8)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 36,
+      "line": 37,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#fceabb,#f8b500)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 37,
-      "kind": "literal-candidate",
-      "text": "Noir",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 37,
+      "line": 38,
       "kind": "literal-candidate",
       "text": "grayscale(1) contrast(1.4) brightness(0.9)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 37,
+      "line": 38,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#000,#434343)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 38,
-      "kind": "literal-candidate",
-      "text": "Pink",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 38,
+      "line": 39,
       "kind": "literal-candidate",
       "text": "saturate(1.2) hue-rotate(-20deg) brightness(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 38,
+      "line": 39,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#ffafbd,#ffc3a0)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 39,
-      "kind": "literal-candidate",
-      "text": "Neon",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 39,
+      "line": 40,
       "kind": "literal-candidate",
       "text": "saturate(2) contrast(1.2) hue-rotate(20deg)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 39,
+      "line": 40,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#00f2fe,#4facfe)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 40,
-      "kind": "literal-candidate",
-      "text": "Sunset",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 40,
+      "line": 41,
       "kind": "literal-candidate",
       "text": "sepia(0.3) saturate(1.4) hue-rotate(-15deg) brightness(1.08)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 40,
+      "line": 41,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#ff6e7f,#bfe9ff)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 41,
-      "kind": "literal-candidate",
-      "text": "Lush",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 41,
+      "line": 42,
       "kind": "literal-candidate",
       "text": "saturate(1.4) contrast(1.05) hue-rotate(-5deg)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 41,
+      "line": 42,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#0ba360,#3cba92)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 42,
-      "kind": "literal-candidate",
-      "text": "Mint",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 42,
+      "line": 43,
       "kind": "literal-candidate",
       "text": "saturate(1.15) hue-rotate(40deg) brightness(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 42,
+      "line": 43,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#a8edea,#fed6e3)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 43,
-      "kind": "literal-candidate",
-      "text": "Berry",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 43,
+      "line": 44,
       "kind": "literal-candidate",
       "text": "saturate(1.3) hue-rotate(-30deg) contrast(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 43,
+      "line": 44,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#a18cd1,#fbc2eb)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 44,
-      "kind": "literal-candidate",
-      "text": "Ocean",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 44,
+      "line": 45,
       "kind": "literal-candidate",
       "text": "saturate(1.2) hue-rotate(25deg) brightness(0.98) contrast(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 44,
+      "line": 45,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#2193b0,#6dd5ed)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 45,
-      "kind": "literal-candidate",
-      "text": "Honey",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 45,
+      "line": 46,
       "kind": "literal-candidate",
       "text": "sepia(0.35) saturate(1.4) brightness(1.06)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 45,
+      "line": 46,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#f7971e,#ffd200)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 46,
-      "kind": "literal-candidate",
-      "text": "Mono",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 46,
+      "line": 47,
       "kind": "literal-candidate",
       "text": "grayscale(1) brightness(1.05) contrast(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 46,
+      "line": 47,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#bdc3c7,#2c3e50)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 47,
-      "kind": "literal-candidate",
-      "text": "Polaroid",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 47,
+      "line": 48,
       "kind": "literal-candidate",
       "text": "sepia(0.2) saturate(1.1) brightness(1.08) contrast(0.95)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 47,
+      "line": 48,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#ede574,#e1f5c4)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 48,
-      "kind": "literal-candidate",
-      "text": "Cinema",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 48,
+      "line": 49,
       "kind": "literal-candidate",
       "text": "contrast(1.2) saturate(0.9) brightness(0.95) hue-rotate(-5deg)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 48,
+      "line": 49,
       "kind": "literal-candidate",
       "text": "linear-gradient(135deg,#141e30,#243b55)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 183,
-      "kind": "literal-candidate",
-      "text": "Camera permission denied. Allow Camera & Microphone for VIP Life in Settings > Apps > Permissions.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 185,
-      "kind": "literal-candidate",
-      "text": "No camera found on this device.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 186,
-      "kind": "literal-candidate",
-      "text": "Camera not available ({value1}). Please allow camera & microphone access.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 186,
-      "kind": "literal-candidate",
-      "text": "unknown error",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 251,
+      "line": 253,
       "kind": "literal-candidate",
       "text": "photo-{value1}.jpg",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 251,
+      "line": 253,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 254,
+      "line": 256,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 364,
+      "line": 366,
       "kind": "literal-candidate",
       "text": "video/webm;codecs=vp9,opus",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 367,
+      "line": 369,
       "kind": "literal-candidate",
       "text": "video/webm;codecs=vp8,opus",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 377,
+      "line": 379,
       "kind": "literal-candidate",
       "text": "video/webm",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 379,
+      "line": 381,
       "kind": "literal-candidate",
       "text": "video-{value1}.webm",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 473,
+      "line": 475,
       "kind": "literal-candidate",
       "text": "{value1}:{value2}",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 493,
+      "line": 495,
       "kind": "ui-attribute",
       "text": "preview",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 501,
-      "kind": "ui-attribute",
-      "text": "Retake",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 503,
-      "kind": "jsx-text",
-      "text": "Retake",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 510,
-      "kind": "jsx-text",
-      "text": "Filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 526,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 533,
-      "kind": "jsx-text",
-      "text": "Use this",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 555,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 561,
-      "kind": "jsx-text",
-      "text": "Add sound",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 571,
-      "kind": "ui-attribute",
-      "text": "Beauty filter",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 575,
+      "line": 577,
       "kind": "literal-candidate",
       "text": "h-8 w-8 drop-shadow {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 586,
-      "kind": "ui-attribute",
-      "text": "Filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 602,
-      "kind": "ui-attribute",
-      "text": "Next",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 608,
-      "kind": "jsx-text",
-      "text": "Next",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 637,
+      "line": 639,
       "kind": "literal-candidate",
       "text": "text-black bg-white px-4 py-1.5 rounded-full text-[18px] font-extrabold",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 638,
+      "line": 640,
       "kind": "literal-candidate",
       "text": "text-white text-[18px] font-extrabold drop-shadow",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 650,
-      "kind": "ui-attribute",
-      "text": "Flip camera",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 667,
-      "kind": "literal-candidate",
-      "text": "Pause recording",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 667,
-      "kind": "literal-candidate",
-      "text": "Resume recording",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 667,
-      "kind": "literal-candidate",
-      "text": "Record",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 679,
+      "line": 681,
       "kind": "literal-candidate",
       "text": "{value1} 238.76",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 684,
+      "line": 686,
       "kind": "literal-candidate",
       "text": "relative block bg-[#ff2b5d] shadow-[0_4px_18px_rgba(0,0,0,0.18)] {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 685,
+      "line": 687,
       "kind": "literal-candidate",
       "text": "h-[34px] w-[34px] rounded-[7px]",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 685,
+      "line": 687,
       "kind": "literal-candidate",
       "text": "h-[60px] w-[60px] rounded-full",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 694,
-      "kind": "ui-attribute",
-      "text": "Gallery",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 699,
+      "line": 701,
       "kind": "literal-candidate",
       "text": "#FF3B30",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 700,
+      "line": 702,
       "kind": "literal-candidate",
       "text": "#FF9500",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 701,
+      "line": 703,
       "kind": "literal-candidate",
       "text": "#FFCC00",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 702,
+      "line": 704,
       "kind": "literal-candidate",
       "text": "#34C759",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 703,
+      "line": 705,
       "kind": "literal-candidate",
       "text": "#00C7BE",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 704,
+      "line": 706,
       "kind": "literal-candidate",
       "text": "#007AFF",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 705,
+      "line": 707,
       "kind": "literal-candidate",
       "text": "#5856D6",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 706,
+      "line": 708,
       "kind": "literal-candidate",
       "text": "#AF52DE",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 716,
+      "line": 718,
       "kind": "literal-candidate",
       "text": "rotate({value1} 32 32)",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 739,
-      "kind": "jsx-text",
-      "text": "Filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 749,
-      "kind": "jsx-text",
-      "text": "Reset",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 752,
-      "kind": "ui-attribute",
-      "text": "Close filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/CameraCapture.tsx",
-      "line": 767,
+      "line": 770,
       "kind": "literal-candidate",
       "text": "h-14 w-14 rounded-xl border-2 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 767,
+      "line": 770,
       "kind": "literal-candidate",
       "text": "border-white/40",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 771,
+      "line": 774,
       "kind": "literal-candidate",
       "text": "mt-1 text-[11px] font-semibold {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/CameraCapture.tsx",
-      "line": 771,
+      "line": 774,
       "kind": "literal-candidate",
       "text": "text-white/85",
       "review": "pending"
@@ -3031,1393 +3640,651 @@
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 13,
-      "kind": "literal-candidate",
-      "text": "Original",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 14,
-      "kind": "literal-candidate",
-      "text": "Warm",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 14,
+      "line": 15,
       "kind": "literal-candidate",
       "text": "saturate(1.2) hue-rotate(-10deg) brightness(1.05)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 15,
-      "kind": "literal-candidate",
-      "text": "Cool",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 15,
+      "line": 16,
       "kind": "literal-candidate",
       "text": "saturate(1.1) hue-rotate(15deg) brightness(1.02)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 16,
-      "kind": "literal-candidate",
-      "text": "Vivid",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 16,
+      "line": 17,
       "kind": "literal-candidate",
       "text": "saturate(1.6) contrast(1.1)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 17,
-      "kind": "literal-candidate",
-      "text": "B&W",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 17,
+      "line": 18,
       "kind": "literal-candidate",
       "text": "grayscale(1) contrast(1.1)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 18,
-      "kind": "literal-candidate",
-      "text": "Vintage",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 18,
+      "line": 19,
       "kind": "literal-candidate",
       "text": "sepia(0.5) contrast(0.95) saturate(1.2)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 19,
-      "kind": "literal-candidate",
-      "text": "Fade",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 19,
+      "line": 20,
       "kind": "literal-candidate",
       "text": "contrast(0.9) brightness(1.1) saturate(0.85)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 23,
+      "line": 28,
       "kind": "literal-candidate",
-      "text": "Custom",
+      "text": "editor.aspect.1:1",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 27,
-      "kind": "literal-candidate",
-      "text": "Square",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 100,
+      "line": 102,
       "kind": "literal-candidate",
       "text": "#ffffff",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 190,
+      "line": 192,
       "kind": "literal-candidate",
       "text": "{value1}:{value2}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 216,
-      "kind": "literal-candidate",
-      "text": "sepia({value1}) hue-rotate({value2}deg)",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 218,
       "kind": "literal-candidate",
-      "text": "hue-rotate({value1}deg) saturate({value2})",
+      "text": "sepia({value1}) hue-rotate({value2}deg)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 220,
       "kind": "literal-candidate",
+      "text": "hue-rotate({value1}deg) saturate({value2})",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 222,
+      "kind": "literal-candidate",
       "text": "hue-rotate({value1}deg)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 252,
+      "line": 254,
       "kind": "literal-candidate",
       "text": "url(#vfx-tone) {value1}{value2}{value3}contrast({value4}) saturate({value5})",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 257,
+      "line": 259,
       "kind": "literal-candidate",
       "text": "radial-gradient(ellipse at center, transparent {value1}%, rgba(0,0,0,{value2}) 100%)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 280,
-      "kind": "literal-candidate",
-      "text": "Save failed. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 323,
+      "line": 325,
       "kind": "literal-candidate",
       "text": "{value1}px",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 335,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 342,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 352,
+      "line": 354,
       "kind": "literal-candidate",
       "text": "pointer-events-auto h-20 w-20 rounded-full border-2 border-white/90 bg-black/30 backdrop-blur flex items-center justify-center active:scale-95 transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 353,
-      "kind": "literal-candidate",
-      "text": "Pause",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 353,
-      "kind": "literal-candidate",
-      "text": "Play",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 365,
-      "kind": "ui-attribute",
-      "text": "Upload",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 396,
-      "kind": "ui-attribute",
-      "text": "Edit",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 397,
-      "kind": "ui-attribute",
-      "text": "Filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 398,
-      "kind": "ui-attribute",
-      "text": "Sound settings",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 399,
-      "kind": "ui-attribute",
-      "text": "Trim video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 400,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 418,
-      "kind": "jsx-text",
-      "text": "Preparing video…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 420,
-      "kind": "jsx-text",
-      "text": "left",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 423,
+      "line": 425,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 434,
-      "kind": "jsx-text",
-      "text": "Edit",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 438,
-      "kind": "jsx-text",
-      "text": "Done",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 450,
+      "line": 452,
       "kind": "literal-candidate",
       "text": "max-h-full max-w-full object-contain",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 450,
+      "line": 452,
       "kind": "literal-candidate",
       "text": "w-full h-full object-contain",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 463,
+      "line": 465,
       "kind": "literal-candidate",
       "text": "{value1}px",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 478,
-      "kind": "literal-candidate",
-      "text": "Pause",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 478,
-      "kind": "literal-candidate",
-      "text": "Play",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 527,
+      "line": 529,
       "kind": "literal-candidate",
       "text": "shrink-0 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl border {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 527,
+      "line": 529,
       "kind": "literal-candidate",
       "text": "border-sky-300 bg-white/10",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 527,
+      "line": 529,
       "kind": "literal-candidate",
       "text": "border-transparent bg-white/[0.06]",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 529,
+      "line": 531,
       "kind": "literal-candidate",
       "text": "h-5 w-5 rounded-[3px] {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 529,
+      "line": 531,
       "kind": "literal-candidate",
       "text": "bg-white/60",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 542,
-      "kind": "jsx-text",
-      "text": "Auto Enhance",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 550,
-      "kind": "literal-candidate",
-      "text": "Brightness",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 551,
-      "kind": "literal-candidate",
-      "text": "Contrast",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 552,
-      "kind": "literal-candidate",
-      "text": "Highlights",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 553,
-      "kind": "literal-candidate",
-      "text": "Shadows",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 554,
-      "kind": "literal-candidate",
-      "text": "White point",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 555,
-      "kind": "literal-candidate",
-      "text": "Black point",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 556,
-      "kind": "literal-candidate",
-      "text": "Saturation",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 557,
-      "kind": "literal-candidate",
-      "text": "Warmth",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 558,
-      "kind": "literal-candidate",
-      "text": "Tint",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 559,
-      "kind": "literal-candidate",
-      "text": "Vignette",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 564,
+      "line": 566,
       "kind": "literal-candidate",
       "text": "shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 564,
+      "line": 566,
       "kind": "literal-candidate",
       "text": "bg-white text-black",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 564,
+      "line": 566,
       "kind": "literal-candidate",
       "text": "bg-white/[0.08] text-white",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 572,
-      "kind": "ui-attribute",
-      "text": "Brightness",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 575,
-      "kind": "ui-attribute",
-      "text": "Contrast",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 578,
-      "kind": "ui-attribute",
-      "text": "Saturation",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 581,
-      "kind": "ui-attribute",
-      "text": "Highlights",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 584,
-      "kind": "ui-attribute",
-      "text": "Shadows",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 587,
-      "kind": "ui-attribute",
-      "text": "White point",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 590,
-      "kind": "ui-attribute",
-      "text": "Black point",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 593,
-      "kind": "ui-attribute",
-      "text": "Warmth",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 596,
-      "kind": "ui-attribute",
-      "text": "Tint",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 599,
-      "kind": "ui-attribute",
-      "text": "Vignette",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 608,
+      "line": 610,
       "kind": "literal-candidate",
       "text": "h-12 w-12 rounded-lg overflow-hidden border-2 {value1} bg-slate-700",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 622,
-      "kind": "jsx-text",
-      "text": "Original sound",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 633,
-      "kind": "jsx-text",
-      "text": "Music",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 648,
+      "line": 650,
       "kind": "literal-candidate",
       "text": "shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition active:scale-95 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 648,
+      "line": 650,
       "kind": "literal-candidate",
       "text": "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 648,
+      "line": 650,
       "kind": "literal-candidate",
       "text": "bg-white/10 text-white border border-white/15",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 649,
+      "line": 651,
       "kind": "jsx-text",
       "text": "x",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 658,
-      "kind": "literal-candidate",
-      "text": "Change music",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 658,
-      "kind": "literal-candidate",
-      "text": "Pick from gallery",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 660,
-      "kind": "jsx-text",
-      "text": "Selected:",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 671,
-      "kind": "ui-attribute",
-      "text": "Add text…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 686,
-      "kind": "ui-attribute",
-      "text": "Auto",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 687,
-      "kind": "ui-attribute",
-      "text": "Adjust",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 688,
-      "kind": "ui-attribute",
-      "text": "Crop",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 689,
-      "kind": "ui-attribute",
-      "text": "Filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 690,
-      "kind": "ui-attribute",
-      "text": "Audio",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 691,
-      "kind": "ui-attribute",
-      "text": "Speed",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 692,
-      "kind": "ui-attribute",
-      "text": "Music",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 693,
-      "kind": "ui-attribute",
-      "text": "Text",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 700,
-      "kind": "ui-attribute",
-      "text": "Filters",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 706,
+      "line": 708,
       "kind": "literal-candidate",
       "text": "shrink-0 flex flex-col items-center gap-1.5 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 709,
+      "line": 711,
       "kind": "literal-candidate",
       "text": "h-16 w-16 rounded-lg overflow-hidden border-2 {value1} bg-slate-200",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 723,
-      "kind": "ui-attribute",
-      "text": "Sound settings",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 727,
-      "kind": "jsx-text",
-      "text": "Original sound",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 742,
-      "kind": "jsx-text",
-      "text": "Added music",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 759,
-      "kind": "literal-candidate",
-      "text": "Change music",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 759,
-      "kind": "literal-candidate",
-      "text": "Pick from gallery",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 772,
-      "kind": "ui-attribute",
-      "text": "Trim video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 776,
-      "kind": "jsx-text",
-      "text": "Start",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 790,
-      "kind": "jsx-text",
-      "text": "End",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 799,
-      "kind": "jsx-text",
-      "text": "Trim is applied when you tap Done.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 827,
+      "line": 829,
       "kind": "literal-candidate",
       "text": "{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 829,
+      "line": 831,
       "kind": "literal-candidate",
       "text": "sepia({value1}) hue-rotate({value2}deg)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 831,
+      "line": 833,
       "kind": "literal-candidate",
       "text": "hue-rotate({value1}deg) saturate({value2})",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 833,
+      "line": 835,
       "kind": "literal-candidate",
       "text": "hue-rotate({value1}deg)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 840,
+      "line": 842,
       "kind": "literal-candidate",
       "text": "{value1}{value2}{value3}brightness({value4}) contrast({value5}) saturate({value6})",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 848,
+      "line": 850,
       "kind": "literal-candidate",
       "text": "MediaRecorder unavailable",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 873,
+      "line": 875,
       "kind": "literal-candidate",
       "text": "MediaRecorder unavailable",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 914,
+      "line": 916,
       "kind": "literal-candidate",
       "text": "Video capture unavailable",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 940,
+      "line": 942,
       "kind": "literal-candidate",
       "text": "Canvas unavailable",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 956,
+      "line": 958,
       "kind": "literal-candidate",
       "text": "rgba(0,0,0,0)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 957,
+      "line": 959,
       "kind": "literal-candidate",
       "text": "rgba(0,0,0,{value1})",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1021,
+      "line": 1023,
       "kind": "literal-candidate",
       "text": "Recording failed",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1054,
+      "line": 1056,
       "kind": "literal-candidate",
       "text": "Recording failed",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1059,
+      "line": 1061,
       "kind": "literal-candidate",
       "text": "video/webm",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1086,
+      "line": 1088,
       "kind": "literal-candidate",
       "text": "Output video is empty",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1102,
+      "line": 1104,
       "kind": "literal-candidate",
       "text": "Video load failed",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1136,
+      "line": 1138,
       "kind": "literal-candidate",
       "text": "video/mp4",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1136,
+      "line": 1138,
       "kind": "literal-candidate",
       "text": "video/webm;codecs=vp8,opus",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1136,
+      "line": 1138,
       "kind": "literal-candidate",
       "text": "video/webm",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1136,
+      "line": 1138,
       "kind": "literal-candidate",
       "text": "video/webm;codecs=vp9,opus",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1141,
+      "line": 1143,
       "kind": "literal-candidate",
       "text": "video/webm",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1146,
+      "line": 1148,
       "kind": "literal-candidate",
       "text": "{value1}-{value2}.{value3}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1180,
+      "line": 1182,
       "kind": "literal-candidate",
       "text": "shrink-0 w-[44px] h-[58px] flex flex-col items-center justify-center gap-1 rounded-xl transition active:scale-95 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1180,
+      "line": 1182,
       "kind": "literal-candidate",
       "text": "text-white/70",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1243,
+      "line": 1245,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1297,
+      "line": 1299,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1298,
+      "line": 1300,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1302,
+      "line": 1304,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1302,
+      "line": 1304,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1307,
+      "line": 1309,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1314,
+      "line": 1316,
       "kind": "literal-candidate",
       "text": "calc({value1}% - 10px + 4px)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1324,
+      "line": 1326,
       "kind": "literal-candidate",
       "text": "calc({value1}% - 10px + 4px)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1386,
+      "line": 1388,
       "kind": "literal-candidate",
       "text": "inset({value1}px {value2}px {value3}px {value4}px)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1421,
+      "line": 1423,
       "kind": "literal-candidate",
       "text": "absolute w-4 h-4 bg-white rounded-full shadow border border-black/30 touch-none",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1422,
+      "line": 1424,
       "kind": "literal-candidate",
       "text": "absolute bg-white/80 touch-none",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1431,
+      "line": 1433,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1431,
+      "line": 1433,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1431,
+      "line": 1433,
       "kind": "literal-candidate",
       "text": "{value1}%",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1431,
+      "line": 1433,
       "kind": "literal-candidate",
       "text": "{value1}%",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1445,
-      "kind": "literal-candidate",
-      "text": "{value1} left-3 right-3 -top-0.5 h-1 cursor-ns-resize",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1446,
-      "kind": "literal-candidate",
-      "text": "{value1} left-3 right-3 -bottom-0.5 h-1 cursor-ns-resize",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 1447,
       "kind": "literal-candidate",
-      "text": "{value1} top-3 bottom-3 -left-0.5 w-1 cursor-ew-resize",
+      "text": "{value1} left-3 right-3 -top-0.5 h-1 cursor-ns-resize",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 1448,
       "kind": "literal-candidate",
-      "text": "{value1} top-3 bottom-3 -right-0.5 w-1 cursor-ew-resize",
+      "text": "{value1} left-3 right-3 -bottom-0.5 h-1 cursor-ns-resize",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 1449,
+      "kind": "literal-candidate",
+      "text": "{value1} top-3 bottom-3 -left-0.5 w-1 cursor-ew-resize",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 1450,
       "kind": "literal-candidate",
-      "text": "{value1} -top-2 -left-2 cursor-nwse-resize",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoEditor.tsx",
-      "line": 1451,
-      "kind": "literal-candidate",
-      "text": "{value1} -top-2 -right-2 cursor-nesw-resize",
+      "text": "{value1} top-3 bottom-3 -right-0.5 w-1 cursor-ew-resize",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 1452,
       "kind": "literal-candidate",
-      "text": "{value1} -bottom-2 -left-2 cursor-nesw-resize",
+      "text": "{value1} -top-2 -left-2 cursor-nwse-resize",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoEditor.tsx",
       "line": 1453,
       "kind": "literal-candidate",
-      "text": "{value1} -bottom-2 -right-2 cursor-nwse-resize",
+      "text": "{value1} -top-2 -right-2 cursor-nesw-resize",
       "review": "pending"
     },
     {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 116,
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 1454,
       "kind": "literal-candidate",
-      "text": "{value1}/thumbs/{value2}.jpg",
+      "text": "{value1} -bottom-2 -left-2 cursor-nesw-resize",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/FullscreenVideoEditor.tsx",
+      "line": 1455,
+      "kind": "literal-candidate",
+      "text": "{value1} -bottom-2 -right-2 cursor-nwse-resize",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
       "line": 118,
       "kind": "literal-candidate",
+      "text": "{value1}/thumbs/{value2}.jpg",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/FullscreenVideoPlayer.tsx",
+      "line": 120,
+      "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 124,
-      "kind": "feedback-candidate",
-      "text": "Thumbnail rejected by our safety filter ({value1}). Please pick a different image.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 136,
-      "kind": "feedback-candidate",
-      "text": "Thumbnail updated!",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 139,
-      "kind": "feedback-candidate",
-      "text": "Failed to save thumbnail",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 209,
+      "line": 211,
       "kind": "literal-candidate",
       "text": "post_id,user_id",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 290,
+      "line": 292,
       "kind": "literal-candidate",
       "text": "Escape",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 316,
-      "kind": "feedback-candidate",
-      "text": "Sign in to like",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 334,
-      "kind": "feedback-candidate",
-      "text": "Couldn't unlike",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 343,
-      "kind": "feedback-candidate",
-      "text": "Couldn't like",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 350,
-      "kind": "feedback-candidate",
-      "text": "Please sign in to follow",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 365,
-      "kind": "feedback-candidate",
-      "text": "Already following",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 365,
-      "kind": "literal-candidate",
-      "text": "6px 12px",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
       "line": 367,
-      "kind": "feedback-candidate",
-      "text": "Couldn't follow",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 372,
-      "kind": "feedback-candidate",
-      "text": "Following",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 372,
       "kind": "literal-candidate",
       "text": "6px 12px",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 383,
+      "line": 374,
       "kind": "literal-candidate",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 384,
-      "kind": "literal-candidate",
-      "text": "Check this out",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 386,
-      "kind": "literal-candidate",
-      "text": "Share post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 404,
-      "kind": "feedback-candidate",
-      "text": "Please sign in to report",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 412,
-      "kind": "feedback-candidate",
-      "text": "Couldn't submit report. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 414,
-      "kind": "feedback-candidate",
-      "text": "Thanks — we'll review this post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 421,
-      "kind": "literal-candidate",
-      "text": "Delete this post? This cannot be undone.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 425,
-      "kind": "feedback-candidate",
-      "text": "Couldn't delete. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 427,
-      "kind": "feedback-candidate",
-      "text": "Post deleted",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 442,
-      "kind": "ui-attribute",
-      "text": "Back",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 495,
-      "kind": "ui-attribute",
-      "text": "Play",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 520,
-      "kind": "literal-candidate",
-      "text": "h-7 w-7 {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 520,
-      "kind": "literal-candidate",
-      "text": "fill-rose-500 text-rose-500",
+      "text": "6px 12px",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
       "line": 522,
       "kind": "literal-candidate",
-      "text": "Like",
+      "text": "h-7 w-7 {value1}",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 528,
+      "line": 522,
       "kind": "literal-candidate",
-      "text": "Chat",
+      "text": "fill-rose-500 text-rose-500",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 535,
-      "kind": "ui-attribute",
-      "text": "Share",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 556,
+      "line": 558,
       "kind": "literal-candidate",
       "text": "0 2px 4px rgba(0,0,0,0.9)",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 559,
-      "kind": "jsx-text",
-      "text": "Share",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 569,
-      "kind": "ui-attribute",
-      "text": "View profile",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 577,
+      "line": 579,
       "kind": "literal-candidate",
       "text": "User",
       "review": "pending"
     },
     {
       "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 591,
-      "kind": "ui-attribute",
-      "text": "Followed",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 600,
-      "kind": "ui-attribute",
-      "text": "Follow",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 614,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 635,
-      "kind": "literal-candidate",
-      "text": "Unmute",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 635,
-      "kind": "literal-candidate",
-      "text": "Mute",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 646,
-      "kind": "jsx-text",
-      "text": "Edit",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 653,
-      "kind": "jsx-text",
-      "text": "Report",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 660,
-      "kind": "jsx-text",
-      "text": "Delete",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 684,
-      "kind": "literal-candidate",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 685,
-      "kind": "literal-candidate",
-      "text": "Check this out",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/FullscreenVideoPlayer.tsx",
-      "line": 726,
+      "line": 728,
       "kind": "literal-candidate",
       "text": "flex items-center justify-center active:scale-95 transition {value1}",
       "review": "pending"
@@ -12866,891 +12733,492 @@
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 13,
+      "line": 14,
       "kind": "literal-candidate",
       "text": "Edit Account — VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 16,
+      "line": 17,
       "kind": "literal-candidate",
       "text": "Edit your VIP Life account information.",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 40,
+      "line": 42,
       "kind": "literal-candidate",
       "text": "Private",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 67,
+      "line": 69,
       "kind": "literal-candidate",
       "text": "display_name, bio, website",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 74,
+      "line": 76,
       "kind": "literal-candidate",
       "text": "dob, email, email_private, gender, languages, marital_status, education, profession, country",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 81,
+      "line": 83,
       "kind": "literal-candidate",
       "text": "age, city, living_in, religion",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 96,
+      "line": 98,
       "kind": "literal-candidate",
       "text": "Private",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 96,
+      "line": 98,
       "kind": "literal-candidate",
       "text": "Public",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 131,
-      "kind": "literal-candidate",
-      "text": "Please enter a valid age.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 158,
+      "line": 160,
       "kind": "literal-candidate",
       "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 194,
-      "kind": "literal-candidate",
-      "text": "Account updated successfully.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 209,
-      "kind": "literal-candidate",
-      "text": "Could not delete account.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 218,
-      "kind": "jsx-text",
-      "text": "Loading...",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 235,
-      "kind": "jsx-text",
-      "text": "Edit Account",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 243,
-      "kind": "jsx-text",
-      "text": "Basic Information",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 250,
-      "kind": "jsx-text",
-      "text": "Name",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 257,
-      "kind": "ui-attribute",
-      "text": "Enter your name",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 265,
-      "kind": "jsx-text",
-      "text": "About",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 273,
-      "kind": "ui-attribute",
-      "text": "Tell people about yourself...",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 278,
-      "kind": "jsx-text",
-      "text": "Maximum 120 characters",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 285,
-      "kind": "jsx-text",
-      "text": "Country",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 294,
-      "kind": "jsx-text",
-      "text": "Select Country",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 295,
-      "kind": "jsx-text",
-      "text": "Afghanistan",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 296,
-      "kind": "jsx-text",
-      "text": "Albania",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 297,
       "kind": "jsx-text",
-      "text": "Algeria",
+      "text": "Afghanistan",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 298,
       "kind": "jsx-text",
-      "text": "Australia",
+      "text": "Albania",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 299,
       "kind": "jsx-text",
-      "text": "Austria",
+      "text": "Algeria",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 300,
       "kind": "jsx-text",
-      "text": "Bahrain",
+      "text": "Australia",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 301,
       "kind": "jsx-text",
-      "text": "Bangladesh",
+      "text": "Austria",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 302,
       "kind": "jsx-text",
-      "text": "Belgium",
+      "text": "Bahrain",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 303,
       "kind": "jsx-text",
-      "text": "Brazil",
+      "text": "Bangladesh",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 304,
       "kind": "jsx-text",
-      "text": "Canada",
+      "text": "Belgium",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 305,
       "kind": "jsx-text",
-      "text": "China",
+      "text": "Brazil",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 306,
       "kind": "jsx-text",
-      "text": "Denmark",
+      "text": "Canada",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 307,
       "kind": "jsx-text",
-      "text": "Egypt",
+      "text": "China",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 308,
       "kind": "jsx-text",
-      "text": "France",
+      "text": "Denmark",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 309,
       "kind": "jsx-text",
-      "text": "Germany",
+      "text": "Egypt",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 310,
       "kind": "jsx-text",
-      "text": "India",
+      "text": "France",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 311,
       "kind": "jsx-text",
-      "text": "Indonesia",
+      "text": "Germany",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 312,
       "kind": "jsx-text",
-      "text": "Iran",
+      "text": "India",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 313,
       "kind": "jsx-text",
-      "text": "Iraq",
+      "text": "Indonesia",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 314,
       "kind": "jsx-text",
-      "text": "Ireland",
+      "text": "Iran",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 315,
       "kind": "jsx-text",
-      "text": "Italy",
+      "text": "Iraq",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 316,
       "kind": "jsx-text",
-      "text": "Japan",
+      "text": "Ireland",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 317,
       "kind": "jsx-text",
-      "text": "Jordan",
+      "text": "Italy",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 318,
       "kind": "jsx-text",
-      "text": "Kuwait",
+      "text": "Japan",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 319,
       "kind": "jsx-text",
-      "text": "Lebanon",
+      "text": "Jordan",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 320,
       "kind": "jsx-text",
-      "text": "Malaysia",
+      "text": "Kuwait",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 321,
       "kind": "jsx-text",
-      "text": "Morocco",
+      "text": "Lebanon",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 322,
       "kind": "jsx-text",
-      "text": "Nepal",
+      "text": "Malaysia",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 323,
       "kind": "jsx-text",
-      "text": "Netherlands",
+      "text": "Morocco",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 324,
       "kind": "jsx-text",
-      "text": "New Zealand",
+      "text": "Nepal",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 325,
       "kind": "jsx-text",
-      "text": "Nigeria",
+      "text": "Netherlands",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 326,
       "kind": "jsx-text",
-      "text": "Norway",
+      "text": "New Zealand",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 327,
       "kind": "jsx-text",
-      "text": "Oman",
+      "text": "Nigeria",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 328,
       "kind": "jsx-text",
-      "text": "Pakistan",
+      "text": "Norway",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 329,
       "kind": "jsx-text",
-      "text": "Palestine",
+      "text": "Oman",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 330,
       "kind": "jsx-text",
-      "text": "Philippines",
+      "text": "Pakistan",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 331,
       "kind": "jsx-text",
-      "text": "Poland",
+      "text": "Palestine",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 332,
       "kind": "jsx-text",
-      "text": "Portugal",
+      "text": "Philippines",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 333,
       "kind": "jsx-text",
-      "text": "Qatar",
+      "text": "Poland",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 334,
       "kind": "jsx-text",
-      "text": "Russia",
+      "text": "Portugal",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 335,
       "kind": "jsx-text",
-      "text": "Saudi Arabia",
+      "text": "Qatar",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 336,
       "kind": "jsx-text",
-      "text": "Singapore",
+      "text": "Russia",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 337,
       "kind": "jsx-text",
-      "text": "South Africa",
+      "text": "Saudi Arabia",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 338,
       "kind": "jsx-text",
-      "text": "South Korea",
+      "text": "Singapore",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 339,
       "kind": "jsx-text",
-      "text": "Spain",
+      "text": "South Africa",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 340,
       "kind": "jsx-text",
-      "text": "Sri Lanka",
+      "text": "South Korea",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 341,
       "kind": "jsx-text",
-      "text": "Sudan",
+      "text": "Spain",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 342,
       "kind": "jsx-text",
-      "text": "Sweden",
+      "text": "Sri Lanka",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 343,
       "kind": "jsx-text",
-      "text": "Switzerland",
+      "text": "Sudan",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 344,
       "kind": "jsx-text",
-      "text": "Syria",
+      "text": "Sweden",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 345,
       "kind": "jsx-text",
-      "text": "Thailand",
+      "text": "Switzerland",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 346,
       "kind": "jsx-text",
-      "text": "Tunisia",
+      "text": "Syria",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 347,
       "kind": "jsx-text",
-      "text": "Turkey",
+      "text": "Thailand",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 348,
       "kind": "jsx-text",
-      "text": "Ukraine",
+      "text": "Tunisia",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 349,
+      "kind": "jsx-text",
+      "text": "Turkey",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 350,
       "kind": "jsx-text",
-      "text": "United Arab Emirates",
+      "text": "Ukraine",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 352,
       "kind": "jsx-text",
-      "text": "United Kingdom",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 353,
-      "kind": "jsx-text",
-      "text": "United States",
+      "text": "United Arab Emirates",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
       "line": 354,
       "kind": "jsx-text",
+      "text": "United Kingdom",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 355,
+      "kind": "jsx-text",
+      "text": "United States",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/account-edit.tsx",
+      "line": 356,
+      "kind": "jsx-text",
       "text": "Yemen",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 366,
-      "kind": "jsx-text",
-      "text": "City",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 373,
-      "kind": "ui-attribute",
-      "text": "Enter your city",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 381,
-      "kind": "jsx-text",
-      "text": "Website",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 388,
+      "line": 390,
       "kind": "ui-attribute",
       "text": "https://example.com",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 397,
-      "kind": "jsx-text",
-      "text": "About You",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 403,
-      "kind": "jsx-text",
-      "text": "Gender",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 412,
-      "kind": "jsx-text",
-      "text": "Select Gender",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 413,
-      "kind": "jsx-text",
-      "text": "Male",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 414,
-      "kind": "jsx-text",
-      "text": "Female",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 426,
-      "kind": "jsx-text",
-      "text": "Age",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 434,
-      "kind": "ui-attribute",
-      "text": "Enter your age",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 442,
-      "kind": "jsx-text",
-      "text": "Language",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 449,
-      "kind": "ui-attribute",
-      "text": "Enter your language",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 457,
-      "kind": "jsx-text",
-      "text": "Marital Status",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 466,
-      "kind": "jsx-text",
-      "text": "Select Marital Status",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 467,
-      "kind": "jsx-text",
-      "text": "Single",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 468,
-      "kind": "jsx-text",
-      "text": "Married",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 469,
-      "kind": "jsx-text",
-      "text": "Divorced",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 470,
-      "kind": "jsx-text",
-      "text": "Widowed",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 482,
-      "kind": "jsx-text",
-      "text": "Education",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 489,
-      "kind": "ui-attribute",
-      "text": "Enter your education",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 497,
-      "kind": "jsx-text",
-      "text": "Profession",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 504,
-      "kind": "ui-attribute",
-      "text": "Enter your profession",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 512,
-      "kind": "jsx-text",
-      "text": "Living In",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 519,
-      "kind": "ui-attribute",
-      "text": "e.g. Saudi Arabia",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 527,
-      "kind": "jsx-text",
-      "text": "Religion",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 536,
-      "kind": "jsx-text",
-      "text": "Select Religion",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 537,
-      "kind": "jsx-text",
-      "text": "Islam",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 538,
-      "kind": "jsx-text",
-      "text": "Christianity",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 539,
-      "kind": "jsx-text",
-      "text": "Hinduism",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 540,
-      "kind": "jsx-text",
-      "text": "Sikhism",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 541,
-      "kind": "jsx-text",
-      "text": "Buddhism",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 542,
-      "kind": "jsx-text",
-      "text": "Other",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 554,
-      "kind": "jsx-text",
-      "text": "Date of Birth",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 561,
+      "line": 563,
       "kind": "ui-attribute",
       "text": "e.g. 1995-04-12",
       "review": "pending"
     },
     {
       "file": "src/routes/account-edit.tsx",
-      "line": 569,
-      "kind": "jsx-text",
-      "text": "Email",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 577,
-      "kind": "ui-attribute",
-      "text": "Enter your email",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 587,
-      "kind": "jsx-text",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 588,
-      "kind": "jsx-text",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 591,
+      "line": 593,
       "kind": "literal-candidate",
       "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 602,
-      "kind": "jsx-text",
-      "text": "Choose whether your email is public or private.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 624,
-      "kind": "literal-candidate",
-      "text": "Save Changes",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 634,
-      "kind": "jsx-text",
-      "text": "Delete",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 646,
-      "kind": "jsx-text",
-      "text": "Delete Account?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 659,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to delete your account? This action cannot be undone.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 670,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/account-edit.tsx",
-      "line": 679,
-      "kind": "literal-candidate",
-      "text": "Confirm Delete",
       "review": "pending"
     },
     {
@@ -22015,184 +21483,93 @@
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 45,
+      "line": 26,
       "kind": "literal-candidate",
-      "text": "All",
+      "text": "Search — VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 45,
+      "line": 27,
+      "kind": "literal-candidate",
+      "text": "Search VIP Life for people, reels and photos.",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/search.tsx",
+      "line": 52,
       "kind": "literal-candidate",
       "text": "from-indigo-500 to-purple-500",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 46,
-      "kind": "literal-candidate",
-      "text": "Reels",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 46,
+      "line": 53,
       "kind": "literal-candidate",
       "text": "from-pink-500 to-rose-500",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 47,
-      "kind": "literal-candidate",
-      "text": "Photos",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 47,
+      "line": 54,
       "kind": "literal-candidate",
       "text": "from-amber-500 to-orange-500",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 48,
-      "kind": "literal-candidate",
-      "text": "People",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 48,
+      "line": 55,
       "kind": "literal-candidate",
       "text": "from-sky-500 to-cyan-500",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 97,
+      "line": 105,
       "kind": "literal-candidate",
       "text": "*{value1}*",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 101,
+      "line": 109,
       "kind": "literal-candidate",
       "text": "id, username, display_name, avatar_url, bio",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 106,
+      "line": 114,
       "kind": "literal-candidate",
       "text": "id,user_id,media_url,media_type,title,caption,thumbnail_url,created_at",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 131,
-      "kind": "ui-attribute",
-      "text": "Back",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 141,
-      "kind": "ui-attribute",
-      "text": "Search VIP Life…",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 148,
-      "kind": "ui-attribute",
-      "text": "Clear",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 164,
+      "line": 172,
       "kind": "literal-candidate",
       "text": "px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 166,
+      "line": 174,
       "kind": "literal-candidate",
       "text": "text-white bg-gradient-to-r {value1} shadow-md",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 167,
+      "line": 175,
       "kind": "literal-candidate",
       "text": "text-slate-600 bg-slate-100 hover:bg-slate-200",
       "review": "pending"
     },
     {
       "file": "src/routes/search.tsx",
-      "line": 183,
-      "kind": "jsx-text",
-      "text": "Search for people, reels, photos and more.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 186,
-      "kind": "jsx-text",
-      "text": "Searching…",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 201,
-      "kind": "jsx-text",
-      "text": "No results for \"",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 216,
-      "kind": "ui-attribute",
-      "text": "People",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 236,
-      "kind": "literal-candidate",
-      "text": "User",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 240,
+      "line": 249,
       "kind": "literal-candidate",
       "text": "@{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 240,
-      "kind": "literal-candidate",
-      "text": "VIP Life member",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 257,
-      "kind": "literal-candidate",
-      "text": "Reels",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/search.tsx",
-      "line": 257,
-      "kind": "literal-candidate",
-      "text": "Photos",
       "review": "pending"
     },
     {

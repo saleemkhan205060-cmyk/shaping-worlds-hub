@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Music, Sparkles, ChevronDown, ChevronUp, Check, RotateCcw, ChevronRight, SwitchCamera } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 type Mode = "10m" | "60s" | "15s" | "PHOTO";
 
@@ -26,26 +27,26 @@ interface FilterPreset {
 }
 
 const FILTERS: FilterPreset[] = [
-  { id: "normal", name: "Normal", css: "", swatch: "linear-gradient(135deg,#9ca3af,#e5e7eb)" },
-  { id: "vivid", name: "Vivid", css: "saturate(1.5) contrast(1.1)", swatch: "linear-gradient(135deg,#ff5e62,#ff9966)" },
-  { id: "warm", name: "Warm", css: "sepia(0.25) saturate(1.3) hue-rotate(-10deg) brightness(1.05)", swatch: "linear-gradient(135deg,#f6d365,#fda085)" },
-  { id: "cool", name: "Cool", css: "saturate(1.1) hue-rotate(15deg) brightness(1.02)", swatch: "linear-gradient(135deg,#74ebd5,#9face6)" },
-  { id: "bw", name: "B&W", css: "grayscale(1) contrast(1.15)", swatch: "linear-gradient(135deg,#232526,#a8a8a8)" },
-  { id: "vintage", name: "Vintage", css: "sepia(0.5) contrast(0.95) brightness(1.05) saturate(0.9)", swatch: "linear-gradient(135deg,#c79081,#dfa579)" },
-  { id: "dramatic", name: "Drama", css: "contrast(1.35) saturate(0.85) brightness(0.95)", swatch: "linear-gradient(135deg,#1f1c2c,#928dab)" },
-  { id: "fade", name: "Fade", css: "contrast(0.85) brightness(1.1) saturate(0.8)", swatch: "linear-gradient(135deg,#fceabb,#f8b500)" },
-  { id: "noir", name: "Noir", css: "grayscale(1) contrast(1.4) brightness(0.9)", swatch: "linear-gradient(135deg,#000,#434343)" },
-  { id: "pink", name: "Pink", css: "saturate(1.2) hue-rotate(-20deg) brightness(1.05)", swatch: "linear-gradient(135deg,#ffafbd,#ffc3a0)" },
-  { id: "neon", name: "Neon", css: "saturate(2) contrast(1.2) hue-rotate(20deg)", swatch: "linear-gradient(135deg,#00f2fe,#4facfe)" },
-  { id: "sunset", name: "Sunset", css: "sepia(0.3) saturate(1.4) hue-rotate(-15deg) brightness(1.08)", swatch: "linear-gradient(135deg,#ff6e7f,#bfe9ff)" },
-  { id: "lush", name: "Lush", css: "saturate(1.4) contrast(1.05) hue-rotate(-5deg)", swatch: "linear-gradient(135deg,#0ba360,#3cba92)" },
-  { id: "mint", name: "Mint", css: "saturate(1.15) hue-rotate(40deg) brightness(1.05)", swatch: "linear-gradient(135deg,#a8edea,#fed6e3)" },
-  { id: "berry", name: "Berry", css: "saturate(1.3) hue-rotate(-30deg) contrast(1.05)", swatch: "linear-gradient(135deg,#a18cd1,#fbc2eb)" },
-  { id: "ocean", name: "Ocean", css: "saturate(1.2) hue-rotate(25deg) brightness(0.98) contrast(1.05)", swatch: "linear-gradient(135deg,#2193b0,#6dd5ed)" },
-  { id: "honey", name: "Honey", css: "sepia(0.35) saturate(1.4) brightness(1.06)", swatch: "linear-gradient(135deg,#f7971e,#ffd200)" },
-  { id: "mono", name: "Mono", css: "grayscale(1) brightness(1.05) contrast(1.05)", swatch: "linear-gradient(135deg,#bdc3c7,#2c3e50)" },
-  { id: "polaroid", name: "Polaroid", css: "sepia(0.2) saturate(1.1) brightness(1.08) contrast(0.95)", swatch: "linear-gradient(135deg,#ede574,#e1f5c4)" },
-  { id: "cinema", name: "Cinema", css: "contrast(1.2) saturate(0.9) brightness(0.95) hue-rotate(-5deg)", swatch: "linear-gradient(135deg,#141e30,#243b55)" },
+  { id: "normal", name: "capture.filter.normal", css: "", swatch: "linear-gradient(135deg,#9ca3af,#e5e7eb)" },
+  { id: "vivid", name: "capture.filter.vivid", css: "saturate(1.5) contrast(1.1)", swatch: "linear-gradient(135deg,#ff5e62,#ff9966)" },
+  { id: "warm", name: "capture.filter.warm", css: "sepia(0.25) saturate(1.3) hue-rotate(-10deg) brightness(1.05)", swatch: "linear-gradient(135deg,#f6d365,#fda085)" },
+  { id: "cool", name: "capture.filter.cool", css: "saturate(1.1) hue-rotate(15deg) brightness(1.02)", swatch: "linear-gradient(135deg,#74ebd5,#9face6)" },
+  { id: "bw", name: "capture.filter.bw", css: "grayscale(1) contrast(1.15)", swatch: "linear-gradient(135deg,#232526,#a8a8a8)" },
+  { id: "vintage", name: "capture.filter.vintage", css: "sepia(0.5) contrast(0.95) brightness(1.05) saturate(0.9)", swatch: "linear-gradient(135deg,#c79081,#dfa579)" },
+  { id: "dramatic", name: "capture.filter.dramatic", css: "contrast(1.35) saturate(0.85) brightness(0.95)", swatch: "linear-gradient(135deg,#1f1c2c,#928dab)" },
+  { id: "fade", name: "capture.filter.fade", css: "contrast(0.85) brightness(1.1) saturate(0.8)", swatch: "linear-gradient(135deg,#fceabb,#f8b500)" },
+  { id: "noir", name: "capture.filter.noir", css: "grayscale(1) contrast(1.4) brightness(0.9)", swatch: "linear-gradient(135deg,#000,#434343)" },
+  { id: "pink", name: "capture.filter.pink", css: "saturate(1.2) hue-rotate(-20deg) brightness(1.05)", swatch: "linear-gradient(135deg,#ffafbd,#ffc3a0)" },
+  { id: "neon", name: "capture.filter.neon", css: "saturate(2) contrast(1.2) hue-rotate(20deg)", swatch: "linear-gradient(135deg,#00f2fe,#4facfe)" },
+  { id: "sunset", name: "capture.filter.sunset", css: "sepia(0.3) saturate(1.4) hue-rotate(-15deg) brightness(1.08)", swatch: "linear-gradient(135deg,#ff6e7f,#bfe9ff)" },
+  { id: "lush", name: "capture.filter.lush", css: "saturate(1.4) contrast(1.05) hue-rotate(-5deg)", swatch: "linear-gradient(135deg,#0ba360,#3cba92)" },
+  { id: "mint", name: "capture.filter.mint", css: "saturate(1.15) hue-rotate(40deg) brightness(1.05)", swatch: "linear-gradient(135deg,#a8edea,#fed6e3)" },
+  { id: "berry", name: "capture.filter.berry", css: "saturate(1.3) hue-rotate(-30deg) contrast(1.05)", swatch: "linear-gradient(135deg,#a18cd1,#fbc2eb)" },
+  { id: "ocean", name: "capture.filter.ocean", css: "saturate(1.2) hue-rotate(25deg) brightness(0.98) contrast(1.05)", swatch: "linear-gradient(135deg,#2193b0,#6dd5ed)" },
+  { id: "honey", name: "capture.filter.honey", css: "sepia(0.35) saturate(1.4) brightness(1.06)", swatch: "linear-gradient(135deg,#f7971e,#ffd200)" },
+  { id: "mono", name: "capture.filter.mono", css: "grayscale(1) brightness(1.05) contrast(1.05)", swatch: "linear-gradient(135deg,#bdc3c7,#2c3e50)" },
+  { id: "polaroid", name: "capture.filter.polaroid", css: "sepia(0.2) saturate(1.1) brightness(1.08) contrast(0.95)", swatch: "linear-gradient(135deg,#ede574,#e1f5c4)" },
+  { id: "cinema", name: "capture.filter.cinema", css: "contrast(1.2) saturate(0.9) brightness(0.95) hue-rotate(-5deg)", swatch: "linear-gradient(135deg,#141e30,#243b55)" },
 ];
 
 interface Props {
@@ -55,6 +56,7 @@ interface Props {
 }
 
 export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
+  const { t } = useI18n();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -180,10 +182,10 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         if (!cancelled) {
           setError(
             name === "NotAllowedError"
-              ? "Camera permission denied. Allow Camera & Microphone for VIP Life in Settings > Apps > Permissions."
+              ? t("capture.permissionDenied")
               : name === "NotFoundError"
-                ? "No camera found on this device."
-                : `Camera not available (${name || "unknown error"}). Please allow camera & microphone access.`,
+                ? t("capture.noCamera")
+                : t("capture.unavailable", { reason: name || t("capture.unknownError") }),
           );
         }
       }
@@ -498,16 +500,16 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         </div>
 
         <div className="absolute top-0 inset-x-0 flex items-center justify-between px-4 pt-4 z-10">
-          <button onClick={retake} aria-label="Retake" className="flex items-center gap-2 bg-black/55 rounded-full px-4 py-2">
+          <button onClick={retake} aria-label={t("capture.retake")} className="flex items-center gap-2 bg-black/55 rounded-full px-4 py-2">
             <RotateCcw className="h-5 w-5" />
-            <span className="text-[15px] font-bold">Retake</span>
+            <span className="text-[15px] font-bold">{t("capture.retake")}</span>
           </button>
           <button
             onClick={() => setShowFilters((v) => !v)}
             className="flex items-center gap-2 bg-black/55 rounded-full px-4 py-2"
           >
             <Sparkles className="h-5 w-5" />
-            <span className="text-[15px] font-bold">Filters</span>
+            <span className="text-[15px] font-bold">{t("capture.filters")}</span>
             {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
         </div>
@@ -523,14 +525,14 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
             onClick={retake}
             className="flex-1 max-w-[160px] py-3 rounded-full bg-white/15 border border-white/40 text-[15px] font-bold"
           >
-            Cancel
+            {t("capture.cancel")}
           </button>
           <button
             onClick={confirmUse}
             className="flex-1 max-w-[200px] py-3 rounded-full bg-rose-500 text-[15px] font-extrabold inline-flex items-center justify-center gap-2"
           >
             <Check className="h-5 w-5" />
-            Use this
+            {t("capture.useThis")}
           </button>
         </div>
       </div>
@@ -552,13 +554,13 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
       {/* Top bar */}
       <div className="absolute top-0 inset-x-0 flex items-center justify-between px-4 pt-4 z-10">
-        <button onClick={onClose} aria-label="Close" className="p-1">
+        <button onClick={onClose} aria-label={t("capture.close")} className="p-1">
           <X className="h-7 w-7 text-white drop-shadow" strokeWidth={2.5} />
         </button>
 
         <button className="flex items-center gap-1.5 bg-black/45 rounded-full px-4 py-2">
           <Music className="h-4 w-4 text-white" fill="white" />
-          <span className="text-[15px] font-bold text-white">Add sound</span>
+          <span className="text-[15px] font-bold text-white">{t("capture.addSound")}</span>
         </button>
 
         <div className="w-7" />
@@ -568,7 +570,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-6">
         <button
           onClick={() => setBeauty((b) => (((b + 1) % 4) as BeautyLevel))}
-          aria-label="Beauty filter"
+          aria-label={t("capture.beauty")}
           className="relative"
         >
           <Sparkles
@@ -583,7 +585,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           )}
         </button>
         <button
-          aria-label="Filters"
+          aria-label={t("capture.filters")}
           onClick={() => setShowFilters((v) => !v)}
           className="relative"
         >
@@ -599,13 +601,13 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
         {(hasClip || recording) && mode !== "PHOTO" && (
           <button
             onClick={onNext}
-            aria-label="Next"
+            aria-label={t("capture.next")}
             className="mt-1 flex flex-col items-center"
           >
             <span className="h-11 w-11 rounded-full bg-rose-500 flex items-center justify-center shadow-lg">
               <ChevronRight className="h-6 w-6 text-white" strokeWidth={3} />
             </span>
-            <span className="mt-1 text-[11px] font-bold text-white drop-shadow">Next</span>
+            <span className="mt-1 text-[11px] font-bold text-white drop-shadow">{t("capture.next")}</span>
           </button>
         )}
       </div>
@@ -647,7 +649,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
       <div className="absolute left-0 right-0 bottom-4 flex items-center justify-between px-7 z-10">
         <button
           onClick={() => !recording && setFacing((f) => (f === "user" ? "environment" : "user"))}
-          aria-label="Flip camera"
+          aria-label={t("capture.flipCamera")}
           disabled={recording}
           className="h-12 w-12 rounded-full border-2 border-white/90 bg-black/40 flex items-center justify-center active:scale-95 disabled:opacity-40"
         >
@@ -664,7 +666,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
           <button
             onClick={onTapRecord}
             className="relative h-[84px] w-[84px] rounded-full flex items-center justify-center bg-transparent overflow-visible active:scale-[0.98]"
-            aria-label={recording ? "Pause recording" : hasClip ? "Resume recording" : "Record"}
+            aria-label={recording ? t("capture.pauseRecording") : hasClip ? t("capture.resumeRecording") : t("capture.record")}
           >
             {(recording || hasClip) && (
               <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 84 84" aria-hidden="true">
@@ -691,7 +693,7 @@ export function CameraCapture({ onCapture, onClose, onPickGallery }: Props) {
 
         <button
           onClick={onPickGallery}
-          aria-label="Gallery"
+          aria-label={t("capture.gallery")}
           className="h-14 w-14 rounded-2xl bg-white shadow-lg flex items-center justify-center overflow-hidden"
         >
           <svg viewBox="0 0 64 64" className="h-11 w-11">
@@ -733,23 +735,24 @@ function FiltersPanel({
   setFilterId: (id: string) => void;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="bg-black/65 backdrop-blur-md rounded-2xl px-3 py-3">
       <div className="flex items-center justify-between mb-2 px-1">
-        <span className="text-[13px] font-bold text-white/90">Filters</span>
+        <span className="text-[13px] font-bold text-white/90">{t("capture.filters")}</span>
         <div className="flex items-center gap-3">
           <span className="text-[11px] text-white/70">
-            {FILTERS.find((f) => f.id === filterId)?.name}
+            {t(FILTERS.find((f) => f.id === filterId)?.name ?? "capture.filter.normal")}
           </span>
           {filterId !== "normal" && (
             <button
               onClick={() => setFilterId("normal")}
               className="text-[11px] font-semibold text-rose-300"
             >
-              Reset
+              {t("capture.reset")}
             </button>
           )}
-          <button onClick={onClose} aria-label="Close filters" className="text-white/80">
+          <button onClick={onClose} aria-label={t("capture.closeFilters")} className="text-white/80">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -770,7 +773,7 @@ function FiltersPanel({
               <span
                 className={`mt-1 text-[11px] font-semibold ${active ? "text-rose-400" : "text-white/85"}`}
               >
-                {f.name}
+                {t(f.name)}
               </span>
             </button>
           );

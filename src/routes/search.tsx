@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Search as SearchIcon, X, BadgeCheck, Play, Image as ImageIcon } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 type SearchTab = "all" | "reels" | "photos" | "people";
 
@@ -20,6 +21,12 @@ function parseSearch(search: Record<string, unknown>): { q: string; tab: SearchT
 export const Route = createFileRoute("/search")({
   validateSearch: parseSearch,
   component: SearchPage,
+  head: () => ({
+    meta: [
+      { title: "Search — VIP Life" },
+      { name: "description", content: "Search VIP Life for people, reels and photos." },
+    ],
+  }),
 });
 
 type Profile = {
@@ -42,13 +49,14 @@ type Post = {
 };
 
 const TABS = [
-  { key: "all", label: "All", color: "from-indigo-500 to-purple-500" },
-  { key: "reels", label: "Reels", color: "from-pink-500 to-rose-500" },
-  { key: "photos", label: "Photos", color: "from-amber-500 to-orange-500" },
-  { key: "people", label: "People", color: "from-sky-500 to-cyan-500" },
+  { key: "all", label: "search.tab.all", color: "from-indigo-500 to-purple-500" },
+  { key: "reels", label: "search.tab.reels", color: "from-pink-500 to-rose-500" },
+  { key: "photos", label: "search.tab.photos", color: "from-amber-500 to-orange-500" },
+  { key: "people", label: "search.tab.people", color: "from-sky-500 to-cyan-500" },
 ] as const;
 
 function SearchPage() {
+  const { t } = useI18n();
   const { q, tab } = Route.useSearch();
   const navigate = Route.useNavigate();
   const [input, setInput] = useState(q);
@@ -128,7 +136,7 @@ function SearchPage() {
           <Link
             to="/"
             className="h-10 w-10 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100"
-            aria-label="Back"
+            aria-label={t("search.back")}
           >
             <ArrowLeft className="h-6 w-6" />
           </Link>
@@ -138,14 +146,14 @@ function SearchPage() {
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Search VIP Life…"
+              placeholder={t("search.placeholder")}
               className="w-full h-11 pl-10 pr-10 rounded-full bg-slate-100 border border-transparent text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white focus:border-indigo-200"
             />
             {input && (
               <button
                 onClick={() => setInput("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-slate-300 hover:bg-slate-400 flex items-center justify-center text-white"
-                aria-label="Clear"
+                aria-label={t("search.clear")}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -155,19 +163,19 @@ function SearchPage() {
 
         {/* Tabs */}
         <div className="flex items-center gap-2 px-3 py-2 overflow-x-auto border-b border-slate-100 bg-white">
-          {TABS.map((t) => {
-            const active = tab === t.key;
+          {TABS.map((tabItem) => {
+            const active = tab === tabItem.key;
             return (
               <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
+                key={tabItem.key}
+                onClick={() => setTab(tabItem.key)}
                 className={`px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition ${
                   active
-                    ? `text-white bg-gradient-to-r ${t.color} shadow-md`
+                    ? `text-white bg-gradient-to-r ${tabItem.color} shadow-md`
                     : "text-slate-600 bg-slate-100 hover:bg-slate-200"
                 }`}
               >
-                {t.label}
+                {t(tabItem.label)}
               </button>
             );
           })}
@@ -180,10 +188,10 @@ function SearchPage() {
               <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-3">
                 <SearchIcon className="h-8 w-8 text-slate-400" />
               </div>
-              <p className="text-sm">Search for people, reels, photos and more.</p>
+              <p className="text-sm">{t("search.emptyPrompt")}</p>
             </div>
           ) : loading ? (
-            <div className="py-10 text-center text-sm text-slate-500">Searching…</div>
+            <div className="py-10 text-center text-sm text-slate-500">{t("search.searching")}</div>
           ) : (
             <>
               {(tab === "all" || tab === "people") && (
@@ -197,8 +205,8 @@ function SearchPage() {
               )}
               {people.length === 0 &&
                 posts.length === 0 && (
-                  <div className="py-16 text-center text-sm text-slate-500">
-                    No results for "{q}"
+                   <div className="py-16 text-center text-sm text-slate-500">
+                    {t("search.noResults", { q })}
                   </div>
                 )}
             </>
@@ -210,10 +218,11 @@ function SearchPage() {
 }
 
 function PeopleList({ items }: { items: Profile[] }) {
+  const { t } = useI18n();
   if (items.length === 0) return null;
   return (
     <div>
-      <SectionTitle icon={<BadgeCheck className="h-4 w-4" />} label="People" />
+      <SectionTitle icon={<BadgeCheck className="h-4 w-4" />} label={t("search.people")} />
       <ul className="divide-y divide-slate-100">
         {items.map((p) => (
           <li key={p.id}>
@@ -233,11 +242,11 @@ function PeopleList({ items }: { items: Profile[] }) {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="font-semibold text-slate-900 truncate flex items-center gap-1">
-                  {p.display_name || p.username || "User"}
+                  {p.display_name || p.username || t("search.userFallback")}
                   <BadgeCheck className="h-4 w-4 text-sky-500" />
                 </div>
                 <div className="text-sm text-slate-500 truncate">
-                  {p.bio || (p.username ? `@${p.username}` : "VIP Life member")}
+                  {p.bio || (p.username ? `@${p.username}` : t("search.memberFallback"))}
                 </div>
               </div>
             </Link>
@@ -249,12 +258,13 @@ function PeopleList({ items }: { items: Profile[] }) {
 }
 
 function MediaGrid({ items, kind }: { items: Post[]; kind: "video" | "image" }) {
+  const { t } = useI18n();
   if (items.length === 0) return null;
   return (
     <div className="mt-2">
       <SectionTitle
         icon={kind === "video" ? <Play className="h-4 w-4" /> : <ImageIcon className="h-4 w-4" />}
-        label={kind === "video" ? "Reels" : "Photos"}
+        label={kind === "video" ? t("search.reels") : t("search.photos")}
       />
       <div className="grid grid-cols-3 gap-0.5">
         {items.map((p) => (
