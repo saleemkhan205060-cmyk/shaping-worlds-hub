@@ -1253,162 +1253,710 @@
     {
       "key": "textStyle.align.left",
       "source": "left",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 284,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 292,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 148,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 156,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.align.center",
       "source": "center",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 284,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 292,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 148,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 156,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.align.right",
       "source": "right",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 284,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 292,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 148,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 156,
+          "pattern": "textStyle.align.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.indigo",
       "source": "Indigo",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.sunset",
       "source": "Sunset",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.ocean",
       "source": "Ocean",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.forest",
       "source": "Forest",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.peach",
       "source": "Peach",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.noir",
       "source": "Noir",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.gold",
       "source": "Gold",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.candy",
       "source": "Candy",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.mint",
       "source": "Mint",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.paper",
       "source": "Paper",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.ink",
       "source": "Ink",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.background.rose",
       "source": "Rose",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 221,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 100,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 101,
+          "pattern": "textStyle.background.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.font.sans",
       "source": "Modern",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 256,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 120,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.font.serif",
       "source": "Editorial",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 256,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 120,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.font.mono",
       "source": "Mono",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 256,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 120,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.font.display",
       "source": "Display",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 256,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 120,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.font.soft",
       "source": "Soft",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 256,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 120,
+          "pattern": "textStyle.font.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.white",
       "source": "White",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.black",
       "source": "Black",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.yellow",
       "source": "Yellow",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.rose",
       "source": "Rose",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.indigo",
       "source": "Indigo",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.emerald",
       "source": "Emerald",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.amber",
       "source": "Amber",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.color.sky",
       "source": "Sky",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 238,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 136,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        },
+        {
+          "file": "src/components/TextPostComposer.tsx",
+          "line": 137,
+          "pattern": "textStyle.color.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.size.sm",
       "source": "S",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 274,
+          "pattern": "textStyle.size.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.size.md",
       "source": "M",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 274,
+          "pattern": "textStyle.size.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.size.lg",
       "source": "L",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 274,
+          "pattern": "textStyle.size.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "textStyle.size.xl",
       "source": "XL",
-      "locations": []
+      "locations": [
+        {
+          "file": "src/components/EditPostDialog.tsx",
+          "line": 274,
+          "pattern": "textStyle.size.*",
+          "review": "pending-explicit-key-domain-verification"
+        }
+      ]
     },
     {
       "key": "auth.welcome",

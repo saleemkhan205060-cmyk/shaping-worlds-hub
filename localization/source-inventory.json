@@ -3,9 +3,10 @@
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
     "sourceFilesWithCandidates": 118,
-    "candidates": 3282,
+    "candidates": 3269,
     "contentRouteMetadata": 35,
-    "translatedUses": 154
+    "translatedUses": 154,
+    "dynamicTranslatedUses": 13
   },
   "metadata": [
     {
@@ -954,6 +955,86 @@
       "file": "src/components/VideoThumbnailPicker.tsx",
       "line": 214,
       "key": "common.upload"
+    }
+  ],
+  "dynamicTranslatedUses": [
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 221,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 238,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 256,
+      "pattern": "textStyle.font.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 274,
+      "pattern": "textStyle.size.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 284,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 292,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 100,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 101,
+      "pattern": "textStyle.background.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 120,
+      "pattern": "textStyle.font.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 136,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 137,
+      "pattern": "textStyle.color.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 148,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 156,
+      "pattern": "textStyle.align.*",
+      "review": "pending-explicit-key-domain-verification"
     }
   ],
   "records": [
@@ -2016,13 +2097,6 @@
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 221,
-      "kind": "literal-candidate",
-      "text": "textStyle.background.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
       "line": 233,
       "kind": "literal-candidate",
       "text": "shrink-0 h-10 w-10 rounded-full border-2 {value1} {value2}",
@@ -2033,20 +2107,6 @@
       "line": 235,
       "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 238,
-      "kind": "literal-candidate",
-      "text": "textStyle.color.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 256,
-      "kind": "literal-candidate",
-      "text": "textStyle.font.{value1}",
       "review": "pending"
     },
     {
@@ -2072,20 +2132,6 @@
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 274,
-      "kind": "literal-candidate",
-      "text": "textStyle.size.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 284,
-      "kind": "literal-candidate",
-      "text": "textStyle.align.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
       "line": 286,
       "kind": "literal-candidate",
       "text": "flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize {value1}",
@@ -2103,13 +2149,6 @@
       "line": 289,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 292,
-      "kind": "literal-candidate",
-      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
@@ -6769,27 +6808,6 @@
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 100,
-      "kind": "literal-candidate",
-      "text": "textStyle.background.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 101,
-      "kind": "literal-candidate",
-      "text": "textStyle.background.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 120,
-      "kind": "literal-candidate",
-      "text": "textStyle.font.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
       "line": 133,
       "kind": "literal-candidate",
       "text": "shrink-0 h-8 w-8 rounded-full border-2 {value1} {value2}",
@@ -6800,27 +6818,6 @@
       "line": 134,
       "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 136,
-      "kind": "literal-candidate",
-      "text": "textStyle.color.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 137,
-      "kind": "literal-candidate",
-      "text": "textStyle.color.{value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 148,
-      "kind": "literal-candidate",
-      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
@@ -6842,13 +6839,6 @@
       "line": 153,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 156,
-      "kind": "literal-candidate",
-      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
