@@ -1289,10 +1289,10 @@ function Messages() {
                                           ? "text-[#7CFF3B]"
                                           : "text-white/75"
                                       }`}
-                                      aria-label={
+                                       aria-label={
                                         m.read_at
-                                          ? "Read"
-                                          : "Sent"
+                                          ? t("msg.read")
+                                          : t("msg.sent")
                                       }
                                     >
                                       ✓
@@ -1338,8 +1338,8 @@ function Messages() {
                                   }`}
                                   aria-label={
                                     m.read_at
-                                      ? "Read"
-                                      : "Sent"
+                                      ? t("msg.read")
+                                       : t("msg.sent")
                                   }
                                 >
                                   ✓
@@ -1355,7 +1355,7 @@ function Messages() {
                                   onClick={() => startEditingMessage(m)}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white hover:bg-white/10"
                                 >
-                                  Edit message
+                                  {t("msg.editMessage")}
                                 </button>
                                 <button
                                   type="button"
@@ -1363,15 +1363,15 @@ function Messages() {
                                   onClick={() => void deleteTextMessage(m)}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-300 hover:bg-white/10"
                                 >
-                                  Delete message
+                                  {t("msg.deleteMessage")}
                                 </button>
                                 <button
                                   type="button"
                                   onPointerDown={(e) => e.stopPropagation()}
                                   onClick={() => setMessageMenu(null)}
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/10"
+                                   className="w-full rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/10"
                                 >
-                                  Cancel
+                                  {t("common.cancel")}
                                 </button>
                               </div>
                             )}
@@ -1421,11 +1421,7 @@ function Messages() {
                     </p>
 
                     <p className="text-xs text-slate-500">
-                      {(
-                        pending.file.size /
-                        1024
-                      ).toFixed(1)}{" "}
-                      KB · Preview before sending
+                      {t("msg.previewBefore", { size: (pending.file.size / 1024).toFixed(1) })}
                     </p>
                   </div>
 
@@ -1435,7 +1431,7 @@ function Messages() {
                     disabled={busy}
                     className="h-10 px-3 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
 
                   <button
@@ -1449,7 +1445,7 @@ function Messages() {
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    Send
+                     {t("msg.send")}
                   </button>
                 </div>
               )}
@@ -1459,14 +1455,14 @@ function Messages() {
                   <div className="flex items-center gap-2 rounded-xl bg-white border-l-4 border-[#19D66B] px-3 py-2 shadow-sm">
                     <div className="flex-1 min-w-0">
                       <p className="text-[11px] font-bold text-[#006B3F]">
-                        Replying to
+                         {t("msg.replyingTo")}
                       </p>
 
                       <p className="text-xs text-slate-500 truncate">
                         {replyTo.content.startsWith(
                           "mm://",
                         )
-                          ? "📷 Photo"
+                          ? t("msg.photo")
                           : replyTo.content}
                       </p>
                     </div>
@@ -1477,7 +1473,7 @@ function Messages() {
                         setReplyTo(null)
                       }
                       className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"
-                      aria-label="Cancel reply"
+                      aria-label={t("msg.cancelReply")}
                     >
                       ×
                     </button>
