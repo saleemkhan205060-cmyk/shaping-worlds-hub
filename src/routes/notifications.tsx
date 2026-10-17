@@ -7,6 +7,8 @@ import { AvatarImg } from "../components/AvatarImg";
 import { Bell, Heart, MessageCircle, UserPlus, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/lib/i18n";
+import { feedElapsedMessage } from "@/lib/feed-localization";
 import {
  isNotificationChimeEnabled,
   setNotificationChimeEnabled,
@@ -44,16 +46,9 @@ type Profile = {
   avatar_url: string | null;
 };
 
-function timeAgo(iso: string) {
-  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (s < 60) return `${s}s`;
-  if (s < 3600) return `${Math.floor(s / 60)}m`;
-  if (s < 86400) return `${Math.floor(s / 3600)}h`;
-  return `${Math.floor(s / 86400)}d`;
-}
-
 function NotificationsPage() {
   const { user, loading } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(true);
@@ -157,7 +152,7 @@ const thumbOf = (id: string) => {
         (profs ?? []).forEach((p) => { profileMap[p.id] = p as Profile; });
       }
       const name = (id: string) =>
-        profileMap[id]?.display_name || profileMap[id]?.username || "Someone";
+        profileMap[id]?.display_name || profileMap[id]?.username || t("notif.someone");
 
       const merged: Item[] = [
        ...(likesRes.data ?? []).map((r: any) => ({
@@ -165,7 +160,7 @@ const thumbOf = (id: string) => {
         kind: "like" as const,
         who: name(r.user_id),
         avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-        text: "liked your post",
+        text: t("notif.liked"),
        created_at: r.created_at,
         user_id: r.user_id,
        post_id: r.post_id,
@@ -177,7 +172,7 @@ const thumbOf = (id: string) => {
        kind: "comment" as const,
        who: name(r.user_id),
          avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-       text: `commented: ${r.content.slice(0, 80)}`,
+       text: `${t("notif.commented")}: ${r.content.slice(0, 80)}`,
        created_at: r.created_at,
         user_id: r.user_id,
          post_id: r.post_id,
@@ -187,7 +182,7 @@ const thumbOf = (id: string) => {
         ...(followsRes.data ?? []).map((r: any) => ({
           id: `f-${r.id}`, kind: "follow" as const, who: name(r.follower_id),
           avatar_url: profileMap[r.follower_id]?.avatar_url ?? null,
-          text: "started following you", created_at: r.created_at,
+          text: t("notif.followed"), created_at: r.created_at,
           user_id: r.follower_id,
         })),
 
@@ -196,7 +191,7 @@ const thumbOf = (id: string) => {
         kind: "interested" as const,
         who: name(r.user_id),
        avatar_url: profileMap[r.user_id]?.avatar_url ?? null,
-       text: "is interested in your marriage profile",
+       text: t("notif.interested"),
        created_at: r.created_at,
        user_id: r.user_id,
     })),
