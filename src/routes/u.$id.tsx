@@ -967,23 +967,23 @@ function UserProfile() {
   </div>
 )}
       <div className="mt-6 flex justify-center gap-1 border-b border-slate-200 overflow-hidden">
-        {TABS.map((t) => (
+        {TABS.map((tabName) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabName}
+            onClick={() => setTab(tabName)}
             className={`px-2 py-2 text-sm font-semibold border-b-2 -mb-px whitespace-nowrap transition ${
-              tab === t
+              tab === tabName
                 ? "border-indigo-600 text-indigo-600"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
-          {t}
+          {t(tabKey(tabName))}
           <span
             className={`ml-1 text-[11px] font-medium ${
-              tab === t ? "text-indigo-500" : "text-slate-400"
+              tab === tabName ? "text-indigo-500" : "text-slate-400"
             }`}
           >
-            {tabCounts[t]}
+            {tabCounts[tabName]}
           </span>
           </button>
         ))}
@@ -992,7 +992,7 @@ function UserProfile() {
       <div className="mt-5">
         {items.length === 0 ? (
           <div className="text-center py-12 text-slate-500 text-sm">
-            No {tab.toLowerCase()} yet.
+            {t("profile.emptyTab", { tab: t(tabKey(tab)).toLowerCase() })}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -1014,7 +1014,7 @@ function UserProfile() {
                       {p.thumbnail_url ? (
                         <img
                           src={p.thumbnail_url}
-                          alt={p.caption ?? "Video thumbnail"}
+                          alt={p.caption ?? t("profile.videoThumbAlt")}
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
@@ -1030,7 +1030,7 @@ function UserProfile() {
                   ) : (
                     <img
                       src={p.media_url}
-                      alt={p.caption ?? "Post"}
+                      alt={p.caption ?? t("profile.postAlt")}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -1060,11 +1060,12 @@ function UserProfile() {
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex shrink-0 items-center justify-between border-b border-[#19D66B] px-5 py-4">
-        <h2 className="text-lg font-bold text-white">About</h2>
+        <h2 className="text-lg font-bold text-white">{t("profile.about")}</h2>
 
         <button
           type="button"
           onClick={() => setAboutOpen(false)}
+          aria-label={t("capture.close")}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-[#19D66B] text-white hover:bg-[#003D25]"
         >
           ✕
@@ -1073,25 +1074,25 @@ function UserProfile() {
 
       <div className="overflow-y-auto p-5">
         <div className="space-y-3">
-          {[
-            ["Name", profile.display_name],
-            ["About", profile.bio],
-            ["Country", profile.country],
-            ["City", profile.city],
-            ["Website", profile.website],
-            ["Gender", profile.gender],
-            ["Age", profile.age != null ? String(profile.age) : null],
-            ["Language", profile.languages],
-            ["Marital Status", profile.marital_status],
-            ["Education", profile.education],
-            ["Profession", profile.profession],
-            ["Living In", profile.living_in],
-            ["Religion", profile.religion],
-            ["Date of Birth", profile.dob],
+          {([
+            ["accountEdit.name", profile.display_name],
+            ["accountEdit.about", profile.bio],
+            ["accountEdit.country", profile.country],
+            ["accountEdit.city", profile.city],
+            ["accountEdit.website", profile.website],
+            ["accountEdit.gender", profile.gender],
+            ["accountEdit.age", profile.age != null ? String(profile.age) : null],
+            ["accountEdit.language", profile.languages],
+            ["accountEdit.maritalStatus", profile.marital_status],
+            ["accountEdit.education", profile.education],
+            ["accountEdit.profession", profile.profession],
+            ["accountEdit.livingIn", profile.living_in],
+            ["accountEdit.religion", profile.religion],
+            ["accountEdit.dob", profile.dob],
             ...(profile.email && !profile.email_private
-              ? [["Email", profile.email]]
+              ? [["accountEdit.email", profile.email]]
               : []),
-          ]
+          ] as [string, string | null][])
             .filter(([, value]) => value != null && String(value).trim() !== "")
             .map(([label, value]) => (
               <div
@@ -1099,7 +1100,7 @@ function UserProfile() {
                 className="rounded-xl border border-[#19D66B]/50 bg-[#003D25] px-3 py-2.5"
               >
                 <div className="text-xs font-semibold text-[#7CFF3B]">
-                  {label}
+                  {t(label as string)}
                 </div>
 
                 <div className="mt-0.5 break-words whitespace-pre-wrap text-sm leading-6 text-white">
