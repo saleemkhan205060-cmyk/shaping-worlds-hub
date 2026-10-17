@@ -5,9 +5,12 @@
 - [x] Generate a repeatable full-app candidate inventory (3,389 records across 117 files); classify and approve records before key completion.
 - [x] Extract all 17 existing dictionaries unchanged; add tested interpolation, text isolation, plural/formatter capability checks and all-target release readiness safeguards.
 - [ ] Classify the candidate inventory and integrate every app-owned UI string with a complete English source dictionary (incomplete; implementation must continue).
-  - [ ] Continue with password recovery, sharing, comments and post-privacy controls; stage reviewed-key drafts without activating partial languages.
-  - [ ] Verify release readiness against actual bundled dictionaries, not status flags alone.
+  - [x] Connect password recovery, sharing, comments and post-privacy wording to 55 additional English templates; stage Urdu and Swedish drafts without activating partial languages.
+  - [x] Verify release readiness against actual bundled dictionaries, missing keys, parameters and unreviewed English-identical text, not status flags alone.
+  - [x] Generate an all-92-target review pack with source-key locations; current 80-key source remains incomplete.
+  - [ ] Continue source classification and translation wiring across remaining screens, dialogs, options, errors and formatting; unfinished implementation, not awaiting another scope approval.
 - [ ] Complete all 92 dictionaries and reviewed plural/formatting data, including rare-language targets (incomplete; implementation and qualified translation review required); do not release a partial set.
+  - [ ] Extend beyond the current 80-key English/Urdu/Swedish staged drafts and 15 legacy navigation-only dictionaries; 74 targets have no bundled draft yet. No language has completed full-app coverage or review.
 - [ ] Obtain native-speaker review for all targets and approved localized legal copy/artwork (requires qualified reviewers and approved content).
 - [ ] Run complete coverage and signed-in web regression checks; verify physical Android behavior (requires device access).
 - [ ] Activate all approved country defaults together only after every release gate passes (blocked by full dictionaries, content review and regression/device evidence).

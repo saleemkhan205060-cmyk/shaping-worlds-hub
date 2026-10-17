@@ -14,6 +14,24 @@ The approved delivery remains the entire app in all 92 approved targets, with al
 - `source-inventory.json` is a repeatable, **unreviewed candidate inventory**, not an approved key list: 3,389 candidates in 117 files. It includes uncertain technical literals that must be classified, and does not prove exhaustive coverage of dynamic backend strings or image lettering.
 - `formatting-support.json` records available sandbox formatter capabilities for all 92 targets. It is not browser/Android support evidence or permission to reuse another language's formatting.
 
+## Latest implementation batch
+
+- Password recovery, comment-sheet wording, sharing-sheet wording and post-privacy labels now call named translation keys. Existing input values, posted/shared content, requests, validation rules and privacy values are unchanged. Unknown service errors still need localized error mapping in a later batch.
+- Added 55 English source templates: the staged source currently contains **80 keys**, not the full app inventory. The active provider retains the existing 17 dictionaries and uses English safety fallback for new keys; unreviewed drafts are not activated.
+- Staged Swedish (80 keys) and expanded Urdu (80 keys) drafts pass current-source shape/parameter checks. Both are unreviewed and neither constitutes full-app coverage. Other legacy dictionaries still contain only 25 navigation/common keys. **74 approved targets have no bundled draft yet; no target has completed full-app translation and review.**
+- The repeatable candidate inventory now contains **3,336 candidates in 117 files** and records **65 translation-key call sites** separately. Candidate reduction is not proof of translated or exhaustive coverage.
+- `translation-review-pack.json` lists all 92 targets, current source templates, source locations and missing keys for review. Missing targets are explicitly absent, not filled with copied English or another language.
+- The readiness command now checks actual bundled dictionary contents as well as status flags: missing files, missing/empty keys, mismatched placeholders and unreviewed English-identical values block readiness. Evidence flags remain unapproved; human and device reviews still require auditable results and cannot be supplied by these automated checks.
+
+### Latest verification results
+
+- **18 tests passed, 0 failed** across the two localization test files, including unchanged 195-country mappings and legacy dictionaries, missing dictionaries, copied-English rejection and staged draft parameter parity.
+- Inventory freshness and review-pack freshness checks passed.
+- Readiness check failed intentionally with **1,372 unmet checks**. This is a diagnostic check, not an automatic publishing hook; nothing was published.
+- Desktop browser verification passed: recovery screen and invalid-email browser validation; 195 country options and 195 flag elements; Pakistan search and selection; Urdu saved/restored after refresh; shell direction remains LTR; inactive drafts correctly use English fallback. **0 page errors**. No recovery email was sent and password/code submission was not tested.
+- Screenshots confirmed the unchanged country popup and recovery screen. Posting comments, sending shares, changing post visibility, all-language workflows and physical Android behavior are **not end-to-end verified** in this batch.
+- Current app health log reports `build OK`. Native Android, keyboard, notification delivery, database, permissions and configuration were untouched.
+
 ## Verified
 
 - 14 tests pass, covering exact country/default preservation, all 92 targets, legacy dictionary equality, no partial activation, six text-RTL targets, interpolation/content preservation, key/parameter checks, safe fallback accounting, unsupported-format rejection and review/release gates.
@@ -46,6 +64,9 @@ The approved delivery remains the entire app in all 92 approved targets, with al
 node scripts/audit-localization.mjs
 node scripts/audit-localization.mjs --check
 bun test tests/localization/global-language.test.ts
+bun test tests/localization
+bun scripts/translation-review-pack.ts
+bun scripts/translation-review-pack.ts --check
 bun scripts/check-global-translation.ts
 ```
 
