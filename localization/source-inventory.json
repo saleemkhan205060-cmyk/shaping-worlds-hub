@@ -5,7 +5,7 @@
     "sourceFilesWithCandidates": 119,
     "candidates": 3207,
     "contentRouteMetadata": 35,
-    "translatedUses": 221,
+    "translatedUses": 228,
     "dynamicTranslatedUses": 13
   },
   "metadata": [
@@ -568,6 +568,16 @@
     },
     {
       "file": "src/routes/upload.tsx",
+      "line": 205,
+      "key": "upload.videoBlocked"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 205,
+      "key": "upload.imageBlocked"
+    },
+    {
+      "file": "src/routes/upload.tsx",
       "line": 211,
       "key": "upload.success"
     },
@@ -775,6 +785,36 @@
       "file": "src/routes/upload.tsx",
       "line": 610,
       "key": "upload.category"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.forYou",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.trending",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.music",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.food",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.travel",
+      "domain": "UPLOAD_CATEGORY_KEYS"
     },
     {
       "file": "src/routes/upload.tsx",
