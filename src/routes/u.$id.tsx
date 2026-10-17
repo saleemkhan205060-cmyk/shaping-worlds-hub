@@ -796,7 +796,7 @@ function UserProfile() {
   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-1">
-  <h2 className="font-bold text-lg">Following</h2>
+  <h2 className="font-bold text-lg">{t("profile.followingTitle")}</h2>
   {hideFollowing && <Lock className="h-4 w-4 text-slate-500" />}
 </div>
 
@@ -812,7 +812,7 @@ function UserProfile() {
         .eq("id", id);
       if (error) {
         setHideFollowing(!next);
-        toast.error("Couldn't save this setting. Please try again.");
+        toast.error(t("profile.hideFollowingFailed"));
       } else {
         setProfile((prev) => (prev ? { ...prev, hide_following: next } : prev));
       }
@@ -820,7 +820,7 @@ function UserProfile() {
     className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
       hideFollowing ? "bg-[#057643]" : "bg-slate-300"
     }`}
-    aria-label="Hide following"
+    aria-label={t("profile.hideFollowing")}
   >
     <span
       className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
@@ -834,7 +834,7 @@ function UserProfile() {
           type="button"
           onClick={() => setFollowingOpen(false)}
           className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl"
-          aria-label="Close"
+          aria-label={t("capture.close")}
         >
           ×
         </button>
@@ -843,7 +843,7 @@ function UserProfile() {
       <div className="max-h-[65vh] overflow-y-auto">
     {hideFollowing && !isSelf ? (
     <div className="py-10 text-center text-slate-500">
-      Following list is hidden.
+      {t("profile.followingHidden")}
     </div>
   ) : followingLoading ? (
     <div className="py-10 flex justify-center">
@@ -851,13 +851,13 @@ function UserProfile() {
     </div>
   ) : following.length === 0 ? (
     <div className="py-10 text-center text-slate-500">
-      Not following anyone yet.
+      {t("profile.notFollowing")}
     </div>
   ) : (
     <div className="divide-y divide-slate-100">
       {following.map((person) => {
         const name =
-          person.display_name ?? person.username ?? "User";
+          person.display_name ?? person.username ?? t("profile.userFallback");
 
               return (
                 <div
@@ -913,7 +913,7 @@ function UserProfile() {
 
     if (error) {
       console.error("Unfollow error:", error);
-      toast.error("Couldn't unfollow. Please try again.");
+      toast.error(t("profile.unfollowFailed"));
     } else {
       setFollowingStatus((prev) => {
         const next = new Set(prev);
@@ -921,7 +921,7 @@ function UserProfile() {
         return next;
       });
 
-      toast.success("Unfollowed");
+      toast.success(t("profile.unfollowed"));
     }
   } else {
     const { error } = await supabase
@@ -933,7 +933,7 @@ function UserProfile() {
 
     if (error) {
       console.error("Follow error:", error);
-      toast.error("Couldn't follow. Please try again.");
+      toast.error(t("profile.followFailed"));
     } else {
       setFollowingStatus((prev) => {
         const next = new Set(prev);
@@ -941,7 +941,7 @@ function UserProfile() {
         return next;
       });
 
-      toast.success("Following");
+      toast.success(t("profile.followingToast"));
     }
   }
 
@@ -952,9 +952,9 @@ function UserProfile() {
   {followingActionBusy === person.id ? (
     <Loader2 className="h-3.5 w-3.5 animate-spin" />
   ) : followingStatus.has(person.id) ? (
-    "Following"
+    t("profile.following")
   ) : (
-    "Follow"
+    t("profile.follow")
   )}
 </button>
                 </div>
