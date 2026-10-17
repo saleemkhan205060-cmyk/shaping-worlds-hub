@@ -4,7 +4,8 @@
   "summary": {
     "sourceFilesWithCandidates": 117,
     "candidates": 3336,
-    "contentRouteMetadata": 35
+    "contentRouteMetadata": 35,
+    "translatedUses": 65
   },
   "metadata": [
     {
@@ -181,6 +182,333 @@
       "file": "src/routes/videos.tsx",
       "hasHead": true,
       "review": "pending"
+    }
+  ],
+  "translatedUses": [
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 66,
+      "key": "recovery.invalidEmail"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 75,
+      "key": "recovery.codeSent"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 79,
+      "key": "recovery.sendFailed"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 89,
+      "key": "recovery.enterCode"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 100,
+      "key": "recovery.verifyFailed"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 101,
+      "key": "recovery.verified"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 104,
+      "key": "recovery.invalidCode"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 113,
+      "key": "recovery.shortPassword"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 117,
+      "key": "recovery.mismatch"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 125,
+      "key": "recovery.updated"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 128,
+      "key": "recovery.updateFailed"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 148,
+      "key": "recovery.forgot"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 148,
+      "key": "recovery.codeTitle"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 148,
+      "key": "recovery.passwordTitle"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 152,
+      "key": "recovery.emailHelp"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 154,
+      "key": "recovery.codeHelp"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 155,
+      "key": "recovery.passwordHelp"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 166,
+      "key": "recovery.email"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 171,
+      "key": "recovery.send"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 185,
+      "key": "recovery.code"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 190,
+      "key": "recovery.verify"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 198,
+      "key": "recovery.changeEmail"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 206,
+      "key": "recovery.resendIn"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 206,
+      "key": "recovery.resend"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 220,
+      "key": "recovery.newPassword"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 229,
+      "key": "recovery.confirm"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 234,
+      "key": "recovery.update"
+    },
+    {
+      "file": "src/routes/reset-password.tsx",
+      "line": 241,
+      "key": "recovery.back"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 117,
+      "key": "comments.signIn"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 130,
+      "key": "common.sendFailed"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 146,
+      "key": "comments.title"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 147,
+      "key": "common.close"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 157,
+      "key": "comments.first"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 161,
+      "key": "common.user"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 189,
+      "key": "comments.placeholder"
+    },
+    {
+      "file": "src/components/CommentsSheet.tsx",
+      "line": 189,
+      "key": "comments.signIn"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 523,
+      "key": "menu.language"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 528,
+      "key": "menu.signOut"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 539,
+      "key": "common.signIn"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 67,
+      "key": "privacy.settings"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 70,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 70,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 81,
+      "key": "privacy.settings"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 92,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/PostPrivacySettings.tsx",
+      "line": 104,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 110,
+      "key": "share.copied"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 113,
+      "key": "share.copyFailed"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 118,
+      "key": "share.post"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 123,
+      "key": "share.openFailed"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 133,
+      "key": "share.signIn"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 143,
+      "key": "common.sendFailed"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 147,
+      "key": "share.sentTo"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 147,
+      "key": "share.friend"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 163,
+      "key": "common.share"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 168,
+      "key": "share.close"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 177,
+      "key": "share.sendTo"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 187,
+      "key": "share.search"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 207,
+      "key": "share.loading"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 211,
+      "key": "share.noFriends"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 211,
+      "key": "share.followPrompt"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 216,
+      "key": "common.user"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 248,
+      "key": "common.sent"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 262,
+      "key": "share.moreApps"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 319,
+      "key": "common.email"
+    },
+    {
+      "file": "src/components/ShareSheet.tsx",
+      "line": 353,
+      "key": "common.copy"
     }
   ],
   "records": [
