@@ -5,6 +5,8 @@
 - [x] Generate a repeatable full-app candidate inventory (3,389 records across 117 files); classify and approve records before key completion.
 - [x] Extract all 17 existing dictionaries unchanged; add tested interpolation, text isolation, plural/formatter capability checks and all-target release readiness safeguards.
 - [ ] Classify the candidate inventory and integrate every app-owned UI string with a complete English source dictionary (incomplete; implementation must continue).
+  - [ ] Continue with password recovery, sharing, comments and post-privacy controls; stage reviewed-key drafts without activating partial languages.
+  - [ ] Verify release readiness against actual bundled dictionaries, not status flags alone.
 - [ ] Complete all 92 dictionaries and reviewed plural/formatting data, including rare-language targets (incomplete; implementation and qualified translation review required); do not release a partial set.
 - [ ] Obtain native-speaker review for all targets and approved localized legal copy/artwork (requires qualified reviewers and approved content).
 - [ ] Run complete coverage and signed-in web regression checks; verify physical Android behavior (requires device access).
