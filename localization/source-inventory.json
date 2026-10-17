@@ -2,10 +2,10 @@
   "status": "unreviewed-candidate-inventory",
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
-    "sourceFilesWithCandidates": 117,
-    "candidates": 3336,
+    "sourceFilesWithCandidates": 118,
+    "candidates": 3311,
     "contentRouteMetadata": 35,
-    "translatedUses": 65
+    "translatedUses": 111
   },
   "metadata": [
     {
@@ -366,6 +366,151 @@
       "key": "comments.signIn"
     },
     {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 72,
+      "key": "media.loadPostFailed"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 103,
+      "key": "media.uploadFailed"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 110,
+      "key": "media.thumbnailRejected"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 110,
+      "key": "media.inappropriate"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 126,
+      "key": "media.pickImage"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 148,
+      "key": "media.saveFailed"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 151,
+      "key": "media.postUpdated"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 164,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 171,
+      "key": "common.saving"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 171,
+      "key": "common.save"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 177,
+      "key": "common.loading"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 181,
+      "key": "media.editOwn"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 191,
+      "key": "textPost.preview"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 200,
+      "key": "textPost.placeholder"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 210,
+      "key": "textStyle.background"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 227,
+      "key": "textStyle.color"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 244,
+      "key": "textStyle.font"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 262,
+      "key": "textStyle.size"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 280,
+      "key": "textStyle.align"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 303,
+      "key": "media.title"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 309,
+      "key": "media.addTitle"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 315,
+      "key": "media.caption"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 321,
+      "key": "media.writeCaption"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 329,
+      "key": "media.thumbnail"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 340,
+      "key": "media.noImage"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 351,
+      "key": "media.pickVideoFrame"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 360,
+      "key": "common.uploading"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 360,
+      "key": "media.uploadImage"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 367,
+      "key": "common.remove"
+    },
+    {
       "file": "src/components/Layout.tsx",
       "line": 523,
       "key": "menu.language"
@@ -509,6 +654,91 @@
       "file": "src/components/ShareSheet.tsx",
       "line": 353,
       "key": "common.copy"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 56,
+      "key": "textPost.new"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 61,
+      "key": "common.close"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 70,
+      "key": "textPost.preview"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 78,
+      "key": "textPost.placeholder"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 82,
+      "key": "textPost.textOnly"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 91,
+      "key": "textStyle.background"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 108,
+      "key": "textStyle.font"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 127,
+      "key": "textStyle.color"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 144,
+      "key": "textStyle.align"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 171,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 171,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 179,
+      "key": "common.post"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 156,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 163,
+      "key": "common.saving"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 163,
+      "key": "common.save"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 190,
+      "key": "common.preview"
+    },
+    {
+      "file": "src/components/VideoThumbnailPicker.tsx",
+      "line": 214,
+      "key": "common.upload"
     }
   ],
   "records": [
@@ -1550,275 +1780,121 @@
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 64,
+      "line": 66,
       "kind": "literal-candidate",
       "text": "id,user_id,media_type,media_url,caption,title,thumbnail_url,text_style",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 70,
-      "kind": "feedback-candidate",
-      "text": "Couldn't load post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 96,
+      "line": 98,
       "kind": "literal-candidate",
       "text": "{value1}/thumbnails/{value2}-{value3}.{value4}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 101,
-      "kind": "feedback-candidate",
-      "text": "Upload failed",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 108,
-      "kind": "feedback-candidate",
-      "text": "Thumbnail rejected by our safety filter ({value1}). Please pick a different image.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 123,
+      "line": 125,
       "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 124,
-      "kind": "feedback-candidate",
-      "text": "Please pick an image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 146,
-      "kind": "feedback-candidate",
-      "text": "Couldn't save changes",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 149,
-      "kind": "feedback-candidate",
-      "text": "Post updated",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 162,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 169,
+      "line": 221,
       "kind": "literal-candidate",
-      "text": "Saving…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 169,
-      "kind": "literal-candidate",
-      "text": "Save",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 175,
-      "kind": "jsx-text",
-      "text": "Loading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 179,
-      "kind": "jsx-text",
-      "text": "You can only edit your own posts.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 189,
-      "kind": "literal-candidate",
-      "text": "Write something beautiful…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 198,
-      "kind": "ui-attribute",
-      "text": "What's on your mind?",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 208,
-      "kind": "ui-attribute",
-      "text": "Background",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 225,
-      "kind": "ui-attribute",
-      "text": "Text color",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 231,
-      "kind": "literal-candidate",
-      "text": "shrink-0 h-10 w-10 rounded-full border-2 {value1} {value2}",
+      "text": "textStyle.background.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
       "line": 233,
       "kind": "literal-candidate",
+      "text": "shrink-0 h-10 w-10 rounded-full border-2 {value1} {value2}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 235,
+      "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 242,
-      "kind": "ui-attribute",
-      "text": "Font",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 260,
-      "kind": "ui-attribute",
-      "text": "Size",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 266,
+      "line": 238,
       "kind": "literal-candidate",
-      "text": "h-10 w-10 rounded-full text-sm font-semibold border {value1}",
+      "text": "textStyle.color.{value1}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 256,
+      "kind": "literal-candidate",
+      "text": "textStyle.font.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
       "line": 268,
       "kind": "literal-candidate",
+      "text": "h-10 w-10 rounded-full text-sm font-semibold border {value1}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 270,
+      "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 269,
+      "line": 271,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 278,
-      "kind": "ui-attribute",
-      "text": "Align",
+      "line": 274,
+      "kind": "literal-candidate",
+      "text": "textStyle.size.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
       "line": 284,
       "kind": "literal-candidate",
-      "text": "flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize {value1}",
+      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
       "line": 286,
       "kind": "literal-candidate",
+      "text": "flex-1 px-3 py-2 rounded-full text-sm font-medium border capitalize {value1}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/EditPostDialog.tsx",
+      "line": 288,
+      "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 287,
+      "line": 289,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
       "review": "pending"
     },
     {
       "file": "src/components/EditPostDialog.tsx",
-      "line": 301,
-      "kind": "jsx-text",
-      "text": "Title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 307,
-      "kind": "ui-attribute",
-      "text": "Add a title",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 313,
-      "kind": "jsx-text",
-      "text": "Caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 319,
-      "kind": "ui-attribute",
-      "text": "Write a caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 327,
-      "kind": "jsx-text",
-      "text": "Thumbnail",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 338,
-      "kind": "jsx-text",
-      "text": "No image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 349,
-      "kind": "jsx-text",
-      "text": "Pick from video",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 358,
+      "line": 292,
       "kind": "literal-candidate",
-      "text": "Uploading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 358,
-      "kind": "literal-candidate",
-      "text": "Upload image",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/EditPostDialog.tsx",
-      "line": 365,
-      "kind": "jsx-text",
-      "text": "Remove",
+      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
@@ -6478,121 +6554,86 @@
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "New text post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 59,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 68,
+      "line": 100,
       "kind": "literal-candidate",
-      "text": "Write something beautiful…",
+      "text": "textStyle.background.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 76,
-      "kind": "ui-attribute",
-      "text": "What's on your mind?",
+      "line": 101,
+      "kind": "literal-candidate",
+      "text": "textStyle.background.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 80,
-      "kind": "jsx-text",
-      "text": "Text only · no media",
+      "line": 120,
+      "kind": "literal-candidate",
+      "text": "textStyle.font.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 89,
-      "kind": "jsx-text",
-      "text": "Background",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 106,
-      "kind": "jsx-text",
-      "text": "Font",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 125,
-      "kind": "jsx-text",
-      "text": "Text color",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 131,
+      "line": 133,
       "kind": "literal-candidate",
       "text": "shrink-0 h-8 w-8 rounded-full border-2 {value1} {value2}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 132,
+      "line": 134,
       "kind": "literal-candidate",
       "text": "border-indigo-600 ring-2 ring-indigo-200",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 142,
-      "kind": "jsx-text",
-      "text": "Align",
+      "line": 136,
+      "kind": "literal-candidate",
+      "text": "textStyle.color.{value1}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 137,
+      "kind": "literal-candidate",
+      "text": "textStyle.color.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
       "line": 148,
       "kind": "literal-candidate",
-      "text": "flex-1 px-3 py-1.5 rounded-full text-xs font-medium border capitalize {value1}",
+      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
       "line": 150,
       "kind": "literal-candidate",
+      "text": "flex-1 px-3 py-1.5 rounded-full text-xs font-medium border capitalize {value1}",
+      "review": "pending"
+    },
+    {
+      "file": "src/components/TextPostComposer.tsx",
+      "line": 152,
+      "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white border-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 151,
+      "line": 153,
       "kind": "literal-candidate",
       "text": "bg-white text-slate-700 border-slate-200",
       "review": "pending"
     },
     {
       "file": "src/components/TextPostComposer.tsx",
-      "line": 169,
+      "line": 156,
       "kind": "literal-candidate",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 169,
-      "kind": "literal-candidate",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/TextPostComposer.tsx",
-      "line": 177,
-      "kind": "jsx-text",
-      "text": "Post",
+      "text": "textStyle.align.{value1}",
       "review": "pending"
     },
     {
@@ -9271,142 +9312,107 @@
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 49,
+      "line": 52,
       "kind": "literal-candidate",
       "text": "Couldn't load video",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 57,
+      "line": 60,
       "kind": "literal-candidate",
       "text": "Canvas unsupported",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 71,
+      "line": 74,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 75,
+      "line": 78,
       "kind": "literal-candidate",
       "text": "Couldn't read video frames",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 112,
+      "line": 115,
       "kind": "literal-candidate",
       "text": "Video not ready",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 116,
+      "line": 119,
       "kind": "literal-candidate",
       "text": "Canvas unsupported",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 119,
+      "line": 122,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 121,
+      "line": 124,
       "kind": "literal-candidate",
       "text": "Couldn't capture frame",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 122,
+      "line": 125,
       "kind": "literal-candidate",
       "text": "thumbnail-{value1}.jpg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 122,
+      "line": 125,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 128,
+      "line": 131,
       "kind": "literal-candidate",
       "text": "This video can't be captured here due to security restrictions.",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 129,
+      "line": 132,
       "kind": "literal-candidate",
       "text": "Couldn't capture frame",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 140,
+      "line": 143,
       "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 141,
+      "line": 144,
       "kind": "feedback-candidate",
       "text": "Please pick an image",
       "review": "pending"
     },
     {
       "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 153,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 160,
-      "kind": "literal-candidate",
-      "text": "Saving…",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 160,
-      "kind": "literal-candidate",
-      "text": "Save",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 187,
-      "kind": "jsx-text",
-      "text": "Preview",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 199,
+      "line": 202,
       "kind": "literal-candidate",
       "text": "relative shrink-0 h-24 w-16 rounded-lg overflow-hidden border-2 {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/VideoThumbnailPicker.tsx",
-      "line": 211,
-      "kind": "jsx-text",
-      "text": "Upload",
       "review": "pending"
     },
     {
@@ -9694,6 +9700,55 @@
       "line": 9,
       "kind": "literal-candidate",
       "text": "vip-life/vip-life",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 3,
+      "kind": "literal-candidate",
+      "text": "Couldn't load video",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 4,
+      "kind": "literal-candidate",
+      "text": "Canvas unsupported",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 5,
+      "kind": "literal-candidate",
+      "text": "Couldn't read video frames",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 6,
+      "kind": "literal-candidate",
+      "text": "Video not ready",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 7,
+      "kind": "literal-candidate",
+      "text": "Couldn't capture frame",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 8,
+      "kind": "literal-candidate",
+      "text": "This video can't be captured here due to security restrictions.",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/media-localization.ts",
+      "line": 9,
+      "kind": "literal-candidate",
+      "text": "Please pick an image",
       "review": "pending"
     },
     {
