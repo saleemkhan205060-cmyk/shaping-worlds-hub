@@ -2323,7 +2323,7 @@ function MessageAttachment({
   if (err) {
     return (
       <span className="italic opacity-70">
-        Attachment unavailable
+        {t("msg.attachmentUnavailable")}
       </span>
     );
   }
@@ -2331,7 +2331,7 @@ function MessageAttachment({
   if (!url) {
     return (
       <span className="italic opacity-70">
-        Loading attachment…
+        {t("msg.loadingAttachment")}
       </span>
     );
   }
@@ -2359,7 +2359,7 @@ function MessageAttachment({
             onTouchEnd={clearPress}
             onTouchMove={clearPress}
             onTouchCancel={clearPress}
-            aria-label="Open image"
+            aria-label={t("msg.openImage")}
           >
             <img
               src={url}
@@ -2377,7 +2377,7 @@ function MessageAttachment({
               setMenuOpen(true);
             }}
             className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/45 hover:bg-black/60 text-white flex items-center justify-center shadow-sm"
-            aria-label="Message options"
+            aria-label={t("msg.options")}
           >
             <MoreVertical className="h-4 w-4" />
           </button>
@@ -2431,7 +2431,7 @@ function MessageAttachment({
                   setOpen(false);
                 }}
                 className="absolute top-4 right-4 text-white text-2xl leading-none w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center"
-                aria-label="Close"
+                aria-label={t("capture.close")}
               >
                 ×
               </button>
@@ -2444,7 +2444,7 @@ function MessageAttachment({
                 }}
                 className="absolute bottom-4 right-4 text-white text-sm px-4 py-2 rounded-full bg-black/50 hover:bg-black/70"
               >
-                Download
+                {t("msg.download")}
               </button>
             </div>
           )}
@@ -2468,9 +2468,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void copyImage();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
-                  Copy
+                  {t("msg.copy")}
                 </button>
 
                 <button
@@ -2479,9 +2479,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     onReply();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
-                  Reply
+                  {t("msg.reply")}
                 </button>
 
                 <button
@@ -2490,9 +2490,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void downloadFile();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
-                  Download
+                  {t("msg.download")}
                 </button>
 
                 <button
@@ -2501,9 +2501,9 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void deleteMessage();
                   }}
-                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
+                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
                 >
-                  Delete
+                  {t("msg.delete")}
                 </button>
 
                 <button
@@ -2511,9 +2511,9 @@ function MessageAttachment({
                   onClick={() =>
                     setMenuOpen(false)
                   }
-                  className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+                   className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
               </div>
             </div>
@@ -2550,7 +2550,7 @@ function MessageAttachment({
       rel="noopener noreferrer"
       className="underline"
     >
-      Open attachment
+      {t("msg.openAttachment")}
     </a>
   );
 }
