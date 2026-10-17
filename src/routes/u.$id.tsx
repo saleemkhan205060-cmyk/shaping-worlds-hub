@@ -402,7 +402,7 @@ function UserProfile() {
     return (
       <Layout>
         <div className="flex items-center justify-center py-20 text-slate-500">
-          <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading...
+          <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t("common.loading")}
         </div>
       </Layout>
     );
@@ -412,18 +412,20 @@ function UserProfile() {
     return (
       <Layout>
         <div className="text-center py-20 text-slate-500">
-          <p>User not found.</p>
-          <Link to="/" className="text-indigo-600 font-semibold mt-3 inline-block">Back home</Link>
+          <p>{t("profile.notFound")}</p>
+          <Link to="/" className="text-indigo-600 font-semibold mt-3 inline-block">{t("profile.backHome")}</Link>
         </div>
       </Layout>
     );
   }
 
-  const displayName = profile.display_name ?? profile.username ?? "User";
+  const displayName = profile.display_name ?? profile.username ?? t("profile.userFallback");
   const handle = profile.username ?? displayName;
   const joined = profile.created_at
     ? new Date(profile.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" })
-    : "Recently";
+    : t("profile.joinedRecently");
+  const tabKey = (tabName: Tab) =>
+    tabName === "Posts" ? "profile.tab.posts" : tabName === "Videos" ? "profile.tab.videos" : "profile.tab.photos";
 
   const videos = posts.filter((p) => p.media_type === "video");
   const photos = posts.filter((p) => p.media_type === "image");
@@ -460,13 +462,13 @@ function UserProfile() {
       { nameEditorOpen && (
   <div className="fixed inset-0 z-[600] bg-black/50 flex items-center justify-center p-4">
     <div className="w-full max-w-sm bg-white rounded-2xl p-5">
-      <h2 className="text-lg font-bold mb-4">Change name</h2>
+      <h2 className="text-lg font-bold mb-4">{t("profile.changeName")}</h2>
 
       <input
         value={newName}
         onChange={(e) => setNewName(e.target.value)}
         className="w-full border rounded-xl px-3 py-2"
-        placeholder="Enter your name"
+        placeholder={t("profile.enterName")}
       />
 
       <div className="flex justify-end gap-2 mt-4">
@@ -475,7 +477,7 @@ function UserProfile() {
           onClick={() => setNameEditorOpen(false)}
           className="px-4 py-2 rounded-xl bg-slate-100"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
 
         <button
@@ -499,7 +501,7 @@ function UserProfile() {
   setNameEditorOpen(false);
 }}
         >
-          Save
+          {t("common.save")}
         </button>
       </div>
     </div>
@@ -507,7 +509,7 @@ function UserProfile() {
 )}
       <div className="mb-3">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-indigo-600">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> {t("profile.back")}
         </Link>
       </div>
 
@@ -527,7 +529,7 @@ function UserProfile() {
     type="button"
     onClick={() => coverInputRef.current?.click()}
       className="absolute bottom-3 right-3 h-9 w-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white transition"
-      aria-label="Edit cover photo"
+      aria-label={t("profile.editCover")}
     >
       <Pencil className="h-4 w-4 text-slate-700" />
     </button>
@@ -564,7 +566,7 @@ function UserProfile() {
     type="button"
     onClick={() => avatarInputRef.current?.click()}
     className="absolute bottom-1 right-1 z-30 h-7 w-7 rounded-full bg-[#057640] shadow-md flex items-center justify-center"
-    aria-label="Change profile photo"
+    aria-label={t("profile.changeAvatar")}
   >
     <span className="text-lg font-bold text-white">+</span>
   </button>
@@ -590,7 +592,7 @@ function UserProfile() {
           </div>
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
             <span className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" /> Joined {joined}
+              <Calendar className="h-4 w-4" /> {t("profile.joined", { date: joined })}
             </span>
           </div>
           {profile && (
