@@ -8,6 +8,7 @@ const uiAttributes = new Set(["placeholder", "title", "alt", "aria-label", "labe
 const records = [];
 const metadata = [];
 const translatedUses = [];
+const dynamicTranslatedUses = [];
 
 function files(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -33,6 +34,17 @@ for (const directory of ["src/routes", "src/components", "src/lib", "src/hooks"]
       records.push({ file, line: position.line + 1, kind, text: normalized, review: "pending" });
     }
     function visit(node) {
+      if (ts.isCallExpression(node) && node.expression.getText(source) === "t" && node.arguments[0] && ts.isTemplateExpression(node.arguments[0])) {
+        const argument = node.arguments[0];
+        const position = source.getLineAndCharacterOfPosition(node.getStart(source));
+        dynamicTranslatedUses.push({
+          file, line: position.line + 1,
+          pattern: argument.head.text + argument.templateSpans.map((span) => `*${span.literal.text}`).join(""),
+          review: "pending-explicit-key-domain-verification",
+        });
+        for (const parameter of node.arguments.slice(1)) visit(parameter);
+        return;
+      }
       if (ts.isCallExpression(node) && node.expression.getText(source) === "t" && node.arguments[0] && ts.isStringLiteral(node.arguments[0])) {
         const position = source.getLineAndCharacterOfPosition(node.getStart(source));
         translatedUses.push({ file, line: position.line + 1, key: node.arguments[0].text });
@@ -67,9 +79,10 @@ records.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
 const inventory = {
   status: "unreviewed-candidate-inventory",
   policy: "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
-  summary: { sourceFilesWithCandidates: new Set(records.map((record) => record.file)).size, candidates: records.length, contentRouteMetadata: metadata.length, translatedUses: translatedUses.length },
+  summary: { sourceFilesWithCandidates: new Set(records.map((record) => record.file)).size, candidates: records.length, contentRouteMetadata: metadata.length, translatedUses: translatedUses.length, dynamicTranslatedUses: dynamicTranslatedUses.length },
   metadata,
   translatedUses,
+  dynamicTranslatedUses,
   records,
 };
 const serialized = JSON.stringify(inventory, null, 2) + "\n";
