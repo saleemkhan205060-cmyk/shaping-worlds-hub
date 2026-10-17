@@ -513,18 +513,20 @@ function Messages() {
       content = `↪ Replying to: ${replyText}\n${rawText}`;
     }
 
-    requestAnimationFrame(() => {
-      const textarea = document.querySelector<HTMLTextAreaElement>(
-        'textarea[placeholder="Message"]',
-      );
+   const textarea = document.querySelector<HTMLTextAreaElement>(
+  'textarea[placeholder="Message"]',
+   );
 
-      if (textarea) {
-        textarea.style.height = "auto";
-        textarea.focus();
-      }
-    });
+   setText("");
+  if (textarea) {
+    textarea.style.height = "auto";
+  }
 
-    await sendContent(content);
+  await sendContent(content);
+
+  requestAnimationFrame(() => {
+  textarea?.focus();
+});
   };
 
   const shareLocation = () => {
