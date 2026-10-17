@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Globe2, Lock, SlidersHorizontal } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 type PostPrivacySettingsProps = {
   isPrivate: boolean;
@@ -25,8 +26,9 @@ export function PostPrivacySettings({
   onChange,
   accent = "indigo",
   align = "left",
-  label = "Post settings",
+  label,
 }: PostPrivacySettingsProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const colors = accentClasses[accent];
@@ -62,10 +64,10 @@ export function PostPrivacySettings({
         aria-expanded={open}
       >
         <SlidersHorizontal className="h-4 w-4" />
-        <span className="hidden sm:inline">{label}</span>
+        <span className="hidden sm:inline">{label ?? t("privacy.settings")}</span>
         <span className="inline-flex items-center gap-1">
           {isPrivate ? <Lock className="h-3.5 w-3.5" /> : <Globe2 className="h-3.5 w-3.5" />}
-          {isPrivate ? "Private" : "Public"}
+          {isPrivate ? t("privacy.private") : t("privacy.public")}
         </span>
       </button>
 
@@ -76,7 +78,7 @@ export function PostPrivacySettings({
             align === "right" ? "right-0" : "left-0"
           }`}
         >
-          <div className="px-2 pb-2 pt-1 text-xs font-bold text-slate-500">Post settings</div>
+          <div className="px-2 pb-2 pt-1 text-xs font-bold text-slate-500">{t("privacy.settings")}</div>
           <button
             type="button"
             role="menuitemradio"
@@ -87,7 +89,7 @@ export function PostPrivacySettings({
             }`}
           >
             <Globe2 className="h-4 w-4" />
-            Public
+            {t("privacy.public")}
           </button>
           <button
             type="button"
@@ -99,7 +101,7 @@ export function PostPrivacySettings({
             }`}
           >
             <Lock className="h-4 w-4" />
-            Private
+            {t("privacy.private")}
           </button>
         </div>
       ) : null}
