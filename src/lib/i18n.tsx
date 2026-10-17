@@ -9,6 +9,7 @@ import { captureEnglish } from "./locales/capture-en";
 import { searchEnglish } from "./locales/search-en";
 import { notifEnglish } from "./locales/notif-en";
 import { profileEnglish } from "./locales/profile-en";
+import { msgEnglish } from "./locales/msg-en";
 import { resolveMessage, type Parameters } from "./i18n-core";
 
 export type LangCode =
@@ -40,7 +41,7 @@ type Dict = Record<string, string>;
 
 // Only existing languages are active until the global translation release gate passes.
 const TRANSLATIONS: Record<LangCode, Dict> = LEGACY_TRANSLATIONS;
-const SOURCE_ENGLISH = { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish, ...captureEnglish, ...searchEnglish, ...notifEnglish, ...profileEnglish };
+const SOURCE_ENGLISH = { ...LEGACY_TRANSLATIONS.en, ...appEnglish, ...mediaEnglish, ...accountEnglish, ...uploadEnglish, ...feedEnglish, ...captureEnglish, ...searchEnglish, ...notifEnglish, ...profileEnglish, ...msgEnglish };
 
 const STORAGE_KEY = "viplife.lang";
 
