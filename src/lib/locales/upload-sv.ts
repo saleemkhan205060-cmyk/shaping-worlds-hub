@@ -1,0 +1,32 @@
+import type { Dictionary } from "../i18n-core";
+
+// Draft only; qualified native-speaker review is required before activation.
+export const uploadSwedish = {
+  "common.edit": "Redigera", "common.report": "Anmäl", "common.delete": "Ta bort",
+  "common.moreOptions": "Fler alternativ",
+  "upload.help": "Dela ett foto eller en video med gemenskapen.",
+  "upload.gallery": "Galleri", "upload.pickVideo": "Välj en video",
+  "upload.record": "Spela in", "upload.openCamera": "Öppna kameran",
+  "upload.choosePhoto": "Eller välj ett foto", "upload.sizeHelp": "Bilder eller videor · upp till 500MB",
+  "upload.allowedTypes": "Endast bilder och videor är tillåtna", "upload.fileTooLarge": "Filen måste vara mindre än 500MB",
+  "upload.thumbnailImage": "Miniatyrbilden måste vara en bild", "upload.thumbnailTooLarge": "Miniatyrbilden måste vara mindre än 10MB",
+  "upload.checkingVideo": "Kontrollerar video…", "upload.success": "Uppladdat!",
+  "upload.failed": "Uppladdningen misslyckades. Försök igen.", "upload.thumbnailSet": "Miniatyrbild vald",
+  "upload.titlePlaceholder": "Ge din video en titel...", "upload.visibility": "Vem kan se detta?",
+  "upload.anyone": "Alla på VIP Life", "upload.onlyYou": "Bara du",
+  "upload.progress": "Laddar upp {progress}%", "upload.asPublic": "Ladda upp offentligt",
+  "upload.asPrivate": "Ladda upp privat", "upload.captionPlaceholder": "Skriv något om det...",
+  "upload.category": "Kategori", "upload.category.forYou": "För dig",
+  "upload.category.trending": "Populärt", "upload.category.music": "Musik",
+  "upload.category.food": "Mat", "upload.category.travel": "Resor",
+  "upload.chooseThumbnail": "Välj miniatyrbild från video", "upload.uploadThumbnail": "Ladda upp miniatyrbild",
+  "upload.cropped": "Videon är beskuren — redo att laddas upp",
+  "upload.imageBlocked": "Din bild blockerades av vårt säkerhetsfilter ({reason}). Den har sparats för administratörens granskning — du meddelas om den godkänns.",
+  "upload.videoBlocked": "Din video blockerades av vårt säkerhetsfilter ({reason}). Den har sparats för administratörens granskning — du meddelas om den godkänns.",
+  "media.post": "Inlägg", "media.checkThisOut": "Kolla in det här",
+  "media.reportSignIn": "Logga in för att anmäla",
+  "media.reportFailed": "Det gick inte att skicka anmälan. Försök igen.",
+  "media.reportThanks": "Tack — vi granskar det här inlägget",
+  "media.deleteConfirm": "Ta bort det här inlägget? Det går inte att ångra.",
+  "media.deleteFailed": "Det gick inte att ta bort. Försök igen.", "media.deleted": "Inlägget har tagits bort",
+} satisfies Dictionary;

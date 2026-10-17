@@ -1,0 +1,32 @@
+import type { Dictionary } from "../i18n-core";
+
+// Draft only; qualified native-speaker review is required before activation.
+export const uploadUrdu = {
+  "common.edit": "ترمیم", "common.report": "رپورٹ کریں", "common.delete": "حذف کریں",
+  "common.moreOptions": "مزید اختیارات",
+  "upload.help": "کمیونٹی کے ساتھ تصویر یا ویڈیو شیئر کریں۔",
+  "upload.gallery": "گیلری", "upload.pickVideo": "ویڈیو منتخب کریں",
+  "upload.record": "ریکارڈ کریں", "upload.openCamera": "کیمرہ کھولیں",
+  "upload.choosePhoto": "یا تصویر منتخب کریں", "upload.sizeHelp": "تصاویر یا ویڈیوز · 500MB تک",
+  "upload.allowedTypes": "صرف تصاویر اور ویڈیوز کی اجازت ہے", "upload.fileTooLarge": "فائل 500MB سے کم ہونی چاہیے",
+  "upload.thumbnailImage": "تھمب نیل ایک تصویر ہونا چاہیے", "upload.thumbnailTooLarge": "تھمب نیل 10MB سے کم ہونا چاہیے",
+  "upload.checkingVideo": "ویڈیو کی جانچ ہو رہی ہے…", "upload.success": "اپ لوڈ ہو گیا!",
+  "upload.failed": "اپ لوڈ ناکام ہو گیا۔ دوبارہ کوشش کریں۔", "upload.thumbnailSet": "تھمب نیل منتخب ہو گیا",
+  "upload.titlePlaceholder": "اپنی ویڈیو کا عنوان لکھیں...", "upload.visibility": "یہ کون دیکھ سکتا ہے؟",
+  "upload.anyone": "VIP Life پر کوئی بھی", "upload.onlyYou": "صرف آپ",
+  "upload.progress": "اپ لوڈ ہو رہا ہے {progress}%", "upload.asPublic": "عوامی طور پر اپ لوڈ کریں",
+  "upload.asPrivate": "نجی طور پر اپ لوڈ کریں", "upload.captionPlaceholder": "اس کے بارے میں کچھ لکھیں...",
+  "upload.category": "زمرہ", "upload.category.forYou": "آپ کے لیے",
+  "upload.category.trending": "مقبول", "upload.category.music": "موسیقی",
+  "upload.category.food": "کھانا", "upload.category.travel": "سفر",
+  "upload.chooseThumbnail": "ویڈیو سے تھمب نیل منتخب کریں", "upload.uploadThumbnail": "تھمب نیل کی تصویر اپ لوڈ کریں",
+  "upload.cropped": "ویڈیو تراش دی گئی — اپ لوڈ کے لیے تیار ہے",
+  "upload.imageBlocked": "ہماری حفاظتی جانچ نے آپ کی تصویر روک دی ہے ({reason})۔ اسے منتظم کے جائزے کے لیے محفوظ کر لیا گیا ہے — منظوری پر آپ کو مطلع کیا جائے گا۔",
+  "upload.videoBlocked": "ہماری حفاظتی جانچ نے آپ کی ویڈیو روک دی ہے ({reason})۔ اسے منتظم کے جائزے کے لیے محفوظ کر لیا گیا ہے — منظوری پر آپ کو مطلع کیا جائے گا۔",
+  "media.post": "پوسٹ", "media.checkThisOut": "یہ دیکھیں",
+  "media.reportSignIn": "رپورٹ کرنے کے لیے سائن ان کریں",
+  "media.reportFailed": "رپورٹ جمع نہیں ہو سکی۔ دوبارہ کوشش کریں۔",
+  "media.reportThanks": "شکریہ — ہم اس پوسٹ کا جائزہ لیں گے",
+  "media.deleteConfirm": "یہ پوسٹ حذف کریں؟ اسے واپس نہیں لایا جا سکے گا۔",
+  "media.deleteFailed": "حذف نہیں ہو سکا۔ دوبارہ کوشش کریں۔", "media.deleted": "پوسٹ حذف ہو گئی",
+} satisfies Dictionary;
