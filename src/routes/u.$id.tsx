@@ -602,7 +602,7 @@ function UserProfile() {
       onClick={() => setAboutOpen(true)}
       className="inline-flex w-fit items-center rounded-full border border-[#19D66B] bg-[#005A35] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#003D25]"
     >
-      About
+      {t("profile.about")}
     </button>
 
     {!isSelf && (
@@ -623,16 +623,16 @@ function UserProfile() {
           ) : (
             <UserPlus className="h-4 w-4" />
           )}
-          {isFollowing ? "Following" : "Follow"}
+          {isFollowing ? t("profile.following") : t("profile.follow")}
         </button>
 
         <button
           onClick={() => navigate({ to: "/messages", search: { to: id } })}
           className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#19D66B]/50 bg-[#003D25] px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-[#005A35]"
-          aria-label="Send message"
+          aria-label={t("profile.sendMessage")}
         >
           <MessageCircle className="h-4 w-4" />
-          Message
+          {t("profile.message")}
         </button>
       </>
     )}
@@ -644,21 +644,21 @@ function UserProfile() {
             onClick={openFollowers}
             className="text-left"
             >
-           <Stat label="Followers" value={String(followersCount)} community />
+           <Stat label={t("profile.followers")} value={String(followersCount)} community />
             </button>
             <button
             type="button"
            onClick={openFollowing}
           className="text-left"
          >
-         <Stat
-  label="Following"
+          <Stat
+  label={t("profile.followingTitle")}
   value={String(followingCount)}
   community
   locked={hideFollowing}
 />
         </button>
-            <Stat label="Likes" value={String(likesCount)} likes />
+            <Stat label={t("profile.likes")} value={String(likesCount)} likes />
           </div>
         </div>
       </div>
@@ -672,13 +672,13 @@ function UserProfile() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-              <h2 className="font-bold text-lg">Followers</h2>
+              <h2 className="font-bold text-lg">{t("profile.followers")}</h2>
 
               <button
                 type="button"
                 onClick={() => setFollowersOpen(false)}
                 className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl"
-                aria-label="Close"
+                aria-label={t("capture.close")}
               >
                 ×
               </button>
@@ -691,13 +691,13 @@ function UserProfile() {
                 </div>
               ) : followers.length === 0 ? (
                 <div className="py-10 text-center text-slate-500">
-                  No followers yet.
+                  {t("profile.noFollowers")}
                 </div>
               ) : (
                 <div className="divide-y divide-slate-100">
                   {followers.map((follower) => {
                     const name =
-                      follower.display_name ?? follower.username ?? "User";
+                      follower.display_name ?? follower.username ?? t("profile.userFallback");
 
                     return (
                   <div
@@ -755,7 +755,7 @@ function UserProfile() {
       });
 
     if (error) {
-      toast.error("Couldn't follow back. Please try again.");
+      toast.error(t("profile.followBackFailed"));
     } else {
       setFollowingUsers((prev) => {
         const next = new Set(prev);
@@ -773,7 +773,7 @@ function UserProfile() {
       : "bg-indigo-600 text-white"
   }`}
 >
-   {followingUsers.has(follower.id) ? "Following" : "Follow back"}
+   {followingUsers.has(follower.id) ? t("profile.following") : t("profile.followBack")}
 </button>
                     </div>
                   );
