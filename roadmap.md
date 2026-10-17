@@ -9,6 +9,7 @@
   - [x] Verify release readiness against actual bundled dictionaries, missing keys, parameters and unreviewed English-identical text, not status flags alone.
   - [x] Generate an all-92-target review pack with source-key locations; current 80-key source remains incomplete.
   - [ ] Continue source classification and translation wiring across remaining screens, dialogs, options, errors and formatting; unfinished implementation, not awaiting another scope approval.
+  - [ ] Next batch: text-post composer/editor and video-cover picker, including preset labels and surfaced errors; preserve saved style IDs and original text.
 - [ ] Complete all 92 dictionaries and reviewed plural/formatting data, including rare-language targets (incomplete; implementation and qualified translation review required); do not release a partial set.
   - [ ] Extend beyond the current 80-key English/Urdu/Swedish staged drafts and 15 legacy navigation-only dictionaries; 74 targets have no bundled draft yet. No language has completed full-app coverage or review.
 - [ ] Obtain native-speaker review for all targets and approved localized legal copy/artwork (requires qualified reviewers and approved content).
