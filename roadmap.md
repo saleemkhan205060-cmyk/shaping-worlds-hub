@@ -1,5 +1,10 @@
 # Android keyboard spacing
 
+## Country-language investigation (no app changes)
+- [x] Recommend a default UI language for each of the 195 existing countries, document multilingual alternatives, and list required translations/files; preserve selector and persistence. Mapping remains proposed for review, not applied.
+
+## Android verification
+
 - [x] Inspect message sizing, native window configuration, and Capacitor inset handling.
 - [x] Obtain approval for the isolated Android keyboard/insets fix.
 - [x] Implement one native inset owner with version-aware resizing; keep web and messaging logic unchanged.
