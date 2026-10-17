@@ -2,10 +2,10 @@
   "status": "unreviewed-candidate-inventory",
   "policy": "Classify each record as app-owned text, user-content boundary, or technical exception before approving key coverage. Candidate count is not translation completion.",
   "summary": {
-    "sourceFilesWithCandidates": 118,
-    "candidates": 3269,
+    "sourceFilesWithCandidates": 119,
+    "candidates": 3207,
     "contentRouteMetadata": 35,
-    "translatedUses": 154,
+    "translatedUses": 228,
     "dynamicTranslatedUses": 13
   },
   "metadata": [
@@ -176,7 +176,7 @@
     },
     {
       "file": "src/routes/upload.tsx",
-      "hasHead": false,
+      "hasHead": true,
       "review": "pending"
     },
     {
@@ -542,6 +542,301 @@
       "key": "recovery.back"
     },
     {
+      "file": "src/routes/upload.tsx",
+      "line": 128,
+      "key": "upload.allowedTypes"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 132,
+      "key": "upload.fileTooLarge"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 140,
+      "key": "upload.thumbnailImage"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 141,
+      "key": "upload.thumbnailTooLarge"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 169,
+      "key": "upload.checkingVideo"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 205,
+      "key": "upload.videoBlocked"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 205,
+      "key": "upload.imageBlocked"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 211,
+      "key": "upload.success"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 215,
+      "key": "upload.failed"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 227,
+      "key": "common.loading"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 246,
+      "key": "common.upload"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 247,
+      "key": "upload.help"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 252,
+      "key": "common.close"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 268,
+      "key": "upload.gallery"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 269,
+      "key": "upload.pickVideo"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 276,
+      "key": "upload.record"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 277,
+      "key": "upload.openCamera"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 285,
+      "key": "upload.choosePhoto"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 287,
+      "key": "upload.sizeHelp"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 309,
+      "key": "common.preview"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 314,
+      "key": "common.remove"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 322,
+      "key": "common.moreOptions"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 329,
+      "key": "media.thumbnail"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 330,
+      "key": "upload.thumbnailSet"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 390,
+      "key": "media.title"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 395,
+      "key": "upload.titlePlaceholder"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 411,
+      "key": "common.uploading"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 431,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 431,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 446,
+      "key": "upload.visibility"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 449,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 449,
+      "key": "upload.anyone"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 450,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 450,
+      "key": "upload.onlyYou"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 481,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 494,
+      "key": "upload.progress"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 496,
+      "key": "common.upload"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 531,
+      "key": "common.close"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 538,
+      "key": "common.moreOptions"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 550,
+      "key": "upload.asPublic"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 553,
+      "key": "privacy.public"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 563,
+      "key": "upload.asPrivate"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 566,
+      "key": "privacy.private"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 573,
+      "key": "common.upload"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 575,
+      "key": "common.upload"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 595,
+      "key": "common.edit"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 599,
+      "key": "media.caption"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 605,
+      "key": "upload.captionPlaceholder"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 610,
+      "key": "upload.category"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.forYou",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.trending",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.music",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.food",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 621,
+      "key": "upload.category.travel",
+      "domain": "UPLOAD_CATEGORY_KEYS"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 632,
+      "key": "upload.chooseThumbnail"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 639,
+      "key": "upload.uploadThumbnail"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 645,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 655,
+      "key": "upload.cropped"
+    },
+    {
       "file": "src/components/CommentsSheet.tsx",
       "line": 117,
       "key": "comments.signIn"
@@ -740,6 +1035,86 @@
       "file": "src/components/Layout.tsx",
       "line": 539,
       "key": "common.signIn"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 72,
+      "key": "media.post"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 73,
+      "key": "media.checkThisOut"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 75,
+      "key": "share.post"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 93,
+      "key": "media.reportSignIn"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 101,
+      "key": "media.reportFailed"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 103,
+      "key": "media.reportThanks"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 110,
+      "key": "media.deleteConfirm"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 114,
+      "key": "media.deleteFailed"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 116,
+      "key": "media.deleted"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 150,
+      "key": "common.share"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 154,
+      "key": "common.edit"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 161,
+      "key": "common.report"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 165,
+      "key": "common.delete"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 174,
+      "key": "common.cancel"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 182,
+      "key": "media.post"
+    },
+    {
+      "file": "src/components/MediaActions.tsx",
+      "line": 183,
+      "key": "media.checkThisOut"
     },
     {
       "file": "src/components/PostPrivacySettings.tsx",
@@ -6304,119 +6679,7 @@
     },
     {
       "file": "src/components/MediaActions.tsx",
-      "line": 70,
-      "kind": "literal-candidate",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 71,
-      "kind": "literal-candidate",
-      "text": "Check this out",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 73,
-      "kind": "literal-candidate",
-      "text": "Share post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 91,
-      "kind": "feedback-candidate",
-      "text": "Please sign in to report",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 99,
-      "kind": "feedback-candidate",
-      "text": "Couldn't submit report. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 101,
-      "kind": "feedback-candidate",
-      "text": "Thanks — we'll review this post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 108,
-      "kind": "literal-candidate",
-      "text": "Delete this post? This cannot be undone.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 112,
-      "kind": "feedback-candidate",
-      "text": "Couldn't delete. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 114,
-      "kind": "feedback-candidate",
-      "text": "Post deleted",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 148,
-      "kind": "ui-attribute",
-      "text": "Share",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 152,
-      "kind": "ui-attribute",
-      "text": "Edit",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 159,
-      "kind": "ui-attribute",
-      "text": "Report",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 163,
-      "kind": "ui-attribute",
-      "text": "Delete",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 172,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 180,
-      "kind": "literal-candidate",
-      "text": "Post",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 181,
-      "kind": "literal-candidate",
-      "text": "Check this out",
-      "review": "pending"
-    },
-    {
-      "file": "src/components/MediaActions.tsx",
-      "line": 207,
+      "line": 209,
       "kind": "literal-candidate",
       "text": "w-full flex items-center gap-3 px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 {value1}",
       "review": "pending"
@@ -12537,6 +12800,13 @@
       "line": 41,
       "kind": "literal-candidate",
       "text": "@capacitor/preferences",
+      "review": "pending"
+    },
+    {
+      "file": "src/lib/upload-localization.ts",
+      "line": 3,
+      "kind": "literal-candidate",
+      "text": "For You",
       "review": "pending"
     },
     {
@@ -23013,422 +23283,156 @@
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 45,
+      "line": 21,
       "kind": "literal-candidate",
-      "text": "image/jpeg",
+      "text": "Upload photos and videos | VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 54,
+      "line": 22,
       "kind": "literal-candidate",
-      "text": "For You",
+      "text": "Share photos and videos with the VIP Life community.",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 54,
+      "line": 23,
       "kind": "literal-candidate",
-      "text": "Trending",
+      "text": "og:title",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 54,
+      "line": 23,
       "kind": "literal-candidate",
-      "text": "Music",
+      "text": "Upload photos and videos | VIP Life",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 54,
+      "line": 24,
       "kind": "literal-candidate",
-      "text": "Food",
+      "text": "og:description",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 54,
+      "line": 24,
       "kind": "literal-candidate",
-      "text": "Travel",
+      "text": "Share photos and videos with the VIP Life community.",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 56,
+      "line": 25,
       "kind": "literal-candidate",
-      "text": "video/",
+      "text": "og:type",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 26,
+      "kind": "literal-candidate",
+      "text": "twitter:card",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
       "line": 57,
       "kind": "literal-candidate",
+      "text": "image/jpeg",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 68,
+      "kind": "literal-candidate",
+      "text": "video/",
+      "review": "pending"
+    },
+    {
+      "file": "src/routes/upload.tsx",
+      "line": 69,
+      "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 70,
+      "line": 83,
       "kind": "literal-candidate",
       "text": "For You",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 115,
-      "kind": "feedback-candidate",
-      "text": "Only images and videos are allowed",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 119,
-      "kind": "feedback-candidate",
-      "text": "File must be under 500MB",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 127,
+      "line": 140,
       "kind": "literal-candidate",
       "text": "image/",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 127,
-      "kind": "feedback-candidate",
-      "text": "Thumbnail must be an image",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 128,
-      "kind": "feedback-candidate",
-      "text": "Thumbnail must be under 10MB",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 142,
+      "line": 155,
       "kind": "literal-candidate",
       "text": "{value1}/{value2}.{value3}",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 156,
-      "kind": "feedback-candidate",
-      "text": "Checking video…",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 159,
+      "line": 172,
       "kind": "literal-candidate",
       "text": "{value1}/thumbs/{value2}-frame.jpg",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 160,
+      "line": 173,
       "kind": "literal-candidate",
       "text": "image/jpeg",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 169,
+      "line": 182,
       "kind": "literal-candidate",
       "text": "{value1}/thumbs/{value2}.{value3}",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 192,
-      "kind": "feedback-candidate",
-      "text": "Your {value1} was blocked by our safety filter ({value2}). It's saved for admin review — you'll be notified if approved.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 198,
-      "kind": "feedback-candidate",
-      "text": "Uploaded!",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 202,
-      "kind": "feedback-candidate",
-      "text": "Upload failed. Please try again.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 214,
-      "kind": "jsx-text",
-      "text": "Loading...",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 233,
-      "kind": "jsx-text",
-      "text": "Upload",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 234,
-      "kind": "jsx-text",
-      "text": "Share a photo or video with the community.",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 239,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 255,
-      "kind": "jsx-text",
-      "text": "Gallery",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 256,
-      "kind": "jsx-text",
-      "text": "Pick a video",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 263,
-      "kind": "jsx-text",
-      "text": "Record",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 264,
-      "kind": "jsx-text",
-      "text": "Open camera",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 272,
-      "kind": "jsx-text",
-      "text": "Or choose a photo",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 274,
-      "kind": "jsx-text",
-      "text": "Images or videos · up to 500MB",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 296,
-      "kind": "ui-attribute",
-      "text": "preview",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 301,
-      "kind": "ui-attribute",
-      "text": "Remove",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 309,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 316,
-      "kind": "ui-attribute",
-      "text": "thumb",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 317,
-      "kind": "jsx-text",
-      "text": "Thumbnail set",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 323,
+      "line": 336,
       "kind": "jsx-text",
       "text": "MB",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 377,
-      "kind": "jsx-text",
-      "text": "Title",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 382,
-      "kind": "ui-attribute",
-      "text": "Give your video a title...",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 398,
-      "kind": "jsx-text",
-      "text": "Uploading…",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 433,
-      "kind": "jsx-text",
-      "text": "Who can see this?",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 436,
-      "kind": "literal-candidate",
-      "text": "Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 436,
-      "kind": "literal-candidate",
-      "text": "Anyone on VIP Life",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 437,
-      "kind": "literal-candidate",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 437,
-      "kind": "literal-candidate",
-      "text": "Only you",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 448,
+      "line": 461,
       "kind": "literal-candidate",
       "text": "h-9 w-9 rounded-full flex items-center justify-center {value1}",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 448,
+      "line": 461,
       "kind": "literal-candidate",
       "text": "bg-indigo-50 text-indigo-600",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 448,
+      "line": 461,
       "kind": "literal-candidate",
       "text": "bg-slate-100 text-slate-500",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 452,
+      "line": 465,
       "kind": "literal-candidate",
       "text": "text-sm font-semibold {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 468,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 481,
-      "kind": "jsx-text",
-      "text": "Uploading",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 483,
-      "kind": "jsx-text",
-      "text": "Upload",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 518,
-      "kind": "ui-attribute",
-      "text": "Close",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 525,
-      "kind": "ui-attribute",
-      "text": "More options",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 534,
-      "kind": "literal-candidate",
-      "text": "inline-flex items-center gap-1 px-3 py-2.5 text-xs font-semibold transition disabled:opacity-50 {value1}",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 535,
-      "kind": "literal-candidate",
-      "text": "bg-white/25 text-white",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 535,
-      "kind": "literal-candidate",
-      "text": "text-indigo-100 hover:bg-white/10",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 537,
-      "kind": "ui-attribute",
-      "text": "Upload as Public",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 540,
-      "kind": "jsx-text",
-      "text": "Public",
       "review": "pending"
     },
     {
@@ -23454,107 +23458,44 @@
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 550,
-      "kind": "ui-attribute",
-      "text": "Upload as Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 553,
-      "kind": "jsx-text",
-      "text": "Private",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
       "line": 560,
-      "kind": "ui-attribute",
-      "text": "Upload",
+      "kind": "literal-candidate",
+      "text": "inline-flex items-center gap-1 px-3 py-2.5 text-xs font-semibold transition disabled:opacity-50 {value1}",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 562,
-      "kind": "jsx-text",
-      "text": "Upload",
+      "line": 561,
+      "kind": "literal-candidate",
+      "text": "bg-white/25 text-white",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 582,
-      "kind": "jsx-text",
-      "text": "Edit",
+      "line": 561,
+      "kind": "literal-candidate",
+      "text": "text-indigo-100 hover:bg-white/10",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 586,
-      "kind": "jsx-text",
-      "text": "Caption",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 592,
-      "kind": "ui-attribute",
-      "text": "Say something about it...",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 597,
-      "kind": "jsx-text",
-      "text": "Category",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 604,
+      "line": 617,
       "kind": "literal-candidate",
       "text": "px-3 py-1.5 rounded-full text-xs font-semibold transition {value1}",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 605,
+      "line": 618,
       "kind": "literal-candidate",
       "text": "bg-indigo-600 text-white",
       "review": "pending"
     },
     {
       "file": "src/routes/upload.tsx",
-      "line": 605,
+      "line": 618,
       "kind": "literal-candidate",
       "text": "bg-slate-100 text-slate-600 active:bg-slate-200",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 619,
-      "kind": "jsx-text",
-      "text": "Choose thumbnail from video",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 626,
-      "kind": "jsx-text",
-      "text": "Upload thumbnail image",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 632,
-      "kind": "jsx-text",
-      "text": "Cancel",
-      "review": "pending"
-    },
-    {
-      "file": "src/routes/upload.tsx",
-      "line": 642,
-      "kind": "feedback-candidate",
-      "text": "Video cropped — ready to upload",
       "review": "pending"
     },
     {
