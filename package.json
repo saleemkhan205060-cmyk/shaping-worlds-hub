@@ -17,7 +17,15 @@
     "cap:sync": "npx cap sync",
     "cap:android": "npx cap open android",
     "cap:build:android": "npx cap build android",
-    "android:bundle": "bun run build:capacitor && npx cap sync android && cd android && ./gradlew bundleRelease"
+    "android:bundle": "bun run build:capacitor && npx cap sync android && cd android && ./gradlew bundleRelease",
+    "capacitor:sync:after": "node node_modules/capacitor-admob-nextgen/scripts/admob-manifest.js && node node_modules/capacitor-admob-nextgen/scripts/admob-native.js"
+  },
+  "admob": {
+    "androidAppId": "ca-app-pub-2264861631936875~5611565031",
+    "enableNativeAds": {
+      "android": true,
+      "ios": false
+    }
   },
   "dependencies": {
     "@capacitor/android": "^8.3.4",
@@ -28,6 +36,7 @@
     "@capacitor/preferences": "^8",
     "@capacitor/push-notifications": "^8.1.1",
     "@capacitor/share": "^8.0.1",
+    "capacitor-admob-nextgen": "^1.2.9",
     "@capgo/capacitor-social-login": "^8.4.4",
     "@cloudflare/vite-plugin": "^1.42.3",
     "@hookform/resolvers": "^5.2.2",
