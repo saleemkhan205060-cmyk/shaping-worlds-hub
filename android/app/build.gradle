@@ -100,9 +100,6 @@ configurations.configureEach {
     // pulls in the AD_ID permission) stay out of the merged manifest entirely.
     // Firebase Analytics itself is allowed — it needs the measurement modules,
     // and without play-services-ads-identifier it cannot collect an ad ID.
-    exclude group: 'com.google.android.gms', module: 'play-services-ads'
-    exclude group: 'com.google.android.gms', module: 'play-services-ads-identifier'
-    exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
 }
 
 dependencies {
