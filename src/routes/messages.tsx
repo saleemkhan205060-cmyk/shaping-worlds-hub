@@ -1415,16 +1415,6 @@ function Messages() {
                     )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-800 truncate">
-                      {pending.file.name}
-                    </p>
-
-                    <p className="text-xs text-slate-500">
-                      {t("msg.previewBefore", { size: (pending.file.size / 1024).toFixed(1) })}
-                    </p>
-                  </div>
-
                   <button
                     type="button"
                     onClick={cancelPending}
@@ -2064,198 +2054,57 @@ function MessageAttachment({
 
   const downloadFile = async () => {
     if (!url) {
-      toast.error(
-        t("msg.imageNotReady"),
-      );
+      toast.error(t("msg.imageNotReady"));
       return;
     }
 
     const filename = (
-      fname ||
-      `image-${Date.now()}.${ext || "jpg"}`
-    ).replace(
-      /[^a-z0-9._-]/gi,
-      "-",
-    );
+      fname || `image-${Date.now()}.${ext || "jpg"}`
+    ).replace(/[^a-z0-9._-]/gi, "-");
 
     try {
-      const {
-        data: signedDownload,
-      } = await supabase.storage
+      const { data, error } = await supabase.storage
         .from("message-media")
-        .createSignedUrl(
-          path,
-          120,
-          {
-            download: filename,
-          },
-        );
+        .createSignedUrl(path, 120, {
+          download: filename,
+        });
 
-      const downloadUrl =
-        signedDownload?.signedUrl ||
-        url;
-
-      const res = await fetch(
-        downloadUrl,
-        {
-          cache: "no-store",
-        },
-      );
-
-      if (!res.ok) {
-        throw new Error(
-          "fetch failed",
-        );
+      if (error || !data?.signedUrl) {
+        throw new Error("Download URL unavailable");
       }
 
-      const blob = await res.blob();
+      if (Capacitor.isNativePlatform()) {
+        const { Filesystem, Directory } =
+          await import("@capacitor/filesystem");
 
-      const file = new File(
-        [blob],
-        filename,
-        {
-          type:
-            blob.type ||
-            `image/${
-              ext === "jpg"
-                ? "jpeg"
-                : ext || "jpeg"
-            }`,
-        },
-      );
+        const response = await fetch(data.signedUrl);
+        if (!response.ok) throw new Error("Download failed");
 
-      if (
-        Capacitor.isNativePlatform()
-      ) {
-        const [
-          { Filesystem, Directory },
-          { Share },
-        ] = await Promise.all([
-          import("@capacitor/filesystem"),
-          import("@capacitor/share"),
-        ]);
-
-        const base64 =
-          await blobToBase64(
-            blob,
-          );
-
-        const cachePath = `downloads/${Date.now()}-${filename}`;
+        const blob = await response.blob();
+        const base64 = await blobToBase64(blob);
 
         await Filesystem.writeFile({
-          path: cachePath,
+          path: filename,
           data: base64,
-          directory:
-            Directory.Cache,
+          directory: Directory.Documents,
           recursive: true,
         });
 
-        const { uri } =
-          await Filesystem.getUri({
-            path: cachePath,
-            directory:
-              Directory.Cache,
-          });
-
-        await Share.share({
-          title: filename,
-          text: t("msg.saveImage"),
-          files: [uri],
-          url: uri,
-          dialogTitle:
-            t("msg.saveImage"),
-        });
-
+        toast.success(t("msg.downloadStarted"));
         return;
       }
 
-      const mobileWeb =
-        /Android|iPhone|iPad|iPod/i.test(
-          navigator.userAgent,
-        );
-
-      const webShare =
-        navigator as Navigator & {
-          canShare?: (
-            data: ShareData,
-          ) => boolean;
-          share?: (
-            data: ShareData,
-          ) => Promise<void>;
-        };
-
-      const sharePayload = {
-        files: [file],
-        title: filename,
-        text: t("msg.saveImage"),
-      } as ShareData;
-
-      if (
-        mobileWeb &&
-        webShare.share &&
-        webShare.canShare?.(
-          sharePayload,
-        )
-      ) {
-        await webShare.share(
-          sharePayload,
-        );
-        return;
-      }
-
-      const objUrl =
-        URL.createObjectURL(blob);
-
-      const a =
-        document.createElement(
-          "a",
-        );
-
-      a.href = objUrl;
+      const a = document.createElement("a");
+      a.href = data.signedUrl;
       a.download = filename;
       a.rel = "noopener";
-      a.target = "_blank";
-
       document.body.appendChild(a);
       a.click();
       a.remove();
 
-      setTimeout(
-        () =>
-          URL.revokeObjectURL(
-            objUrl,
-          ),
-        2000,
-      );
-
-      toast.success(
-        t("msg.downloadStarted"),
-      );
+      toast.success(t("msg.downloadStarted"));
     } catch {
-      try {
-        const {
-          data: fallbackDownload,
-        } = await supabase.storage
-          .from("message-media")
-          .createSignedUrl(
-            path,
-            120,
-            {
-              download: filename,
-            },
-          );
-
-        window.open(
-          fallbackDownload?.signedUrl ||
-            url,
-          "_blank",
-          "noopener,noreferrer",
-        );
-      } catch {
-        toast.error(
-          t("msg.downloadFailed"),
-        );
-      }
+      toast.error(t("msg.downloadFailed"));
     }
   };
 
@@ -2386,9 +2235,7 @@ function MessageAttachment({
             <div
               role="dialog"
               aria-modal="true"
-              onClick={() =>
-                setOpen(false)
-              }
+              onClick={() => setOpen(false)}
               className="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4"
             >
               <div className="media-actions max-w-full max-h-full touch-manipulation">
@@ -2397,9 +2244,7 @@ function MessageAttachment({
                   alt="attachment full size"
                   draggable={false}
                   className="max-w-full max-h-full object-contain select-none"
-                  onClick={(e) =>
-                    e.stopPropagation()
-                  }
+                  onClick={(e) => e.stopPropagation()}
                   onContextMenu={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -2452,15 +2297,11 @@ function MessageAttachment({
           {menuOpen && (
             <div
               className="fixed inset-0 z-[400] bg-black/60 flex items-end sm:items-center justify-center"
-              onClick={() =>
-                setMenuOpen(false)
-              }
+              onClick={() => setMenuOpen(false)}
             >
               <div
                 className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-xl"
-                onClick={(e) =>
-                  e.stopPropagation()
-                }
+                onClick={(e) => e.stopPropagation()}
               >
                 <button
                   type="button"
@@ -2468,7 +2309,7 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void copyImage();
                   }}
-                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
                   {t("msg.copy")}
                 </button>
@@ -2479,7 +2320,7 @@ function MessageAttachment({
                     setMenuOpen(false);
                     onReply();
                   }}
-                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
                   {t("msg.reply")}
                 </button>
@@ -2490,9 +2331,51 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void downloadFile();
                   }}
-                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
                 >
                   {t("msg.download")}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setMenuOpen(false);
+
+                    if (!url) {
+                      toast.error(t("msg.imageNotReady"));
+                      return;
+                    }
+
+                    try {
+                      if (Capacitor.isNativePlatform()) {
+                        const { Share } = await import("@capacitor/share");
+
+                        await Share.share({
+                          title: fname,
+                          url,
+                          dialogTitle: t("msg.share"),
+                        });
+                      } else if (navigator.share) {
+                        await navigator.share({
+                          title: fname,
+                          url,
+                        });
+                      } else {
+                        await navigator.clipboard.writeText(url);
+                        toast.success(t("msg.linkCopied"));
+                      }
+                    } catch (error) {
+                      if (
+                        error instanceof Error &&
+                        error.name !== "AbortError"
+                      ) {
+                        toast.error(t("msg.copyFailed"));
+                      }
+                    }
+                  }}
+                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-slate-800"
+                >
+                  {t("msg.share")}
                 </button>
 
                 <button
@@ -2501,17 +2384,15 @@ function MessageAttachment({
                     setMenuOpen(false);
                     void deleteMessage();
                   }}
-                   className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
+                  className="w-full px-5 py-4 text-left text-sm font-semibold border-b border-slate-100 active:bg-slate-100 text-rose-600"
                 >
                   {t("msg.delete")}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
-                   className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full py-3 text-sm font-semibold text-slate-600 active:bg-slate-50"
                 >
                   {t("common.cancel")}
                 </button>
