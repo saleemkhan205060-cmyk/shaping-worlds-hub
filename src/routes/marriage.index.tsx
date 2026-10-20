@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   Briefcase,
@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { MarriageAlbum } from "@/components/MarriageAlbum";
+import { nativeAdsAvailable, registerNativeAdSlot } from "@/lib/native-ad";
 export const Route = createFileRoute("/marriage/")({
   component: MarriagePage,
   validateSearch: (s: Record<string, unknown>) =>
