@@ -11,3 +11,6 @@
 - Record dynamic translation-key patterns separately in the source inventory and expand them in the review pack; preset IDs must remain unchanged and every permitted key domain still requires explicit verification.
 - Keep upload category display keys in a browser-safe mapping separate from canonical post values; translating labels must never change stored categories.
 - Keep compact feed elapsed-time selection in a tested browser-safe helper; localization must preserve its existing thresholds and never rewrite post timestamps.
+# Native ads
+
+- AdMob native ads render only in the Android shell via `src/lib/native-ad.ts`: the capacitor-admob-nextgen overlay is positioned over placeholder slots (e.g. every 6 Marriage cards) and hidden off-screen; web/SSR never loads the plugin or renders placeholders, guarded by `hasNativePlugin("AdMobNextGen")`.
