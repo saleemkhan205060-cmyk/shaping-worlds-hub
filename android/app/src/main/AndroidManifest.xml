@@ -76,9 +76,7 @@
             android:name="google_analytics_ssaid_collection_enabled"
             android:value="false" />
           <!-- AdMob App ID -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2264861631936875~5611565031" />
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-2264861631936875~5611565031" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
