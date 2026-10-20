@@ -20,6 +20,10 @@
 		"classpath": "com.capacitorjs.plugins.share.SharePlugin"
 	},
 	{
+		"pkg": "capacitor-admob-nextgen",
+		"classpath": "com.emi.plugins.admob.AdMobNextGenPlugin"
+	},
+	{
 		"pkg": "@capgo/capacitor-social-login",
 		"classpath": "ee.forgr.capacitor.social.login.SocialLoginPlugin"
 	}
