@@ -102,6 +102,12 @@ function MarriagePage() {
   const [interestCount, setInterestCount] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
   const [interestedUsers, setInterestedUsers] = useState<Profile[]>([]);
+  // Native AdMob slots render only inside the installed Android app. Starts
+  // false so SSR and the website never render an ad placeholder.
+  const [adsEnabled, setAdsEnabled] = useState(false);
+  useEffect(() => {
+    setAdsEnabled(nativeAdsAvailable());
+  }, []);
   useEffect(() => {
   if (!user) {
     setInterestCount(0);
