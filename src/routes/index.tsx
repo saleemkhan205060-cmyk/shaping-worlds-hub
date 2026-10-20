@@ -67,7 +67,7 @@ function Index() {
     />
    <Link
     to="/marriage"
-  className="absolute bottom-0 left-2 inline-flex items-center gap-1 rounded-full border-2 border-[#19D66B] bg-[#003D25] px-3 py-1 text-[12px] font-extrabold text-[#7CFF3B] shadow-[0_0_8px_rgba(25,214,107,0.6)] sm:bottom-2 sm:left-3"
+  className="absolute bottom-0 left-2 inline-flex items-center gap-1 rounded-full border-2 border-[#19D66B] bg-[#003D25] px-3 py-0.5 text-[12px] font-extrabold text-[#7CFF3B] shadow-[0_0_8px_rgba(25,214,107,0.6)] sm:bottom-2 sm:left-3"
   >
    Find Your Partner
     <ArrowRight className="h-4 w-4 text-[#7CFF3B]" />
