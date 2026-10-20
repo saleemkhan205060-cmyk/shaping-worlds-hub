@@ -638,7 +638,7 @@ function NativeAdSlot({ id }: { id: string }) {
   return (
     <div
       ref={ref}
-      className="col-span-1 flex h-[132px] w-full items-center justify-center rounded-[16px] border border-[#086B43] bg-[#005A35]"
+      className="col-span-1 flex h-[280px] w-full items-center justify-center rounded-[16px] border border-[#086B43] bg-[#005A35]"
     >
       <span className="text-[10px] uppercase tracking-widest text-white/50">Ad</span>
     </div>
