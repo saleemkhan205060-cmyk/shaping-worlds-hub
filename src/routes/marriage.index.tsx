@@ -591,9 +591,9 @@ useEffect(() => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
-                  {filtered.map((card) => (
+                  {filtered.map((card, index) => (
+                  <Fragment key={card.user_id}>
                   <ProfileCard
-                   key={card.user_id}
                     card={card}
                     onOpen={() => {
                     setSelectedId(card.user_id);
@@ -602,6 +602,10 @@ useEffect(() => {
                     interestCount={interestCount}
                     onInterestClick={() => setInterestOpen(true)}
                    />
+                   {adsEnabled && (index + 1) % 6 === 0 && index + 1 < filtered.length ? (
+                     <NativeAdSlot id={`marriage-ad-${index + 1}`} />
+                   ) : null}
+                  </Fragment>
                   ))}
                 </div>
               )}
