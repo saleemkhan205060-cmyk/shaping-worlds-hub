@@ -61,7 +61,7 @@ function Index() {
     className="relative block mx-[-8px] w-[calc(100%+16px)] overflow-hidden rounded-2xl border border-[#19D66B]/60"
   >
     <img
-      src="/kkk23.jpg"
+      src="/benner%201.jpeg"
       alt="Find Your Life Partner"
       className="block aspect-[3.26/1] w-full object-cover"
     />
