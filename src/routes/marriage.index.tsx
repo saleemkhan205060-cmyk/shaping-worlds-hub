@@ -617,6 +617,34 @@ useEffect(() => {
   );
 }
 
+/**
+ * Placeholder for a native AdMob overlay. Rendered only in the Android app;
+ * the native ad view is positioned over this box by the overlay manager and
+ * hidden when the box scrolls off screen.
+ */
+function NativeAdSlot({ id }: { id: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    return registerNativeAdSlot({
+      id,
+      getRect: () => {
+        const rect = el.getBoundingClientRect();
+        return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+      },
+    });
+  }, [id]);
+  return (
+    <div
+      ref={ref}
+      className="col-span-2 flex h-[132px] items-center justify-center rounded-[16px] border border-[#086B43] bg-[#005A35]"
+    >
+      <span className="text-[10px] uppercase tracking-widest text-white/50">Ad</span>
+    </div>
+  );
+}
+
 function ProfileCard({
    card,
      onOpen,
