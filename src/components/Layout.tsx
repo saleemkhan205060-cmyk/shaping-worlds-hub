@@ -449,8 +449,8 @@ export function Layout({
        </div>
           </div>
             <div className="leading-tight hidden xs:block sm:block">
-              <div className="font-extrabold text-base tracking-tight">VIP</div>
-              <div className="font-extrabold text-base -mt-1 bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
+              <div className="font-extrabold text-base tracking-tight text-[#19D66B]">VIP</div>
+              <div className="font-extrabold text-base -mt-1 text-white">
                 LIFE
               </div>
             </div>
