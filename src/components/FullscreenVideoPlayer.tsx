@@ -4,6 +4,7 @@ import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import {
   X,
+  ChevronLeft,
   Heart,
   MessageCircle,
   Plus,
