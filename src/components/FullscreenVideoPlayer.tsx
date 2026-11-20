@@ -438,13 +438,13 @@ setTimeout(() => {
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
         style={{ scrollbarWidth: "none" }}
       >
-        <button
-  onClick={handleClose}
-  className="fixed top-4 left-3 z-30 h-10 w-10 rounded-full flex items-center justify-center text-white active:scale-95"
-  aria-label={t("player.back")}
->
-  <span className="text-4xl">←</span>
-</button>
+       <button
+    onClick={handleClose}
+  className="fixed top-4 left-3 z-30 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white active:scale-95 transition"
+   aria-label={t("player.back")}
+    >
+     <span className="text-2xl leading-none">←</span>
+       </button>
         {items.map((it, i) => {
           const isActive = it.id === activeId;
           const shouldMountMedia = Math.abs(i - activeIndex) <= 1;
