@@ -1019,7 +1019,13 @@ function UserProfile() {
                           loading="lazy"
                         />
                       ) : (
-                        <span className="absolute inset-0 bg-slate-900" aria-hidden="true" />
+                        <video
+                          src={p.media_url ? (p.media_url.includes("#") ? p.media_url : `${p.media_url}#t=0.001`) : undefined}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-cover pointer-events-none bg-slate-900"
+                        />
                       )}
                       <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition">
                         <span className="h-12 w-12 rounded-full bg-black/60 flex items-center justify-center">
