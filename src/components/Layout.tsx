@@ -486,8 +486,8 @@ export function Layout({
               params={item.to === "/u/$id" && userId ? { id: userId } : undefined}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               active
-           ? "text-indigo-600 bg-indigo-50"
-          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+           ? "text-[#19D66B] bg-[#005A35]"
+          : "text-white hover:text-[#19D66B] hover:bg-[#005A35]"
           }`}
           >
           {t(item.labelKey)}
