@@ -1198,6 +1198,17 @@ export type Database = {
           post_id: string
         }[]
       }
+      get_public_marriage_profiles: {
+        Args: { p_limit?: number }
+        Returns: {
+          age: number
+          country: string
+          display_name: string
+          gender: string
+          id: string
+          photo_url: string
+        }[]
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
