@@ -87,12 +87,21 @@ type Profile = {
 };
 
 type Card = MarriageRow & { profile: Profile | null };
+type PublicMarriageCard = {
+  id: string;
+  photo_url: string | null;
+  display_name: string;
+  age: number | null;
+  gender: string | null;
+  country: string | null;
+};
 
 function MarriagePage() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { profile } = Route.useSearch();
   const [cards, setCards] = useState<Card[]>([]);
+  const [publicCards, setPublicCards] = useState<PublicMarriageCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -170,47 +179,90 @@ useEffect(() => {
   if (authLoading) return;
 
   let alive = true;
-  void (async () => {
-      setLoading(true);
-      const { data: mp } = await supabase
-        .from("marriage_profiles")
-        .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations, pref_income, pref_height, pref_religion, pref_city, pref_nationality, pref_marital_status")
-        .order("created_at", { ascending: false })
-        .limit(100);
-      const rows = (mp ?? []) as MarriageRow[];
-     const sortedRows = user
-  ? [
-      ...rows.filter((row) => row.user_id === user.id),
-      ...rows.filter((row) => row.user_id !== user.id),
-    ]
-  : rows;
-      const ids = sortedRows.map((row) => row.user_id);
-      const profileMap: Record<string, Profile> = {};
 
-      if (ids.length) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("id, display_name, username, avatar_url")
-          .in("id", ids);
-        for (const profile of profiles ?? []) profileMap[profile.id] = profile;
+  const loadProfiles = async () => {
+    setLoading(true);
+
+    if (!user) {
+      setCards([]);
+      setPublicCards([]);
+      setSelectedId(null);
+
+      if (profile) {
+        setLoading(false);
+        navigate({ to: "/auth" });
+        return;
       }
+
+      const { data, error } = await supabase.rpc(
+        "get_public_marriage_profiles",
+        { p_limit: 100 }
+      );
 
       if (!alive) return;
-      setCards(
-     sortedRows.map((row) => ({
-    ...row,
-    profile: profileMap[row.user_id] ?? null,
-     }))
-   );
+
+      if (error) {
+        console.error("Public profiles error:", error);
+        setPublicCards([]);
+      } else {
+        setPublicCards((data ?? []) as PublicMarriageCard[]);
+      }
+
+      setLoading(false);
+      return;
+    }
+
+    setPublicCards([]);
+
+    const { data: mp } = await supabase
+      .from("marriage_profiles")
+      .select("user_id, marriage_avatar_url, age, gender, looking_for, country, profession, marital_status, religion, about, date_of_birth, height, mother_tongue, city, living_in, nationality, education, company, income, family_type, family_values, siblings, family_location, smoking, drinking, diet, hobbies, pref_age, pref_location, pref_education, pref_profession, other_expectations, pref_income, pref_height, pref_religion, pref_city, pref_nationality, pref_marital_status")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    const rows = (mp ?? []) as MarriageRow[];
+
+    const sortedRows = [
+      ...rows.filter((row) => row.user_id === user.id),
+      ...rows.filter((row) => row.user_id !== user.id),
+    ];
+
+    const ids = sortedRows.map((row) => row.user_id);
+    const profileMap: Record<string, Profile> = {};
+
+    if (ids.length) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, display_name, username, avatar_url")
+        .in("id", ids);
+
+      for (const item of profiles ?? []) {
+        profileMap[item.id] = item;
+      }
+    }
+
+    if (!alive) return;
+
+    setCards(
+      sortedRows.map((row) => ({
+        ...row,
+        profile: profileMap[row.user_id] ?? null,
+      }))
+    );
+
     if (profile && sortedRows.some((row) => row.user_id === profile)) {
       setSelectedId(profile);
-      }
-      setLoading(false);
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [authLoading, user?.id, profile]);
+    }
+
+    setLoading(false);
+  };
+
+  void loadProfiles();
+
+  return () => {
+    alive = false;
+  };
+}, [authLoading, user?.id, profile]);
 
   const filtered = cards.filter((card) => {
     if (!q.trim()) return true;
@@ -223,7 +275,16 @@ useEffect(() => {
       String(card.age ?? "").includes(search)
     );
   });
-
+ const publicFiltered = publicCards.filter((card) => {
+    if (!q.trim()) return true;
+    const search = q.toLowerCase();
+    return (
+      card.display_name.toLowerCase().includes(search) ||
+      (card.country ?? "").toLowerCase().includes(search) ||
+      String(card.age ?? "").includes(search) ||
+      (card.gender ?? "").toLowerCase().includes(search)
+    );
+  });
   const openChat = (peerId: string) => {
     if (!user) {
       navigate({ to: "/auth" });
@@ -584,7 +645,41 @@ useEffect(() => {
                 <div className="flex justify-center py-16 text-[#7CFF3B]">
                   <Loader2 className="h-6 w-6 animate-spin" />
                 </div>
-              ) : filtered.length === 0 ? (
+              ) : !user ? (
+  publicFiltered.length === 0 ? (
+    <div className="py-16 text-center text-white/80">
+      <p className="font-semibold">No marriage profiles yet.</p>
+    </div>
+  ) : (
+    <div className="grid grid-cols-2 gap-2">
+      {publicFiltered.map((card) => (
+        <article
+          key={card.id}
+          onClick={() => navigate({ to: "/auth" })}
+          className="cursor-pointer rounded-[16px] border border-[#086B43] bg-[#005A35] p-2 shadow-sm"
+        >
+          <div className="relative aspect-[1.38/1] overflow-hidden rounded-[12px] bg-[#007A49]">
+            <AvatarImg
+              src={card.photo_url}
+              alt={card.display_name}
+              fallback={card.display_name}
+              className="h-full w-full object-cover text-2xl"
+            />
+          </div>
+          <div className="px-0.5 pb-0.5 pt-2">
+            <h3 className="font-bold">{card.display_name}</h3>
+            <p className="text-sm">Age: {card.age ?? "—"}</p>
+            <p className="text-sm">{card.gender ?? "—"}</p>
+            <p className="text-sm">{card.country ?? "—"}</p>
+            <button type="button" className="mt-2 w-full rounded-lg bg-[#19D66B] py-2 font-semibold text-[#003D25]">
+              View Profile
+            </button>
+          </div>
+        </article>
+      ))}
+    </div>
+  )
+) : filtered.length === 0 ? (
                 <div className="py-16 text-center text-white/80">
                   <p className="font-semibold">No marriage profiles yet.</p>
                   <p className="mt-1 text-sm text-white/70">Be the first — create your profile.</p>
