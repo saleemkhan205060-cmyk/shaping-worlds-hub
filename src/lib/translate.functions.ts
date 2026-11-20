@@ -1,12 +1,40 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const LANG_NAMES: Record<string, string> = {
-  en: "English", es: "Spanish", fr: "French", pt: "Portuguese", de: "German",
-  it: "Italian", ar: "Arabic", ur: "Urdu", hi: "Hindi", bn: "Bengali",
-  tr: "Turkish", ru: "Russian", zh: "Simplified Chinese", ja: "Japanese",
-  ko: "Korean", id: "Indonesian", sw: "Swahili",
-};
+const LANG_NAMES = {
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  pt: "Portuguese",
+  de: "German",
+  it: "Italian",
+  ar: "Arabic",
+  ur: "Urdu",
+  hi: "Hindi",
+  bn: "Bengali",
+  tr: "Turkish",
+  ru: "Russian",
+  zh: "Simplified Chinese",
+  ja: "Japanese",
+  ko: "Korean",
+  id: "Indonesian",
+  sw: "Swahili",
+} as const;
+
+type SupportedTarget = keyof typeof LANG_NAMES;
+
+const SYSTEM_PROMPTS: ReadonlyMap<SupportedTarget, string> = new Map(
+  (Object.entries(LANG_NAMES) as [SupportedTarget, string][]).map(([code, name]) => [
+    code,
+    `You are a UI string translator. Translate each string in the input JSON array into ${name}. ` +
+      `Keep tone natural and concise for app UI. Preserve punctuation, emojis, numbers, URLs, brand names ("VIP Life"), and any {placeholders}. ` +
+      `Return ONLY a valid JSON array of strings with the SAME length and order. No prose, no code fences.`,
+  ]),
+);
+
+function isSupportedTarget(value: string): value is SupportedTarget {
+  return SYSTEM_PROMPTS.has(value as SupportedTarget);
+}
 
 export const translateBatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -15,7 +43,7 @@ export const translateBatch = createServerFn({ method: "POST" })
     if (!input || !Array.isArray(input.texts) || typeof input.target !== "string") {
       throw new Error("Invalid input");
     }
-    if (input.target.length > 16) throw new Error("Invalid target");
+    if (!isSupportedTarget(input.target)) throw new Error("Unsupported target language");
     if (input.texts.length > 80) throw new Error("Too many strings");
     const texts = input.texts.map((t) => {
       const s = typeof t === "string" ? t : String(t ?? "");
@@ -26,8 +54,9 @@ export const translateBatch = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { texts, target } = data;
     if (target === "en" || !texts.length) return { translations: texts };
-    const language = LANG_NAMES[target] ?? target;
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const systemPrompt = SYSTEM_PROMPTS.get(target);
+    if (!systemPrompt) throw new Error("Unsupported target language");
+    const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) return { translations: texts };
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -41,10 +70,7 @@ export const translateBatch = createServerFn({ method: "POST" })
         messages: [
           {
             role: "system",
-            content:
-              `You are a UI string translator. Translate each string in the input JSON array into ${language}. ` +
-              `Keep tone natural and concise for app UI. Preserve punctuation, emojis, numbers, URLs, brand names ("VIP Life"), and any {placeholders}. ` +
-              `Return ONLY a valid JSON array of strings with the SAME length and order. No prose, no code fences.`,
+            content: systemPrompt,
           },
           { role: "user", content: JSON.stringify(texts) },
         ],

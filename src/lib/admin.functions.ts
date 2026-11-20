@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { z } from "zod";
 
 // Helper: throw if not admin
 async function assertAdmin(supabase: any, userId: string) {
@@ -532,15 +533,52 @@ export const getSettings = createServerFn({ method: "GET" })
     return data;
   });
 
+const updateSettingsInputSchema = z.object({
+  app_name: z.string().max(200).optional(),
+  logo_url: z.string().max(2048).nullable().optional(),
+  banner_url: z.string().max(2048).nullable().optional(),
+  privacy_policy: z.string().max(100000).nullable().optional(),
+  terms: z.string().max(100000).nullable().optional(),
+  maintenance_mode: z.boolean().optional(),
+  contact_email: z.string().max(320).nullable().optional(),
+  contact_phone: z.string().max(64).nullable().optional(),
+});
+
+type UpdateSettingsInput = z.infer<typeof updateSettingsInputSchema>;
+
 export const updateSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: Record<string, unknown>) => d)
+  .inputValidator((d: UpdateSettingsInput) => updateSettingsInputSchema.parse(d))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const patch: {
+      app_name?: string;
+      logo_url?: string | null;
+      banner_url?: string | null;
+      privacy_policy?: string | null;
+      terms?: string | null;
+      maintenance_mode?: boolean;
+      contact_email?: string | null;
+      contact_phone?: string | null;
+      updated_at: string;
+      updated_by: string;
+    } = {
+      updated_at: new Date().toISOString(),
+      updated_by: context.userId,
+    };
+    if (data.app_name !== undefined) patch.app_name = data.app_name;
+    if (data.logo_url !== undefined) patch.logo_url = data.logo_url;
+    if (data.banner_url !== undefined) patch.banner_url = data.banner_url;
+    if (data.privacy_policy !== undefined) patch.privacy_policy = data.privacy_policy;
+    if (data.terms !== undefined) patch.terms = data.terms;
+    if (data.maintenance_mode !== undefined) patch.maintenance_mode = data.maintenance_mode;
+    if (data.contact_email !== undefined) patch.contact_email = data.contact_email;
+    if (data.contact_phone !== undefined) patch.contact_phone = data.contact_phone;
+
     const { error } = await supabaseAdmin
       .from("app_settings")
-      .update({ ...data, updated_at: new Date().toISOString(), updated_by: context.userId })
+      .update(patch)
       .eq("id", 1);
     if (error) throw error;
     await logAction(supabaseAdmin, context.userId, "update_settings", "settings", "1");

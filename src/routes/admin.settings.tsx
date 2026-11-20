@@ -23,8 +23,18 @@ function SettingsPage() {
     e.preventDefault();
     setBusy(true);
     try {
-      const { id, updated_at, updated_by, ...rest } = form;
-      await upd({ data: rest });
+      await upd({
+        data: {
+          app_name: form.app_name ?? "",
+          logo_url: form.logo_url ?? null,
+          banner_url: form.banner_url ?? null,
+          privacy_policy: form.privacy_policy ?? null,
+          terms: form.terms ?? null,
+          maintenance_mode: Boolean(form.maintenance_mode),
+          contact_email: form.contact_email ?? null,
+          contact_phone: form.contact_phone ?? null,
+        },
+      });
       toast.success("Settings saved successfully.");
       qc.invalidateQueries({ queryKey: ["admin", "settings"] });
     } catch (e: any) { toast.error(e?.message ?? "Failed to save settings"); }
