@@ -840,14 +840,27 @@ export function HomeFeed() {
 
           <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-slate-100">
             <div className="flex items-center gap-1 text-[11px] text-slate-400">
-              {/* Desktop only: mobile keeps using the bottom-nav + button */}
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-xs font-bold shadow-sm hover:brightness-95 active:scale-95 transition"
-              >
-                <Upload className="h-4 w-4" strokeWidth={2.5} /> + Upload
-              </button>
+              {/* Desktop only: mobile keeps using the bottom-nav + button.
+                  Once a file is picked, + Upload swaps to Post in the same spot. */}
+              {file ? (
+                <button
+                  type="button"
+                  onClick={() => submit()}
+                  disabled={posting}
+                  className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-xs font-bold shadow-sm hover:brightness-95 active:scale-95 transition disabled:opacity-60 disabled:pointer-events-none"
+                >
+                  {posting ? <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.5} /> : <Send className="h-4 w-4" strokeWidth={2.5} />}
+                  {posting ? t("common.uploading") : t("media.post")}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-xs font-bold shadow-sm hover:brightness-95 active:scale-95 transition"
+                >
+                  <Upload className="h-4 w-4" strokeWidth={2.5} /> + Upload
+                </button>
+              )}
               <input
                 ref={fileRef}
                 type="file"
