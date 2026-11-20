@@ -842,7 +842,37 @@ export function HomeFeed() {
 
           <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-slate-100">
             <div className="flex items-center gap-1 text-[11px] text-slate-400">
-              {/* Photo & Video upload moved to the bottom-nav + button */}
+              {/* Desktop only: mobile keeps using the bottom-nav + button */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (fileRef.current) fileRef.current.accept = "image/*";
+                  fileRef.current?.click();
+                }}
+                className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium text-white/85 hover:bg-white/10 transition"
+              >
+                <ImageIcon className="h-4 w-4" /> {t("feed.photos")}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (fileRef.current) fileRef.current.accept = "video/*";
+                  fileRef.current?.click();
+                }}
+                className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium text-white/85 hover:bg-white/10 transition"
+              >
+                <VideoIcon className="h-4 w-4" /> {t("feed.videos")}
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0] ?? null;
+                  e.currentTarget.value = "";
+                  pickFile(f);
+                }}
+              />
             </div>
             <div className="flex items-center gap-2 relative">
               <button
