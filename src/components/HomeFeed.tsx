@@ -3,8 +3,6 @@ import { useHistoryBackClose } from "@/hooks/use-history-back-close";
 import { useProfileDirectory } from "@/hooks/use-profile-directory";
 import { Link } from "@tanstack/react-router";
 import {
-  Image as ImageIcon,
-  Video as VideoIcon,
   Send,
   Share2,
   X,
@@ -845,27 +843,15 @@ export function HomeFeed() {
               {/* Desktop only: mobile keeps using the bottom-nav + button */}
               <button
                 type="button"
-                onClick={() => {
-                  if (fileRef.current) fileRef.current.accept = "image/*";
-                  fileRef.current?.click();
-                }}
-                className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium text-white/85 hover:bg-white/10 transition"
+                onClick={() => fileRef.current?.click()}
+                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#19D66B] text-[#003D25] text-xs font-bold shadow-sm hover:brightness-95 active:scale-95 transition"
               >
-                <ImageIcon className="h-4 w-4" /> {t("feed.photos")}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (fileRef.current) fileRef.current.accept = "video/*";
-                  fileRef.current?.click();
-                }}
-                className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium text-white/85 hover:bg-white/10 transition"
-              >
-                <VideoIcon className="h-4 w-4" /> {t("feed.videos")}
+                <Upload className="h-4 w-4" strokeWidth={2.5} /> + Upload
               </button>
               <input
                 ref={fileRef}
                 type="file"
+                accept="image/*,video/*"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0] ?? null;
