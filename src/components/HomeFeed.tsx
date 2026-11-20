@@ -1135,7 +1135,7 @@ export function HomeFeed() {
 
                           )
                         )}
-                        <span className="text-[10px] text-slate-400">{timeAgo(p.created_at)}</span>
+                        <span className="text-[10px] text-[#19D66B]">{timeAgo(p.created_at)}</span>
                       </div>
                       <p className="text-xs text-white truncate">
                         {p.title || t("feed.noTitle")}
