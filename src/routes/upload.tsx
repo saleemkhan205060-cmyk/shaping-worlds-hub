@@ -29,6 +29,8 @@ export const Route = createFileRoute("/upload")({
 });
 
 // Capture a still frame from a video File as a JPEG Blob (client-side, for moderation).
+// Returns null when no real frame can be decoded, or when the captured frame is
+// completely black, so a black JPEG is never saved as thumbnail_url.
 async function captureVideoFrame(file: File): Promise<Blob | null> {
   return new Promise((resolve) => {
     try {
@@ -39,25 +41,40 @@ async function captureVideoFrame(file: File): Promise<Blob | null> {
       v.preload = "auto";
       v.src = url;
       const cleanup = () => { try { URL.revokeObjectURL(url); } catch {} };
+      const fail = () => { resolve(null); cleanup(); };
+      // True when every sampled pixel of the canvas is (near-)black.
+      const isBlackFrame = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+        try {
+          const data = ctx.getImageData(0, 0, w, h).data;
+          const step = 16 * 4; // sample every 16th pixel
+          for (let i = 0; i < data.length; i += step) {
+            if ((data[i] ?? 0) > 12 || (data[i + 1] ?? 0) > 12 || (data[i + 2] ?? 0) > 12) return false;
+          }
+          return true;
+        } catch { return false; }
+      };
       v.onloadedmetadata = () => {
         const target = Math.min(1, Math.max(0.1, (v.duration || 2) * 0.25));
-        try { v.currentTime = target; } catch { resolve(null); cleanup(); }
+        try { v.currentTime = target; } catch { fail(); }
       };
       v.onseeked = () => {
         try {
+          // Wait until a real frame is decoded before drawing.
+          if (v.readyState < 2 || !v.videoWidth || !v.videoHeight) { fail(); return; }
           const c = document.createElement("canvas");
-          const w = v.videoWidth || 320;
-          const h = v.videoHeight || 240;
+          const w = v.videoWidth;
+          const h = v.videoHeight;
           const scale = Math.min(1, 512 / Math.max(w, h));
           c.width = Math.max(1, Math.round(w * scale));
           c.height = Math.max(1, Math.round(h * scale));
           const ctx = c.getContext("2d");
-          if (!ctx) { resolve(null); cleanup(); return; }
+          if (!ctx) { fail(); return; }
           ctx.drawImage(v, 0, 0, c.width, c.height);
+          if (isBlackFrame(ctx, c.width, c.height)) { fail(); return; }
           c.toBlob((b) => { resolve(b); cleanup(); }, "image/jpeg", 0.8);
-        } catch { resolve(null); cleanup(); }
+        } catch { fail(); }
       };
-      v.onerror = () => { resolve(null); cleanup(); };
+      v.onerror = fail;
     } catch { resolve(null); }
   });
 }
