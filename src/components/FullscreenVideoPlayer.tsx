@@ -440,10 +440,10 @@ setTimeout(() => {
       >
        <button
     onClick={handleClose}
-  className="fixed top-4 left-3 z-30 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white active:scale-95 transition"
+  className="fixed top-4 left-3 z-30 h-9 w-9 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-white active:scale-95 transition"
    aria-label={t("player.back")}
     >
-     <span className="text-2xl leading-none">←</span>
+     <ChevronLeft size={32} strokeWidth={2.5} />
        </button>
         {items.map((it, i) => {
           const isActive = it.id === activeId;
