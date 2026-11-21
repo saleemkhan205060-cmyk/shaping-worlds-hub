@@ -1700,8 +1700,10 @@ function Messages() {
                 disabled={busy}
                 maxLength={2000}
                 rows={1}
-                     className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-0 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"                    <Drawer
-                      open={attachOpen}
+                className="flex-1 resize-none bg-transparent text-[17px] leading-6 py-0 px-1 max-h-32 focus:outline-none placeholder:text-slate-400 text-slate-800"
+                   />
+                  <Drawer 
+                    open={attachOpen}
                       onOpenChange={setAttachOpen}
                     >
                       <DrawerTrigger asChild>
