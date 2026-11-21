@@ -1593,7 +1593,7 @@ function Messages() {
                           type="button"
                           className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:text-[#005A35] transition-all duration-200"                          aria-label={t("msg.emoji")}
                         >
-                          <Smile className="h-8 w-8" />
+                          <Smile className="h-5 w-5" />
                         </button>
                       </PopoverTrigger>
 
@@ -1713,7 +1713,7 @@ function Messages() {
                           className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
                           aria-label={t("msg.attach")}
                         >
-                          <Paperclip className="h-7 w-7" />
+                          <Paperclip className="h-5 w-5" />
                         </button>
                       </DrawerTrigger>
 
