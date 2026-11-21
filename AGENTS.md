@@ -1,6 +1,7 @@
 # Native Android layout
 
 - Keep keyboard/system-bar sizing owned by `KeyboardInsets`: Android 11+ uses explicit native insets, older Android uses decor `adjustResize`, and the Capacitor parent listener is replaced rather than stacked; this prevents duplicate keyboard space without changing shared web messaging code.
+- Scope Android-only layout corrections to `isAndroidNativeShell()` in `src/lib/native-plugins.ts` and keep them width-bounded (row fills its container, items shrink with `min-w-0`) instead of wrapping, so browser markup and system font scaling stay untouched.
 
 # Global localization
 
