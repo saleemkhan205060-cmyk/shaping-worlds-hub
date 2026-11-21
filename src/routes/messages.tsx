@@ -1000,18 +1000,7 @@ function Messages() {
             activePeer ? "hidden md:flex" : "flex"
           } flex-1 md:flex-none`}
         >
-          <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)] leading-none">  
 
-          <div className="flex justify-end px-3 -mt-2 py-0">
-         <button
-         onClick={() => setSearchOpen((o) => !o)}
-        className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-      aria-label={t("msg.newChat")}
-      >
-     <Search className="h-4 w-4" />
-       </button>
-         </div>
-          </div>
 
           {searchOpen && (
             <div className="p-3 border-b border-slate-200">
@@ -1074,6 +1063,13 @@ function Messages() {
               <span className="text-xs font-semibold text-slate-500">
                 {t("msg.recentChats")}
               </span>
+              <button
+                onClick={() => setSearchOpen((o) => !o)}
+                className="h-8 w-8 rounded-full bg-[#003D25] hover:bg-[#005A35] flex items-center justify-center text-white"
+                aria-label={t("msg.newChat")}
+              >
+                <Search className="h-4 w-4" />
+              </button>
             </div>
 
             {loadingMsgs ? (
