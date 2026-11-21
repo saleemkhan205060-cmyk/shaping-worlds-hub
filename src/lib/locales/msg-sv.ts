@@ -17,6 +17,8 @@ export const msgSwedish = {
   "msg.micDenied": "Mikrofonbehörighet nekades",
   "msg.newChat": "Ny chatt", "msg.searchUsers": "Sök användare…", "msg.userFallback": "Användare",
   "msg.online": "Online", "msg.back": "Tillbaka", "msg.openProfile": "Öppna {name}s profil",
+  "msg.onlineNow": "Online nu ({count})", "msg.recentChats": "Senaste chattar",
+  "msg.startChat": "Börja chatta",
   "msg.noConversations": "Inga konversationer ännu. Tryck på sökikonen för att starta en.",
   "msg.you": "Du: ", "msg.read": "Läst", "msg.sent": "Skickat",
   "msg.editMessage": "Redigera meddelande", "msg.deleteMessage": "Ta bort meddelande",

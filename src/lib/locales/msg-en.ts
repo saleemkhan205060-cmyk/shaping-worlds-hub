@@ -17,6 +17,8 @@ export const msgEnglish = {
   "msg.micDenied": "Mic permission denied",
   "msg.newChat": "New chat", "msg.searchUsers": "Search users…", "msg.userFallback": "User",
   "msg.online": "Online", "msg.back": "Back", "msg.openProfile": "Open {name} profile",
+  "msg.onlineNow": "Online Now ({count})", "msg.recentChats": "Recent Chats",
+  "msg.startChat": "Start chatting",
   "msg.noConversations": "No conversations yet. Tap the search icon to start one.",
   "msg.you": "You: ", "msg.read": "Read", "msg.sent": "Sent",
   "msg.editMessage": "Edit message", "msg.deleteMessage": "Delete message",

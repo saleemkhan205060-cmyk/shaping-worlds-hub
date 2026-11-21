@@ -17,6 +17,8 @@ export const msgUrdu = {
   "msg.micDenied": "مائیک کی اجازت مسترد ہو گئی",
   "msg.newChat": "نئی چیٹ", "msg.searchUsers": "صارفین تلاش کریں…", "msg.userFallback": "صارف",
   "msg.online": "آن لائن", "msg.back": "واپس", "msg.openProfile": "{name} کا پروفائل کھولیں",
+  "msg.onlineNow": "ابھی آن لائن ({count})", "msg.recentChats": "حالیہ چیٹس",
+  "msg.startChat": "بات چیت شروع کریں",
   "msg.noConversations": "ابھی کوئی گفتگو نہیں۔ نئی گفتگو شروع کرنے کے لیے سرچ آئیکن دبائیں۔",
   "msg.you": "آپ: ", "msg.read": "پڑھا گیا", "msg.sent": "بھیجا گیا",
   "msg.editMessage": "پیغام میں ترمیم", "msg.deleteMessage": "پیغام حذف کریں",

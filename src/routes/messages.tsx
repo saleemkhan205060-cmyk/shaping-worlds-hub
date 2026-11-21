@@ -308,10 +308,32 @@ function Messages() {
     return Array.from(map.values());
   }, [msgs, user]);
 
-  const conversations = useMemo(
-    () => sortConversationsByPresence(baseConversations, statuses),
-    [baseConversations, statuses],
+  // Online users from the shared presence channel (same data as OnlineUsers),
+  // excluding myself. Realtime: updates as users join/leave.
+  const onlinePeerIds = useMemo(
+    () => Object.keys(statuses).filter((id) => id !== user?.id),
+    [statuses, user],
   );
+
+  useEffect(() => {
+    if (onlinePeerIds.length) ensureProfiles(onlinePeerIds);
+  }, [onlinePeerIds, ensureProfiles]);
+
+  const onlineCount = onlinePeerIds.length;
+
+  // Merge online users without an existing chat into the same list:
+  // opened chat first, then online users, then offline — newest message first.
+  const conversations = useMemo(() => {
+    const known = new Set(baseConversations.map((c) => c.peer));
+    const extras = onlinePeerIds
+      .filter((id) => !known.has(id))
+      .map((id) => ({ peer: id, last: null, unread: 0 }));
+    return sortConversationsByPresence(
+      [...baseConversations, ...extras],
+      statuses,
+      activePeer,
+    );
+  }, [baseConversations, onlinePeerIds, statuses, activePeer]);
 
   const thread = useMemo(() => {
     if (!user || !activePeer) return [];
@@ -1044,6 +1066,16 @@ function Messages() {
               <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[#005A35]/5 blur-3xl" />
             </div>
 
+            <div className="sticky top-0 z-10 flex items-center justify-between px-3 py-2 bg-[#f7faf8]/95 backdrop-blur border-b border-slate-100">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-[#003D25]">
+                <span className="h-2 w-2 rounded-full bg-[#7CFF3B] shadow-[0_0_6px_rgba(124,255,59,0.65)]" />
+                {t("msg.onlineNow", { count: onlineCount })}
+              </span>
+              <span className="text-xs font-semibold text-slate-500">
+                {t("msg.recentChats")}
+              </span>
+            </div>
+
             {loadingMsgs ? (
               <div className="flex justify-center py-8 text-slate-400">
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -1091,20 +1123,28 @@ function Messages() {
                               {peerName(c.peer)}
                             </p>
 
-                            <span className="text-[10px] text-slate-400 shrink-0">
-                              {new Date(
-                                c.last.created_at,
-                              ).toLocaleDateString()}
-                            </span>
+                            {c.last && (
+                              <span className="text-[10px] text-slate-400 shrink-0">
+                                {new Date(
+                                  c.last.created_at,
+                                ).toLocaleDateString()}
+                              </span>
+                            )}
                           </div>
 
-                          <p className="text-xs text-slate-500 truncate">
-                            {c.last.sender_id ===
-                            user.id
-                              ? t("msg.you")
-                              : ""}
-                            {c.last.content}
-                          </p>
+                          {c.last ? (
+                            <p className="text-xs text-slate-500 truncate">
+                              {c.last.sender_id ===
+                              user.id
+                                ? t("msg.you")
+                                : ""}
+                              {c.last.content}
+                            </p>
+                          ) : (
+                            <p className="text-xs text-[#006B3F] italic truncate">
+                              {t("msg.startChat")}
+                            </p>
+                          )}
                         </div>
 
                         {c.unread > 0 && (

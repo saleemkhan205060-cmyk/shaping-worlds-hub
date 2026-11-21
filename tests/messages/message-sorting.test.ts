@@ -64,3 +64,34 @@ test("keeps busy and do-not-disturb users in the single online group without sep
     "user-offline",
   ]);
 });
+
+test("pins the currently opened chat at the very top even when it is offline and older", () => {
+  const items = [
+    { peer: "opened-offline-old", last: { created_at: "2026-11-18T10:00:00.000Z" } },
+    { peer: "online-new", last: { created_at: "2026-11-21T10:00:00.000Z" } },
+    { peer: "offline-new", last: { created_at: "2026-11-20T10:00:00.000Z" } },
+  ];
+  const statuses: Record<string, Status> = { "online-new": "online" };
+
+  expect(
+    sortConversationsByPresence(items, statuses, "opened-offline-old").map((c) => c.peer),
+  ).toEqual(["opened-offline-old", "online-new", "offline-new"]);
+});
+
+test("online users without any message sort after online chats but above offline users", () => {
+  const items = [
+    { peer: "offline-new", last: { created_at: "2026-11-21T10:00:00.000Z" } },
+    { peer: "online-no-chat", last: null },
+    { peer: "online-with-chat", last: { created_at: "2026-11-19T10:00:00.000Z" } },
+  ];
+  const statuses: Record<string, Status> = {
+    "online-no-chat": "online",
+    "online-with-chat": "online",
+  };
+
+  expect(sortConversationsByPresence(items, statuses).map((c) => c.peer)).toEqual([
+    "online-with-chat",
+    "online-no-chat",
+    "offline-new",
+  ]);
+});
