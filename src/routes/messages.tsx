@@ -1065,7 +1065,7 @@ function Messages() {
               </span>
               <button
                 onClick={() => setSearchOpen((o) => !o)}
-                className="h-8 w-8 rounded-full bg-[#003D25] hover:bg-[#005A35] flex items-center justify-center text-white"
+                className="h-8 w-8 rounded-full bg-[#0B8F50] hover:bg-[#087A43] flex items-center justify-center text-white"
                 aria-label={t("msg.newChat")}
               >
                 <Search className="h-4 w-4" />
