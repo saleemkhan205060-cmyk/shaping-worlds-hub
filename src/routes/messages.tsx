@@ -1803,11 +1803,13 @@ function Messages() {
                     return startRecording();
                   }}
                   disabled={busy}
-                  className={`h-[54px] w-[54px] shrink-0 rounded-full text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_0_20px_rgba(25,214,107,0.32)] ${
-                    recording
-                      ? "bg-red-500 hover:bg-red-600"
-                      : "bg-[#006B3F] hover:bg-[#007A48] active:bg-[#005A35] shadow-[0_0_16px_rgba(25,214,107,0.25)]"
-                  }`}
+                  className={`h-10 w-10 shrink-0 rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] disabled:opacity-60 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                  recording
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                 : text.trim()
+                ? "bg-[#006B3F] text-white hover:bg-[#007A48] active:bg-[#005A35]"
+               : "bg-[#8FDEAD] text-[#005A35] hover:bg-[#7DD99F] active:bg-[#6DCE91]"
+                }`}
                   aria-label={
                     recording
                       ? t("msg.sendVoice")
@@ -1817,12 +1819,12 @@ function Messages() {
                   }
                 >
                   {busy ? (
-                    <Loader2 className="h-7 w-7 animate-spin" />
+                    <Loader2 className="h-6 w-6 animate-spin" />
                   ) : recording ||
                     text.trim() ? (
-                    <Send className="h-7 w-7" />
+                    <Send className="h-6 w-6" />
                   ) : (
-                    <Mic className="h-8 w-8" />
+                    <Mic className="h-6 w-6 text-[#005A35]" />
                   )}
                 </button>
               </div>
