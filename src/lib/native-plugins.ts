@@ -49,3 +49,17 @@ export function isNativeShell(): boolean {
     return false;
   }
 }
+
+/**
+ * True only inside the installed Android shell. Used to scope layout tweaks to
+ * the Android WebView — where the phone's font size can make a fixed row of
+ * buttons wider than the screen — without touching the browser layout.
+ */
+export function isAndroidNativeShell(): boolean {
+  try {
+    const cap = runtime();
+    return cap?.isNativePlatform?.() === true && cap?.getPlatform?.() === "android";
+  } catch {
+    return false;
+  }
+}

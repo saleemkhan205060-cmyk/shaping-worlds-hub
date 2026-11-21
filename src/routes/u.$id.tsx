@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { uploadToStorage } from "@/lib/resumable-upload";
 import { moderateMedia } from "@/lib/moderation-bridge";
 import { useI18n } from "@/lib/i18n";
+import { isAndroidNativeShell } from "@/lib/native-plugins";
 export const Route = createFileRoute("/u/$id")({
   head: ({ params }) => ({
     links: [
@@ -457,6 +458,17 @@ function UserProfile() {
     setFsOpen(true);
   };
 
+  // Android-only: the WebView scales text with the phone's font size, so the
+  // three action buttons get a tighter row that is bounded by the card width
+  // and can never push the Message button past its right edge. The browser
+  // keeps the original classes, and no system font scaling is touched.
+  const androidLayout = isAndroidNativeShell();
+  const actionRowCls = androidLayout ? "w-full min-w-0 gap-1" : "gap-1.5";
+  const actionBtnCls = androidLayout ? "min-w-0 gap-1 px-2" : "w-fit gap-1.5 px-3";
+  const actionIconCls = androidLayout ? "h-4 w-4 shrink-0" : "h-4 w-4";
+  const actionLabel = (text: string) =>
+    androidLayout ? <span className="min-w-0 truncate">{text}</span> : text;
+
   return (
     <Layout>
       { nameEditorOpen && (
@@ -596,13 +608,13 @@ function UserProfile() {
             </span>
           </div>
           {profile && (
-      <div className="mt-4 flex items-center gap-1.5">
+      <div className={`mt-4 flex items-center ${actionRowCls}`}>
     <button
       type="button"
       onClick={() => setAboutOpen(true)}
-      className="inline-flex w-fit items-center rounded-full border border-[#19D66B] bg-[#005A35] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#003D25]"
+      className={`inline-flex items-center rounded-full border border-[#19D66B] bg-[#005A35] py-2 text-sm font-semibold text-white transition hover:bg-[#003D25] ${actionBtnCls}`}
     >
-      {t("profile.about")}
+      {actionLabel(t("profile.about"))}
     </button>
 
     {!isSelf && (
@@ -610,29 +622,29 @@ function UserProfile() {
         <button
           onClick={toggleFollow}
           disabled={followBusy}
-          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition disabled:opacity-60 ${
+          className={`inline-flex items-center rounded-full py-2 text-sm font-semibold transition disabled:opacity-60 ${
             isFollowing
               ? "bg-[#003D25] text-white hover:bg-[#005A35]"
               : "bg-[#057643] text-white hover:bg-[#005A35]"
-          }`}
+          } ${actionBtnCls}`}
         >
           {followBusy ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className={`${actionIconCls} animate-spin`} />
           ) : isFollowing ? (
-            <UserCheck className="h-4 w-4" />
+            <UserCheck className={actionIconCls} />
           ) : (
-            <UserPlus className="h-4 w-4" />
+            <UserPlus className={actionIconCls} />
           )}
-          {isFollowing ? t("profile.following") : t("profile.follow")}
+          {actionLabel(isFollowing ? t("profile.following") : t("profile.follow"))}
         </button>
 
         <button
           onClick={() => navigate({ to: "/messages", search: { to: id } })}
-          className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#19D66B]/50 bg-[#003D25] px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-[#005A35]"
+          className={`inline-flex items-center rounded-full border border-[#19D66B]/50 bg-[#003D25] py-1.5 text-sm font-semibold text-white transition hover:bg-[#005A35] ${actionBtnCls}`}
           aria-label={t("profile.sendMessage")}
         >
-          <MessageCircle className="h-4 w-4" />
-          {t("profile.message")}
+          <MessageCircle className={actionIconCls} />
+          {actionLabel(t("profile.message"))}
         </button>
       </>
     )}
