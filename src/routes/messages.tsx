@@ -1056,8 +1056,8 @@ function Messages() {
             </div>
 
             <div className="sticky top-0 z-10 flex items-center justify-between px-3 py-2 bg-[#f7faf8]/95 backdrop-blur border-b border-slate-100">
-              <span className="flex items-center gap-1.5 text-xs font-semibold text-[#003D25]">
-                <span className="h-2 w-2 rounded-full bg-[#7CFF3B] shadow-[0_0_6px_rgba(124,255,59,0.65)]" />
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-[#E7F8EE] px-2 py-0.5 text-[11px] font-semibold text-[#0B7A43]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#19D66B]" />
                 {t("msg.onlineNow", { count: onlineCount })}
               </span>
               <span className="text-xs font-semibold text-slate-500">
