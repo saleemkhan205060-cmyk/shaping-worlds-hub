@@ -38,7 +38,11 @@ import {
 import { toast } from "sonner";
 import { moderateMedia } from "@/lib/moderation-bridge";
 import { useI18n } from "@/lib/i18n";
-import { usePresenceState, type Status } from "@/lib/presence";
+import { usePresenceState } from "@/lib/presence";
+import {
+  isPeerOnline,
+  sortConversationsByPresence,
+} from "@/lib/message-sorting";
 
 // Capture a still frame from a video File as a JPEG Blob
 async function captureChatVideoFrame(file: File): Promise<Blob | null> {
@@ -268,7 +272,7 @@ function Messages() {
     };
   }, [user, ensureProfiles]);
 
-  const conversations = useMemo(() => {
+  const baseConversations = useMemo(() => {
     if (!user) return [];
 
     const map = new Map<
@@ -302,12 +306,13 @@ function Messages() {
       }
     }
 
-    return Array.from(map.values()).sort(
-      (a, b) =>
-        new Date(b.last.created_at).getTime() -
-        new Date(a.last.created_at).getTime(),
-    );
+    return Array.from(map.values());
   }, [msgs, user]);
+
+  const conversations = useMemo(
+    () => sortConversationsByPresence(baseConversations, statuses),
+    [baseConversations, statuses],
+  );
 
   const thread = useMemo(() => {
     if (!user || !activePeer) return [];
@@ -1053,6 +1058,7 @@ function Messages() {
               <ul>
                 {conversations.map((c) => {
                   const p = profiles[c.peer];
+                  const online = isPeerOnline(statuses, c.peer);
 
                   return (
                     <li key={c.peer}>
@@ -1073,10 +1079,12 @@ function Messages() {
                             </div>
                           </div>
 
-                          <span
-                            className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#7CFF3B] border-2 border-[#f7faf8] shadow-[0_0_6px_rgba(124,255,59,0.65)]"
-                            aria-label={t("msg.online")}
-                          />
+                          {online && (
+                            <span
+                              className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#7CFF3B] border-2 border-[#f7faf8] shadow-[0_0_6px_rgba(124,255,59,0.65)]"
+                              aria-label={t("msg.online")}
+                            />
+                          )}
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -1158,25 +1166,14 @@ function Messages() {
                       </p>
 
                       <p className="text-[11px] leading-4 text-[#B8FFC9] flex items-center gap-1 font-medium tracking-wide">
-                        <span
-                          className={`inline-block h-1.5 w-1.5 rounded-full ${
-                            statuses[activePeer] ===
-                            "online"
-                              ? "bg-emerald-500"
-                              : statuses[activePeer] ===
-                                  "busy"
-                                ? "bg-amber-400"
-                                : statuses[activePeer] ===
-                                    "dnd"
-                                  ? "bg-red-500"
-                                  : "bg-slate-400"
-                          }`}
-                        />
-
-                        {statuses[activePeer] ===
-                        "online"
-                          ? "Online"
-                          : "Offline"}
+                        {isPeerOnline(statuses, activePeer) ? (
+                          <>
+                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            Online
+                          </>
+                        ) : (
+                          "Offline"
+                        )}
                       </p>
                     </div>
                   </div>
