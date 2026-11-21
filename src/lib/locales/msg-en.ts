@@ -34,6 +34,7 @@ export const msgEnglish = {
   "msg.tagline": "VIP Life Messages",
   "msg.imageNotReady": "Image not ready yet", "msg.imageCopied": "Image copied",
   "msg.linkCopied": "Image link copied", "msg.copyFailed": "Couldn't copy image",
+  "msg.copied": "Copied", "msg.textCopyFailed": "Couldn't copy message",
   "msg.saveImage": "Save image", "msg.downloadStarted": "Download started",
   "msg.downloadFailed": "Download failed",
   "msg.deleteAttachmentConfirm": "Delete this message? This cannot be undone.",

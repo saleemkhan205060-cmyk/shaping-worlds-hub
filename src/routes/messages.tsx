@@ -514,6 +514,27 @@ function Messages() {
     toast.success(t("msg.deleted"));
   };
 
+  const copyTextMessage = async (m: Msg) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(m.content);
+      } else {
+        const el = document.createElement("textarea");
+        el.value = m.content;
+        el.style.position = "fixed";
+        el.style.opacity = "0";
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        el.remove();
+      }
+      toast.success(t("msg.copied"));
+    } catch {
+      toast.error(t("msg.textCopyFailed"));
+    }
+    setMessageMenu(null);
+  };
+
   const startEditingMessage = (m: Msg) => {
     setEditingMsg(m);
     setText(m.content);
@@ -1240,12 +1261,12 @@ function Messages() {
                         >
                           <div
                             onContextMenu={(e) => {
-                              if (!mine || m.content.startsWith("mm://")) return;
+                              if (m.content.startsWith("mm://")) return;
                               e.preventDefault();
                               setMessageMenu(m);
                             }}
                             onPointerDown={() => {
-                              if (!mine || m.content.startsWith("mm://")) return;
+                              if (m.content.startsWith("mm://")) return;
                               messageLongPressed.current = false;
                               if (messagePressTimer.current) clearTimeout(messagePressTimer.current);
                               messagePressTimer.current = setTimeout(() => {
@@ -1378,24 +1399,49 @@ function Messages() {
                               )}
                             </div>
 
-                            {mine && !m.content.startsWith("mm://") && messageMenu?.id === m.id && (
+                            {!m.content.startsWith("mm://") && messageMenu?.id === m.id && (
                               <div className="absolute bottom-full right-0 z-30 mb-2 min-w-[150px] overflow-hidden rounded-xl border border-[#19D66B]/40 bg-[#003D25] p-1.5 shadow-xl">
                                 <button
                                   type="button"
                                   onPointerDown={(e) => e.stopPropagation()}
-                                  onClick={() => startEditingMessage(m)}
+                                  onClick={() => void copyTextMessage(m)}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white hover:bg-white/10"
                                 >
-                                  {t("msg.editMessage")}
+                                  {t("msg.copy")}
                                 </button>
-                                <button
-                                  type="button"
-                                  onPointerDown={(e) => e.stopPropagation()}
-                                  onClick={() => void deleteTextMessage(m)}
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-300 hover:bg-white/10"
-                                >
-                                  {t("msg.deleteMessage")}
-                                </button>
+                                {!mine && (
+                                  <button
+                                    type="button"
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                    onClick={() => {
+                                      setReplyTo(m);
+                                      setMessageMenu(null);
+                                    }}
+                                    className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white hover:bg-white/10"
+                                  >
+                                    {t("msg.reply")}
+                                  </button>
+                                )}
+                                {mine && (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onPointerDown={(e) => e.stopPropagation()}
+                                      onClick={() => startEditingMessage(m)}
+                                      className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white hover:bg-white/10"
+                                    >
+                                      {t("msg.editMessage")}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onPointerDown={(e) => e.stopPropagation()}
+                                      onClick={() => void deleteTextMessage(m)}
+                                      className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-300 hover:bg-white/10"
+                                    >
+                                      {t("msg.deleteMessage")}
+                                    </button>
+                                  </>
+                                )}
                                 <button
                                   type="button"
                                   onPointerDown={(e) => e.stopPropagation()}

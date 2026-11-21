@@ -34,6 +34,7 @@ export const msgSwedish = {
   "msg.tagline": "VIP Life-meddelanden",
   "msg.imageNotReady": "Bilden är inte klar ännu", "msg.imageCopied": "Bilden kopierades",
   "msg.linkCopied": "Bildlänken kopierades", "msg.copyFailed": "Kunde inte kopiera bilden",
+  "msg.copied": "Kopierat", "msg.textCopyFailed": "Kunde inte kopiera meddelandet",
   "msg.saveImage": "Spara bild", "msg.downloadStarted": "Nedladdningen startade",
   "msg.downloadFailed": "Nedladdningen misslyckades",
   "msg.deleteAttachmentConfirm": "Ta bort det här meddelandet? Det går inte att ångra.",

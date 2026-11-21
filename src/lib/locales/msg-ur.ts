@@ -34,6 +34,7 @@ export const msgUrdu = {
   "msg.tagline": "VIP Life پیغامات",
   "msg.imageNotReady": "تصویر ابھی تیار نہیں", "msg.imageCopied": "تصویر کاپی ہو گئی",
   "msg.linkCopied": "تصویر کا لنک کاپی ہو گیا", "msg.copyFailed": "تصویر کاپی نہیں ہو سکی",
+  "msg.copied": "کاپی ہو گیا", "msg.textCopyFailed": "پیغام کاپی نہیں ہو سکا",
   "msg.saveImage": "تصویر محفوظ کریں", "msg.downloadStarted": "ڈاؤن لوڈ شروع ہو گیا",
   "msg.downloadFailed": "ڈاؤن لوڈ ناکام",
   "msg.deleteAttachmentConfirm": "یہ پیغام حذف کر دیں؟ اسے واپس نہیں لایا جا سکتا۔",
