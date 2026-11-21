@@ -1689,12 +1689,6 @@ function Messages() {
                     e.currentTarget.style.height = "auto"; 
                     e.currentTarget.style.height = `${Math.min( 
                     e.currentTarget.scrollHeight, 128, )}px`; }}
-                   onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                 send();
-                 }
-                 }}
                  placeholder={t("msg.placeholder")}
                 data-message-input
                 disabled={busy}
