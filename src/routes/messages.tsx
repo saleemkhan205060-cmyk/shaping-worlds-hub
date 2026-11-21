@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Layout } from "../components/Layout";
-import { OnlineUsers } from "@/components/OnlineUsers";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfileDirectory } from "@/hooks/use-profile-directory";
@@ -980,7 +979,6 @@ function Messages() {
           } flex-1 md:flex-none`}
         >
           <div className="shrink-0 bg-[#003D25] border-b border-[#19D66B]/30 shadow-[0_2px_10px_rgba(0,61,37,0.12)] leading-none">  
-            {!activePeer && <OnlineUsers />}
 
           <div className="flex justify-end px-3 -mt-2 py-0">
          <button
