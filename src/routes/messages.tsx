@@ -1586,12 +1586,12 @@ function Messages() {
                   </div>
                 ) : (
                  
-                   <div className="flex-1 min-w-0 flex items-end gap-1 bg-white rounded-[28px] pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[44px]">
+                   <div className="flex-1 min-w-0 flex items-center gap-1 bg-white rounded-[28px] pl-2 pr-1.5 py-1 shadow-[0_4px_14px_rgba(0,61,37,0.09)] ring-1 ring-[#19D66B]/15 focus-within:ring-2 focus-within:ring-[#19D66B]/30 transition-all duration-200 min-h-[44px]">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:text-[#005A35] transition-all duration-200"                          aria-label={t("msg.emoji")}
+                          className="h-9 w-9 shrink-0 self-end rounded-full flex items-center justify-center text-[#006B3F] hover:text-[#005A35] transition-all duration-200"                          aria-label={t("msg.emoji")}
                         >
                           <Smile className="h-6 w-6" />
                         </button>
@@ -1710,7 +1710,7 @@ function Messages() {
                         <button
                           type="button"
                           disabled={busy}
-                          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
+                          className="h-10 w-10 shrink-0 self-end rounded-full flex items-center justify-center text-[#006B3F] hover:bg-[#DFF7E8] active:bg-[#C8F0D8] disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_3px_10px_rgba(25,214,107,0.18)]"
                           aria-label={t("msg.attach")}
                         >
                           <Paperclip className="h-6 w-6" />
