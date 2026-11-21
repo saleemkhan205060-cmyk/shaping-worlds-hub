@@ -1107,7 +1107,7 @@ function Messages() {
 
                           {online && (
                             <span
-                              className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#7CFF3B] border-2 border-[#f7faf8] shadow-[0_0_6px_rgba(124,255,59,0.65)]"
+                              className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#00FF66] border-2 border-[#f7faf8] shadow-[0_0_8px_rgba(0,255,102,0.75)]"
                               aria-label={t("msg.online")}
                             />
                           )}
